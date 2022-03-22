@@ -1,0 +1,263 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+
+
+            {% if message.tags == 'warning' %}
+
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+
+
+            {% if message.tags == 'success' %}
+
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-check"></i> Başarılı!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+        {% endfor %}
+
+
+    {% endif %}
+
+
+      <section class="content-header">
+
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>
+                       Üye Ekle</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section class="content">
+
+        <form method="post" enctype="multipart/form-data" role="form">
+            {% csrf_token %}
+            <div class="row">
+
+                <div class="col-lg-6">
+                    <div class="card card-solid card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Genel Bilgiler</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+
+                                <div class="col-lg-12 text-center">
+                                    <center>
+                                        <div class="form-group">
+                                            <label> {{ person_form.profileImage.label }}</label>
+                                            {% load static %}
+
+                                            <img src="{% static 'images/user.png' %} " id="preview"
+                                                 class="img-responsive img-rounded"
+                                                 style=" height: 125px;width: 130px;">
+                                            <input type="file" name="profileImage" accept="image/*"
+                                                   id="id_profileImage"
+                                                   onchange="previewImage()">
+                                        </div>
+                                    </center>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ person_form.tc.label }}</label>
+                                        {{ person_form.tc }}
+                                        <label id="label_tc"></label>
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ user_form.last_name.label }}</label>
+                                        {{ user_form.last_name }}
+                                        <label id="label_last_name"></label>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ user_form.first_name.label }}</label>
+                                        {{ user_form.first_name }}
+                                        <label id="label_first_name"></label>
+
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.birthplace.label }}</label>
+                                        {{ person_form.birthplace }}
+                                        <label id="label_birthplace"></label>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> {{ member_form.role.label }}</label>
+                                        {{ member_form.role }}
+                                        <label id="label_birthDate"></label>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.birthDate.label }}</label>
+                                        {{ person_form.birthDate }}
+                                        <label id="label_birthDate"></label>
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.gender.label }}</label>
+                                        {{ person_form.gender }}
+                                        <label id="label_gender"></label>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ person_form.bloodType.label }}</label>
+                                        {{ person_form.bloodType }}
+                                        <label id="label_bloodType"></label>
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ member_form.commission.label }}</label>
+                                        {{ member_form.commission }}
+                                        <label id="label_commission"></label>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-solid card-success">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">İletişim Bilgileri</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ user_form.email.label }}</label>
+                                        {{ user_form.email }}
+                                        <label id="label_email"></label>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ communication_form.phoneNumber.label }}</label>
+                                        {{ communication_form.phoneNumber }}
+                                        <label id="label_phoneNumber"></label>
+
+                                    </div>
+
+
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ communication_form.country.label }}</label>
+                                        {{ communication_form.country }}
+                                        <label id="label_country"></label>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ communication_form.city.label }}</label>
+                                        {{ communication_form.city }}
+                                        <label id="label_city"></label>
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> {{ communication_form.address.label }}</label>
+                                        {{ communication_form.address }}
+                                        <label id="label_address"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <p class="text-success"> Lütfen (*) zorunlu alanları dordurunuz.</p>
+
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-success pull-right" type="submit">Kaydet</button>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+    </section>
+ <script>
+        $(document).ready(function () {
+
+          {% if error_messages  %}
+                errors_messages({{ error_messages |safe }})
+            {% endif %}
+        });
+    </script>
+
+{% endblock %}
+
+
+

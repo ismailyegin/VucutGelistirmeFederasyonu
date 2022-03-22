@@ -1,0 +1,826 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal modal-primary fade in deneme22" tabindex="-1" role="dialog" id="modal-primary"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header primary">
+                    <h4 class="modal-title">Uyarı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+                <div class="modal-body">
+                    <p>Silmek istediğinizden emin misiniz ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf1"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close1">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+
+            <div id="toast-container" class="toasts-top-right">
+                {% if message.tags == 'primary' %}
+                    <div class="toast toast-error" aria-live="polite" style="" id="toast">
+                        <div class="toast-message">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+
+                {% if message.tags == 'success' %}
+                    <div class="toast toast-success" aria-live="polite" style="" id="toast">
+                        <div class="toast-message"> {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+            </div>
+        {% endfor %}
+
+
+    {% endif %}
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>
+                        {{ club.name }} Düzenle</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% load static %}
+    <section class="content">
+
+        <form method="post" enctype="multipart/form-data" role="form">
+            {% csrf_token %}
+            <div class="row">
+
+                <div class="col-lg-6">
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Genel Bilgiler</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ club_form.name.label }}</label>
+                                        {{ club_form.name }}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ club_form.foundingDate.label }}</label>
+                                        {{ club_form.foundingDate }}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ club_form.isFormal.label }}</label>
+                                        {{ club_form.isFormal }}
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ club_form.petition.label }}</label>
+                                        {{ club_form.petition }}
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ club_form.logo.label }} </label>
+                                        {% if club_form.logo.value != '' %}
+                                            <img style="margin:10px" src="/media/{{ club_form.logo.value }}" width="100"
+                                                 height="100" alt="" id="logo">
+                                            {{ club_form.logo }}
+                                        {% else %}
+                                            {{ club_form.logo }}
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> {{ club_form.branch.label }} </label>
+
+                                        {{ club_form.branch }}
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                                <button class="btn btn-info float-right" type="submit">Kaydet</button>
+                            {% endif %}
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">İletişim Bilgileri</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ club_form.clubMail.label }}</label>
+                                        {{ club_form.clubMail }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ communication_form.phoneNumber.label }}</label>
+                                        {{ communication_form.phoneNumber }}
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ communication_form.country.label }}</label>
+                                        {{ communication_form.country }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ communication_form.city.label }}</label>
+                                        {{ communication_form.city }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> {{ communication_form.address.label }}</label>
+                                        {{ communication_form.address }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                                <button class="btn btn-info float-right" type="submit">Kaydet</button>
+                            {% endif %}
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Kulüp Üyeleri</h3>
+
+
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                                <a href=""
+                                   type="button" class="btn btn-info btn-sm" style="float: right"><i
+                                        class="fa fa-edit" title="Kulüp Üyesi Ekle"></i>
+                                </a>
+                            {% endif %}
+
+
+                        </div>
+                        <div class="card-body">
+
+                            <table id="club" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ad Soyad</th>
+                                    <th>Rolü</th>
+                                    <th>İşlemler</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if clubPersons.all %}
+                                    {% for athlete in clubPersons %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ athlete.user.first_name }} {{ athlete.user.last_name }} </td>
+                                            <td>{{ athlete.role.name }} </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                                                        <a onclick=""
+                                                           type="button" class="btn btn-info"><i
+                                                                class="fa fa-edit"></i>Çıkar
+                                                        </a>
+                                                    {% endif %}
+
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Antrenör Listesi</h3>
+
+
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                                <a href=""
+                                   type="button" class="btn btn-info btn-sm" style="float: right"><i
+                                        class="fa fa-edit" title="Antrenör Ekle"></i>
+                                </a>
+                            {% endif %}
+
+
+                        </div>
+                        <div class="card-body">
+
+                            <table id="antrenorler" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ad Soyad</th>
+                                    <th>Kademe</th>
+                                    <th>İşlemler</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if clubCoachs.all %}
+                                    {% for coach in clubCoachs %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ coach.person.user.first_name }} {{ coach.person.user.last_name }} </td>
+                                            <td>{{ coach.grades.last.definition.name }} </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    {% if aktif == 'Admin' %}
+                                                        <a onclick=""
+                                                           type="button" class="btn btn-info"><i
+                                                                class="fa fa-edit"></i>Çıkar
+                                                        </a>
+                                                    {% endif %}
+
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+        <div class="row">
+
+            <section class="col-lg-12 ">
+
+
+                <div class="card card-outline card-info">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Sporcular</h3>
+
+                        {% for item in perm %}
+                            {% if item == 'add_club' %}
+                                {% if aktif == 'Admin' %}
+                                    <a href="{% url 'sbs:add_club' %}"
+                                       type="button" class="btn btn-info" style="float: right"><i
+                                            class="fa fa-plus" title="Yeni Sporcu Ekle"></i>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+                    </div>
+                    <div class="card-body">
+                        <table id="sporcular" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Ad Soyad</th>
+                                <th>Lisans Bilgileri</th>
+                                <th>Branş</th>
+                                <th>İşlemler</th>
+
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if athletes %}
+                                {% for athlete in athletes %}
+                                    <tr>
+                                        <td>{{ forloop.counter }} </td>
+                                        <td>{{ athlete.person.user.first_name }} {{ athlete.person.user.last_name }} </td>
+
+
+                                        {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+
+                                            <td>
+                                                {% for license in athlete.licenses.all %}
+
+                                                    {% if license.licenseNo %}<p><i class="fa fa-id-card"></i>
+                                                        {{ license.licenseNo }} </p>{% endif %}
+                                                    {% if license.expireDate %} <p><i class="fa fa-calendar-check"></i>
+                                                        {{ license.expireDate }} </p>{% endif %}
+
+                                                {% endfor %}
+                                            </td>
+
+                                        {% endif %}
+                                        <td> {% for branch in athlete.branch.all %}
+
+                                            <span class="badge badge-info"> {{ branch.title }}</span>
+
+                                        {% endfor %}</td>
+
+
+                                        {% comment %}<td>
+                                                {% for belts in athlete.belts.all %}
+                                                    {% if  belts.status == 'Onaylandı' %}
+                                                        <p>{{ belts.definition }}</p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>{% endcomment %}
+
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href=""
+                                                   type="button" class="btn btn-outline-info"><i
+                                                        class="fa fa-edit"></i>İncele
+                                                </a>
+
+
+                                                {#                                                    <a href="{% url "sbs:sporcu-lisans-ekle" athlete.pk %}"#}
+                                                {#                                                       type="button" class="btn btn-secondary btn-success">Lisans#}
+                                                {#                                                        Ekle#}
+                                                {#                                                    </a>#}
+
+
+                                            </div>
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+                            {% endif %}
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <!-- /.card -->
+
+
+            </section>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    {% load  static %}
+    <script>
+        $(function () {
+
+            $(function () {
+                $('#sporcular').DataTable({
+                    dom: 'Bfrtip',
+
+
+                    lengthMenu: [
+                        [10, 25, 50, 100, -1],
+                        ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                    ],
+
+                    'buttons': [
+
+
+                        {
+                            extend: "pageLength",
+                        },
+
+
+                        {
+                            extend: 'colvis',
+                            titleAttr: 'Ekle Çıkar'
+
+
+                        },
+                        {
+                            extend: 'print',
+                            title: 'YEKA LİSTESİ',
+                            text: '<i class="fa fa-print"></i>',
+
+                            titleAttr: 'Yazdır',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            download: 'open',
+                            text: '<i class="fa fa-file-pdf"></i>',
+
+                            titleAttr: 'Pdf Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel"></i>',
+                            titleAttr: 'Excel Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+
+                    ],
+                    "search": {
+                        "caseInsensitive": true,
+                    },
+                    'language': {
+                        "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                    },
+                    'paging': true,
+                    'lengthChange': true,
+                    'searching': true,
+                    'ordering': true,
+                    'info': true,
+                    'autoWidth': true,
+                    'responsive': true,
+                });
+                table.on('draw.dt', function () {
+                    debugger;
+                    table.column(0, {
+                        search: 'applied',
+                        order: 'applied',
+                        page: 'applied'
+                    }).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                });
+
+            })
+
+            $(function () {
+                $('#club').DataTable({
+                    dom: 'Bfrtip',
+
+
+                    lengthMenu: [
+                        [10, 25, 50, 100, -1],
+                        ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                    ],
+
+                    'buttons': [
+
+
+                        {
+                            extend: "pageLength",
+                        },
+
+
+                        {
+                            extend: 'colvis',
+                            titleAttr: 'Ekle Çıkar'
+
+
+                        },
+                        {
+                            extend: 'print',
+                            title: 'YEKA LİSTESİ',
+                            text: '<i class="fa fa-print"></i>',
+
+                            titleAttr: 'Yazdır',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            download: 'open',
+                            text: '<i class="fa fa-file-pdf"></i>',
+
+                            titleAttr: 'Pdf Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel"></i>',
+                            titleAttr: 'Excel Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+
+                    ],
+                    "search": {
+                        "caseInsensitive": true,
+                    },
+                    'language': {
+                        "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                    },
+                    'paging': true,
+                    'lengthChange': true,
+                    'searching': true,
+                    'ordering': true,
+                    'info': true,
+                    'autoWidth': true,
+                    'responsive': true,
+                });
+                table.on('draw.dt', function () {
+                    debugger;
+                    table.column(0, {
+                        search: 'applied',
+                        order: 'applied',
+                        page: 'applied'
+                    }).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                });
+
+            })
+
+        })
+    </script>
+    <script>
+        $(function () {
+            $(function () {
+                $('#antrenorler').DataTable({
+                    dom: 'Bfrtip',
+
+
+                    lengthMenu: [
+                        [10, 25, 50, 100, -1],
+                        ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                    ],
+
+                    'buttons': [
+
+
+                        {
+                            extend: "pageLength",
+                        },
+
+
+                        {
+                            extend: 'colvis',
+                            titleAttr: 'Ekle Çıkar'
+
+
+                        },
+                        {
+                            extend: 'print',
+                            title: 'YEKA LİSTESİ',
+                            text: '<i class="fa fa-print"></i>',
+
+                            titleAttr: 'Yazdır',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            download: 'open',
+                            text: '<i class="fa fa-file-pdf"></i>',
+
+                            titleAttr: 'Pdf Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel"></i>',
+                            titleAttr: 'Excel Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+
+                    ],
+                    "search": {
+                        "caseInsensitive": true,
+                    },
+                    'language': {
+                        "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                    },
+                    'paging': true,
+                    'lengthChange': true,
+                    'searching': true,
+                    'ordering': true,
+                    'info': true,
+                    'autoWidth': true,
+                    'responsive': true,
+                });
+                table.on('draw.dt', function () {
+                    debugger;
+                    table.column(0, {
+                        search: 'applied',
+                        order: 'applied',
+                        page: 'applied'
+                    }).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                });
+
+            })
+
+        })
+    </script>
+
+    {#    <script>#}
+    {#        function deleteClubPerson(id, club_id) {#}
+    {##}
+    {#            console.log(id);#}
+    {#            var html = '';#}
+    {#            $("#modal-primary").on("shown.bs.modal", function (e) {#}
+    {#                $("#btn-conf").click(function () {#}
+    {#                    $.ajax({#}
+    {#                        url: "{% url "sbs:ClubUser-cikar" pk=212121223232323232 club_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, club_id.toString()),#}
+    {#                        type: "POST",#}
+    {#                        data: {#}
+    {#                            'csrfmiddlewaretoken': "{{  csrf_token  }}",#}
+    {#                            isActive: 'False'#}
+    {#                        },#}
+    {#                        success: function (result) {#}
+    {##}
+    {#                            html = 'Kulüp üyesi başarıyla çıkarıldı.';#}
+    {#                            debugger;#}
+    {#                            $(".successModal").html(html);#}
+    {#                            $('#modal-success').on("shown.bs.modal", function (e) {#}
+    {#                                $(".btn-ok").click(function () {#}
+    {##}
+    {#                                    window.location.replace("{% url "sbs:update-club" club.pk %}");#}
+    {##}
+    {#                                });#}
+    {##}
+    {#                            }).modal('show');#}
+    {##}
+    {##}
+    {#                            console.log(result.status)#}
+    {#                        }#}
+    {#                    });#}
+    {#                });#}
+    {#            }).modal('show');#}
+    {#            $('#btn-close').click(function () {#}
+    {#                $('#modal-primary').modal('hide');#}
+    {#            });#}
+    {##}
+    {#        }#}
+    {#    #}
+    {##}
+    {#        function deleteClubCoach(id, club_id) {#}
+    {##}
+    {#            console.log(id);#}
+    {#            var html = '';#}
+    {#            $("#modal-primary").on("shown.bs.modal", function (e) {#}
+    {#                $("#btn-conf").click(function () {#}
+    {#                    $.ajax({#}
+    {#                        url: "{% url "sbs:ClubCoach-cikar" pk=212121223232323232 club_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, club_id.toString()),#}
+    {#                        type: "POST",#}
+    {#                        data: {#}
+    {#                            'csrfmiddlewaretoken': "{{  csrf_token  }}",#}
+    {#                            isActive: 'False'#}
+    {#                        },#}
+    {#                        success: function (result) {#}
+    {##}
+    {#                            html = 'Antrenör başarıyla çıkarıldı.';#}
+    {#                            debugger;#}
+    {#                            $(".successModal").html(html);#}
+    {#                            $('#modal-success').on("shown.bs.modal", function (e) {#}
+    {#                                $(".btn-ok").click(function () {#}
+    {##}
+    {#                                    window.location.replace("{% url "sbs:update-club" club.pk %}");#}
+    {##}
+    {#                                });#}
+    {##}
+    {#                            }).modal('show');#}
+    {##}
+    {##}
+    {#                            console.log(result.status)#}
+    {#                        }#}
+    {#                    });#}
+    {#                });#}
+    {#            }).modal('show');#}
+    {#            $('#btn-close').click(function () {#}
+    {#                $('#modal-danger').modal('hide');#}
+    {#            });#}
+    {##}
+    {#        }#}
+    {#    </script>#}
+
+{% endblock %}
+
+
+

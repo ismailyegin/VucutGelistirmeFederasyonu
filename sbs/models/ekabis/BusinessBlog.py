@@ -1,0 +1,13 @@
+from sbs.models.ekabis.BaseModel import BaseModel
+from django.db import models
+from sbs.models.ekabis.BusinessBlogParametreType import BusinessBlogParametreType
+
+
+class BusinessBlog(BaseModel): #Sabit tanımlanan iş bloğu isim ve parametreler
+    name = models.CharField(max_length=255, null=False, blank=False,unique=True)
+    parametre=models.ManyToManyField(BusinessBlogParametreType,null=True,blank=True)
+    start_notification=models.IntegerField(null=True,blank=True)
+    finish_notification=models.IntegerField(null=True,blank=True)
+
+    def __str__(self):
+        return '%s' % self.name

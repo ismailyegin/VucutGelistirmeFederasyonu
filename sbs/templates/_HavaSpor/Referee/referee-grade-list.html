@@ -1,0 +1,430 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header orange">
+                    <h4 class="modal-title">Uyarı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal modal-danger fade in deneme223" tabindex="-1" role="dialog" id="modal-delete"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header primary">
+                    <h4 class="modal-title">Uyarı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+                <div class="modal-body">
+                    <p>Silmek istediğinizden emin misiniz ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf1"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close1">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+
+            <div id="toast-container" class="toasts-top-right">
+                {% if message.tags == 'warning' %}
+                    <div class="toast toast-error" aria-live="polite" style="" id="toast">
+                        <div class="toast-message">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+
+                {% if message.tags == 'success' %}
+                    <div class="toast toast-success" aria-live="polite" style="" id="toast">
+                        <div class="toast-message"> {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+            </div>
+        {% endfor %}
+
+
+    {% endif %}
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <section class="content-header">
+
+
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="content">
+
+        <div class="row">
+            <section class="col-lg-12 ">
+
+
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Kademe Listesi</h3>
+                    </div>
+
+                    <div class="card-body">
+                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                            <button onclick="onay()" type="button" class="btn btn-outline-success">
+                                <i class="fa fa-check"></i>
+                                Hepsini Onayla
+                            </button>
+                            <button onclick="reddet()" type="button" class="btn btn-outline-danger">
+                                <i class="fa fa-trash"></i>
+                                Hepsini Reddet
+                            </button>
+
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <table id="gradeList" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th> Ad</th>
+                                <th>Brans</th>
+
+                                <th> Hak Kazanma Tarihi</th>
+
+
+                                <th> Onay Durumu</th>
+                                <th> Kademe</th>
+                                <th> Dekont</th>
+
+                                <th> İşlemler</th>
+
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if refereeGrades.all %}
+                                {% for refereeGrade in refereeGrades %}
+                                    <tr>
+
+                                        <td>{{ forloop.counter }} </td>
+
+                                        <td>
+
+                                            <a target="_blank">{{ refereeGrade.Refereegrades.first }} </a>
+
+                                        </td>
+                                        <td>{{ refereeGrade.branch }}</td>
+
+                                        <td>{{ refereeGrade.startDate }}  </td>
+
+
+                                        <td>{{ refereeGrade.status }}  </td>
+                                        <td>{{ refereeGrade.definition }}  </td>
+
+                                        <td>
+                                            {% if refereeGrade.dekont %}
+                                                <a href="/media/{{ refereeGrade.dekont }}" class="user-image" alt="sbs"
+                                                   target="_blank">
+                                                    <img src="/media/{{ refereeGrade.dekont }}" class="user-image"
+                                                         alt="sbs" style=" width: 30px;height: 30px;">
+                                                </a>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                <div class="btn-group">
+
+                                                    <button type="button"
+                                                            class="btn btn-default dropdown-toggle dropdown-icon"
+                                                            data-toggle="dropdown"> İşlemler
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+                                                        <a href="{% url "sbs:grade_list_approval" uuid=refereeGrade.uuid %}"
+                                                           type="button" class="dropdown-item"><i
+                                                                class="fa fa-check"></i>Onayla
+                                                        </a>
+
+
+                                                        <a href="{% url "sbs:grade_list_reject" uuid=refereeGrade.uuid %}"
+                                                           type="button" class="dropdown-item"><i
+                                                                class="fa fa-trash"></i>Reddet
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+
+
+                                    </tr>
+
+                                {% endfor %}
+                            {% endif %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!-- /.box -->
+
+
+                </div>
+            </section>
+        </div>
+
+        <!-- /.row (main row) -->
+
+    </section>
+
+    {% load  static %}
+    <script>
+        $(function () {
+            $('#gradeList').DataTable({
+
+                dom: 'Bfrtip',
+
+                language: {
+                    buttons: {
+                        pageLength: {
+                            _: " %d  Tane Göster",
+                            '-1': "Hepsini Göster"
+                        }
+                    }
+                },
+
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                ],
+
+                'buttons': [
+
+
+                    {
+                        extend: "pageLength",
+                    },
+
+
+                    {
+                        extend: 'colvis',
+                        titleAttr: 'Ekle Çıkar'
+
+
+                    },
+                    {
+                        extend: 'print',
+                        title: 'KADEME LİSTESİ',
+                        text: '<i class="fa fa-print"></i>',
+
+                        titleAttr: 'Yazdır',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        download: 'open',
+                        text: '<i class="fa fa-file-pdf"></i>',
+
+                        titleAttr: 'Pdf Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel"></i>',
+                        titleAttr: 'Excel Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+
+                ],
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                'responsive': true,
+
+            })
+
+        })
+    </script>
+
+    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+        <script>
+            function onay() {
+                var html = '';
+                $("#modal-delete").on("shown.bs.modal", function (e) {
+                    $("#btn-conf1").click(function () {
+                        $.ajax({
+                            url: "{% url "sbs:grade-list-approval-all"%}".replace(),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                isActive: 'False'
+                            },
+                            success: function (result) {
+
+                                html = 'Başari ile onaylandı.';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        window.location.replace("{% url "sbs:grade_list"%}");
+
+                                    });
+
+                                }).modal('show');
+
+
+                                console.log(result.status)
+                            }
+                        });
+                    });
+                }).modal('show');
+                $('#btn-close1').click(function () {
+                    $('#modal-delete').modal('hide');
+                });
+            }
+
+
+        </script>
+        <script>
+
+
+            function reddet() {
+
+                console.log("reddet çalisti");
+                var html = '';
+                $("#modal-delete").on("shown.bs.modal", function (e) {
+                    $("#btn-conf1").click(function () {
+                        $.ajax({
+                            url: "{% url "sbs:grade-list-reject-all"%}".replace(),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                isActive: 'False'
+                            },
+                            success: function (result) {
+
+                                html = 'Başarı ile reddedildi.';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        window.location.replace("{% url "sbs:grade_list"%}");
+
+                                    });
+
+                                }).modal('show');
+
+
+                                console.log(result.status)
+                            }
+                        });
+                    });
+                }).modal('show');
+                $('#btn-close1').click(function () {
+                    $('#modal-delete').modal('hide');
+                });
+
+            }
+        </script>
+    {% endif %}
+
+{% endblock %}
+

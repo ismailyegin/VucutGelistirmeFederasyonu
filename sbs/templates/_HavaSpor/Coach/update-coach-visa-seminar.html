@@ -1,0 +1,512 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header orange">
+                    <h4 class="modal-title">Uyarı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal modal-danger fade in deneme223" tabindex="-1" role="dialog" id="modal-delete"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header primary">
+                    <h4 class="modal-title">Uyarı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+                <div class="modal-body">
+                    <p>Silmek istediğinizden emin misiniz ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf1"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close1">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+
+            <div id="toast-container" class="toasts-top-right">
+                {% if message.tags == 'warning' %}
+                    <div class="toast toast-error" aria-live="polite" style="" id="toast">
+                        <div class="toast-message">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+
+                {% if message.tags == 'success' %}
+                    <div class="toast toast-success" aria-live="polite" style="" id="toast">
+                        <div class="toast-message"> {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+            </div>
+        {% endfor %}
+
+
+    {% endif %}
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <section class="content-header">
+
+
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="content">
+
+        <div class="row">
+            <section class="col-lg-12 ">
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <div class="card-title">
+                            <h3>Onay Durumu</h3>
+                            <h3 class="card-title">{{ competition.status }}</h3>
+                        </div>
+
+                        <div class="card-header with-border">
+                            {% if competition.status == 'Beklemede' %}
+                                <div class="text-right">
+                                    <a href="{% url "sbs:coach-visa-seminar-approval" competition.uuid %}"
+                                       type="button" class="btn btn-outline-warning"><i
+                                            class="fa fa-check"></i>Onayla
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Genel Bilgiler</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data" role="form">
+                            {% csrf_token %}
+                            <div class="row">
+
+                                <div class="col-lg-12">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label> {{ competition_form.name.label }}</label>
+                                                    {{ competition_form.name }}
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label> {{ competition_form.startDate.label }}</label>
+                                                    {{ competition_form.startDate }}
+                                                </div>
+
+
+                                                <div class="form-group">
+                                                    <label> {{ competition_form.location.label }}</label>
+                                                    {{ competition_form.location }}
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label> {{ competition_form.branch.label }}</label>
+                                                    {{ competition_form.branch }}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label> {{ competition_form.finishDate.label }}</label>
+                                                    {{ competition_form.finishDate }}
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label> {{ competition_form.year.label }}</label>
+                                                    {{ competition_form.year }}
+                                                </div>
+
+
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="card-footer">
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+
+                                                <button class="btn btn-outline-success" type="submit">Güncelle</button>
+                                            {% endif %}
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title"> Seçili Antrenörler</h3>
+                    </div>
+                    <div class="card-header with-border">
+                        <div class="btn-group">
+
+                            <a href="{% url "sbs:add-coach-visa-seminar" competition.uuid %}"
+                               type="button" class="btn btn-outline-success"><i
+                                    class="fa fa-plus"></i>Antrenör Ekle
+                            </a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="antrenorler" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Ad Soyad</th>
+                                <th>T.C.</th>
+
+                                <th>Mail Adresi</th>
+                                <th>Telefon</th>
+
+                                <th>İşlemler</th>
+
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if coachs %}
+                                {% for coach in coachs %}
+                                    <tr>
+                                        <td>{{ forloop.counter }} </td>
+                                        <td>{{ coach.person.user.first_name }} {{ coach.person.user.last_name }} </td>
+
+                                        <td>{{ coach.person.tc }} </td>
+                                        <td>{{ coach.person.user.email }} </td>
+                                        <td>{{ coach.communication.phoneNumber }} </td>
+
+
+                                        <td>
+                                            <div class="btn-group">
+                                                <a onclick="deleteCoach('{{ coach.uuid }}', '{{ competition.uuid }}')"
+                                                   type="button" class="btn btn-outline-danger"><i
+                                                        class="fa fa-trash"></i>Kaldır
+                                                </a>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+                            {% endif %}
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+
+                </div>
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title"> Basvuru Yapan Antrenörler</h3>
+                    </div>
+                    <div class="card-body">
+                        <table id="antrenorlerTablo" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Ad Soyad</th>
+                                <th>T.C.</th>
+                                <th>Mail Adresi</th>
+                                <th>Telefon</th>
+                                <th>Dekont</th>
+
+                                <th>Onay Durumu</th>
+
+                                <th>İşlemler</th>
+
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if competition %}
+                                {% for compCoach in competition.coachApplication.all %}
+                                    <tr>
+                                        <td>{{ forloop.counter }} </td>
+                                        <td>{{ compCoach.coach.person.user.first_name }} {{ compCoach.coach.person.user.last_name }} </td>
+                                        <td>{{ compCoach.coach.person.tc }} </td>
+                                        <td>{{ compCoach.coach.user.email }} </td>
+                                        <td>{{ compCoach.coach.communication.phoneNumber }} </td>
+                                        <td>
+                                            <a href="/media/{{ compCoach.dekont }}"
+                                               target="_blank">{{ compCoach.dekont }}</a>
+                                        </td>
+                                        <td> {{ compCoach.status }}</td>
+
+
+                                        <td>
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                <div class="btn-group">
+
+                                                    <button type="button"
+                                                            class="btn btn-default dropdown-toggle dropdown-icon"
+                                                            data-toggle="dropdown"> İşlemler
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+                                                        <a onclick="onayla('{{ compCoach.uuid }}', '{{ competition.uuid }}')"
+                                                           type="button" class="dropdown-item"><i
+                                                                class="fa fa-check"></i>Onayla
+                                                        </a>
+
+                                                        <a onclick="reddet('{{ compCoach.uuid }}', '{{ competition.uuid }}')"
+                                                           type="button" class="dropdown-item"><i
+                                                                class="fa fa-trash"></i>Reddet
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+                            {% endif %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    {% load  static %}
+
+    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+        <script>
+            function deleteCoach(coach_uuid, competition_uuid) {
+                debugger;
+                console.log(coach_uuid);
+                console.log(competition_uuid);
+                var html = '';
+                $("#modal-delete").on("shown.bs.modal", function (e) {
+                    $("#btn-conf1").click(function () {
+                        $.ajax({
+                            url: "{% url "sbs:delete-coach-visa-seminar" %}".replace(),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                coach_uuid: coach_uuid,
+                                competition_uuid: competition_uuid,
+                                isActive: 'False'
+                            },
+                            success: function (result) {
+
+
+                                html = ' Başarıyla Silindi.';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        window.location.replace("{% url "sbs:update-coach-visa-seminar" competition.uuid%}");
+
+                                    });
+
+                                }).modal('show');
+
+
+                                console.log(result.status)
+                            }
+                        });
+                    });
+                }).modal('show');
+                $('#btn-close1').click(function () {
+                    $('#modal-delete').modal('hide');
+                });
+
+            }
+        </script>
+        <script>
+            function reddet(coachApplication_uuid, seminer_uuid) {
+                debugger;
+                console.log(coachApplication_uuid);
+                console.log(seminer_uuid);
+                var html = '';
+                $("#modal-delete").on("shown.bs.modal", function (e) {
+                    $("#btn-conf1").click(function () {
+                        $.ajax({
+                            url: "{% url "sbs:delete-coach-application-visa-seminar" %}".replace(),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                coachApplication_uuid: coachApplication_uuid,
+                                seminer_uuid: seminer_uuid,
+                                isActive: 'False'
+                            },
+                            success: function (result) {
+
+                                html = ' Reddedildi.';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        window.location.replace("{% url "sbs:update-coach-visa-seminar" competition.uuid %}");
+
+                                    });
+
+                                }).modal('show');
+
+
+                                console.log(result.status)
+                            }
+                        });
+
+
+                    });
+                }).modal('show');
+                $('#btn-close1').click(function () {
+                    $('#modal-delete').modal('hide');
+                });
+            }
+        </script>
+        <script>
+            function onayla(coachApplication_uuid, seminer_uuid) {
+                debugger;
+                console.log(coachApplication_uuid);
+                console.log(seminer_uuid);
+                var html = '';
+                $("#modal-delete").on("shown.bs.modal", function (e) {
+                    $("#btn-conf1").click(function () {
+                        $.ajax({
+                            url: "{% url "sbs:approval-coach-application-visa-seminar" %}".replace(),
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                coachApplication_uuid: coachApplication_uuid,
+                                seminer_uuid: seminer_uuid,
+                                isActive: 'False'
+                            },
+                            success: function (result) {
+
+                                html = ' Onaylandı.';
+                                debugger;
+                                $(".successModal").html(html);
+                                $('#modal-success').on("shown.bs.modal", function (e) {
+                                    $(".btn-ok").click(function () {
+
+                                        window.location.replace("{% url "sbs:update-coach-visa-seminar" competition.uuid %}");
+
+                                    });
+
+                                }).modal('show');
+
+
+                                console.log(result.status)
+                            }
+                        });
+
+
+                    });
+                }).modal('show');
+                $('#btn-close1').click(function () {
+                    $('#modal-delete').modal('hide');
+                });
+            }
+        </script>
+    {% endif %}
+
+{% endblock %}
+

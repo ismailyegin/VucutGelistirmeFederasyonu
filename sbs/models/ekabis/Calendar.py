@@ -1,0 +1,15 @@
+from django.contrib.auth.models import User, Group
+from django.db import models
+from sbs.models.ekabis.BaseModel import BaseModel
+from sbs.models.ekabis.CalendarName import CalendarName
+
+
+class Calendar(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    calendarName =models.ForeignKey(CalendarName,on_delete=models.DO_NOTHING)
+    startDate=models.DateTimeField(blank=True, null=True,)
+    finishDate=models.DateTimeField(blank=True, null=True,)
+    color=models.CharField(blank=True, null=True, max_length=100)
+    is_active=models.BooleanField(default=True)
+
+

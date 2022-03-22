@@ -1,0 +1,14 @@
+Django
+dj-database-url
+pillow
+bs4
+unicode_tr
+djangorestframework
+requests
+django-xhtml2pdf
+cx-Oracle
+djangorestframework-simplejwt
+python-dateutil
+pycryptodome
+cryptography
+zeep

@@ -1,0 +1,312 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+    {% load static %}
+    <style>
+        #proposal td {
+            text-align: center;
+            vertical-align: middle;
+            font-size: 15px;
+        }
+    </style>
+    <script type="text/javascript" src="{% static 'vis/js/jquery.doubleScroll.js' %}"></script>
+
+    {% if messages %}
+        {% for message in messages %}
+
+
+            {% if message.tags == 'warning' %}
+
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-warning"></i> Hata!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+
+
+            {% if message.tags == 'success' %}
+
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-check"></i> Başarılı!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+        {% endfor %}
+
+
+    {% endif %}
+
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6"></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section class="content">
+
+        <div class="row">
+
+            <div class="col-lg-12">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">
+
+                            {{ name }} - GENEL RAPORLAMA
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <table style="width: 100%" id="proposal"
+                               class="table table-bordered table-hover ">
+                            <thead>
+                            <tr>
+                                <th>YEKA</th>
+                                <th>Yarışma</th>
+                                <th>Kazanan Firma</th>
+                                <th>Kurulu Güç(MW<sub>e</sub>)</th>
+                                <th>Sözleşme Fiyatı</th>
+                                <th>Sözleşme Tarihi</th>
+                                <th>YEKA İlan Tarihi</th>
+                                <th>Ön Lisans Başvuru Tarihi</th>
+                                <th>İnşaat Süresi</th>
+                                <th>Kabul Tarihi</th>
+                                <th>Teminat Tutarı</th>
+                                <th>Teminat Belgesi</th>
+                                <th>Aday YEKA</th>
+                                <th>Ön Lisans Tarihi</th>
+                                <th>Ön Lisans Numarası</th>
+                                <th>Ön Lisans Süresi</th>
+                                <th>Lisans Tarihi</th>
+                                <th>Lisans Numarası</th>
+                                <th>Lisans Süresi</th>
+                                <th>Aday YEKA Durumu</th>
+                                <th>KML Belgesi</th>
+                                <th>Kurulu Güç(MW<sub>e</sub>)</th>
+                                <th>Açıklama</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for brc in proposal_array %}
+                                <tr>
+                                    <td rowspan="{{ brc.proposals |length }}">{{ brc.yeka.definition }}</td>
+                                    <td rowspan="{{ brc.proposals |length }}">{{ brc.competition.name }}</td>
+                                    <td rowspan="{{ brc.proposals |length }}">{{ brc.company.name }}</td>
+                                    <td rowspan="{{ brc.proposals |length }}">{{ brc.competition.capacity }}</td>
+                                    <td rowspan="{{ brc.proposals |length }}">{{ brc.contract_price }}</td>
+                                    <td rowspan="{{ brc.proposals |length }}">{{ brc.contract_date }}</td>
+                                    <td rowspan="{{ brc.proposals |length }}">{{ brc.competition_business_date | date }}</td>
+                                    <td rowspan="{{ brc.proposals |length }}">{{ brc.prelicence_app_business_date | date }}</td>
+                                    <td rowspan="{{ brc.proposals |length }}">
+                                        {% if brc.build_time %}{{ brc.build_time }}{% endif %}</td>
+
+                                    <td rowspan="{{ brc.proposals |length }}">{{ brc.accept_date }}</td>
+
+                                    <td rowspan="{{ brc.proposals |length }}">
+
+                                        {{ brc.guarantee_quantity }}
+                                    </td>
+                                    <td rowspan="{{ brc.proposals |length }}">
+
+                                        {% if  brc.guarantee_file %}
+                                            <a target="_blank" title="{{ brc.guarantee_file }}"
+                                               href="{{ MEDIA_URL }}{{ brc.guarantee_file.url }}"
+                                               download="">{{ brc.guarantee_file | truncatechars:12 }}</a>
+                                        {% else %}
+                                            ---
+                                        {% endif %}
+
+                                    </td>
+
+                                    {% for item in brc.proposals %}
+                                        {% if not forloop.first %}
+                                            <tr>
+                                            <td class="ism">{{ brc.yeka.definition }}</td>
+
+                                            <td class="ism">{{ brc.competition.name }}</td>
+                                            <td class="ism">{{ brc.company.name }}</td>
+                                            <td class="ism">{{ brc.competition.capacity }}</td>
+                                            <td class="ism">{{ brc.contract_price }}</td>
+                                            <td class="ism">{{ brc.contract_date }}</td>
+                                            <td class="ism">{{ brc.competition_business_date | date }}</td>
+                                            <td class="ism">{{ brc.prelicence_app_business_date | date }}</td>
+
+
+                                            <td class="ism"> {% if brc.build_time %}{{ brc.build_time }}{% endif %}</td>
+
+                                            <td class="ism">{{ brc.accept_date }}</td>
+                                            <td class="ism">{{ brc.guarantee.quantity }}</td>
+                                            <td class="ism">
+                                                {% if brc.guarantee %}
+                                                    {% if brc.guarantee.guaranteeFile %}
+                                                        <a target="_blank" title="{{ brc.guarantee.guaranteeFile }}"
+                                                           href="{{ MEDIA_URL }}{{ brc.guarantee.guaranteeFile.url }}"
+                                                           download="">{{ brc.guarantee.guaranteeFile | truncatechars:12 }}</a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                    <td>{{ item.proposal.name }}</td>
+                                    <td>{{ item.prelicence_business_date }}</td>
+                                    <td>{{ item.prelicence_business_value }}</td>
+                                    <td>{{ item.prelicence_time }}</td>
+                                    <td>{{ item.licence_business_date }}</td>
+                                    <td>{{ item.licence_business_value }}</td>
+                                    <td>{{ item.licence_time }}</td>
+
+
+
+                                    <td style="font-size:15px;background:{{ item.status_color }};">{{ item.status }}</td>
+
+                                    <td>{% if item.proposal.kml_file %}
+                                        <a target="_blank" title="{{ item.proposal.kml_file }}"
+                                           href="{{ MEDIA_URL }}{{ item.proposal.kml_file.url }}"
+                                           download="">{{ item.proposal.kml_file | truncatechars:12 }}</a>
+                                    {% endif %}</td>
+
+                                    <td>{{ item.proposal.capacity }}</td>
+                                    <td>Açıklama Yapılmadı</td>
+                                    {% if not forloop.first %}
+                                        </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                {% if forloop.first %}
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <style>
+        .ism {
+            display: none;
+        }
+
+    </style>
+    <script>
+        {% load static %}
+
+        $(document).ready(function () {
+
+            $('#proposal').DataTable({
+                dom: 'Bfrtip',
+
+
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                ],
+
+                'buttons': [
+
+
+                    {
+                        extend: "pageLength",
+                    },
+
+
+                    {
+                        extend: 'colvis',
+                        titleAttr: 'Ekle Çıkar'
+
+
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Yeka',
+                        text: '<i class="fa fa-print"></i>',
+
+                        titleAttr: 'Yazdır',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        download: 'open',
+                        text: '<i class="fa fa-file-pdf"></i>',
+
+                        titleAttr: 'Pdf Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel"></i>',
+
+                        titleAttr: 'Excel Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+
+
+                    },
+
+
+                ],
+                "search": {
+                    "caseInsensitive": true,
+                },
+                'language': {
+                    "url": "{% static 'datatable_tr/datatable_tr.json' %}",
+
+                },
+                'bubble': true,
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+
+                'select': true,
+            })
+            $('#proposal').wrap('<div id="scrooll_div"> </div>')
+            $('#scrooll_div').doubleScroll();
+        })
+
+    </script>
+
+{% endblock %}
+
+
+

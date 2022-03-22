@@ -1,0 +1,311 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+
+
+
+    <!-- success modal -->
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Silmek istediğinizden emin misiniz?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+
+    {% if messages %}
+        {% for message in messages %}
+
+            <div id="toast-container" class="toasts-top-right">
+                {% if message.tags == 'warning' %}
+                    <div class="toast toast-error" aria-live="polite" style="" id="toast">
+                        <div class="toast-message">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+
+                {% if message.tags == 'success' %}
+                    <div class="toast toast-success" aria-live="polite" style="" id="toast">
+                        <div class="toast-message"> {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+            </div>
+        {% endfor %}
+
+
+    {% endif %}
+
+
+
+
+
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="content-header">
+
+
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>
+                        Grup Listesi</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+
+
+    <section class="content">
+
+        <div class="row">
+
+            <section class="col-lg-12 ">
+
+
+                <div class="card-body">
+
+
+                    <div class="card card-primary card-outline">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Gruplar</h3>
+                            {% if aktif == 'Admin' %}
+
+                                <a href="{% url "ekabis:add_group" %}"
+                                   type="button" class="btn btn-outline-primary btn-sm" style="float: right"><i
+                                        class="fa fa-plus" title="Yeni Grup Ekle"></i>
+                                </a>
+
+
+                            {% endif %}
+                        </div>
+
+                        <div class="card-body">
+                            <table id="company" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>İsim</th>
+                                    <td>İşlemler</td>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if groups.all %}
+                                    {% for group in groups %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ group.name }}</td>
+                                            <td>
+
+                                                <div class="btn-group">
+
+                                                    <button type="button"
+                                                            class="btn btn-default dropdown-toggle dropdown-icon"
+                                                            data-toggle="dropdown"> İşlemler
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+                                                        {% for item in perm %}
+                                                            {% if item == 'change_group' %}
+                                                               <a href="{% url "ekabis:change_group" group.pk %}"
+                                                                   class="dropdown-item"> <i
+                                                                        class="fa fa-edit" title="Düzenle"></i> Düzenle
+                                                                </a>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        {% if aktif == 'Yonetim' or aktif == 'Admin' %}
+                                                            <!-- izin kontrolü yapılacak ! -->
+                                                            <a href="{% url "ekabis:change_groupPermission"  group.pk %}"
+                                                               class="dropdown-item"> <i
+                                                                    class="fa fa-lock" title="İzinler"></i> İzinler
+                                                            </a>
+
+                                                        {% endif %}
+
+                                                    </div>
+                                                </div>
+
+
+
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <!-- /.card -->
+
+
+                </div>
+            </section>
+
+
+        </div>
+        <!-- /.row (main row) -->
+
+    </section>
+{% load static %}
+    <script>
+        $(function () {
+            $('#company').DataTable({
+                dom: 'Bfrtip',
+
+                 'language': {
+                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                },
+
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                ],
+
+                'buttons': [
+
+
+                    {
+                        extend: "pageLength",
+                    },
+
+
+                    {
+                        extend: 'colvis',
+                        text: "Ekle Çıkar",
+                        titleAttr: 'Ekle Çıkar'
+
+
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Gruplar',
+                        text: '<i class="fa fa-print"></i>',
+
+                        titleAttr: 'Yazdır'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        download: 'open',
+                        text: '<i class="fa fa-file-pdf"></i>',
+
+                        titleAttr: 'Pdf Kaydet'
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel"></i>',
+                        titleAttr: 'Excel Kaydet'
+                    },
+
+
+                ],
+                "search": {
+                    "caseInsensitive": true,
+                },
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                'responsive': true,
+            })
+
+        })
+    </script>
+
+
+
+
+
+
+
+{% endblock %}
+
