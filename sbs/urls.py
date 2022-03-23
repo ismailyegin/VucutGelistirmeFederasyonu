@@ -709,5 +709,9 @@ urlpatterns = [
 
     path(r'antrenor/belge/<uuid:uuid>$', CoachViews.document, name='document-coach'),
 
-    path('kulup/kulup-ekle-api/', TransmissionViews.transmissionOffsetLimit, name='kulup-ekle-api'),
+    path(r'kulup/kulup-ekle-api/', TransmissionViews.transmissionOffsetLimit, name='kulup-ekle-api'),
+    path(r'kulup/kulup-sil/', ClubViews.club_delete, name='club-delete'),
+    path(r'kulup/kulup-uye-sil/', ClubViews.deleteClubUserFromClub, name='deleteClubUserFromClub'),
+    path(r'kulup/kulup-antrenor-sil/', ClubViews.deleteCoachFromClub, name='deleteCoachFromClub'),
+
 ]

@@ -281,9 +281,9 @@
                                             <td>
                                                 <div class="btn-group">
                                                     {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                                                        <a onclick=""
-                                                           type="button" class="btn btn-info"><i
-                                                                class="fa fa-edit"></i>Çıkar
+                                                        <a onclick="deleteUserFromClub('{{ athlete.uuid }}')"
+                                                           type="button" class="btn btn-outline-info"><i
+                                                                class="fa fa-trash"></i>
                                                         </a>
                                                     {% endif %}
 
@@ -341,9 +341,9 @@
                                             <td>
                                                 <div class="btn-group">
                                                     {% if aktif == 'Admin' %}
-                                                        <a onclick=""
-                                                           type="button" class="btn btn-info"><i
-                                                                class="fa fa-edit"></i>Çıkar
+                                                        <a onclick="deleteCoachFromClub('{{ coach.uuid }}')"
+                                                           type="button" class="btn btn-outline-info"><i
+                                                                class="fa fa-trash"></i>
                                                         </a>
                                                     {% endif %}
 
@@ -367,458 +367,363 @@
         </form>
 
 
-        <div class="row">
-
-            <section class="col-lg-12 ">
-
-
-                <div class="card card-outline card-info">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Sporcular</h3>
-
-                        {% for item in perm %}
-                            {% if item == 'add_club' %}
-                                {% if aktif == 'Admin' %}
-                                    <a href="{% url 'sbs:add_club' %}"
-                                       type="button" class="btn btn-outline-info" style="float: right"><i
-                                            class="fa fa-plus" title="Yeni Sporcu Ekle"></i>
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-
-                    </div>
-                    <div class="card-body">
-                        <table id="sporcular" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Ad Soyad</th>
-                                <th>Lisans Bilgileri</th>
-                                <th>Branş</th>
-                                <th>İşlemler</th>
-
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if athletes %}
-                                {% for athlete in athletes %}
-                                    <tr>
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ athlete.person.user.first_name }} {{ athlete.person.user.last_name }} </td>
-
-
-                                        {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-
-                                            <td>
-                                                {% for license in athlete.licenses.all %}
-
-                                                    {% if license.licenseNo %}<p><i class="fa fa-id-card"></i>
-                                                        {{ license.licenseNo }} </p>{% endif %}
-                                                    {% if license.expireDate %} <p><i class="fa fa-calendar-check"></i>
-                                                        {{ license.expireDate }} </p>{% endif %}
-
-                                                {% endfor %}
-                                            </td>
-
-                                        {% endif %}
-                                        <td> {% for branch in athlete.branch.all %}
-
-                                            <span class="badge badge-info"> {{ branch.title }}</span>
-
-                                        {% endfor %}</td>
-
-
-                                        {% comment %}<td>
-                                                {% for belts in athlete.belts.all %}
-                                                    {% if  belts.status == 'Onaylandı' %}
-                                                        <p>{{ belts.definition }}</p>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </td>{% endcomment %}
-
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href=""
-                                                   type="button" class="btn btn-outline-info"><i
-                                                        class="fa fa-edit"></i>İncele
-                                                </a>
-
-
-                                                {#                                                    <a href="{% url "sbs:sporcu-lisans-ekle" athlete.pk %}"#}
-                                                {#                                                       type="button" class="btn btn-secondary btn-success">Lisans#}
-                                                {#                                                        Ekle#}
-                                                {#                                                    </a>#}
-
-
-                                            </div>
-                                        </td>
-
-                                    </tr>
-
-                                {% endfor %}
-                            {% endif %}
-
-
-                            </tbody>
-                        </table>
-
-                    </div>
-                </div>
-                <!-- /.card -->
-
-
-            </section>
-
-
-        </div>
-
-
     </section>
 
 
 
     {% load  static %}
     <script>
-        $(function () {
+        function deleteCoachFromClub(coach_id) {
 
-            $(function () {
-                $('#sporcular').DataTable({
-                    dom: 'Bfrtip',
+            swal({
+                title: "Antrenörü Kulüpten silmek işstediğinizden emin misiniz?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                    if (result.dismiss !== 'Evet') {
+
+                        $.ajax({
+                            url: "{% url "sbs:deleteCoachFromClub"%}",
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                coach_uuid: coach_id,
+                                club_uuid: '{{ club.uuid }}',
+
+                            },
+                            success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Antrenör başarıyla silindi !!',
+
+                                    })
+
+                                }
+                                else {
+                                     swal({
+                                        icon: 'error',
+                                        title: 'Antrenör silinemedi !!',
+
+                                    })
+                                }
+                                location.reload();
 
 
-                    lengthMenu: [
-                        [10, 25, 50, 100, -1],
-                        ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
-                    ],
 
-                    'buttons': [
-
-
-                        {
-                            extend: "pageLength",
-                        },
-
-
-                        {
-                            extend: 'colvis',
-                            titleAttr: 'Ekle Çıkar'
-
-
-                        },
-                        {
-                            extend: 'print',
-                            title: 'YEKA LİSTESİ',
-                            text: '<i class="fa fa-print"></i>',
-
-                            titleAttr: 'Yazdır',
-                            exportOptions: {
-                                columns: ':visible'
                             }
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            download: 'open',
-                            text: '<i class="fa fa-file-pdf"></i>',
+                        });
+                    }
 
-                            titleAttr: 'Pdf Kaydet',
-                            exportOptions: {
-                                columns: ':visible'
+                }
+            )
+
+
+        }
+    </script>
+    <script>
+        function deleteUserFromClub(id) {
+            console.log(id);
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+                text: "Lisansı olan kulüpler silinemez!",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+
+                    $.ajax({
+                        url: "{% url "sbs:deleteClubUserFromClub"%}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            user_uuid: id,
+                            club_uuid: '{{ club.uuid }}',
+                        },
+                       success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Kulüp Üyesi başarıyla silindi !!',
+
+                                    })
+
+                                }
+                                else {
+                                     swal({
+                                        icon: 'error',
+                                        title: 'Kulüp Üyesi silinemedi !!',
+
+                                    })
+                                }
+                               location.reload();
+
                             }
-                        },
+                        });
+                    }
 
-                        {
-                            extend: 'excelHtml5',
-                            text: '<i class="fa fa-file-excel"></i>',
-                            titleAttr: 'Excel Kaydet',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        },
+                }
+            )
 
 
-                    ],
-                    "search": {
-                        "caseInsensitive": true,
-                    },
-                    'language': {
-                        "url": "{% static 'datatable_tr/datatable_tr.json' %}"
-                    },
-                    'paging': true,
-                    'lengthChange': true,
-                    'searching': true,
-                    'ordering': true,
-                    'info': true,
-                    'autoWidth': true,
-                    'responsive': true,
-                });
-                table.on('draw.dt', function () {
-                    debugger;
-                    table.column(0, {
-                        search: 'applied',
-                        order: 'applied',
-                        page: 'applied'
-                    }).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                });
-
-            })
-
-            $(function () {
-                $('#club').DataTable({
-                    dom: 'Bfrtip',
-
-
-                    lengthMenu: [
-                        [10, 25, 50, 100, -1],
-                        ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
-                    ],
-
-                    'buttons': [
-
-
-                        {
-                            extend: "pageLength",
-                        },
-
-
-                        {
-                            extend: 'colvis',
-                            titleAttr: 'Ekle Çıkar'
-
-
-                        },
-                        {
-                            extend: 'print',
-                            title: 'YEKA LİSTESİ',
-                            text: '<i class="fa fa-print"></i>',
-
-                            titleAttr: 'Yazdır',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            download: 'open',
-                            text: '<i class="fa fa-file-pdf"></i>',
-
-                            titleAttr: 'Pdf Kaydet',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        },
-
-                        {
-                            extend: 'excelHtml5',
-                            text: '<i class="fa fa-file-excel"></i>',
-                            titleAttr: 'Excel Kaydet',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        },
-
-
-                    ],
-                    "search": {
-                        "caseInsensitive": true,
-                    },
-                    'language': {
-                        "url": "{% static 'datatable_tr/datatable_tr.json' %}"
-                    },
-                    'paging': true,
-                    'lengthChange': true,
-                    'searching': true,
-                    'ordering': true,
-                    'info': true,
-                    'autoWidth': true,
-                    'responsive': true,
-                });
-                table.on('draw.dt', function () {
-                    debugger;
-                    table.column(0, {
-                        search: 'applied',
-                        order: 'applied',
-                        page: 'applied'
-                    }).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                });
-
-            })
-
-        })
+        }
     </script>
     <script>
         $(function () {
-            $(function () {
-                $('#antrenorler').DataTable({
-                    dom: 'Bfrtip',
+
+            $('#sporcular').DataTable({
+                dom: 'Bfrtip',
 
 
-                    lengthMenu: [
-                        [10, 25, 50, 100, -1],
-                        ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
-                    ],
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                ],
 
-                    'buttons': [
-
-
-                        {
-                            extend: "pageLength",
-                        },
+                'buttons': [
 
 
-                        {
-                            extend: 'colvis',
-                            titleAttr: 'Ekle Çıkar'
-
-
-                        },
-                        {
-                            extend: 'print',
-                            title: 'YEKA LİSTESİ',
-                            text: '<i class="fa fa-print"></i>',
-
-                            titleAttr: 'Yazdır',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            download: 'open',
-                            text: '<i class="fa fa-file-pdf"></i>',
-
-                            titleAttr: 'Pdf Kaydet',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        },
-
-                        {
-                            extend: 'excelHtml5',
-                            text: '<i class="fa fa-file-excel"></i>',
-                            titleAttr: 'Excel Kaydet',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        },
-
-
-                    ],
-                    "search": {
-                        "caseInsensitive": true,
+                    {
+                        extend: "pageLength",
                     },
-                    'language': {
-                        "url": "{% static 'datatable_tr/datatable_tr.json' %}"
-                    },
-                    'paging': true,
-                    'lengthChange': true,
-                    'searching': true,
-                    'ordering': true,
-                    'info': true,
-                    'autoWidth': true,
-                    'responsive': true,
-                });
-                table.on('draw.dt', function () {
-                    debugger;
-                    table.column(0, {
-                        search: 'applied',
-                        order: 'applied',
-                        page: 'applied'
-                    }).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                });
 
-            })
+
+                    {
+                        extend: 'colvis',
+                        titleAttr: 'Ekle Çıkar'
+
+
+                    },
+                    {
+                        extend: 'print',
+                        title: 'YEKA LİSTESİ',
+                        text: '<i class="fa fa-print"></i>',
+
+                        titleAttr: 'Yazdır',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        download: 'open',
+                        text: '<i class="fa fa-file-pdf"></i>',
+
+                        titleAttr: 'Pdf Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel"></i>',
+                        titleAttr: 'Excel Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+
+                ],
+                "search": {
+                    "caseInsensitive": true,
+                },
+                'language': {
+                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                },
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                'responsive': true,
+            });
+            table.on('draw.dt', function () {
+                debugger;
+                table.column(0, {
+                    search: 'applied',
+                    order: 'applied',
+                    page: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            });
+
+
+            $('#club').DataTable({
+                dom: 'Bfrtip',
+
+
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                ],
+
+                'buttons': [
+
+
+                    {
+                        extend: "pageLength",
+                    },
+
+
+                    {
+                        extend: 'colvis',
+                        titleAttr: 'Ekle Çıkar'
+
+
+                    },
+                    {
+                        extend: 'print',
+                        title: 'YEKA LİSTESİ',
+                        text: '<i class="fa fa-print"></i>',
+
+                        titleAttr: 'Yazdır',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        download: 'open',
+                        text: '<i class="fa fa-file-pdf"></i>',
+
+                        titleAttr: 'Pdf Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel"></i>',
+                        titleAttr: 'Excel Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+
+                ],
+                "search": {
+                    "caseInsensitive": true,
+                },
+                'language': {
+                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                },
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                'responsive': true,
+            });
+            table.on('draw.dt', function () {
+                debugger;
+                table.column(0, {
+                    search: 'applied',
+                    order: 'applied',
+                    page: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            });
+
+            $('#antrenorler').DataTable({
+                dom: 'Bfrtip',
+
+
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                ],
+
+                'buttons': [
+
+
+                    {
+                        extend: "pageLength",
+                    },
+
+
+                    {
+                        extend: 'colvis',
+                        titleAttr: 'Ekle Çıkar'
+
+
+                    },
+                    {
+                        extend: 'print',
+                        title: 'YEKA LİSTESİ',
+                        text: '<i class="fa fa-print"></i>',
+
+                        titleAttr: 'Yazdır',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        download: 'open',
+                        text: '<i class="fa fa-file-pdf"></i>',
+
+                        titleAttr: 'Pdf Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel"></i>',
+                        titleAttr: 'Excel Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+
+                ],
+                "search": {
+                    "caseInsensitive": true,
+                },
+                'language': {
+                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                },
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                'responsive': true,
+            });
+            table.on('draw.dt', function () {
+                debugger;
+                table.column(0, {
+                    search: 'applied',
+                    order: 'applied',
+                    page: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            });
+
 
         })
+
+
     </script>
 
-    {#    <script>#}
-    {#        function deleteClubPerson(id, club_id) {#}
-    {##}
-    {#            console.log(id);#}
-    {#            var html = '';#}
-    {#            $("#modal-primary").on("shown.bs.modal", function (e) {#}
-    {#                $("#btn-conf").click(function () {#}
-    {#                    $.ajax({#}
-    {#                        url: "{% url "sbs:ClubUser-cikar" pk=212121223232323232 club_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, club_id.toString()),#}
-    {#                        type: "POST",#}
-    {#                        data: {#}
-    {#                            'csrfmiddlewaretoken': "{{  csrf_token  }}",#}
-    {#                            isActive: 'False'#}
-    {#                        },#}
-    {#                        success: function (result) {#}
-    {##}
-    {#                            html = 'Kulüp üyesi başarıyla çıkarıldı.';#}
-    {#                            debugger;#}
-    {#                            $(".successModal").html(html);#}
-    {#                            $('#modal-success').on("shown.bs.modal", function (e) {#}
-    {#                                $(".btn-ok").click(function () {#}
-    {##}
-    {#                                    window.location.replace("{% url "sbs:update-club" club.pk %}");#}
-    {##}
-    {#                                });#}
-    {##}
-    {#                            }).modal('show');#}
-    {##}
-    {##}
-    {#                            console.log(result.status)#}
-    {#                        }#}
-    {#                    });#}
-    {#                });#}
-    {#            }).modal('show');#}
-    {#            $('#btn-close').click(function () {#}
-    {#                $('#modal-primary').modal('hide');#}
-    {#            });#}
-    {##}
-    {#        }#}
-    {#    #}
-    {##}
-    {#        function deleteClubCoach(id, club_id) {#}
-    {##}
-    {#            console.log(id);#}
-    {#            var html = '';#}
-    {#            $("#modal-primary").on("shown.bs.modal", function (e) {#}
-    {#                $("#btn-conf").click(function () {#}
-    {#                    $.ajax({#}
-    {#                        url: "{% url "sbs:ClubCoach-cikar" pk=212121223232323232 club_pk=999999999999999 %}".replace(/212121223232323232/, id.toString()).replace(/999999999999999/, club_id.toString()),#}
-    {#                        type: "POST",#}
-    {#                        data: {#}
-    {#                            'csrfmiddlewaretoken': "{{  csrf_token  }}",#}
-    {#                            isActive: 'False'#}
-    {#                        },#}
-    {#                        success: function (result) {#}
-    {##}
-    {#                            html = 'Antrenör başarıyla çıkarıldı.';#}
-    {#                            debugger;#}
-    {#                            $(".successModal").html(html);#}
-    {#                            $('#modal-success').on("shown.bs.modal", function (e) {#}
-    {#                                $(".btn-ok").click(function () {#}
-    {##}
-    {#                                    window.location.replace("{% url "sbs:update-club" club.pk %}");#}
-    {##}
-    {#                                });#}
-    {##}
-    {#                            }).modal('show');#}
-    {##}
-    {##}
-    {#                            console.log(result.status)#}
-    {#                        }#}
-    {#                    });#}
-    {#                });#}
-    {#            }).modal('show');#}
-    {#            $('#btn-close').click(function () {#}
-    {#                $('#modal-danger').modal('hide');#}
-    {#            });#}
-    {##}
-    {#        }#}
-    {#    </script>#}
 
 {% endblock %}
 
