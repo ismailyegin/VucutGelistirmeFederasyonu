@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from sbs.models.havaspor.VisaSeminar import VisaSeminar
+from sbs.models.tvfbf.VisaSeminar import VisaSeminar
 
 
 class VisaSeminarForm(ModelForm):

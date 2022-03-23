@@ -1,7 +1,7 @@
 from django.db import models
 from sbs.models.ekabis.EnumFields import EnumFields
 from sbs.models.ekabis.BaseModel import BaseModel
-from sbs.models.havaspor.Branch import Branch
+from sbs.models.tvfbf.Branch import Branch
 
 
 class CategoryItem(BaseModel):

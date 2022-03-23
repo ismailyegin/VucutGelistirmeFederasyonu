@@ -19,9 +19,9 @@ from sbs.Forms.UserForm import UserForm
 from sbs.Forms.PersonForm import PersonForm
 from sbs.Forms.UserSearchForm import UserSearchForm
 from sbs.models.ekabis.Permission import Permission
-from sbs.models.ekabis.DirectoryCommission import DirectoryCommission
-from sbs.models.ekabis.DirectoryMember import DirectoryMember
-from sbs.models.ekabis.DirectoryMemberRole import DirectoryMemberRole
+from sbs.models.tvfbf.DirectoryCommission import DirectoryCommission
+from sbs.models.tvfbf.DirectoryMember import DirectoryMember
+from sbs.models.tvfbf.DirectoryMemberRole import DirectoryMemberRole
 from sbs.services import general_methods
 from unicode_tr import unicode_tr
 

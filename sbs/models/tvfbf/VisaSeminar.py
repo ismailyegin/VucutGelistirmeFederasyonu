@@ -1,12 +1,12 @@
 from django.db import models
 
-from sbs.models.havaspor.Branch import Branch
-from sbs.models.havaspor.BaseModel import BaseModel
-from sbs.models.havaspor.Coach import Coach
-from sbs.models.havaspor.Referee import Referee
+from sbs.models.tvfbf.Branch import Branch
+from sbs.models.tvfbf.BaseModel import BaseModel
+from sbs.models.tvfbf.Coach import Coach
+from sbs.models.tvfbf.Referee import Referee
 from sbs.models.ekabis.EnumFields import EnumFields
-from sbs.models.havaspor.CoachApplication import CoachApplication
-from sbs.models.havaspor.RefereeApplication import RefereeApplication
+from sbs.models.tvfbf.CoachApplication import CoachApplication
+from sbs.models.tvfbf.RefereeApplication import RefereeApplication
 
 
 class VisaSeminar(BaseModel):

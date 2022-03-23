@@ -1,7 +1,7 @@
 from django.db import models
 
-from sbs.models.havaspor.BaseModel import BaseModel
-from sbs.models.havaspor.Referee import Referee
+from sbs.models.tvfbf.BaseModel import BaseModel
+from sbs.models.tvfbf.Referee import Referee
 
 
 class RefereeApplication(BaseModel):

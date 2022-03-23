@@ -1,7 +1,7 @@
 from django.db import models
 
 from sbs.models.ekabis.Country import Country
-from sbs.models.havaspor.ClubRole import ClubRole
+from sbs.models.tvfbf.ClubRole import ClubRole
 from sbs.models.ekabis.City import City
 
 

@@ -1,7 +1,7 @@
 from django.db import models
 
-from sbs.models.havaspor.BaseModel import BaseModel
-from sbs.models.havaspor.Coach import Coach
+from sbs.models.tvfbf.BaseModel import BaseModel
+from sbs.models.tvfbf.Coach import Coach
 
 
 class CoachApplication(BaseModel):

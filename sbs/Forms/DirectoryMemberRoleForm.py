@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from sbs.models.ekabis.DirectoryMemberRole import DirectoryMemberRole
+from sbs.models.tvfbf.DirectoryMemberRole import DirectoryMemberRole
 
 
 class DirectoryMemberRoleForm(ModelForm):

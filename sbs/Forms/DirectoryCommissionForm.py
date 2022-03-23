@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from sbs.models.ekabis.DirectoryCommission import DirectoryCommission
+from sbs.models.tvfbf.DirectoryCommission import DirectoryCommission
 
 
 class DirectoryCommissionForm(ModelForm):

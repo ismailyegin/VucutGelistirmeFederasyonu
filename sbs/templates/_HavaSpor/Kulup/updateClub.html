@@ -186,7 +186,7 @@
                         </div>
                         <div class="card-footer">
                             {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                                <button class="btn btn-info float-right" type="submit">Kaydet</button>
+                                <button class="btn btn-outline-info float-right" type="submit">Kaydet</button>
                             {% endif %}
                         </div>
 
@@ -232,7 +232,7 @@
                         </div>
                         <div class="card-footer">
                             {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                                <button class="btn btn-info float-right" type="submit">Kaydet</button>
+                                <button class="btn btn-outline-info float-right" type="submit">Kaydet</button>
                             {% endif %}
                         </div>
 
@@ -251,8 +251,8 @@
 
                             {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                 <a href=""
-                                   type="button" class="btn btn-info btn-sm" style="float: right"><i
-                                        class="fa fa-edit" title="Kulüp Üyesi Ekle"></i>
+                                   type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
+                                        class="fa fa-plus" title="Kulüp Üyesi Ekle"></i>
                                 </a>
                             {% endif %}
 
@@ -311,8 +311,8 @@
 
                             {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                 <a href=""
-                                   type="button" class="btn btn-info btn-sm" style="float: right"><i
-                                        class="fa fa-edit" title="Antrenör Ekle"></i>
+                                   type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
+                                        class="fa fa-plus" title="Antrenör Ekle"></i>
                                 </a>
                             {% endif %}
 
@@ -380,7 +380,7 @@
                             {% if item == 'add_club' %}
                                 {% if aktif == 'Admin' %}
                                     <a href="{% url 'sbs:add_club' %}"
-                                       type="button" class="btn btn-info" style="float: right"><i
+                                       type="button" class="btn btn-outline-info" style="float: right"><i
                                             class="fa fa-plus" title="Yeni Sporcu Ekle"></i>
                                     </a>
                                 {% endif %}

@@ -6,8 +6,8 @@ from django.db import models
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.City import City
 from sbs.models.ekabis.EnumFields import EnumFields
-from sbs.models.havaspor.Branch import Branch
-from sbs.models.havaspor.BaseModel import BaseModel
+from sbs.models.tvfbf.Branch import Branch
+from sbs.models.tvfbf.BaseModel import BaseModel
 
 
 class HavaLevel(BaseModel):

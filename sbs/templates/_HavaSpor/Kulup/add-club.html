@@ -106,38 +106,74 @@
             </div>
         </div>
     </div>
+    <section class="content">
 
+        <section class="content-header">
 
-    <section class="content-header">
-
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>
-                        Kulüp Ekle </h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        {% for url in urls %}
-                            <li class="breadcrumb-item"><a  href="{{ url.last }}">{{ url.last_url_name }}</a>
-                            </li>
-                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
-                        {% endfor %}
-                    </ol>
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>
+                            Kulüp Ekle </h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            {% for url in urls %}
+                                <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                                </li>
+                                <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </section>
+        </section>
 
-    <section class="content">
 
         <!-- /.row -->
         <!-- Main row -->
 
 
         <section class="col-lg-12 ">
+            <div class="row">
+                <div class="col-lg-12">
 
+
+                    <div class="card card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Kulüp Bilgilerini Getir</h3>
+                        </div>
+
+
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+                                    <label> Kulüp Derbis Kütük No </label>
+
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                        </div>
+                                        <input id="guid" type="text" value="" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline-info" type="button" onclick="GetClub()"
+                                    style="float:right">
+                                Kulüp Getir
+                            </button>
+                            <small style="color: red ">Kulüp Bilgilerine erişmek için lütfen Kulüp Kütük Numarasını
+                                girin </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="col-lg-12">
             <form method="post" role="form" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row">
@@ -155,7 +191,7 @@
                                 <div class="row">
 
                                     {% for item in club_form %}
-                                        <div class="form-group col-lg-4">
+                                        <div class="form-group col-lg-6">
                                             <label> {{ item.label }}</label>
                                             {{ item }}
                                             <label for="" id="label_{{ item.name }}"></label>
@@ -200,7 +236,7 @@
                                 <div class="row">
 
                                     {% for item in communication_form %}
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-4">
                                             <label> {{ item.label }}</label>
                                             {{ item }}
                                             <label for="" id="label_{{ item.name }}"></label>
@@ -214,7 +250,7 @@
                                 <!-- /.card-body -->
 
                                 <div class="card-footer">
-                                    <button class="btn btn-info" type="submit"
+                                    <button class="btn btn-outline-info" type="submit"
                                             style="float:right">
                                         Kaydet
                                     </button>
@@ -233,41 +269,190 @@
                     </div>
                 </div>
 
+                <div style="display: none;" id="kulupBaskani">
+
+                    <section class="content-header">
+
+                        <div class="container-fluid">
+                            <div class="row mb-2">
+                                <div class="col-sm-6">
+                                    <h1>
+                                        Kulüp Başkanı Ekle </h1>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+                    <div class="row">
+                        <div class="col-lg-12">
+
+
+                            <div class="card card-info">
+                                <div class="card-header with-border">
+                                    <h3 class="card-title">Kişisel Bilgiler</h3>
+                                </div>
+
+
+                                <div class="card-body">
+
+                                    <div class="row">
+
+                                        {% for item in user_form %}
+                                            <div class="form-group col-lg-3">
+                                                <label> {{ item.label }}</label>
+                                                {{ item }}
+                                                <label for="" id="label_{{ item.name }}"></label>
+                                            </div>
+                                        {% endfor %}
+
+                                        {% for item in manager_person_form %}
+                                            <div class="form-group col-lg-3">
+                                                <label> {{ item.label }}</label>
+                                                {{ item }}
+                                                <label for="" id="label_{{ item.name }}"></label>
+                                            </div>
+                                        {% endfor %}
+
+
+                                    </div>
+
+
+                                    <!-- /.card-body -->
+
+                                    <div class="card-footer">
+                                        <button class="btn btn-outline-info" type="submit"
+                                                style="float:right">
+                                            Kaydet
+                                        </button>
+
+
+                                        <small style="color: red ">(*) Olan Alanlar zorunludur.</small>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                            <!-- /.card -->
+
+
+                        </div>
+                        <div class="col-lg-12">
+
+
+                            <div class="card card-info">
+                                <div class="card-header with-border">
+                                    <h3 class="card-title">İletişim Bilgileri</h3>
+                                </div>
+
+
+                                <div class="card-body">
+
+                                    <div class="row">
+
+                                        {% for item in manager_communication_form %}
+                                            <div class="form-group col-lg-3">
+                                                <label> {{ item.label }}</label>
+                                                {{ item }}
+                                                <label for="" id="label_{{ item.name }}"></label>
+                                            </div>
+                                        {% endfor %}
+
+
+                                    </div>
+
+
+                                    <!-- /.card-body -->
+
+                                    <div class="card-footer">
+                                        <button class="btn btn-outline-info" type="submit"
+                                                style="float:right">
+                                            Kaydet
+                                        </button>
+
+
+                                        <small style="color: red ">(*) Olan Alanlar zorunludur.</small>
+                                    </div>
+
+                                </div>
+
+
+                                <!-- /.card -->
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </section>
 
 
-    </section>
+        <script>
+            $(function () {
+                $('#kategori').DataTable({
+                    'paging': false,
+                    'lengthChange': false,
+                    'searching': false,
+                    'ordering': false,
+                    'info': false,
+                    'autoWidth': true
+                })
+
+            })
+        </script>
 
 
+        <script>
+            $(document).ready(function () {
+                {% if error_messages  %}
+                    errors_messages({{ error_messages |safe }})
+                {% endif %}
 
-    <script>
-        $(function () {
-            $('#kategori').DataTable({
-                'paging': false,
-                'lengthChange': false,
-                'searching': false,
-                'ordering': false,
-                'info': false,
-                'autoWidth': true
+
+                $("#guid").inputmask(
+                    {
+                        mask: '99-999-999'
+                    }
+                );
+
             })
 
-        })
-    </script>
+            function GetClub() {
+                debugger;
+                let id = document.getElementById('guid').value
+                if (id) {
+                    $.ajax({
+                        url: "{% url "sbs:kulup-ekle-api" %}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            guid: id,
+                        },
+                        success: function (result) {
+                            debugger;
+                            let info = result['result'][0]
+                            document.getElementById('id_name').value = info.KulupAdi
+                            document.getElementById('id_foundingDate').value = info.KurulusTarihi
+                            document.getElementById('id_clubMail').value = info.Eposta
+                            document.getElementById('id_derbis').value = info.DerbisKutukNo
+                            document.getElementById('id_phoneNumber').value = info.Telefon
+                            document.getElementById('id_city').value = info.Il
+                            document.getElementById('id_address').value = info.Adres
+                            document.getElementById('id_town').value = info.Ilce
+                            document.getElementById('id_fax').value = info.Faks
+                            document.getElementById('kulupBaskani').style.display = 'block'
 
 
-
-    <script>
-        $(document).ready(function () {
-            {% if error_messages  %}
-                errors_messages({{ error_messages |safe }})
-            {% endif %}
-        });
-
-    </script>
+                        }
+                    });
+                }
 
 
+            }
+
+        </script>
 
 
-
+    </section>
 {% endblock %}

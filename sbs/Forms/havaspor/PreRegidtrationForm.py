@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from sbs.models import SportClubUser
 from sbs.models.ekabis.CategoryItem import CategoryItem
 
-from sbs.models.havaspor.PreRegistration import PreRegistration
+from sbs.models.tvfbf.PreRegistration import PreRegistration
 
 
 class PreRegistrationForm(ModelForm):

@@ -17,9 +17,9 @@ from sbs.models.ekabis.HelpMenu import HelpMenu
 from sbs.models.ekabis.PermissionGroup import PermissionGroup
 from sbs.models.ekabis.Person import Person
 from sbs.models.ekabis.Settings import Settings
-from sbs.models.havaspor.PreRegistration import PreRegistration
-from sbs.models.havaspor.ReferenceCoach import ReferenceCoach
-from sbs.models.havaspor.ReferenceReferee import ReferenceReferee
+from sbs.models.tvfbf.PreRegistration import PreRegistration
+from sbs.models.tvfbf.ReferenceCoach import ReferenceCoach
+from sbs.models.tvfbf.ReferenceReferee import ReferenceReferee
 from sbs.services import general_methods, LDAPService
 
 from sbs.services.services import UserService, UserGetService, EmployeeGetService, CompanyUserGetService, \

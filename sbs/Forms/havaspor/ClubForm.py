@@ -1,8 +1,8 @@
 from django import forms
 from django.forms import ModelForm
 
-from sbs.models.havaspor.Branch import Branch
-from sbs.models.havaspor.Club import Club
+from sbs.models.tvfbf.Branch import Branch
+from sbs.models.tvfbf.Club import Club
 
 
 class ClubForm(ModelForm):

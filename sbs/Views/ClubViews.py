@@ -1,16 +1,24 @@
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, Group
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls import resolve
+from unicode_tr import unicode_tr
 
 from sbs.Forms.havaspor.ClubForm import ClubForm
 from sbs.Forms.havaspor.ClupUserSearchForm import ClubSearchForm
 from sbs.Forms.havaspor.CommunicationForm import CommunicationForm
+from sbs.Forms.havaspor.PersonForm import PersonForm
+from sbs.Forms.havaspor.RefereeUserForm import RefereeUserForm
+from sbs.Forms.havaspor.TransClubForm import TransClubForm
+from sbs.Forms.havaspor.TransCommunicationForm import TransCommunicationForm
 from sbs.models import Club, SportClubUser, Coach, Communication
 from sbs.models.ekabis.Permission import Permission
-from sbs.models.havaspor.Athlete import Athlete
+from sbs.models.tvfbf.ClubRole import ClubRole
+from sbs.models.tvfbf.Athlete import Athlete
 from sbs.services import general_methods
 from sbs.services.services import last_urls
 
@@ -82,51 +90,87 @@ def add_club(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    club_form = ClubForm()
-    communication_form = CommunicationForm()
+    club_form = TransClubForm()
+    communication_form = TransCommunicationForm()
+    manager_communication_form = CommunicationForm()
+    manager_person_form = PersonForm()
+    user_form = RefereeUserForm()
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
 
     if request.method == 'POST':
 
-        club_form = ClubForm(request.POST, request.FILES or None)
-        communication_form = CommunicationForm(request.POST, request.FILES)
+        club_form = TransClubForm(request.POST or None, request.FILES or None)
+        communication_form = TransCommunicationForm(request.POST or None, request.FILES)
+        manager_communication_form = CommunicationForm(request.POST or None, request.FILES)
+        manager_person_form = PersonForm(request.POST or None, request.FILES or None)
+        user_form = RefereeUserForm(request.POST or None, request.FILES)
 
-        if club_form.is_valid():
-            clubsave = Club(name=club_form.cleaned_data['name'],
-                            shortName=club_form.cleaned_data['shortName'],
-                            foundingDate=club_form.cleaned_data['foundingDate'],
-                            logo=club_form.cleaned_data['logo'],
-                            clubMail=club_form.cleaned_data['clubMail'],
-                            isFormal=club_form.cleaned_data['isFormal'],
-                            petition=club_form.cleaned_data['petition'],
+        try:
+            with transaction.atomic():
+                if club_form.is_valid() and communication_form.is_valid() and user_form.is_valid() and manager_person_form.is_valid() and manager_communication_form.is_valid():
+                    clubsave = Club()
+                    clubsave.name = club_form.cleaned_data['name'],
+                    clubsave.foundingDate = club_form.cleaned_data['foundingDate'],
+                    clubsave.derbis = club_form.cleaned_data['derbis'],
+                    clubsave.clubMail = club_form.cleaned_data['clubMail']
+                    clubsave.save()
+                    communication = communication_form.save(commit=False)
+                    communication.save()
+                    clubsave.communication = communication
+                    clubsave.save()
 
+                    managerUser = User()
+                    managerUser.username = user_form.cleaned_data['email']
 
-                            )
+                    managerUser.first_name = unicode_tr(user_form.cleaned_data['first_name']).upper()
+                    managerUser.last_name = unicode_tr(user_form.cleaned_data['last_name']).upper()
+                    managerUser.email = user_form.cleaned_data['email']
 
-            communication = communication_form.save(commit=False)
-            communication.save()
-            clubsave.communication = communication
-            clubsave.save()
-            for branch in club_form.cleaned_data['branch']:
-                clubsave.branch.add(branch)
+                    group = Group.objects.get(name='Kulüp Yetkilisi')
+                    password = User.objects.make_random_password()
+                    managerUser.set_password(password)
+                    managerUser.is_active = True
+                    managerUser.save()
 
+                    managerUser.groups.add(group)
+                    managerUser.save()
 
-            log = str(club_form.cleaned_data['name']) + " Klup eklendi"
-            log = general_methods.logwrite(request, request.user, log)
+                    person = manager_person_form.save(commit=False)
+                    managerCommunication = manager_communication_form.save(commit=False)
+                    person.user = managerUser
+                    person.save()
+                    managerCommunication.save()
 
-            messages.success(request, 'Kulüp Başarıyla Kayıt Edilmiştir.')
+                    manager = SportClubUser()
+                    manager.communication = managerCommunication
+                    manager.person = person
+                    manager.user = managerUser
+                    role = ClubRole.objects.get(name='BAŞKAN')
+                    manager.role = role
+                    manager.save()
 
-            return redirect('sbs:return_clubs')
+                    clubsave.clubUser.add(manager)
+                    clubsave.save()
 
-        else:
+                    log = str(club_form.cleaned_data['name']) + " Klup eklendi"
+                    log = general_methods.logwrite(request, request.user, log)
 
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+                    messages.success(request, 'Kulüp ve Kulüp Başkanı Başarıyla Kayıt Edilmiştir.')
+
+                    return redirect('sbs:return_clubs')
+
+                else:
+
+                    messages.warning(request, 'Alanları Kontrol Ediniz')
+        except Exception as e:
+            messages.warning(request, 'HATA !! ' + ' ' + str(e))
+            return redirect('sbs:add_club')
 
     return render(request, '_HavaSpor/Kulup/add-club.html',
                   {'club_form': club_form, 'communication_form': communication_form ,'urls': urls, 'current_url': current_url,
-                   'url_name': url_name,})
+                   'url_name': url_name, 'manager_communication_form': manager_communication_form, 'manager_person_form': manager_person_form, 'user_form': user_form, })
 
 
 @login_required

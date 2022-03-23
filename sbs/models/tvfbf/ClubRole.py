@@ -1,6 +1,6 @@
 from django.db import models
 
-from sbs.models.havaspor.BaseModel import BaseModel
+from sbs.models.tvfbf.BaseModel import BaseModel
 
 
 class ClubRole(BaseModel):

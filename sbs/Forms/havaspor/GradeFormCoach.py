@@ -2,7 +2,7 @@ from django import forms
 from django.forms import ModelForm
 
 from sbs.models.ekabis.CategoryItem import CategoryItem
-from sbs.models.havaspor.HavaLevel import HavaLevel
+from sbs.models.tvfbf.HavaLevel import HavaLevel
 
 
 class GradeFormCoach(ModelForm):

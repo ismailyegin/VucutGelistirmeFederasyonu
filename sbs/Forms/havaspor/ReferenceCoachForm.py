@@ -1,5 +1,5 @@
 from django import forms
-from sbs.models.havaspor.ReferenceCoach import ReferenceCoach
+from sbs.models.tvfbf.ReferenceCoach import ReferenceCoach
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django.db import models

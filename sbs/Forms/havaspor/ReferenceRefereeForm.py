@@ -1,5 +1,5 @@
 from django import forms
-from sbs.models.havaspor.ReferenceReferee import ReferenceReferee
+from sbs.models.tvfbf.ReferenceReferee import ReferenceReferee
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django.db import models

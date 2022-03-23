@@ -2,8 +2,8 @@ from django.db import models
 
 from sbs.models.ekabis.Communication import Communication
 from sbs.models.ekabis.Person import Person
-from sbs.models.havaspor.BaseModel import BaseModel
-from sbs.models.havaspor.Branch import Branch
+from sbs.models.tvfbf.BaseModel import BaseModel
+from sbs.models.tvfbf.Branch import Branch
 
 
 class Organizer(BaseModel):

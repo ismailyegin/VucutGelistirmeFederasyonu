@@ -10,20 +10,73 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7723d10b-0554-4c47-b5c6-4f6552a76209" name="Default Changelist" comment="kulup düzenlemede kulup üyesi ekleme ve antrenör ekleme yapıldı">
+    <list default="true" id="7723d10b-0554-4c47-b5c6-4f6552a76209" name="Default Changelist" comment="test commit">
+      <change afterPath="$PROJECT_DIR$/sbs/Views/TransmissionViews.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Hava.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HavaFed.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/HavaFed.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/TVFBF.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/registration/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/registration/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/oxiterp/settings/dev.py" beforeDir="false" afterPath="$PROJECT_DIR$/oxiterp/settings/dev.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/oxiterp/static/dist/css/adminlte.css" beforeDir="false" afterPath="$PROJECT_DIR$/oxiterp/static/dist/css/adminlte.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/oxiterp/static/dist/css/alt/adminlte.core.css" beforeDir="false" afterPath="$PROJECT_DIR$/oxiterp/static/dist/css/alt/adminlte.core.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/oxiterp/static/dist/css/alt/adminlte.core.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/oxiterp/static/dist/css/alt/adminlte.core.min.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/oxiterp/static/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/oxiterp/static/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/oxiterp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/oxiterp/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/DirectoryCommissionForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/DirectoryCommissionForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/DirectoryForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/DirectoryForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/DirectoryMemberRoleForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/DirectoryMemberRoleForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/DisabledDirectoryForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/DisabledDirectoryForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/ClubForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/ClubForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/ClupUserSearchForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/ClupUserSearchForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/CoachSearchForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/CoachSearchForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/GradeFormCoach.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/GradeFormCoach.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/GradeFormReferee.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/GradeFormReferee.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/PreRegidtrationForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/PreRegidtrationForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/RefereeForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/RefereeForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/RefereeSearchForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/RefereeSearchForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/ReferenceCoachForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/ReferenceCoachForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/ReferenceRefereeForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/ReferenceRefereeForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/SearchClupForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/SearchClupForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/VisaForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/VisaForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Forms/havaspor/VisaSeminarForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Forms/havaspor/VisaSeminarForm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Views/ClubViews.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Views/ClubViews.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Views/CoachViews.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Views/CoachViews.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Views/DataTransmissonViews.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Views/DataTransmissonViews.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Views/RefereeViews.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Views/RefereeViews.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Views/ekabis/AdminViews.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Views/ekabis/AdminViews.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/Views/ekabis/DirectoryViews.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/Views/ekabis/DirectoryViews.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/ekabis/CategoryItem.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/ekabis/CategoryItem.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/ekabis/Communication.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/ekabis/Communication.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/ekabis/DirectoryCommission.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/DirectoryCommission.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/ekabis/DirectoryMember.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/DirectoryMember.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/ekabis/DirectoryMemberRole.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/DirectoryMemberRole.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/ekabis/File.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/ekabis/File.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/AirSportsCompetition.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/AirSportsCompetition.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/Athlete.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/Athlete.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/BaseModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/BaseModel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/Branch.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/Branch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/CertificateDegree.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/CertificateDegree.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/Club.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/Club.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/ClubRole.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/ClubRole.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/Coach.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/Coach.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/CoachApplication.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/CoachApplication.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/Competition.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/Competition.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/EducationSeminar.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/EducationSeminar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/HavaLevel.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/HavaLevel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/License.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/License.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/Organizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/Organizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/PreRegistration.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/PreRegistration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/Referee.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/Referee.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/RefereeApplication.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/RefereeApplication.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/ReferenceCoach.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/ReferenceCoach.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/ReferenceReferee.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/ReferenceReferee.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/SportClubUser.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/SportClubUser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/VisaSeminar.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/VisaSeminar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/models/havaspor/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/models/tvfbf/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/services/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/services/services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/templates/_HavaSpor/Kulup/add-club.html" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/templates/_HavaSpor/Kulup/add-club.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/templates/_HavaSpor/Kulup/updateClub.html" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/templates/_HavaSpor/Kulup/updateClub.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/templates/yonetim/kurul-uyeleri.html" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/templates/yonetim/kurul-uyeleri.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/templates/yonetim/kurul-uyesi-ekle.html" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/templates/yonetim/kurul-uyesi-ekle.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sbs/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/sbs/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,18 +119,17 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/oxiterp/templates/base_layout.html" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/sbs/Views/DataTransmissonViews.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/sbs/models/ekabis/ProduceAmount.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/sbs/models/tvfbf/License.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/sbs/models/tvfbf/Athlete.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/sbs/Views/DataTransmissonViews.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/sbs/urls.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/sbs/models/tvfbf/CertificateDegree.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/sbs/models/ekabis/Communication.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/sbs/Views/ekabis/UserViews.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/sbs/urls.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/sbs/models/havaspor/License.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/sbs/models/ekabis/HavaSporAktarim.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/sbs/models/havaspor/CertificateDegree.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/sbs/models/havaspor/Athlete.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/sbs/migrations/0001_initial.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/sbs/models/ekabis/Person.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/oxiterp/templates/base_layout.html" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/sbs/models/ekabis/HavaSporAktarim.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="JupyterTrust" id="9fbd6ec0-ffe4-4ab9-aac5-1a3c3f61ffd6" />
   <component name="MarkdownSettingsMigration">
@@ -109,23 +161,23 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\dogan\PycharmProjects\VucutGelistirmeFederasyonu-1\sbs\models\tvfbf" />
+      <recent name="C:\Users\dogan\PycharmProjects\VucutGelistirmeFederasyonu-1\sbs\Forms\havaspor" />
+      <recent name="C:\Users\dogan\PycharmProjects\VucutGelistirmeFederasyonu-1\sbs\Views" />
       <recent name="C:\Users\dogan\PycharmProjects\HavaSporlariFed-1\accounts\templates\registration" />
       <recent name="C:\Users\dogan\PycharmProjects\HavaSporlariFed-1\sbs\Forms\havaspor" />
-      <recent name="C:\Users\dogan\PycharmProjects\HavaSporlariFed-1\sbs\models\havaspor" />
-      <recent name="C:\Users\dogan\PycharmProjects\HavaSporlariFed-1\sbs\templates\_HavaSpor\Antrenor" />
-      <recent name="C:\Users\dogan\PycharmProjects\HavaSporlariFed-1\sbs\templates\_HavaSpor\Kulup" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\dogan\PycharmProjects\VucutGelistirmeFederasyonu-1\sbs\models\tvfbf" />
       <recent name="C:\Users\dogan\PycharmProjects\HavaSporlariFed-1\sbs\Views" />
       <recent name="C:\Users\dogan\PycharmProjects\HavaSporlariFed-1\sbs\models\havaspor" />
       <recent name="C:\Users\dogan\PycharmProjects\HavaSporlariFed\sbs\models" />
       <recent name="C:\Users\dogan\PycharmProjects\HavaSporlariFed\sbs\models\ekabis" />
-      <recent name="C:\Users\dogan\PycharmProjects\HavaSporlariFed\sbs\Views\ekabis" />
     </key>
   </component>
   <component name="RunManager" selected="Django Server.yekabis">
     <configuration name="Test: accounts.tests" type="DjangoTestsConfigurationType" temporary="true">
-      <module name="HavaFed" />
+      <module name="TVFBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -145,7 +197,7 @@
       <method v="2" />
     </configuration>
     <configuration name="Unnamed" type="Python.DjangoServer" factoryName="Django server" nameIsGenerated="true">
-      <module name="HavaFed" />
+      <module name="TVFBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -168,7 +220,7 @@
       <method v="2" />
     </configuration>
     <configuration name="yekabis" type="Python.DjangoServer" factoryName="Django server">
-      <module name="HavaFed" />
+      <module name="TVFBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -269,6 +321,8 @@
       <workItem from="1647584995077" duration="97000" />
       <workItem from="1647603407418" duration="630000" />
       <workItem from="1647949900440" duration="776000" />
+      <workItem from="1647951313616" duration="6575000" />
+      <workItem from="1648017560771" duration="67000" />
     </task>
     <task id="LOCAL-00001" summary="commit initial">
       <created>1623933322363</created>
@@ -564,7 +618,21 @@
       <option name="project" value="LOCAL" />
       <updated>1647009726876</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="migrate düzenlendi">
+      <created>1647952312438</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1647952312438</updated>
+    </task>
+    <task id="LOCAL-00044" summary="test commit">
+      <created>1647952391887</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1647952391887</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -582,8 +650,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="pk ler uuid ile degistirildi" />
-    <MESSAGE value="form validation" />
     <MESSAGE value="bakım sayfasına yönlendirildi , setting model yapısı guncellendi." />
     <MESSAGE value="firma,personel,kurul,kurul rolü silme islemi güncellendi." />
     <MESSAGE value="Baglantı bölgesi ve kapasitesi işlemleri yapıldı." />
@@ -607,7 +673,9 @@
     <MESSAGE value="kulup ekle,listele,düzenle" />
     <MESSAGE value="kulup  düzenle" />
     <MESSAGE value="kulup düzenlemede kulup üyesi ekleme ve antrenör ekleme yapıldı" />
-    <option name="LAST_COMMIT_MESSAGE" value="kulup düzenlemede kulup üyesi ekleme ve antrenör ekleme yapıldı" />
+    <MESSAGE value="migrate düzenlendi" />
+    <MESSAGE value="test commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="test commit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -634,8 +702,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/sbs/Views/ClubViews.py</url>
-          <line>180</line>
+          <line>224</line>
           <option name="timeStamp" value="271" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/sbs/Views/TransmissionViews.py</url>
+          <line>104</line>
+          <option name="timeStamp" value="272" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/sbs/Forms/havaspor/TransClubForm.py</url>
+          <line>13</line>
+          <option name="timeStamp" value="274" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="django-line">
           <url>file://$PROJECT_DIR$/sbs/templates/Yeka/change_yeka.html</url>

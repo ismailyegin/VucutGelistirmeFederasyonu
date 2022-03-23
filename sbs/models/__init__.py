@@ -6,9 +6,7 @@ from .ekabis.Communication import Communication
 from .ekabis.ActiveGroup import ActiveGroup
 from .ekabis.Company import Company
 from .ekabis.Country import Country
-from .ekabis.DirectoryCommission import DirectoryCommission
-from .ekabis.DirectoryMember import DirectoryMember
-from .ekabis.DirectoryMemberRole import DirectoryMemberRole
+from sbs.models.tvfbf.DirectoryMemberRole import DirectoryMemberRole
 from .ekabis.Employee import Employee
 from .ekabis.EnumFields import EnumFields
 from .ekabis.Logs import Logs
@@ -70,15 +68,15 @@ from .ekabis.YekaProgressReport import YekaProgressReport
 
 #HAVASPOR İMPORT
 
-from .havaspor.Branch import Branch
-from .havaspor.ClubRole import ClubRole
-from .havaspor.Club import Club
-from .havaspor.SportClubUser import SportClubUser
-from .havaspor.Coach import Coach
-from .havaspor.CertificateDegree import CertificateDegree
-from .havaspor.License import License
-from .havaspor.Referee import Referee
-from .havaspor.Organizer import Organizer
-from .havaspor.AirSportsCompetition import AirSportsCompetition
-from .havaspor.EducationSeminar import EducationSeminar
-from .havaspor.HavaLevel import HavaLevel
+from .tvfbf.Branch import Branch
+from .tvfbf.ClubRole import ClubRole
+from .tvfbf.Club import Club
+from .tvfbf.SportClubUser import SportClubUser
+from .tvfbf.Coach import Coach
+from .tvfbf.CertificateDegree import CertificateDegree
+from .tvfbf.License import License
+from .tvfbf.Referee import Referee
+from .tvfbf.Organizer import Organizer
+from .tvfbf.AirSportsCompetition import AirSportsCompetition
+from .tvfbf.EducationSeminar import EducationSeminar
+from .tvfbf.HavaLevel import HavaLevel

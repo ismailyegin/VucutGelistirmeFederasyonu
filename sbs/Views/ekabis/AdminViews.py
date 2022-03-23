@@ -1,13 +1,11 @@
 import traceback
 
-from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db import transaction
 from django.shortcuts import render, redirect
-from sbs.Forms.DisabledUserForm import DisabledUserForm
 from sbs.services import general_methods
-from sbs.models.ekabis import DirectoryMember, Employee
+from sbs.models.ekabis import Employee
+from sbs.models.tvfbf import DirectoryMember
 from sbs.services.services import CategoryItemService, DirectoryCommissionService, DirectoryMemberRoleService, \
     GroupGetService, \
     CommunicationGetService, PersonGetService, UserGetService

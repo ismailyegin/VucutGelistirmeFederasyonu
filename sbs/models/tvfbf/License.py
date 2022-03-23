@@ -1,10 +1,10 @@
 from django.db import models
 
-from sbs.models.havaspor.BaseModel import BaseModel
-from sbs.models.havaspor.Coach import Coach
+from sbs.models.tvfbf.BaseModel import BaseModel
+from sbs.models.tvfbf.Coach import Coach
 from sbs.models.ekabis.City import City
 from sbs.models.ekabis.EnumFields import EnumFields
-from sbs.models.havaspor.Club import Club
+from sbs.models.tvfbf.Club import Club
 
 
 class License(BaseModel):

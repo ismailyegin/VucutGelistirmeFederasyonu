@@ -4,7 +4,7 @@ from django.forms import ModelForm
 
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.City import City
-from sbs.models.havaspor.Branch import Branch
+from sbs.models.tvfbf.Branch import Branch
 
 
 class RefereeSearchForm(ModelForm):

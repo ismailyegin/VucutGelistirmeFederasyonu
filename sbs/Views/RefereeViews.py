@@ -36,10 +36,10 @@ from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Communication import Communication
 from sbs.models.ekabis.Person import Person
 from sbs.models.ekabis.Permission import Permission
-from sbs.models.havaspor.RefereeApplication import RefereeApplication
-from sbs.models.havaspor.VisaSeminar import VisaSeminar
-from sbs.models.havaspor.HavaLevel import HavaLevel
-from sbs.models.havaspor.Referee import Referee
+from sbs.models.tvfbf.RefereeApplication import RefereeApplication
+from sbs.models.tvfbf.VisaSeminar import VisaSeminar
+from sbs.models.tvfbf.HavaLevel import HavaLevel
+from sbs.models.tvfbf.Referee import Referee
 from sbs.services import general_methods
 from sbs.services.general_methods import get_client_ip
 from sbs.services.services import last_urls

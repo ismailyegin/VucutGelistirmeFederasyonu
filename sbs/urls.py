@@ -1,6 +1,6 @@
 from django.urls import path
 
-from sbs.Views import DataTransmissonViews, ClubViews, RefereeViews, CoachViews
+from sbs.Views import DataTransmissonViews, ClubViews, RefereeViews, CoachViews, TransmissionViews
 from sbs.Views.ekabis import AcceptViews, ReportViews, YekaViews, SettingsViews, APIViews, VacationDayViews, AdminViews, \
     LogViews, ExtraTimeViews, AssociateDegreeViews, DashboardViews, CityViews, CompanyView, UserViews, EmployeeViews, \
     HelpViews, PermissionView, YekaBussinessBlogStaticView, BusinessBlogViews, ClaimView, GroupView, EskalasyonViews, \
@@ -709,4 +709,5 @@ urlpatterns = [
 
     path(r'antrenor/belge/<uuid:uuid>$', CoachViews.document, name='document-coach'),
 
+    path('kulup/kulup-ekle-api/', TransmissionViews.transmissionOffsetLimit, name='kulup-ekle-api'),
 ]

@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 
 from sbs.models.ekabis.CategoryItem import CategoryItem
-from sbs.models.havaspor.Coach import Coach
-from sbs.models.havaspor.Club import Club
+from sbs.models.tvfbf.Coach import Coach
+from sbs.models.tvfbf.Club import Club
 
 
 class SearchClupForm(ModelForm):

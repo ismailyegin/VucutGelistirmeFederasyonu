@@ -1,12 +1,12 @@
 from django.db import models
 
-from sbs.models.havaspor.Club import Club
+from sbs.models.tvfbf.Club import Club
 from sbs.models.ekabis.Communication import Communication
 from sbs.models.ekabis.Person import Person
-from sbs.models.havaspor.CertificateDegree import CertificateDegree
-from sbs.models.havaspor.Branch import Branch
-from sbs.models.havaspor.BaseModel import BaseModel
-from sbs.models.havaspor.License import License
+from sbs.models.tvfbf.CertificateDegree import CertificateDegree
+from sbs.models.tvfbf.Branch import Branch
+from sbs.models.tvfbf.BaseModel import BaseModel
+from sbs.models.tvfbf.License import License
 
 
 class Athlete(BaseModel):

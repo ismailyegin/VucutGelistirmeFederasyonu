@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 
-from sbs.models.havaspor.Referee import Referee
-from sbs.models.havaspor.Branch import Branch
+from sbs.models.tvfbf.Referee import Referee
+from sbs.models.tvfbf.Branch import Branch
 
 
 class RefereeForm(ModelForm):

@@ -1,12 +1,13 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from sbs.models.tvfbf.Coach import Coach
 from sbs.models.ekabis.City import City
-from sbs.models.havaspor.BaseModel import BaseModel
-from sbs.models.havaspor.Branch import Branch
+from sbs.models.tvfbf.BaseModel import BaseModel
+from sbs.models.tvfbf.Branch import Branch
 
 
-class AirSportsCompetition(BaseModel):
+class EducationSeminar(BaseModel):
     secretId = models.CharField(max_length=10, null=True, blank=True)
     branch = models.ManyToManyField(Branch)
     name = models.CharField(max_length=255, verbose_name='Etkinlik Başlığı', null=True, blank=True)
@@ -18,6 +19,9 @@ class AirSportsCompetition(BaseModel):
                                 db_column='auth_user', null=True, blank=True)
     createdDate = models.DateTimeField(blank=True, null=True, verbose_name='Etkinlik Oluşturulma Tarihi')
     status = models.BooleanField(default=True, null=True, blank=True)
+    educationTime = models.CharField(null=True, blank=True, max_length=255, verbose_name='Eğitim Süresi')
+    coaches = models.ManyToManyField(Coach)
+
 
     def __str__(self):
         return '%s' % self.name

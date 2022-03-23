@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 
 from sbs.models import Organizer, AirSportsCompetition, EducationSeminar, HavaLevel
 from sbs.models.ekabis.EnumFields import EnumFields
-from sbs.models.havaspor.HavaLevel import HavaLevel
+from sbs.models.tvfbf.HavaLevel import HavaLevel
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.City import City
 from sbs.models.ekabis.Communication import Communication
@@ -18,15 +18,15 @@ from sbs.models.ekabis.HavaSporAktarim import SystemEbysBranches, SystemEbysBran
     SystemEbysAthleteCoachAppend, SystemEbysRefereeStatu, SystemEbysMembershipReferee, SystemEbysMembershipAthlete, \
     SystemEbysMembershipOrganizer, SystemEbysCompetition, SystemEbysEducationseminar, SystemEbysCoaches
 from sbs.models.ekabis.Person import Person
-from sbs.models.havaspor.Athlete import Athlete
-from sbs.models.havaspor.Branch import Branch
-from sbs.models.havaspor.CertificateDegree import CertificateDegree
-from sbs.models.havaspor.Club import Club
-from sbs.models.havaspor.ClubRole import ClubRole
-from sbs.models.havaspor.Coach import Coach
-from sbs.models.havaspor.License import License
-from sbs.models.havaspor.Referee import Referee
-from sbs.models.havaspor.SportClubUser import SportClubUser
+from sbs.models.tvfbf.Athlete import Athlete
+from sbs.models.tvfbf.Branch import Branch
+from sbs.models.tvfbf.CertificateDegree import CertificateDegree
+from sbs.models.tvfbf.Club import Club
+from sbs.models.tvfbf.ClubRole import ClubRole
+from sbs.models.tvfbf.Coach import Coach
+from sbs.models.tvfbf.License import License
+from sbs.models.tvfbf.Referee import Referee
+from sbs.models.tvfbf.SportClubUser import SportClubUser
 
 
 def branchTransmission(request):

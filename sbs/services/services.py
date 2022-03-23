@@ -28,9 +28,9 @@ from sbs.models.ekabis.CompetitionCompany import CompetitionCompany
 from sbs.models.ekabis.ConnectionRegion import ConnectionRegion
 from sbs.models.ekabis.ConnectionUnit import ConnectionUnit
 from sbs.models.ekabis.Country import Country
-from sbs.models.ekabis.DirectoryCommission import DirectoryCommission
-from sbs.models.ekabis.DirectoryMember import DirectoryMember
-from sbs.models.ekabis.DirectoryMemberRole import DirectoryMemberRole
+from sbs.models.tvfbf.DirectoryCommission import DirectoryCommission
+from sbs.models.tvfbf.DirectoryMember import DirectoryMember
+from sbs.models.tvfbf.DirectoryMemberRole import DirectoryMemberRole
 from sbs.models.ekabis.Employee import Employee
 from sbs.models.ekabis.ExtraTime import ExtraTime
 from sbs.models.ekabis.ExtraTimeFile import ExtraTimeFile

@@ -2,7 +2,7 @@ from django.db import models
 
 from sbs.models.ekabis.Country import Country
 from sbs.models.ekabis.City import City
-from sbs.models.havaspor.BaseModel import BaseModel
+from sbs.models.tvfbf.BaseModel import BaseModel
 
 
 class Communication(BaseModel):
@@ -23,6 +23,8 @@ class Communication(BaseModel):
     neighborhood = models.CharField(max_length=120, null=True, blank=True)
     acildurum_kisi = models.CharField(max_length=250, null=True, blank=True, verbose_name='Acil Durum Kişisi')
     acildurum_phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='Acil Durum Telefonu')
+    fax = models.CharField(max_length=12, null=True, blank=True)
+
     # class Meta:
     #     default_permissions = ()
     #     db_table = 'communication'

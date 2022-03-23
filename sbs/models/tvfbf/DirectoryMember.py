@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from sbs.models.ekabis.DirectoryCommission import DirectoryCommission
-from sbs.models.ekabis.DirectoryMemberRole import DirectoryMemberRole
+from sbs.models.tvfbf.DirectoryCommission import DirectoryCommission
+from sbs.models.tvfbf.DirectoryMemberRole import DirectoryMemberRole
 from sbs.models.ekabis.Person import Person
 from sbs.models.ekabis.Communication import Communication
 from sbs.models.ekabis.BaseModel import BaseModel

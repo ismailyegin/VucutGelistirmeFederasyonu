@@ -1,10 +1,10 @@
 from django.db import models
 
 from sbs.models.ekabis.Communication import Communication
-from sbs.models.havaspor.Branch import Branch
-from sbs.models.havaspor.SportClubUser import SportClubUser
-from sbs.models.havaspor.BaseModel import BaseModel
-from sbs.models.havaspor.Coach import Coach
+from sbs.models.tvfbf.Branch import Branch
+from sbs.models.tvfbf.SportClubUser import SportClubUser
+from sbs.models.tvfbf.BaseModel import BaseModel
+from sbs.models.tvfbf.Coach import Coach
 
 
 class Club(BaseModel):
@@ -32,6 +32,9 @@ class Club(BaseModel):
     infoStatus=models.BooleanField(default=True,null=True,blank=True)
     infoLevel=models.BooleanField(default=True,null=True,blank=True)
     secretId = models.CharField(null=True, blank=True, max_length=20)
+    derbis = models.CharField(max_length=100, null=True, blank=True, verbose_name='Derbis Kütük No')
+    guidId = models.CharField(max_length=100, null=True, blank=True, verbose_name='Kulüp Guid No')
+
     def __str__(self):
         return '%s' % (self.name)
 

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from sbs.models.havaspor.HavaLevel import HavaLevel
+from sbs.models.tvfbf.HavaLevel import HavaLevel
 
 
 class VisaForm(ModelForm):
