@@ -151,7 +151,7 @@
                     <div class="card-header with-border">
                         <h3 class="card-title">Antrenör Filtrele</h3>
                     </div>
-                    <div class="card-body">
+
                         <form method="POST" role="form" enctype="multipart/form-data">
 
                             {% csrf_token %}
@@ -191,7 +191,7 @@
 
                             <div class="card-footer">
                                 <button class="btn btn-outline-info" type="submit" style="float:right"><i
-                                        class="fa fa-search"></i>
+                                        class="fa fa-search"></i> Ara
                                 </button>
 
 
@@ -199,7 +199,7 @@
 
 
                         </form>
-                    </div>
+
 
 
                     <!-- /.box -->
@@ -241,7 +241,7 @@
                                 <th>Branş</th>
 {#                                <th>Kulüp</th>#}
                                 {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
-                                    <th>İncele/Sil</th>
+                                    <th>Düzenle/Sil</th>
                                 {% endif %}
                             </tr>
                             </thead>
@@ -271,22 +271,28 @@
 {#                                        </td>#}
                                         {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                             <td>
-                                                <div class="btn-group">
-                                                    <button type="button"
-                                                            class="btn btn-default dropdown-toggle dropdown-icon"
-                                                            data-toggle="dropdown"> İşlemler
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu">
-                                                        <a href="{% url "sbs:update_coach" coach.uuid %}"
-                                                           class="dropdown-item"> <i
-                                                                class="fa fa-edit" title="Düzenle"></i> İncele
-                                                        </a>
-                                                        <a class="dropdown-item" href=""
-                                                           data-toggle="modal"
-                                                           onclick="deleteCoach('{{ coach.uuid }}')"><i
-                                                                class="fa fa-trash"></i>Sil</a>
-                                                    </div>
-                                                </div>
+                                                {% for item in perm %}
+                                                    {% if item == 'update_coach' %}
+                                                        <div class="btn-group">
+                                                            <a href="{% url "sbs:update_coach" coach.uuid %}"
+                                                               type="button" class="btn btn-outline-warning" title="Düzenle"><i
+                                                                    class="fa fa-edit"></i>
+                                                            </a>
+                                                        </div>
+
+                                                    {% elif item == 'delete-coach' %}
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-outline-danger"
+                                                               data-toggle="modal" title="Sil"
+                                                               onclick=deleteCoach('{{ coach.uuid }}')><i
+                                                                    class="fa fa-trash"></i></a>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+
+
+
+
                                             </td>
                                         {% endif %}
                                     </tr>
@@ -369,7 +375,7 @@
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
-                'ordering': true,
+                'order': true,
                 'info': true,
                 'autoWidth': true,
                 'responsive': true,

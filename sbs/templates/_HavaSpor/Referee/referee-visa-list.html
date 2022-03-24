@@ -125,7 +125,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-
+                    <h1>Hakem Vize Listesi</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -149,11 +149,11 @@
 
                 <div class="card card-info card-outline">
                     <div class="card-header with-border">
-                        <h3 class="card-title">Vize Listesi</h3>
+                        <h3 class="card-title">Vizeler</h3>
                     </div>
 
                     <div class="card-body">
-                        <table id="gradeList" class="table table-bordered table-hover">
+                        <table id="hakemVisa" class="table table-bordered table-hover">
                             <thead>
                             <tr>
                                 <th>#</th>
@@ -201,25 +201,31 @@
 
                                         <td>
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                <div class="btn-group">
 
-                                                    <button type="button"
-                                                            class="btn btn-default dropdown-toggle dropdown-icon"
-                                                            data-toggle="dropdown"> İşlemler
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu">
-                                                        <a href="{% url "sbs:visa_list_approval" uuid=refereevisa.uuid %}"
-                                                           type="button" class="dropdown-item"><i
-                                                                class="fa fa-check"></i>Onayla
-                                                        </a>
+                                                {% for item in perm %}
+                                                    {% if item == 'visa_list_approval' %}
+                                                        <div class="btn-group">
+                                                            <a href="{% url "sbs:visa_list_approval" uuid=refereevisa.uuid %}"
+                                                               type="button" class="btn btn-outline-success"
+                                                               title="Onayla"><i
+                                                                    class="fa fa-check"></i>
+                                                            </a>
+                                                        </div>
+
+                                                    {% elif item == 'visa_list_reject' %}
+                                                        <div class="btn-group">
+                                                            <a href="{% url "sbs:visa_list_reject" uuid=refereevisa.uuid %}"
+                                                               type="button" class="btn btn-outline-danger"
+                                                               title="Reddet"><i
+                                                                    class="fa fa-minus"></i>
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
 
 
-                                                        <a href="{% url "sbs:visa_list_reject" uuid=refereevisa.uuid %}"
-                                                           type="button" class="dropdown-item"><i
-                                                                class="fa fa-trash"></i>Reddet
-                                                        </a>
-                                                    </div>
-                                                </div>
+                                                {% endfor %}
+
+
                                             {% endif %}
                                         </td>
 
@@ -249,18 +255,9 @@
     {% load  static %}
     <script>
         $(function () {
-            $('#gradeList').DataTable({
-
+            $('#hakemVisa').DataTable({
                 dom: 'Bfrtip',
 
-                language: {
-                    buttons: {
-                        pageLength: {
-                            _: " %d  Tane Göster",
-                            '-1': "Hepsini Göster"
-                        }
-                    }
-                },
 
                 lengthMenu: [
                     [10, 25, 50, 100, -1],
@@ -283,7 +280,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'VİZE LİSTESİ',
+                        title: 'YEKA LİSTESİ',
                         text: '<i class="fa fa-print"></i>',
 
                         titleAttr: 'Yazdır',
@@ -298,8 +295,7 @@
 
                         titleAttr: 'Pdf Kaydet',
                         exportOptions: {
-                            rows:[ 0,1,2,3,4],
-                            columns: [ 0,1,2,3,4]
+                            columns: ':visible'
                         }
                     },
 
@@ -314,15 +310,30 @@
 
 
                 ],
+                "search": {
+                    "caseInsensitive": true,
+                },
+                'language': {
+                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                },
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
-                'ordering': true,
+                'order': true,
                 'info': true,
                 'autoWidth': true,
                 'responsive': true,
-
-            })
+            });
+            table.on('draw.dt', function () {
+                debugger;
+                table.column(0, {
+                    search: 'applied',
+                    order: 'applied',
+                    page: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            });
 
         })
     </script>

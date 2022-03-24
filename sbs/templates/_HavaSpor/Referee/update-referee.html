@@ -190,14 +190,14 @@
 
                                     <div class="form-group">
                                         <label for="iban">iban</label>
-                                        <input id="iban" class="form-control" type="text" name="iban" value="{{ referee.person.iban }}"/>
+                                        <input id="iban" class="form-control" type="text" name="iban"
+                                               value="{{ referee.person.iban }}"/>
                                     </div>
 
                                     <div class="form-group">
                                         <label style="padding-top: 16px"> {{ person_form.bloodType.label }}</label>
                                         {{ person_form.bloodType }}
                                     </div>
-
 
 
                                 </div>
@@ -239,12 +239,11 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                        {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                            <button class="btn btn-outline-info" type="submit">Kaydet</button>
-                        {% endif %}
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                                <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
+                            {% endif %}
+                        </div>
                     </div>
-                    </div>
-
 
 
                 </div>
@@ -297,7 +296,7 @@
                         </div>
                         <div class="card-footer">
                             {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                                <button class="btn btn-outline-info" type="submit">Kaydet</button>
+                                <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
                             {% endif %}
                         </div>
 
@@ -335,7 +334,7 @@
                                     <th>Dekont</th>
                                     <th> Onay Durumu</th>
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                        <th>İşlemler</th>
+                                        <th>Onayla/Reddet/Düzenle/Sil</th>
                                     {% endif %}
 
 
@@ -354,37 +353,51 @@
                                             <td>{{ grade.status }}  </td>
                                             <td>
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                    <div class="btn-group">
 
-                                                        <button type="button"
-                                                                class="btn btn-default dropdown-toggle dropdown-icon"
-                                                                data-toggle="dropdown"> İşlemler
-                                                        </button>
-                                                        <div class="dropdown-menu" role="menu">
+                                                    {% for item in perm %}
+                                                        {% if item == 'grade_approval' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url "sbs:grade_approval" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                   type="button" class="btn btn-outline-success"
+                                                                   title="Onayla"><i
+                                                                        class="fa fa-check"></i>
+                                                                </a>
+                                                            </div>
+                                                        {% elif item == 'grade_reject' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url "sbs:grade_reject" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                   type="button" class="btn btn-outline-dark"
+                                                                   title="Reddet"><i
+                                                                        class="fa fa-minus"></i>
+                                                                </a>
+                                                            </div>
+                                                        {% elif item == 'update_grade' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url "sbs:update_grade" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                   type="button" class="btn btn-outline-warning"
+                                                                   title="Düzenle"><i
+                                                                        class="fa fa-edit"></i>
+                                                                </a>
+                                                            </div>
 
-                                                            <a href="{% url "sbs:grade_approval" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                               type="button" class="dropdown-item"><i
-                                                                    class="fa fa-check"></i>Onayla
-                                                            </a>
+                                                        {% elif item == 'delete_grade' %}
+                                                            <div class="btn-group">
+                                                                <a class="btn btn-outline-danger"
+                                                                   data-toggle="modal" title="Sil"
+                                                                    onclick="delete_grade('{{ grade.uuid }}','{{ referee.uuid }}')"><i
+                                                                        class="fa fa-trash"></i></a>
+                                                            </div>
+
+                                                        {% endif %}
+                                                    {% endfor %}
 
 
-                                                            <a href="{% url "sbs:grade_reject" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                               type="button" class="dropdown-item"><i
-                                                                    class="fa fa-trash"></i>Reddet
-                                                            </a>
-                                                            <a href="{% url "sbs:update_grade" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                               type="button" class="dropdown-item"> <i
-                                                                    class="fa fa-edit"></i>Güncelle
-                                                            </a>
-                                                            {##}
-                                                            <a class="dropdown-item" href=""
-                                                               data-toggle="modal"
-                                                               onclick="delete_grade('{{ grade.uuid }}','{{ referee.uuid }}')"><i
-                                                                    class="fa fa-trash"></i>Sil</a>
 
 
-                                                        </div>
-                                                    </div>
+
+
+
+
                                                 {% endif %}
                                             </td>
 
@@ -449,37 +462,44 @@
 
                                             <td>
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                    <div class="btn-group">
 
-                                                        <button type="button"
-                                                                class="btn btn-default dropdown-toggle dropdown-icon"
-                                                                data-toggle="dropdown"> İşlemler
-                                                        </button>
-                                                        <div class="dropdown-menu" role="menu">
+                                                      {% for item in perm %}
+                                                        {% if item == 'grade_approval' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url "sbs:visa_approval" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                   type="button" class="btn btn-outline-success"
+                                                                   title="Onayla"><i
+                                                                        class="fa fa-check"></i>
+                                                                </a>
+                                                            </div>
+                                                        {% elif item == 'visa_reject' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url "sbs:visa_reject" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                   type="button" class="btn btn-outline-dark"
+                                                                   title="Reddet"><i
+                                                                        class="fa fa-minus"></i>
+                                                                </a>
+                                                            </div>
+                                                        {% elif item == 'update_visa' %}
+                                                            <div class="btn-group">
+                                                                <a  href="{% url "sbs:update_visa" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                   type="button" class="btn btn-outline-warning"
+                                                                   title="Düzenle"><i
+                                                                        class="fa fa-edit"></i>
+                                                                </a>
+                                                            </div>
 
-                                                            <a href="{% url "sbs:visa_approval" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                               type="button" class="dropdown-item"><i
-                                                                    class="fa fa-check"></i>Onayla
-                                                            </a>
+                                                        {% elif item == 'delete_visa' %}
+                                                            <div class="btn-group">
+                                                                <a class="btn btn-outline-danger"
+                                                                   data-toggle="modal" title="Sil"
+                                                                   onclick="delete_visa('{{ grade.uuid }}','{{ referee.uuid }}')"><i
+                                                                        class="fa fa-trash"></i></a>
+                                                            </div>
 
+                                                        {% endif %}
+                                                    {% endfor %}
 
-                                                            <a href="{% url "sbs:visa_reject" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                               type="button" class="dropdown-item"><i
-                                                                    class="fa fa-trash"></i>Reddet
-                                                            </a>
-                                                            <a href="{% url "sbs:update_visa" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                               type="button" class="dropdown-item"> <i
-                                                                    class="fa fa-edit"></i>Güncelle
-                                                            </a>
-                                                            {##}
-                                                            <a class="dropdown-item" href=""
-                                                               data-toggle="modal"
-                                                               onclick="delete_visa('{{ grade.uuid }}','{{ referee.uuid }}')"><i
-                                                                    class="fa fa-trash"></i>Sil</a>
-
-
-                                                        </div>
-                                                    </div>
                                                 {% endif %}
                                             </td>
 

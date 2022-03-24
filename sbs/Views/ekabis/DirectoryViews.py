@@ -10,14 +10,13 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import resolve
 
-from sbs.Forms.CommunicationForm import CommunicationForm
-from sbs.Forms.DirectoryCommissionForm import DirectoryCommissionForm
-from sbs.Forms.DirectoryForm import DirectoryForm
-from sbs.Forms.DirectoryMemberRoleForm import DirectoryMemberRoleForm
-
-from sbs.Forms.UserForm import UserForm
-from sbs.Forms.PersonForm import PersonForm
+from sbs.Forms.havaspor.DirectoryCommissionForm import DirectoryCommissionForm
+from sbs.Forms.havaspor.DirectoryMemberRoleForm import DirectoryMemberRoleForm
+from sbs.Forms.havaspor.UserForm import UserForm
 from sbs.Forms.UserSearchForm import UserSearchForm
+from sbs.Forms.havaspor.CommunicationForm import CommunicationForm
+from sbs.Forms.havaspor.DirectoryForm import DirectoryForm
+from sbs.Forms.havaspor.PersonForm import PersonForm
 from sbs.models.ekabis.Permission import Permission
 from sbs.models.tvfbf.DirectoryCommission import DirectoryCommission
 from sbs.models.tvfbf.DirectoryMember import DirectoryMember
@@ -38,107 +37,118 @@ def add_directory_member(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    user_form = UserForm()
-    person_form = PersonForm()
-    communication_form = CommunicationForm()
-    member_form = DirectoryForm()
-    urls = last_urls(request)
-    current_url = resolve(request.path_info)
-    url_name = Permission.objects.get(codename=current_url.url_name)
-    if request.method == 'POST':
+    try:
+        user_form = UserForm()
+        person_form = PersonForm()
+        communication_form = CommunicationForm()
+        member_form = DirectoryForm()
+        urls = last_urls(request)
+        current_url = resolve(request.path_info)
+        url_name = Permission.objects.get(codename=current_url.url_name)
+        with transaction.atomic():
+            if request.method == 'POST':
 
-        user_form = UserForm(request.POST)
-        person_form = PersonForm(request.POST, request.FILES)
-        communication_form = CommunicationForm(request.POST)
-        member_form = DirectoryForm(request.POST)
+                user_form = UserForm(request.POST)
+                person_form = PersonForm(request.POST, request.FILES)
+                communication_form = CommunicationForm(request.POST)
+                member_form = DirectoryForm(request.POST)
 
-        # controller tc email
+                # controller tc email
 
-        mail = request.POST.get('email')
-        userfilter = {
-            'mail': mail
-        }
-        if UserService(request, userfilter):
-            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-            return render(request, 'yonetim/kurul-uyesi-ekle.html',
-                          {'user_form': user_form, 'person_form': person_form,
-                           'communication_form': communication_form,
-                           'member_form': member_form,'urls': urls, 'current_url': current_url, 'url_name': url_name})
+                mail = request.POST.get('email')
+                userfilter = {
+                    'mail': mail
+                }
+                if UserService(request, userfilter):
+                    messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                    return render(request, 'yonetim/kurul-uyesi-ekle.html',
+                                  {'user_form': user_form, 'person_form': person_form,
+                                   'communication_form': communication_form,
+                                   'member_form': member_form, 'urls': urls, 'current_url': current_url,
+                                   'url_name': url_name})
 
-        tc = request.POST.get('tc')
-        personfilter = {
-            'tc': tc
-        }
-        if PersonService(request, personfilter):
-            messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
-            return render(request, 'yonetim/kurul-uyesi-ekle.html',
-                          {'user_form': user_form, 'person_form': person_form,
-                           'communication_form': communication_form,
-                           'member_form': member_form,'urls': urls, 'current_url': current_url, 'url_name': url_name})
+                tc = request.POST.get('tc')
+                personfilter = {
+                    'tc': tc
+                }
+                # if PersonService(request, personfilter):
+                #     messages.warning(request, 'TC kimlik numarasi sistemde kayıtlıdır. ')
+                #     return render(request, 'yonetim/kurul-uyesi-ekle.html',
+                #                   {'user_form': user_form, 'person_form': person_form,
+                #                    'communication_form': communication_form,
+                #                    'member_form': member_form, 'urls': urls, 'current_url': current_url,
+                #                    'url_name': url_name})
 
-        name = request.POST.get('first_name')
-        surname = request.POST.get('last_name')
-        year = request.POST.get('birthDate')
-        year = year.split('/')
+                name = request.POST.get('first_name')
+                surname = request.POST.get('last_name')
+                year = request.POST.get('birthDate')
+                year = year.split('/')
 
-        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-        #     messages.warning(request,
-        #                      'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, 'yonetim/kurul-uyesi-ekle.html',
-        #                   {'user_form': user_form, 'person_form': person_form,
-        #                    'communication_form': communication_form,
-        #                    'member_form': member_form})
+                # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+                # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+                #     messages.warning(request,
+                #                      'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+                #     return render(request, 'yonetim/kurul-uyesi-ekle.html',
+                #                   {'user_form': user_form, 'person_form': person_form,
+                #                    'communication_form': communication_form,
+                #                    'member_form': member_form})
 
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and member_form.is_valid():
-            user = User()
-            user.username = user_form.cleaned_data['email']
-            user.first_name = unicode_tr(user_form.cleaned_data['first_name']).upper()
-            user.last_name = unicode_tr(user_form.cleaned_data['last_name']).upper()
-            user.email = user_form.cleaned_data['email']
-            groupfilter = {
-                'name': 'Yonetim'
-            }
-            group = GroupGetService(request, groupfilter)
-            password = User.objects.make_random_password()
-            user.set_password(password)
-            user.save()
-            user.groups.add(group)
-            user.save()
+                if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and member_form.is_valid():
+                    user = User()
+                    user.username = user_form.cleaned_data['email']
+                    user.first_name = unicode_tr(user_form.cleaned_data['first_name']).upper()
+                    user.last_name = unicode_tr(user_form.cleaned_data['last_name']).upper()
+                    user.email = user_form.cleaned_data['email']
+                    groupfilter = {
+                        'name': 'Yönetim'
+                    }
+                    group = GroupGetService(request, groupfilter)
+                    password = User.objects.make_random_password()
+                    user.set_password(password)
+                    user.save()
+                    user.groups.add(group)
+                    user.save()
 
-            person = person_form.save(commit=False)
-            communication = communication_form.save(commit=False)
-            person.save()
-            communication.save()
+                    person = person_form.save(commit=False)
+                    communication = communication_form.save(commit=False)
+                    person.save()
+                    communication.save()
 
-            directoryMember = DirectoryMember(user=user, person=person, communication=communication)
-            directoryMember.role = member_form.cleaned_data['role']
-            directoryMember.commission = member_form.cleaned_data['commission']
-            directoryMember.save()
-            log = str(user.get_full_name()) + " Kurul Uyesi kaydedildi"
-            log = general_methods.logwrite(request, request.user, log)
+                    directoryMember = DirectoryMember(user=user, person=person, communication=communication)
+                    directoryMember.role = member_form.cleaned_data['role']
+                    directoryMember.commission = member_form.cleaned_data['commission']
+                    directoryMember.save()
+                    log = str(user.get_full_name()) + " Kurul Uyesi kaydedildi"
+                    log = general_methods.logwrite(request, request.user, log)
 
-            messages.success(request, 'Kurul Üyesi Başarıyla Kayıt Edilmiştir.')
+                    messages.success(request, 'Kurul Üyesi Başarıyla Kayıt Edilmiştir.')
 
-            return redirect('ekabis:change_directorymember', directoryMember.uuid)
+                    return redirect('sbs:change_directorymember', directoryMember.uuid)
 
-        else:
+                else:
 
-            for x in user_form.errors.as_data():
-                messages.warning(request, user_form.errors[x].first())
+                    for x in user_form.errors.as_data():
+                        messages.warning(request, user_form.errors[x].first())
 
-            error_message_company = get_error_messages(user_form)
-            error_messages_person = get_error_messages(person_form)
-            error_messages_communication = get_error_messages(communication_form)
-            error_messages_member = get_error_messages(member_form)
-            error_messages = error_messages_communication + error_message_company + error_messages_person + error_messages_member
-            return render(request, 'yonetim/kurul-uyesi-ekle.html',
-                          {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
-                           'member_form': member_form, 'error_messages': error_messages,'urls': urls, 'current_url': current_url, 'url_name': url_name})
+                    error_message_company = get_error_messages(user_form)
+                    error_messages_person = get_error_messages(person_form)
+                    error_messages_communication = get_error_messages(communication_form)
+                    error_messages_member = get_error_messages(member_form)
+                    error_messages = error_messages_communication + error_message_company + error_messages_person + error_messages_member
+                    return render(request, 'yonetim/kurul-uyesi-ekle.html',
+                                  {'user_form': user_form, 'person_form': person_form,
+                                   'communication_form': communication_form,
+                                   'member_form': member_form, 'error_messages': error_messages, 'urls': urls,
+                                   'current_url': current_url, 'url_name': url_name})
 
-    return render(request, 'yonetim/kurul-uyesi-ekle.html',
-                  {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
-                   'member_form': member_form, 'error_messages': '','urls': urls, 'current_url': current_url, 'url_name': url_name})
+        return render(request, 'yonetim/kurul-uyesi-ekle.html',
+                      {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
+                       'member_form': member_form, 'error_messages': '', 'urls': urls, 'current_url': current_url,
+                       'url_name': url_name})
+    except Exception as e:
+        traceback.print_exc()
+        messages.warning(request, 'Lütfen Tekrar Deneyiniz.')
+        return redirect('sbs:view_directoryMember')
 
 
 @login_required
@@ -177,7 +187,9 @@ def return_directory_members(request):
                             query &= Q(user__email__icontains=email)
                         members = DirectoryMemberService(request, query)
 
-            return render(request, 'yonetim/kurul-uyeleri.html', {'members': members, 'user_form': user_form, 'urls': urls, 'current_url': current_url, 'url_name': url_name})
+            return render(request, 'yonetim/kurul-uyeleri.html',
+                          {'members': members, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
+                           'url_name': url_name})
 
     except Exception as e:
         traceback.print_exc()
@@ -272,7 +284,8 @@ def update_directory_member(request, uuid):
                         return render(request, 'yonetim/kurul-uyesi-duzenle.html',
                                       {'user_form': user_form, 'communication_form': communication_form,
                                        'member': member,
-                                       'person_form': person_form, 'member_form': member_form, 'groups': groups,'urls': urls, 'current_url': current_url, 'url_name': url_name
+                                       'person_form': person_form, 'member_form': member_form, 'groups': groups,
+                                       'urls': urls, 'current_url': current_url, 'url_name': url_name
 
                                        })
                 #
@@ -293,6 +306,7 @@ def update_directory_member(request, uuid):
 
                 if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and member_form.is_valid():
 
+
                     user_form.save()
                     person_form.save()
                     communication_form.save()
@@ -302,6 +316,7 @@ def update_directory_member(request, uuid):
                     log = general_methods.logwrite(request, request.user, log)
 
                     messages.success(request, 'Kurul Üyesi Başarıyla Güncellendi')
+                    return redirect('sbs:view_directoryMember')
                 else:
                     error_message_company = get_error_messages(user_form)
                     error_messages_person = get_error_messages(person_form)
@@ -311,18 +326,20 @@ def update_directory_member(request, uuid):
                     return render(request, 'yonetim/kurul-uyesi-duzenle.html',
                                   {'user_form': user_form, 'communication_form': communication_form, 'member': member,
                                    'person_form': person_form, 'member_form': member_form, 'groups': groups,
-                                   'error_messages': error_messages,'urls': urls, 'current_url': current_url, 'url_name': url_name
+                                   'error_messages': error_messages, 'urls': urls, 'current_url': current_url,
+                                   'url_name': url_name
                                    })
             return render(request, 'yonetim/kurul-uyesi-duzenle.html',
                           {'user_form': user_form, 'communication_form': communication_form, 'member': member,
-                           'person_form': person_form, 'member_form': member_form, 'groups': groups,'urls': urls, 'current_url': current_url, 'url_name': url_name,
+                           'person_form': person_form, 'member_form': member_form, 'groups': groups, 'urls': urls,
+                           'current_url': current_url, 'url_name': url_name,
                            'error_messages': ''
 
                            })
     except Exception as e:
         traceback.print_exc()
         messages.warning(request, 'Lütfen Tekrar Deneyiniz.')
-
+        return redirect('sbs:view_directoryMember')
 
 @login_required
 def return_member_roles(request):
@@ -346,20 +363,22 @@ def return_member_roles(request):
                     memberRole = DirectoryMemberRole(name=member_role_form.cleaned_data['name'])
                     memberRole.save()
                     messages.success(request, 'Kurul Üye Rolü Başarıyla Kayıt Edilmiştir.')
-                    return redirect('ekabis:view_directorymemberrole')
+                    return redirect('sbs:view_directorymemberrole')
 
                 else:
                     error_messages = get_error_messages(member_role_form)
                     memberRoles = DirectoryMemberRoleService(request, None)
                     return render(request, 'yonetim/kurul-uye-rolleri.html',
                                   {'member_role_form': member_role_form, 'memberRoles': memberRoles,
-                                   'error_messages': error_messages,'urls': urls, 'current_url': current_url, 'url_name': url_name})
+                                   'error_messages': error_messages, 'urls': urls, 'current_url': current_url,
+                                   'url_name': url_name})
             memberfilter = {
                 'isDeleted': False
             }
             memberRoles = DirectoryMemberRoleService(request, memberfilter)
             return render(request, 'yonetim/kurul-uye-rolleri.html',
-                          {'member_role_form': member_role_form, 'memberRoles': memberRoles, 'error_messages': '','urls': urls, 'current_url': current_url, 'url_name': url_name})
+                          {'member_role_form': member_role_form, 'memberRoles': memberRoles, 'error_messages': '',
+                           'urls': urls, 'current_url': current_url, 'url_name': url_name})
     except Exception as e:
         traceback.print_exc()
         messages.warning(request, 'Lütfen Tekrar Deneyiniz.')
@@ -379,8 +398,7 @@ def delete_member_role(request):
                     'uuid': uuid
                 }
                 obj = DirectoryMemberRoleGetService(request, memberrolefilter)
-                obj.isDeleted = True
-                obj.save()
+                obj.deleted()
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
 
             else:
@@ -414,14 +432,16 @@ def update_member_role(request, uuid):
                 if member_role_form.is_valid():
                     member_role_form.save()
                     messages.success(request, 'Başarıyla Güncellendi')
-                    return redirect('ekabis:view_directorymemberrole')
+                    return redirect('sbs:view_directorymemberrole')
                 else:
                     error_messages = get_error_messages(member_role_form)
                     return render(request, 'yonetim/kurul-uye-rol-duzenle.html',
-                                  {'member_role_form': member_role_form, 'error_messages': error_messages,'urls': urls, 'current_url': current_url, 'url_name': url_name})
+                                  {'member_role_form': member_role_form, 'error_messages': error_messages, 'urls': urls,
+                                   'current_url': current_url, 'url_name': url_name})
 
             return render(request, 'yonetim/kurul-uye-rol-duzenle.html',
-                          {'member_role_form': member_role_form, 'error_messages': '','urls': urls, 'current_url': current_url, 'url_name': url_name})
+                          {'member_role_form': member_role_form, 'error_messages': '', 'urls': urls,
+                           'current_url': current_url, 'url_name': url_name})
     except Exception as e:
         traceback.print_exc()
         messages.warning(request, 'Lütfen Tekrar Deneyiniz.')
@@ -458,17 +478,19 @@ def return_commissions(request):
                     log = " Kurul eklendi"
                     log = general_methods.logwrite(request, request.user, log)
                     messages.success(request, 'Kurul Başarıyla Kayıt Edilmiştir.')
-                    return redirect('ekabis:view_directorycommission')
+                    return redirect('sbs:view_directorycommission')
 
                 else:
 
                     error_messages = get_error_messages(commission_form)
                     return render(request, 'yonetim/kurullar.html',
                                   {'commission_form': commission_form, 'commissions': commissions,
-                                   'error_messages': error_messages,'urls': urls, 'current_url': current_url, 'url_name': url_name})
+                                   'error_messages': error_messages, 'urls': urls, 'current_url': current_url,
+                                   'url_name': url_name})
 
             return render(request, 'yonetim/kurullar.html',
-                          {'commission_form': commission_form, 'commissions': commissions, 'error_messages': '','urls': urls, 'current_url': current_url, 'url_name': url_name})
+                          {'commission_form': commission_form, 'commissions': commissions, 'error_messages': '',
+                           'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
     except Exception as e:
         traceback.print_exc()
@@ -492,8 +514,7 @@ def delete_commission(request):
                 obj = DirectoryCommissionGetService(request, commissonfilter)
                 log = str(obj.name) + " kurul silindi"
                 log = general_methods.logwrite(request, request.user, log)
-                obj.isDeleted = True
-                obj.save()
+                obj.delete()
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
 
 
@@ -532,16 +553,16 @@ def update_commission(request, pk):
                     log = str(commission.name) + " kurul guncellendi"
                     log = general_methods.logwrite(request, request.user, log)
 
-                    return redirect('ekabis:view_directorycommission')
+                    return redirect('sbs:view_directorycommission')
                 else:
                     error_messages = get_error_messages(commission_form)
                     return render(request, 'yonetim/kurul-duzenle.html',
-                                  {'commission_form': commission_form, 'error_messages': error_messages,'urls': urls, 'current_url': current_url, 'url_name': url_name})
+                                  {'commission_form': commission_form, 'error_messages': error_messages, 'urls': urls,
+                                   'current_url': current_url, 'url_name': url_name})
 
             return render(request, 'yonetim/kurul-duzenle.html',
-                          {'commission_form': commission_form, 'error_messages': '','urls': urls, 'current_url': current_url, 'url_name': url_name})
+                          {'commission_form': commission_form, 'error_messages': '', 'urls': urls,
+                           'current_url': current_url, 'url_name': url_name})
     except Exception as e:
         traceback.print_exc()
         messages.warning(request, 'Lütfen Tekrar Deneyiniz.')
-
-

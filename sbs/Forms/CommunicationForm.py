@@ -27,6 +27,10 @@ class CommunicationForm(BaseForm):
             'city': forms.Select(
                 attrs={'class': 'form-control select2 select2-hidden-accessible',
                        'style': 'width: 100%; ', 'name': "city", 'id': "id_city"}),
-
+            'country': forms.Select(
+                attrs={'class': 'form-control select2 select2-hidden-accessible',
+                       'style': 'width: 100%; '}),
+            'address': forms.TextInput(
+                attrs={'class': 'form-control '}),
 
         }

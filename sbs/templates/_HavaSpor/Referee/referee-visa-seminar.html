@@ -204,21 +204,20 @@
                 <div class="card card-info card-outline">
                     <div class="card-header with-border">
                         <h3 class="card-title">Vize Seminerleri</h3>
-                    </div>
-
-                    <div class="card-body">
                         {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                             <a href="{% url 'sbs:add-visa-seminar-referee' %}" type="button"
-                               class="btn btn-outline-success">
+                               class="btn btn-outline-success" title="Yeni Seminer Ekle" style="float: right">
                                 <i class="fa fa-plus"></i>
-                                Yeni Seminer Ekle
+
                             </a>
 
 
                         {% endif %}
                     </div>
+
+
                     <div class="card-body">
-                        <table id="competition" class="table table-bordered table-hover">
+                        <table id="hakemSeminar" class="table table-bordered table-hover">
                             <thead>
                             <tr>
                                 <th>#</th>
@@ -244,32 +243,42 @@
                                         <td>{{ competition.status }}</td>
 
                                         <td>
+
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                {% for item in perm %}
+                                                    {% if item == 'update-coach-visa-seminar' %}
+                                                        <div class="btn-group">
+                                                            <a href="{% url "sbs:update-visa-seminar" competition.uuid %}"
+                                                               type="button" class="btn btn-outline-warning"
+                                                               title="Düzenle"><i
+                                                                    class="fa fa-edit"></i>
+                                                            </a>
+                                                        </div>
+
+                                                    {% elif item == 'delete-coach-visa-seminar' %}
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-outline-danger"
+                                                               data-toggle="modal" title="Sil"
+                                                               onclick="deleteCompetition('{{ competition.uuid }}')"><i
+                                                                    class="fa fa-trash"></i></a>
+                                                        </div>
+
+                                                    {% endif %}
+
+                                                {% endfor %}
+
                                                 <div class="btn-group">
-
-                                                    <button type="button"
-                                                            class="btn btn-default dropdown-toggle dropdown-icon"
-                                                            data-toggle="dropdown"> İşlemler
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu">
-                                                        <a href="{% url "sbs:update-visa-seminar" competition.uuid %}"
-                                                           type="button" class="dropdown-item"><i
-                                                                class="fa fa-edit"></i>İncele
-                                                        </a>
-
-                                                        <a onclick="deleteCompetition('{{ competition.uuid }}')"
-                                                           type="button" class="dropdown-item"><i
-                                                                class="fa fa-trash"></i>Sil
-                                                        </a>
-                                                        {#                                                        {% else %}#}
-
-                                                        <a onclick="modalApplication({{ competition.pk }})"
-                                                           type="button" class="dropdown-item"><i
-                                                                class="fa fa-plus"></i>Başvuru Yap
-                                                        </a>
-                                                    </div>
+                                                    <a class="btn btn-outline-success"
+                                                       data-toggle="modal" title="Başvuru Yap"
+                                                       onclick="modalApplication({{ competition.pk }})"><i
+                                                            class="fa fa-location-arrow"></i></a>
                                                 </div>
+
+
+
                                             {% endif %}
+
+
                                         </td>
 
 
@@ -298,18 +307,9 @@
     {% load  static %}
     <script>
         $(function () {
-            $('#competition').DataTable({
-
+            $('#hakemSeminar').DataTable({
                 dom: 'Bfrtip',
 
-                language: {
-                    buttons: {
-                        pageLength: {
-                            _: " %d  Tane Göster",
-                            '-1': "Hepsini Göster"
-                        }
-                    }
-                },
 
                 lengthMenu: [
                     [10, 25, 50, 100, -1],
@@ -332,7 +332,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'VİZE SEMİNER LİSTESİ',
+                        title: 'YEKA LİSTESİ',
                         text: '<i class="fa fa-print"></i>',
 
                         titleAttr: 'Yazdır',
@@ -362,15 +362,30 @@
 
 
                 ],
+                "search": {
+                    "caseInsensitive": true,
+                },
+                'language': {
+                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                },
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
-                'ordering': true,
+                'order': true,
                 'info': true,
                 'autoWidth': true,
                 'responsive': true,
-
-            })
+            });
+            table.on('draw.dt', function () {
+                debugger;
+                table.column(0, {
+                    search: 'applied',
+                    order: 'applied',
+                    page: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            });
 
         })
     </script>

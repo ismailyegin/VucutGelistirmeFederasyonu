@@ -1,7 +1,6 @@
 {% extends 'base_layout.html' %}
 
 {% block content %}
-    <!-- success modal -->
 
     <!-- success modal -->
     <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
@@ -56,43 +55,32 @@
     {% if messages %}
         {% for message in messages %}
 
+            <div id="toast-container" class="toasts-top-right">
+                {% if message.tags == 'warning' %}
+                    <div class="toast toast-error" aria-live="polite" style="" id="toast">
+                        <div class="toast-message">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    </div>
 
-            {% if message.tags == 'warning' %}
-
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
 
 
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li class="{{ message.tags }}">{{ message }}</li>
+                {% endif %}
+
+                {% if message.tags == 'success' %}
+                    <div class="toast toast-success" aria-live="polite" style="" id="toast">
+                        <div class="toast-message"> {% for message in messages %}
+                            {{ message }}
                         {% endfor %}
-                    </ul>
+                        </div>
+                    </div>
 
 
-                </div>
 
-            {% endif %}
-
-
-            {% if message.tags == 'success' %}
-
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <h4><i class="icon fa fa-check"></i> Başarılı!</h4>
-
-
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li class="{{ message.tags }}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-
-
-                </div>
-
-            {% endif %}
+                {% endif %}
+            </div>
         {% endfor %}
 
 
@@ -124,7 +112,7 @@
     <section class="content">
         <div class="row">
             <div class="col-lg-12">
-                <div class="card-body">
+
                     <div class="card card-info card-outline">
                         <div class="card-header with-border">
                             <h3 class="card-title">Üye Filtrele</h3>
@@ -164,7 +152,7 @@
 
 
                     </div>
-                </div>
+
                 <!-- /.card -->
             </div>
         </div>
@@ -175,7 +163,7 @@
             <section class="col-lg-12 ">
 
 
-                <div class="card-body">
+
 
 
                     <div class="card card-info card-outline">
@@ -224,17 +212,17 @@
                                                     {% if item == 'change_directorymember' %}
                                                         <div class="btn-group">
                                                             <a href="{% url "sbs:change_directorymember" member.uuid %}"
-                                                               type="button" class="btn btn-warning"><i
-                                                                    class="fa fa-edit"></i> Güncelle
+                                                               type="button" class="btn btn-outline-warning" title="Düzenle"><i
+                                                                    class="fa fa-edit"></i>
                                                             </a>
                                                         </div>
 
                                                     {% elif item == 'delete_directorymember' %}
                                                         <div class="btn-group">
-                                                            <a class="btn btn-danger"
-                                                               data-toggle="modal"
+                                                            <a class="btn btn-outline-danger"
+                                                               data-toggle="modal" title="Sil"
                                                                onclick=deleteMember('{{ member.uuid }}')><i
-                                                                    class="fa fa-trash"></i> Sil</a>
+                                                                    class="fa fa-trash"></i></a>
                                                         </div>
                                                     {% endif %}
                                                 {% endfor %}
@@ -254,7 +242,6 @@
                     <!-- /.card -->
 
 
-                </div>
             </section>
 
 
@@ -332,12 +319,22 @@
 
 
     <script>
-        function deleteMember(id) {
 
+
+     function deleteMember(id) {
+            debugger;
             console.log(id);
-            var html = ''
-            $("#modal-delete").on("shown.bs.modal", function (e) {
-                $("#btn-conf1").click(function () {
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+                text: "Lisansı olan kulüpler silinemez!",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+
                     $.ajax({
                         url: "{% url "sbs:delete_directorymember" %}",
                         type: "POST",
@@ -348,30 +345,32 @@
 
                         },
                         success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Kulüp Üye başarıyla silindi !!',
 
-                            html = 'Yönetim Kurulu Üyesi Başarıyla Silindi';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
+                                    })
 
-                                    window.location.replace("{% url "sbs:view_directoryMember" %}");
+                                }
+                                else {
+                                     swal({
+                                        icon: 'error',
+                                        title: 'Kulüp Üye silinemedi !!',
 
-                                });
+                                    })
+                                }
+                               location.reload();
 
-                            }).modal('show');
+                            }
+                        });
+            }
 
+            })
 
-                            console.log(result.status)
-                        }
-                    });
-                });
-            }).modal('show');
-            $('#btn-close').click(function () {
-                $('#modal-danger').modal('hide');
-            });
 
         }
+
     </script>
 
 
