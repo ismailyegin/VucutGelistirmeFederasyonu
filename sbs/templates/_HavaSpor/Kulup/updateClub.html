@@ -282,7 +282,7 @@
                                                 <div class="btn-group">
                                                     {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                                         <a onclick="deleteUserFromClub('{{ athlete.uuid }}')"
-                                                           type="button" class="btn btn-outline-info"><i
+                                                           type="button" class="btn btn-outline-danger"><i
                                                                 class="fa fa-trash"></i>
                                                         </a>
                                                     {% endif %}
@@ -342,7 +342,7 @@
                                                 <div class="btn-group">
                                                     {% if aktif == 'Admin' %}
                                                         <a onclick="deleteCoachFromClub('{{ coach.uuid }}')"
-                                                           type="button" class="btn btn-outline-info"><i
+                                                           type="button" class="btn btn-outline-danger"><i
                                                                 class="fa fa-trash"></i>
                                                         </a>
                                                     {% endif %}

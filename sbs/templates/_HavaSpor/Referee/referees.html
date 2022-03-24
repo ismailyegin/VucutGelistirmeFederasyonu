@@ -157,57 +157,52 @@
                             {% csrf_token %}
 
 
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ user_form.first_name.label }}</label>
-                                            {{ user_form.first_name }}
-                                        </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.first_name.label }}</label>
+                                        {{ user_form.first_name }}
                                     </div>
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ user_form.last_name.label }}</label>
-                                            {{ user_form.last_name }}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ user_form.city.label }}</label>
-                                            {{ user_form.city }}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ user_form.branch.label }}</label>
-                                            {{ user_form.branch }}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ user_form.status.label }}</label>
-                                            {{ user_form.status }}
-                                        </div>
-                                    </div>
-
                                 </div>
-                            </div>
 
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.last_name.label }}</label>
+                                        {{ user_form.last_name }}
+                                    </div>
+                                </div>
 
-                            <div class="card-footer">
-                                <button class="btn btn-outline-info" type="submit" style="float:right"><i
-                                        class="fa fa-search"></i>
-                                </button>
-
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.city.label }}</label>
+                                        {{ user_form.city }}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.branch.label }}</label>
+                                        {{ user_form.branch }}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.status.label }}</label>
+                                        {{ user_form.status }}
+                                    </div>
+                                </div>
 
                             </div>
 
 
                         </form>
                     </div>
+                    <div class="card-footer">
+                        <button class="btn btn-outline-info" type="submit" style="float:right"><i
+                                class="fa fa-search"> </i> Ara
+                        </button>
 
+
+                    </div>
 
                     <!-- /.box -->
 
@@ -240,7 +235,7 @@
                     </div>
 
                     <div class="card-body">
-                        <table id="kulupler" class="table table-bordered table-hover">
+                        <table id="hakem" class="table table-bordered table-hover">
                             <thead>
                             <tr>
                                 <th>#</th>
@@ -274,27 +269,27 @@
 
                                         {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                             <td>
-                                                <div class="btn-group">
+                                                {% for item in perm %}
+                                                    {% if item == 'update_referee' %}
+                                                        <div class="btn-group">
+                                                            <a href="{% url "sbs:update_referee" referee.uuid %}"
+                                                               type="button" class="btn btn-outline-warning"
+                                                               title="Düzenle"><i
+                                                                    class="fa fa-edit"></i>
+                                                            </a>
+                                                        </div>
 
-                                                    <button type="button"
-                                                            class="btn btn-default dropdown-toggle dropdown-icon"
-                                                            data-toggle="dropdown"> İşlemler
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu">
-
-                                                        <a href="{% url "sbs:update_referee" referee.uuid %}"
-                                                           class="dropdown-item"> <i
-                                                                class="fa fa-edit" title="Düzenle"></i> Düzenle
-                                                        </a>
-
-                                                        <a class="dropdown-item" href=""
-                                                           data-toggle="modal"
-                                                           onclick="deleteReferee('{{ referee.uuid }}')"><i
-                                                                class="fa fa-trash"></i>Sil</a>
+                                                    {% elif item == 'delete-referee' %}
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-outline-danger"
+                                                               data-toggle="modal" title="Sil"
+                                                               onclick="deleteReferee('{{ referee.uuid }}')"><i
+                                                                    class="fa fa-trash"></i></a>
+                                                        </div>
+                                                    {% endif %}
 
 
-                                                    </div>
-                                                </div>
+                                                {% endfor %}
 
 
                                             </td>
@@ -326,7 +321,7 @@
     {% load  static %}
     <script>
         $(function () {
-            $('#kulupler').DataTable({
+            $('#hakem').DataTable({
                 dom: 'Bfrtip',
 
 

@@ -23,13 +23,11 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-
-
-    <div class="modal modal-danger fade in deneme223" tabindex="-1" role="dialog" id="modal-delete"
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header primary">
+                <div class="modal-header orange">
                     <h4 class="modal-title">Uyarı</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span></button>
@@ -51,57 +49,69 @@
     </div>
 
 
+
+
     {% if messages %}
         {% for message in messages %}
 
+            <div id="toast-container" class="toasts-top-right">
+                {% if message.tags == 'warning' %}
+                    <div class="toast toast-error" aria-live="polite" style="" id="toast">
+                        <div class="toast-message">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    </div>
 
-            {% if message.tags == 'warning' %}
-
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
 
 
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li class="{{ message.tags }}">{{ message }}</li>
+                {% endif %}
+
+                {% if message.tags == 'success' %}
+                    <div class="toast toast-success" aria-live="polite" style="" id="toast">
+                        <div class="toast-message"> {% for message in messages %}
+                            {{ message }}
                         {% endfor %}
-                    </ul>
+                        </div>
+                    </div>
 
 
-                </div>
 
-            {% endif %}
-
-
-            {% if message.tags == 'success' %}
-
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <h4><i class="icon fa fa-check"></i> Başarılı!</h4>
-
-
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li class="{{ message.tags }}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-
-
-                </div>
-
-            {% endif %}
+                {% endif %}
+            </div>
         {% endfor %}
 
 
     {% endif %}
-  <section class="content-header">
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="content-header">
 
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>
-                        Kurul Üye Rolleri</h1>
+                        Kurul Üye Rolü </h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -126,12 +136,12 @@
             <section class="col-lg-12 ">
 
 
-                <div class="card-body">
 
 
-                    <div class="card card-primary">
+
+                    <div class="card card-outline card-info">
                         <div class="card-header with-border">
-                            <h3 class="card-title">Kurul Üye Rolleri</h3>
+                            <h3 class="card-title">Kurul Üye Rolü Ekle</h3>
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
@@ -152,89 +162,91 @@
                             <!-- /.card-body -->
 
                             <div class="card-footer">
-                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                                <button type="submit" class="btn btn-outline-info" style="float: right">Kaydet</button>
                             </div>
                         </form>
 
 
-                        <table id="kategori" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Rol Tanımı</th>
-                                <th>Güncelleme/Silme</th>
-
-                            </tr>
-                            </thead>
-
-                            <tbody>
-
-
-                            {% if memberRoles.all %}
-                                {% for memberRole in memberRoles %}
-                                    <tr>
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ memberRole.name }}</td>
-                                        <td>
-
-                                            {% for item in perm %}
-                                                {% if item == 'add_directorymember' %}
-                                                    <div class="btn-group">
-                                                        <a href="{% url "ekabis:change_directorymemberrole" memberRole.uuid %}"
-                                                           type="button" class="btn btn-warning"><i
-                                                                class="fa fa-edit"></i>Güncelle
-                                                        </a>
-                                                    </div>
-                                                {% elif item == 'delete_directorymemberrole' %}
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-danger"
-                                                           data-toggle="modal"
-                                                           onclick=deleteClubRole('{{ memberRole.uuid }}')><i
-                                                                class="fa fa-trash"></i>Sil</a></div>
-                                                {% endif %}
-                                            {% endfor %}
-
-
-                                        </td>
-
-                                    </tr>
-
-                                {% endfor %}
-                            {% endif %}
-
-
-                            </tbody>
-                        </table>
-
-
+                        <!-- /.card -->
                     </div>
-                    <!-- /.card -->
 
 
-                </div>
             </section>
 
 
         </div>
         <!-- /.row (main row) -->
+        <div class="row">
+            <section class="col-lg-12 ">
 
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Kurul Üye Rolleri</h3>
+                        </div>
+                        <div class="card-body">
+
+                            <table id="kurul-uye" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Rol Tanımı</th>
+                                    <th>Düzenle/Sil</th>
+
+                                </tr>
+                                </thead>
+
+                                <tbody>
+
+
+                                {% if memberRoles.all %}
+                                    {% for memberRole in memberRoles %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ memberRole.name }}</td>
+                                            <td>
+
+                                                {% for item in perm %}
+                                                    {% if item == 'add_directorymember' %}
+                                                        <div class="btn-group">
+                                                            <a href="{% url "sbs:change_directorymemberrole" memberRole.uuid %}"
+                                                               type="button" class="btn btn-outline-warning" title="Düzenle"><i
+                                                                    class="fa fa-edit"></i>
+                                                            </a>
+                                                        </div>
+                                                    {% elif item == 'delete_directorymemberrole' %}
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-outline-danger"
+                                                               data-toggle="modal" title="Sil"
+                                                               onclick=deleteDirectoryMemberRole('{{ memberRole.uuid }}')><i
+                                                                    class="fa fa-trash"></i></a></div>
+                                                    {% endif %}
+                                                {% endfor %}
+
+
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+
+
+                    </div>
+            </section>
+        </div>
     </section>
 
-
-
+{% load static %}
     <script>
         $(function () {
-            $('#kategori').DataTable({
+            $('#kurul-uye').DataTable({
                 dom: 'Bfrtip',
 
-                language: {
-                    buttons: {
-                        pageLength: {
-                            _: " %d  Tane Göster",
-                            '-1': "Hepsini Göster"
-                        }
-                    }
-                },
 
                 lengthMenu: [
                     [10, 25, 50, 100, -1],
@@ -251,106 +263,125 @@
 
                     {
                         extend: 'colvis',
-                        text: "Ekle Çıkar",
-                        titleAttr: 'Ekle Çıkar',
-                        title: 'YEKABİS',
+                        titleAttr: 'Ekle Çıkar'
 
 
                     },
                     {
                         extend: 'print',
-                        title: 'YEKABİS',
-                        text: "Yazdır",
-                        titleAttr: 'Yazdır'
+                        title: 'YEKA LİSTESİ',
+                        text: '<i class="fa fa-print"></i>',
+
+                        titleAttr: 'Yazdır',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
                     },
                     {
                         extend: 'pdfHtml5',
                         download: 'open',
-                        text: "Pdf",
-                        title: 'YEKABİS',
-                        titleAttr: 'Pdf Kaydet'
+                        text: '<i class="fa fa-file-pdf"></i>',
+
+                        titleAttr: 'Pdf Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
                     },
 
                     {
                         extend: 'excelHtml5',
-                        text: "Excel",
+                        text: '<i class="fa fa-file-excel"></i>',
                         titleAttr: 'Excel Kaydet',
-                        title: 'YEKABİS',
-                    },
-                    {
-                        text: 'Json',
-                        action: function (e, dt, button, config) {
-                            var data = dt.buttons.exportData();
-
-                            $.fn.dataTable.fileSave(
-                                new Blob([JSON.stringify(data)]),
-                                'YEKABİS.json'
-                            );
+                        exportOptions: {
+                            columns: ':visible'
                         }
-                    }
+                    },
 
 
                 ],
-                'bubble': true,
+                "search": {
+                    "caseInsensitive": true,
+                },
+                'language': {
+                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                },
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
-                'ordering': true,
+                'order': true,
                 'info': true,
                 'autoWidth': true,
                 'responsive': true,
-                'select': true,
-            })
+            });
+            table.on('draw.dt', function () {
+                debugger;
+                table.column(0, {
+                    search: 'applied',
+                    order: 'applied',
+                    page: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            });
 
         })
     </script>
 
-
     <script>
-        function deleteClubRole(id) {
-
+        function deleteDirectoryMemberRole(id) {
+            debugger;
             console.log(id);
-            var html = ''
-            $("#modal-delete").on("shown.bs.modal", function (e) {
-                $("#btn-conf1").click(function () {
+            swal({
+                title: "Kulüp Rolünü istediğinizden emin misiniz?",
+                text: "Bu role ait üyeler var ise silinmesi önerilmez!",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+
                     $.ajax({
-                        url: "{% url "ekabis:delete_directorymemberrole" %}",
+                        url: "{% url "sbs:delete_directorymemberrole" %}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            isActive: 'False',
-                            uuid: id
+                            uuid: id,
                         },
-                        success: function (result) {
+                       success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Kulüp rolü başarıyla silindi !!',
 
-                            html = 'Rol Başarıyla Silindi';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
+                                    })
 
-                                    window.location.replace("{% url "ekabis:view_directorymemberrole" %}");
+                                }
+                                else {
+                                     swal({
+                                        icon: 'error',
+                                        title: 'Kulüp rolü silinemedi !!',
 
-                                });
+                                    })
+                                }
+                               location.reload();
 
-                            }).modal('show');
-
-
-                            console.log(result.status)
-                        }
+                            }
                     });
-                });
-            }).modal('show');
-            $('#btn-close').click(function () {
-                $('#modal-danger').modal('hide');
-            });
+                }
+
+            })
+
 
         }
     </script>
- <script>
+
+
+    <script>
         $(document).ready(function () {
 
-          {% if error_messages  %}
+            {% if error_messages  %}
                 errors_messages({{ error_messages |safe }})
             {% endif %}
         });

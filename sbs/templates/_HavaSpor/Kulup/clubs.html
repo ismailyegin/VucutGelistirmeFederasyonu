@@ -145,7 +145,7 @@
                             {% csrf_token %}
 
 
-                            <div class="card-body">
+
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="form-group">
@@ -185,21 +185,21 @@
 
 
                                 </div>
-                            </div>
 
 
-                            <div class="card-footer">
+
+
+
+
+                        </form>
+                    </div>
+ <div class="card-footer">
                                 <button class="btn btn-outline-info" type="submit" style="float:right"><i
                                         class="fa fa-search"></i>
                                 </button>
 
 
                             </div>
-
-
-                        </form>
-                    </div>
-
 
                     <!-- /.box -->
 
@@ -274,26 +274,20 @@
 
                                         {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
                                             <td>
+
+
                                                 <div class="btn-group">
+                                                    <a href="{% url 'sbs:update_club' club.uuid %}"
+                                                       type="button" class="btn btn-outline-warning" title="Düzenle"> <i
+                                                            class="fa fa-edit" title="Düzenle"></i>
+                                                    </a>
 
-                                                    <button type="button"
-                                                            class="btn btn-default dropdown-toggle dropdown-icon"
-                                                            data-toggle="dropdown"> İşlemler
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu">
-
-                                                        <a href="{% url 'sbs:update_club' club.uuid %}"
-                                                           class="dropdown-item"> <i
-                                                                class="fa fa-edit" title="Düzenle"></i> Düzenle
-                                                        </a>
-
-                                                        <a class="dropdown-item" href=""
-                                                           data-toggle="modal"
-                                                           onclick="deleteClub('{{ club.uuid }}')"><i
-                                                                class="fa fa-trash"></i>Sil</a>
-
-
-                                                    </div>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-outline-danger"
+                                                       data-toggle="modal" title="Sil"
+                                                       onclick=deleteClub('{{ club.uuid }}')><i
+                                                            class="fa fa-trash"></i></a>
                                                 </div>
 
 
@@ -424,9 +418,9 @@
                     'Evet'
                 ],
             }).then((result) => {
-            if (result.dismiss !== 'Evet') {
+                if (result.dismiss !== 'Evet') {
 
-                   $.ajax({
+                    $.ajax({
                         url: "{% url "sbs:club-delete"%}",
                         type: "POST",
                         data: {
@@ -452,9 +446,9 @@
                             console.log(result.status)
                         }
                     });
-            }
+                }
 
-        })
+            })
 
 
         }

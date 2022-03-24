@@ -106,8 +106,8 @@ def add_directory_member(request):
             user.groups.add(group)
             user.save()
 
-            person = person_form.save(commit=False)
-            communication = communication_form.save(commit=False)
+            person = person_form.save(request,commit=False)
+            communication = communication_form.save(request,commit=False)
             person.save()
             communication.save()
 
@@ -293,9 +293,9 @@ def update_directory_member(request, uuid):
 
                 if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and member_form.is_valid():
 
-                    user_form.save()
-                    person_form.save()
-                    communication_form.save()
+                    user_form = UserForm(request.POST)
+                    person_form = PersonForm(request.POST, request.FILES)
+                    communication_form = CommunicationForm(request.POST)
                     member_form.save()
 
                     log = str(user.get_full_name()) + " Kurul uyesi guncellendi"
@@ -346,7 +346,7 @@ def return_member_roles(request):
                     memberRole = DirectoryMemberRole(name=member_role_form.cleaned_data['name'])
                     memberRole.save()
                     messages.success(request, 'Kurul Üye Rolü Başarıyla Kayıt Edilmiştir.')
-                    return redirect('ekabis:view_directorymemberrole')
+                    return redirect('sbs:view_directorymemberrole')
 
                 else:
                     error_messages = get_error_messages(member_role_form)
@@ -379,8 +379,7 @@ def delete_member_role(request):
                     'uuid': uuid
                 }
                 obj = DirectoryMemberRoleGetService(request, memberrolefilter)
-                obj.isDeleted = True
-                obj.save()
+                obj.deleted()
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
 
             else:
@@ -414,7 +413,7 @@ def update_member_role(request, uuid):
                 if member_role_form.is_valid():
                     member_role_form.save()
                     messages.success(request, 'Başarıyla Güncellendi')
-                    return redirect('ekabis:view_directorymemberrole')
+                    return redirect('sbs:view_directorymemberrole')
                 else:
                     error_messages = get_error_messages(member_role_form)
                     return render(request, 'yonetim/kurul-uye-rol-duzenle.html',
@@ -458,7 +457,7 @@ def return_commissions(request):
                     log = " Kurul eklendi"
                     log = general_methods.logwrite(request, request.user, log)
                     messages.success(request, 'Kurul Başarıyla Kayıt Edilmiştir.')
-                    return redirect('ekabis:view_directorycommission')
+                    return redirect('sbs:view_directorycommission')
 
                 else:
 
@@ -492,8 +491,7 @@ def delete_commission(request):
                 obj = DirectoryCommissionGetService(request, commissonfilter)
                 log = str(obj.name) + " kurul silindi"
                 log = general_methods.logwrite(request, request.user, log)
-                obj.isDeleted = True
-                obj.save()
+                obj.delete()
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
 
 
@@ -532,7 +530,7 @@ def update_commission(request, pk):
                     log = str(commission.name) + " kurul guncellendi"
                     log = general_methods.logwrite(request, request.user, log)
 
-                    return redirect('ekabis:view_directorycommission')
+                    return redirect('sbs:view_directorycommission')
                 else:
                     error_messages = get_error_messages(commission_form)
                     return render(request, 'yonetim/kurul-duzenle.html',
