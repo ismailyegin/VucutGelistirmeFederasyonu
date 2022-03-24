@@ -2,12 +2,14 @@ import traceback
 
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Sum, Count
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import resolve
 
+from sbs.models import Club, SportClubUser, Coach, Referee, Person
 from sbs.models.ekabis.CalendarName import CalendarName
 from sbs.models.ekabis.CalendarYeka import CalendarYeka
 from sbs.models.ekabis.City import City
@@ -17,6 +19,7 @@ from sbs.models.ekabis.Yeka import Yeka
 from sbs.models.ekabis.YekaAccept import YekaAccept
 from sbs.models.ekabis.YekaCompetition import YekaCompetition
 from sbs.models.ekabis.YekaContract import YekaContract
+from sbs.models.tvfbf.Athlete import Athlete
 from sbs.services import general_methods
 from sbs.services.services import ActiveGroupGetService, GroupGetService, \
     CalendarNameService, YekaService, VacationDayService, ConnectionRegionService, last_urls, EmployeeGetService, \
@@ -228,6 +231,96 @@ def return_yonetici_dashboard(request):
 
 
 @login_required
+def return_club_user_dashboard(request):
+
+
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    current_user = request.user
+    clubuser = SportClubUser.objects.get(user=current_user)
+    club = Club.objects.filter(clubUser=clubuser)[0]
+
+
+    total_club_user = club.clubUser.count()
+    total_coach = club.coachs.all().count()
+    sc_user = SportClubUser.objects.get(user=user)
+    clubsPk = []
+    clubs = Club.objects.filter(clubUser=sc_user)
+    for club in clubs:
+        clubsPk.append(club.pk)
+    total_athlete = Athlete.objects.filter(club__in=clubsPk).distinct().count()
+
+    # Sporcu bilgilerinde eksik var mı diye control
+    athletes = Athlete.objects.none()
+    if user.groups.filter(name='Kulüp Yetkilisi'):
+        sc_user = SportClubUser.objects.get(user=user)
+        if sc_user.dataAccessControl == False or sc_user.dataAccessControl == None:
+            clubsPk = []
+            clubs = Club.objects.filter(clubUser=sc_user)
+            for club in clubs:
+                if club.dataAccessControl == False or club.dataAccessControl is None:
+                    clubsPk.append(club.pk)
+
+            if len(clubsPk) != 0:
+                athletes = Athlete.objects.filter(club__in=clubsPk).distinct()
+                athletes = athletes.filter(person__user__last_name='') | athletes.filter(person__user__first_name='') | athletes.filter(
+                    person__user__email='') | athletes.filter(person__tc='') | athletes.filter(
+                    person__birthDate=None) | athletes.filter(
+                    person__gender=None) | athletes.filter(person__birthplace='') | athletes.filter(
+                    person__motherName='') | athletes.filter(person__fatherName='') | athletes.filter(
+                    communication__city__name='') | athletes.filter(communication__country__name='')
+                # false degerinde clubun eksigi yok anlamında kulanilmistir.
+                for club in clubs:
+                    if athletes:
+                        club.dataAccessControl = False
+                        club.save()
+
+                    else:
+
+                        club.dataAccessControl = True
+                        club.save()
+
+
+                if athletes:
+                    sc_user.dataAccessControl = False
+
+                else:
+                    sc_user.dataAccessControl = True
+
+                sc_user.save()
+
+
+            else:
+                sc_user.dataAccessControl = True
+                sc_user.save()
+
+    return render(request, '_HavaSpor/Anasayfa/kulup-uyesi.html',
+                  {'total_club_user': total_club_user, 'total_coach': total_coach,
+                   'total_athlete': total_athlete, 'athletes': athletes,
+                   'urls': urls, 'current_url': current_url, 'url_name': url_name})
+
+@login_required
+def return_referee_dashboard(request):
+    # perm = general_methods.control_access_judge(request)
+    #
+    # if not perm:
+    #     logout(request)
+    #     return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+
+    user = User.objects.get(pk=request.user.pk)
+    judge = Referee.objects.get(user=user)
+    return render(request, '_HavaSpor/Anasayfa/hakem.html', {'user': user, 'judge': judge,
+                                                   'urls': urls, 'current_url': current_url, 'url_name': url_name})
+
+
+@login_required
 def return_admin_dashboard(request):
     perm = general_methods.control_access(request)
     if not perm:
@@ -238,106 +331,63 @@ def return_admin_dashboard(request):
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
 
-    yekas = YekaService(request, None).order_by('-date')
-    comp_array = []
-    competitions = []
-    for yeka in yekas:
-        yeka_dict = dict()
+    last_athlete = Athlete.objects.order_by('-creationDate')[:8]
+    total_club = Club.objects.all().count()
+    total_athlete = Athlete.objects.all().count()
+    total_athlete_gender_man = Athlete.objects.filter(person__gender=Person.MALE).count()
+    total_athlete_gender_woman = Athlete.objects.filter(person__gender=Person.FEMALE).count()
+    total_athlate_last_month = Athlete.objects.exclude(person__user__date_joined__month=datetime.datetime.now().month).count()
+    total_club_user = SportClubUser.objects.all().count()
+    total_coachs = Coach.objects.all().count()
+    total_judge = Referee.objects.all().count()
+    total_user = User.objects.all().count()
 
-        regions = yeka.connection_region.filter(isDeleted=False)
-        for region in regions:
-            for comp in region.yekacompetition.filter(isDeleted=False):
-                comp_dict = dict()
-                comp_dict['pk'] = comp.pk
-                comp_dict['competition'] = '(' + yeka.definition + ')' + ' - ' + comp.name
-                competitions.append(comp_dict)
-        yeka_dict['yeka'] = yeka
-        yeka_dict['regions'] = regions
-        comp_array.append(yeka_dict)
-    res_count = yekas.filter(type='Rüzgar').count()
-    ges_count = yekas.filter(type='Güneş').count()
-    biyo_count = yekas.filter(type='Biyokütle').count()
-    jeo_count = yekas.filter(type='Jeotermal').count()
+    return render(request, '_HavaSpor/Anasayfa/admin.html',
+                  {'total_club_user': total_club_user, 'total_club': total_club,
+                   'total_athlete': total_athlete, 'total_coachs': total_coachs, 'last_athletes': last_athlete,
+                   'total_athlete_gender_man': total_athlete_gender_man,
+                   'total_athlete_gender_woman': total_athlete_gender_woman,
+                   'total_athlate_last_month': total_athlate_last_month,
+                   'total_judge': total_judge, 'total_user': total_user,
+                   'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
-    regions = ConnectionRegionService(request, None)
-    days = VacationDayService(request, None)
-    calender_notifications=CalendarYeka.objects.filter(is_active=True)
 
-    # region_json = serializers.serialize("json", ConnectionRegion.objects.all(), cls=DjangoJSONEncoder)
-    # yeka_json = serializers.serialize("json",yeka, cls=DjangoJSONEncoder)
-    # list_yeka=list(yeka)
+def City_athlete_cout(request):
 
-    yeka_acccepts = YekaAccept.objects.filter(isDeleted=False)
-    yeka_competitions = YekaCompetition.objects.filter(isDeleted=False)
-    yeka_accept_array = []
-    for yeka in yekas:
-        accept_array = []
-        accept_dict = dict()
-        accept_dict['yeka'] = yeka
-        for region in yeka.connection_region.filter(isDeleted=False):
-            for competition in region.yekacompetition.filter(isDeleted=False):
-                yeka_accepts = YekaAccept.objects.filter(business=competition.business).filter(isDeleted=False)
-                if yeka_accepts:
-                    yeka_accept = YekaAccept.objects.get(business=competition.business, isDeleted=False)
-                    for accept in yeka_accept.accept.filter(isDeleted=False):
-                        accept_array.append(accept)
-        accept_dict['accepts'] = accept_array
-        yeka_accept_array.append(accept_dict)
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            cityName = str(request.POST.get('city')).upper()
+            coachcout = Coach.objects.filter(communication__city__name__icontains=cityName).count()
+            refereecout = Referee.objects.filter(communication__city__name__icontains=cityName).count()
+            sportsClub = Club.objects.filter(
+                communication__city__name__icontains=cityName).count()
 
-    yeka_capacity_array = []
-    for yeka_accept in yeka_accept_array:
+            response = JsonResponse({
+                'coach': coachcout,
+                'referee': refereecout,
+                'sportsClub': sportsClub
+            })
 
-        yeka_capacity_dict = dict()
-        yeka_capacity_dict['label'] = yeka_accept['yeka'].definition
-        total_installed = 0
-        total_current = 0
-        for accept in yeka_accept['accepts']:
-            total_installed += float(accept.installedPower)
-            total_current += float(accept.currentPower)
-        capacity_total = round(float(total_current), 3)
-        yeka_capacity_dict['remaining_capacity'] = round(yeka_accept['yeka'].capacity,2)
-        yeka_capacity_dict['total'] = yeka_accept['yeka'].capacity
-        yeka_capacity_dict['capacity'] = capacity_total
-        if not yeka_capacity_dict in yeka_capacity_array:
-            yeka_capacity_array.append(yeka_capacity_dict)
+            return response
+        except:
+            response = JsonResponse({
+                'success': 'GET',
+            })
+            response["Access-Control-Allow-Origin"] = "*"
+            response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+            response["Access-Control-Max-Age"] = "1000"
+            response["Access-Control-Allow-Headers"] = "*"
+            return response
 
-    installedPower_array = []
-    currentPower_array = []
-    company_array = []
-
-    calendar_filter = {
-        'isDeleted': False,
-        'user': request.user
-    }
-    total_capacity = 0
-    calendarNames = CalendarNameService(request, calendar_filter)
-    for yeka_accept in yeka_acccepts:
-        accept_dict = dict()
-
-        company_dict = dict()
-        competition = YekaCompetition.objects.get(business=yeka_accept.business)
-        accept_dict['label'] = competition.name
-        total = yeka_accept.accept.filter(isDeleted=False).aggregate(Sum('installedPower'))
-        contract = YekaContract.objects.filter(business=competition.business)
-        if contract:
-            if contract[0].company:
-                company_dict['contract'] = YekaContract.objects.get(business=competition.business)
-            else:
-                company_dict['contract'] = None
-        else:
-            company_dict['contract'] = None
-        company_dict['mechanical_power'] = total['installedPower__sum']
-        company_dict['competition'] = competition
-        company_array.append(company_dict)
-    return render(request, 'anasayfa/admin.html', {
-        'yeka': yekas, 'yeka_competition': competitions,
-        # 'region_json': region_json,'yeka_json':yeka_json,
-        'regions': regions, 'vacation_days': days,
-        'res_count': res_count, 'accepts': installedPower_array, 'yeka_capacity': yeka_capacity_array,
-        'ges_count': ges_count, 'current_power': currentPower_array, 'yekas': comp_array,
-        'jeo_count': jeo_count, 'calendarNames': calendarNames, 'company_accepts': company_array,
-        'biyo_count': biyo_count, 'urls': urls, 'current_url': current_url, 'url_name': url_name
-    })
+    else:
+        response = JsonResponse({
+            'success': 'GET',
+        })
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "*"
+        return  response
 
 
 @login_required

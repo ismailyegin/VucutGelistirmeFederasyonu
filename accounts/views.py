@@ -10,6 +10,7 @@ from accounts.models import Forgot
 from sbs.Forms.havaspor.PreRegidtrationForm import PreRegistrationForm
 from sbs.Forms.havaspor.RefereeForm import RefereeForm
 from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
+from sbs.models import Club
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Permission import Permission
 from sbs.models.ekabis.ActiveGroup import ActiveGroup
@@ -39,123 +40,71 @@ def pagelogout(request):
 
 
 def login(request):
-    try:
-        if request.user.is_authenticated is True:
-            # aktif rol şeklinde degişmeli
-            return redirect('sbs:view_admin')
 
-        if request.method == 'POST':
-            login_user = None
-            username = request.POST.get('username')
-            password = request.POST.get('password')
+    if request.user.is_authenticated is True:
+        # aktif rol şeklinde degişmeli
+        return redirect('sbs:view_admin')
 
-            if User.objects.filter(username=username):
-                login_user = User.objects.get(username=username)
-            filter = {
-                'user': login_user
-            }
+    if request.method == 'POST':
+        login_user = None
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-            if login_user is not None:
+        if User.objects.filter(username=username):
+            user = User.objects.get(username=username)
 
-                active_user = None
-                if login_user.is_superuser:
-                    user = auth.authenticate(username=username, password=password)
-                else :
-                    login_user.set_password(password)
-                    login_user.save()
-                    user = auth.authenticate(username=username, password=password)
-                    is_auth = LDAPService.auth(username, password)
-                    if is_auth=='false' or is_auth==False or is_auth is None:
-                        raise Exception('LDAP login failed')
+        if user is not None:
+
+            auth.login(request, user)
+
+            print(general_methods.get_client_ip(request))
+
+            log = general_methods.logwrite(request, request.user, " Giris yapti")
+
+            # eger user.groups birden fazla ise klup üyesine gönder yoksa devam et
 
 
 
+            if user.groups.all()[0].name == 'Antrenor':
+                return redirect('sbs:antrenor')
+
+            elif user.groups.all()[0].name == 'Hakem':
+                return redirect('sbs:hakem')
+
+            # elif user.groups.all()[0].name == 'Sporcu':
+            #     return redirect('sbs:sporcu')
+
+            elif user.groups.all()[0].name == 'Yonetim':
+                return redirect('sbs:federasyon')
+
+            elif user.groups.all()[0].name == 'Admin':
+                return redirect('sbs:view_admin')
+
+            elif user.groups.all()[0].name == 'Kulüp Yetkilisi':
+                return redirect('sbs:view_kulup_yonetici')
 
 
-                if user:  # Şifrenin doğru girilmesi
-                    if user.is_superuser:
-                        if Group.objects.all():
+            else:
+                return redirect('accounts:logout')
 
-                            auth.login(request, user)
-                            return redirect('sbs:view_admin')
-                        else:
-                            group = Group(name='Admin')
-                            group.save()
-                            group = Group(name='Personel')
-                            group.save()
-                            group = Group(name='Firma')
-                            group.save()
-                            if not user.groups.filter(name='Admin'):
-                                group = Group.objects.get(name='Admin')
-                                group.user_set.add(User.objects.get(is_superuser=True))
-                                active = ActiveGroup(user=User.objects.get(is_superuser=True), group=group)
-                                active.save()
-                            person = Person(user=login_user)
-                            person.save()
-                            return redirect('sbs:view_admin')
-                    person = Person.objects.get(user=login_user)
+        else:
+            # eski kullanici olma ihtimaline göre sisteme girme yöntemi
 
-                    # if datetime.datetime.now() - person.failed_time < datetime.timedelta(
-                    #         minutes=int(Settings.objects.get(key='failed_time').value)):
-                    #     messages.warning(request, 'Çok Fazla Hatalı Girişten Dolayı ' + str(
-                    #         datetime.datetime.now() - person.failed_time) + ' dk beklemelisiniz.')
-                    #
-                    #     return render(request, 'registration/login.html')
-                    # else:
-                    #     person.failed_login = 0
-                    #     person.save()
-                    active = ActiveGroupGetService(request, filter)
-                    if not active:
-                        if login_user.groups.all():
-                            active = ActiveGroup(user=login_user, group=login_user.groups.all()[0])
-                            active.save()
-                        else:
-                            messages.warning(request, 'Grup tanımlanmadığı için giriş yapılamamaktadır.')
-                            logout(request)
-                            return redirect('accounts:login')
+            try:
+                user = Club.objects.get(username=request.POST.get('username'),
+                                              password=request.POST.get('password'))
 
-                    if active.group.name == 'Firma':
-                        auth.login(request, user)
-                        return redirect('sbs:view_federasyon')
-                    elif active.group.name == 'Admin' or person.user.is_superuser:
-                        auth.login(request, user)
-                        return redirect('sbs:view_admin')
-                    if active.group.name == 'Yönetici':
-                        auth.login(request, user)
-                        return redirect('sbs:view_yonetici')
-                    else:
-                        auth.login(request, user)
-                        return redirect('sbs:view_personel')
+                if user is not None:
+                    if user.isRegister == False or user.isRegister is None:
+                        return redirect('accounts:newlogin', user.pk)
 
-            else:  # Şifrenin yanlış girilme durumu
-                if login_user:
-                    person = Person.objects.get(user=login_user)
-                    if person.failed_login == int(Settings.objects.get(key='failed_login').value):
-                        wait_time = int(Settings.objects.get(key='failed_time').value)
-                        if datetime.datetime.now() - person.failed_time > datetime.timedelta(
-                                minutes=wait_time):
-                            person.failed_login = 1
-                            person.save()
-
-                        else:
-                            messages.warning(request, 'Çok Fazla Hatalı Girişten Dolayı Hesabınız ' + str(
-                                wait_time) + ' dk Kilitlenmiştir.')
-                            return render(request, 'registration/login.html')
-
-                    else:
-                        person.failed_login = person.failed_login + 1
-                        person.save()
-                        if person.failed_login == int(Settings.objects.get(key='failed_login').value):
-                            person.failed_time = datetime.datetime.now()
-                            person.save()
+            except:
+                print()
 
             messages.warning(request, 'Mail Adresi Ve Şifre Uyumsuzluğu')
+            return render(request, 'registration/login.html')
 
-        return render(request, 'registration/login.html')
-    except Exception as e:
-        traceback.print_exc()
-        messages.warning(request, 'Mail Adresi Ve Şifre Uyumsuzluğu')
-        return redirect('accounts:login')
+    return render(request, 'registration/login.html')
 
 
 def forgot(request):
