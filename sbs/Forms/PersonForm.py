@@ -9,8 +9,8 @@ class PersonForm(BaseForm):
         model = Person
 
         fields = (
-            'tc', 'profileImage', 'iban', )
-        labels = {'tc': 'T.C. *', 'profileImage': 'Profil Resmi'}
+            'tc', 'profileImage', 'iban','birthDate',)
+        labels = {'tc': 'T.C. *', 'profileImage': 'Profil Resmi',}
 
         widgets = {
 
@@ -18,5 +18,9 @@ class PersonForm(BaseForm):
             'tc': forms.TextInput(
                 attrs={'class': 'form-control ', 'required': 'required', 'maxlength': '11', 'minlength': '11',
                        'onkeypress': 'validate(event)', 'name': 'tc', 'id': 'tc'}),
+            'birthDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker6', 'autocomplete': 'off',
+                       'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
+                       "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
 
         }

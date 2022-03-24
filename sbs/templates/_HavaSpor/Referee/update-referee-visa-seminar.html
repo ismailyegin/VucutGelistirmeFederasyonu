@@ -175,7 +175,7 @@
                             <div class="row">
 
                                 <div class="col-lg-12">
-                                    <div class="card-body">
+
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-group">
@@ -217,35 +217,35 @@
 
                                         </div>
 
-                                        <div class="card-footer">
-                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-
-                                                <button class="btn btn-outline-success" type="submit">Güncelle</button>
-                                            {% endif %}
-
-                                        </div>
 
 
-                                    </div>
+
+
                                 </div>
                             </div>
                         </form>
                     </div>
+                     <div class="card-footer">
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+
+                                                <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
+                                            {% endif %}
+
+                                        </div>
                 </div>
                 <div class="card card-info card-outline">
                     <div class="card-header with-border">
                         <h3 class="card-title"> Seçili Hakemler</h3>
-                    </div>
-                    <div class="card-header with-border">
-                        <div class="btn-group">
+
 
                             <a href="{% url "sbs:add-referee-visa-seminar" competition.uuid %}"
-                               type="button" class="btn btn-outline-success"><i
-                                    class="fa fa-plus"></i>Hakem Ekle
+                               type="button" class="btn btn-outline-info" title="Hakem Ekle" style="float:right;"><i
+                                    class="fa fa-plus"></i>
                             </a>
 
-                        </div>
+
                     </div>
+
                     <div class="card-body">
                         <table id="sporcular" class="table table-bordered table-hover">
                             <thead>
@@ -277,8 +277,8 @@
                                         <td>
                                             <div class="btn-group">
                                                 <a onclick="deleteReferee('{{ referee.uuid }}', '{{ competition.uuid }}')"
-                                                   type="button" class="btn btn-outline-danger"><i
-                                                        class="fa fa-trash"></i>Kaldır
+                                                   type="button" class="btn btn-outline-danger" title="Kaldır"><i
+                                                        class="fa fa-trash"></i>
                                                 </a>
                                             </div>
                                         </td>
@@ -336,24 +336,33 @@
 
                                         <td>
                                             {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                <div class="btn-group">
 
-                                                    <button type="button"
-                                                            class="btn btn-default dropdown-toggle dropdown-icon"
-                                                            data-toggle="dropdown"> İşlemler
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu">
-                                                        <a onclick="onayla('{{ compReferee.uuid }}', '{{ competition.uuid }}')"
-                                                           type="button" class="dropdown-item"><i
-                                                                class="fa fa-check"></i>Onayla
-                                                        </a>
 
-                                                        <a onclick="reddet('{{ compReferee.uuid }}', '{{ competition.uuid }}')"
-                                                           type="button" class="dropdown-item"><i
-                                                                class="fa fa-trash"></i>Reddet
-                                                        </a>
-                                                    </div>
-                                                </div>
+                                                 {% for item in perm %}
+                                                    {% if item == 'approval-referee-application-visa-seminar' %}
+                                                        <div class="btn-group">
+
+                                                            <a class="btn btn-outline-success"
+                                                               data-toggle="modal" title="Onayla"
+                                                              onclick="onayla('{{ compReferee.uuid }}', '{{ competition.uuid }}')"><i
+                                                                    class="fa fa-check"></i></a>
+
+                                                        </div>
+
+                                                    {% elif item == 'delete-referee-application-visa-seminar' %}
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-outline-danger"
+                                                               data-toggle="modal" title="Reddet"
+                                                               onclick="reddet('{{ compReferee.uuid }}', '{{ competition.uuid }}')"><i
+                                                                    class="fa fa-trash"></i></a>
+                                                        </div>
+                                                    {% endif %}
+
+
+                                                {% endfor %}
+
+
+
                                             {% endif %}
                                         </td>
 
@@ -374,14 +383,22 @@
     {% load  static %}
 
     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+
         <script>
             function deleteReferee(referee_uuid, competition_uuid) {
                 debugger;
-                console.log(referee_uuid);
-                console.log(competition_uuid);
-                var html = '';
-                $("#modal-delete").on("shown.bs.modal", function (e) {
-                    $("#btn-conf1").click(function () {
+
+                swal({
+                    title: "Silmek istediğinizden emin misiniz?",
+
+                    icon: "warning",
+                    buttons: [
+                        'Hayır!',
+                        'Evet'
+                    ],
+                }).then((result) => {
+                    if (result.dismiss !== 'Evet') {
+
                         $.ajax({
                             url: "{% url "sbs:delete-referee-visa-seminar" %}".replace(),
                             type: "POST",
@@ -392,42 +409,46 @@
                                 isActive: 'False'
                             },
                             success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Başarıyla silindi !!',
 
+                                    })
 
-                                html = ' Başarıyla Silindi.';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                } else {
+                                    swal({
+                                        icon: 'error',
+                                        title: 'İşlem başarısız !!',
 
-                                        window.location.replace("{% url "sbs:update-visa-seminar" competition.uuid%}");
+                                    })
+                                }
+                                location.reload();
 
-                                    });
-
-                                }).modal('show');
-
-
-                                console.log(result.status)
                             }
                         });
-                    });
-                }).modal('show');
-                $('#btn-close1').click(function () {
-                    $('#modal-delete').modal('hide');
-                });
+                    }
+
+                })
+
 
             }
-        </script>
-        <script>
+
             function reddet(refereeApplication_uuid, seminer_uuid) {
                 debugger;
-                console.log(refereeApplication_uuid);
-                console.log(seminer_uuid);
-                var html = '';
-                $("#modal-delete").on("shown.bs.modal", function (e) {
-                    $("#btn-conf1").click(function () {
+
+                swal({
+                    title: "Reddetmek istediğinizden emin misiniz?",
+                    icon: "warning",
+                    buttons: [
+                        'Hayır!',
+                        'Evet'
+                    ],
+                }).then((result) => {
+                    if (result.dismiss !== 'Evet') {
+
                         $.ajax({
-                            url: "{% url "sbs:delete-referee-application-visa-seminar" %}".replace(),
+                            url: "{% url "sbs:delete-referee-application-visa-seminar" %}",
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -436,42 +457,46 @@
                                 isActive: 'False'
                             },
                             success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Reddedildi',
 
-                                html = ' Reddedildi.';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                    })
 
-                                        window.location.replace("{% url "sbs:update-visa-seminar" competition.uuid %}");
+                                } else {
+                                    swal({
+                                        icon: 'error',
+                                        title: 'İşlem Başarısız !!',
 
-                                    });
+                                    })
+                                }
+                                location.reload();
 
-                                }).modal('show');
-
-
-                                console.log(result.status)
                             }
                         });
+                    }
+
+                })
 
 
-                    });
-                }).modal('show');
-                $('#btn-close1').click(function () {
-                    $('#modal-delete').modal('hide');
-                });
             }
-        </script>
-        <script>
+
             function onayla(refereeApplication_uuid, seminer_uuid) {
                 debugger;
-                console.log(refereeApplication_uuid);
-                console.log(seminer_uuid);
-                var html = '';
-                $("#modal-delete").on("shown.bs.modal", function (e) {
-                    $("#btn-conf1").click(function () {
+
+                swal({
+                    title: "Onaylamak istediğinizden emin misiniz?",
+                    icon: "warning",
+                    buttons: [
+                        'Hayır!',
+                        'Evet'
+                    ],
+                }).then((result) => {
+                    if (result.dismiss !== 'Evet') {
+
                         $.ajax({
-                            url: "{% url "sbs:approval-referee-application-visa-seminar" %}".replace(),
+                            url: "{% url "sbs:approval-referee-application-visa-seminar" %}",
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -480,32 +505,34 @@
                                 isActive: 'False'
                             },
                             success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Onaylandı',
 
-                                html = ' Onaylandı.';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                    })
 
-                                        window.location.replace("{% url "sbs:update-visa-seminar" competition.uuid %}");
+                                } else {
+                                    swal({
+                                        icon: 'error',
+                                        title: 'İşlem Başarısız !!',
 
-                                    });
+                                    })
+                                }
+                                location.reload();
 
-                                }).modal('show');
-
-
-                                console.log(result.status)
                             }
                         });
+                    }
+
+                })
 
 
-                    });
-                }).modal('show');
-                $('#btn-close1').click(function () {
-                    $('#modal-delete').modal('hide');
-                });
             }
+
+
         </script>
+
     {% endif %}
 
 {% endblock %}

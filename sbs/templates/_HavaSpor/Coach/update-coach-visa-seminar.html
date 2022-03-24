@@ -384,165 +384,167 @@
 
     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
         <script>
-         $(function () {
+            $(function () {
 
-            $('#antrenorlerTablo').DataTable({
-                dom: 'Bfrtip',
-
-
-                lengthMenu: [
-                    [10, 25, 50, 100, -1],
-                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
-                ],
-
-                'buttons': [
+                $('#antrenorlerTablo').DataTable({
+                    dom: 'Bfrtip',
 
 
-                    {
-                        extend: "pageLength",
+                    lengthMenu: [
+                        [10, 25, 50, 100, -1],
+                        ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                    ],
+
+                    'buttons': [
+
+
+                        {
+                            extend: "pageLength",
+                        },
+
+
+                        {
+                            extend: 'colvis',
+                            titleAttr: 'Ekle Çıkar'
+
+
+                        },
+                        {
+                            extend: 'print',
+                            title: 'YEKA LİSTESİ',
+                            text: '<i class="fa fa-print"></i>',
+
+                            titleAttr: 'Yazdır',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            download: 'open',
+                            text: '<i class="fa fa-file-pdf"></i>',
+
+                            titleAttr: 'Pdf Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel"></i>',
+                            titleAttr: 'Excel Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+
+                    ],
+                    "search": {
+                        "caseInsensitive": true,
                     },
-
-
-                    {
-                        extend: 'colvis',
-                        titleAttr: 'Ekle Çıkar'
-
-
+                    'language': {
+                        "url": "{% static 'datatable_tr/datatable_tr.json' %}"
                     },
-                    {
-                        extend: 'print',
-                        title: 'YEKA LİSTESİ',
-                        text: '<i class="fa fa-print"></i>',
+                    'paging': true,
+                    'lengthChange': true,
+                    'searching': true,
+                    'order': true,
+                    'info': true,
+                    'autoWidth': true,
+                    'responsive': true,
+                });
 
-                        titleAttr: 'Yazdır',
-                        exportOptions: {
-                            columns: ':visible'
-                        }
+
+                $('#antrenorler').DataTable({
+                    dom: 'Bfrtip',
+
+
+                    lengthMenu: [
+                        [10, 25, 50, 100, -1],
+                        ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                    ],
+
+                    'buttons': [
+
+
+                        {
+                            extend: "pageLength",
+                        },
+
+
+                        {
+                            extend: 'colvis',
+                            titleAttr: 'Ekle Çıkar'
+
+
+                        },
+                        {
+                            extend: 'print',
+                            title: 'YEKA LİSTESİ',
+                            text: '<i class="fa fa-print"></i>',
+
+                            titleAttr: 'Yazdır',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            download: 'open',
+                            text: '<i class="fa fa-file-pdf"></i>',
+
+                            titleAttr: 'Pdf Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel"></i>',
+                            titleAttr: 'Excel Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+
+                    ],
+                    "search": {
+                        "caseInsensitive": true,
                     },
-                    {
-                        extend: 'pdfHtml5',
-                        download: 'open',
-                        text: '<i class="fa fa-file-pdf"></i>',
-
-                        titleAttr: 'Pdf Kaydet',
-                        exportOptions: {
-                            columns: ':visible'
-                        }
+                    'language': {
+                        "url": "{% static 'datatable_tr/datatable_tr.json' %}"
                     },
-
-                    {
-                        extend: 'excelHtml5',
-                        text: '<i class="fa fa-file-excel"></i>',
-                        titleAttr: 'Excel Kaydet',
-                        exportOptions: {
-                            columns: ':visible'
-                        }
-                    },
-
-
-                ],
-                "search": {
-                    "caseInsensitive": true,
-                },
-                'language': {
-                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
-                },
-                'paging': true,
-                'lengthChange': true,
-                'searching': true,
-                'order': true,
-                'info': true,
-                'autoWidth': true,
-                'responsive': true,
-            });
+                    'paging': true,
+                    'lengthChange': true,
+                    'searching': true,
+                    'order': true,
+                    'info': true,
+                    'autoWidth': true,
+                    'responsive': true,
+                });
 
 
-
-            $('#antrenorler').DataTable({
-                dom: 'Bfrtip',
-
-
-                lengthMenu: [
-                    [10, 25, 50, 100, -1],
-                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
-                ],
-
-                'buttons': [
-
-
-                    {
-                        extend: "pageLength",
-                    },
-
-
-                    {
-                        extend: 'colvis',
-                        titleAttr: 'Ekle Çıkar'
-
-
-                    },
-                    {
-                        extend: 'print',
-                        title: 'YEKA LİSTESİ',
-                        text: '<i class="fa fa-print"></i>',
-
-                        titleAttr: 'Yazdır',
-                        exportOptions: {
-                            columns: ':visible'
-                        }
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        download: 'open',
-                        text: '<i class="fa fa-file-pdf"></i>',
-
-                        titleAttr: 'Pdf Kaydet',
-                        exportOptions: {
-                            columns: ':visible'
-                        }
-                    },
-
-                    {
-                        extend: 'excelHtml5',
-                        text: '<i class="fa fa-file-excel"></i>',
-                        titleAttr: 'Excel Kaydet',
-                        exportOptions: {
-                            columns: ':visible'
-                        }
-                    },
-
-
-                ],
-                "search": {
-                    "caseInsensitive": true,
-                },
-                'language': {
-                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
-                },
-                'paging': true,
-                'lengthChange': true,
-                'searching': true,
-                'order': true,
-                'info': true,
-                'autoWidth': true,
-                'responsive': true,
-            });
-
-
-
-
-
-        })
+            })
 
             function deleteCoach(coach_uuid, competition_uuid) {
                 debugger;
-                console.log(coach_uuid);
-                console.log(competition_uuid);
-                var html = '';
-                $("#modal-delete").on("shown.bs.modal", function (e) {
-                    $("#btn-conf1").click(function () {
+
+                swal({
+                    title: "Silmek istediğinizden emin misiniz?",
+                    icon: "warning",
+                    buttons: [
+                        'Hayır!',
+                        'Evet'
+                    ],
+                }).then((result) => {
+                    if (result.dismiss !== 'Evet') {
+
                         $.ajax({
-                            url: "{% url "sbs:delete-coach-visa-seminar" %}".replace(),
+                             url: "{% url "sbs:delete-coach-visa-seminar" %}".replace(),
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -551,42 +553,49 @@
                                 isActive: 'False'
                             },
                             success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Başarıyla silindi !!',
 
+                                    })
 
-                                html = ' Başarıyla Silindi.';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                } else {
+                                    swal({
+                                        icon: 'error',
+                                        title: 'İşlem başarısız !!',
 
-                                        window.location.replace("{% url "sbs:update-coach-visa-seminar" competition.uuid%}");
+                                    })
+                                }
+                                location.reload();
 
-                                    });
-
-                                }).modal('show');
-
-
-                                console.log(result.status)
                             }
                         });
-                    });
-                }).modal('show');
-                $('#btn-close1').click(function () {
-                    $('#modal-delete').modal('hide');
-                });
+                    }
+
+                })
+
 
             }
+
+
         </script>
         <script>
             function reddet(coachApplication_uuid, seminer_uuid) {
                 debugger;
-                console.log(coachApplication_uuid);
-                console.log(seminer_uuid);
-                var html = '';
-                $("#modal-delete").on("shown.bs.modal", function (e) {
-                    $("#btn-conf1").click(function () {
+
+                swal({
+                    title: "Reddetmek istediğinizden emin misiniz?",
+                    icon: "warning",
+                    buttons: [
+                        'Hayır!',
+                        'Evet'
+                    ],
+                }).then((result) => {
+                    if (result.dismiss !== 'Evet') {
+
                         $.ajax({
-                            url: "{% url "sbs:delete-coach-application-visa-seminar" %}".replace(),
+                            url: "{% url "sbs:delete-coach-application-visa-seminar" %}",
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -595,75 +604,82 @@
                                 isActive: 'False'
                             },
                             success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Reddedildi',
 
-                                html = ' Reddedildi.';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                    })
 
-                                        window.location.replace("{% url "sbs:update-coach-visa-seminar" competition.uuid %}");
+                                } else {
+                                    swal({
+                                        icon: 'error',
+                                        title: 'İşlem Başarısız !!',
 
-                                    });
+                                    })
+                                }
+                                location.reload();
 
-                                }).modal('show');
-
-
-                                console.log(result.status)
                             }
                         });
+                    }
+
+                })
 
 
-                    });
-                }).modal('show');
-                $('#btn-close1').click(function () {
-                    $('#modal-delete').modal('hide');
-                });
+            }
+
+            function onayla(coachApplication_uuid, seminer_uuid) {
+                debugger;
+
+                swal({
+                    title: "Onaylamak istediğinizden emin misiniz?",
+                    icon: "warning",
+                    buttons: [
+                        'Hayır!',
+                        'Evet'
+                    ],
+                }).then((result) => {
+                    if (result.dismiss !== 'Evet') {
+
+                        $.ajax({
+                            url: "{% url "sbs:approval-coach-application-visa-seminar" %}",
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                coachApplication_uuid: coachApplication_uuid,
+                                seminer_uuid: seminer_uuid,
+                                isActive: 'False'
+                            },
+                            success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Onaylandı',
+
+                                    })
+
+                                } else {
+                                    swal({
+                                        icon: 'error',
+                                        title: 'İşlem Başarısız !!',
+
+                                    })
+                                }
+                                location.reload();
+
+                            }
+                        });
+                    }
+
+                })
+
+
             }
         </script>
         <script>
-            function onayla(coachApplication_uuid, seminer_uuid) {
-                debugger;
-                console.log(coachApplication_uuid);
-                console.log(seminer_uuid);
-                var html = '';
-                $("#modal-delete").on("shown.bs.modal", function (e) {
-                    $("#btn-conf1").click(function () {
-                        $.ajax({
-                            url: "{% url "sbs:approval-coach-application-visa-seminar" %}".replace(),
-                            type: "POST",
-                            data: {
-                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                                coachApplication_uuid: coachApplication_uuid,
-                                seminer_uuid: seminer_uuid,
-                                isActive: 'False'
-                            },
-                            success: function (result) {
-
-                                html = ' Onaylandı.';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
-
-                                        window.location.replace("{% url "sbs:update-coach-visa-seminar" competition.uuid %}");
-
-                                    });
-
-                                }).modal('show');
 
 
-                                console.log(result.status)
-                            }
-                        });
-
-
-                    });
-                }).modal('show');
-                $('#btn-close1').click(function () {
-                    $('#modal-delete').modal('hide');
-                });
-            }
         </script>
     {% endif %}
 
