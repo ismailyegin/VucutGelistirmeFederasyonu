@@ -234,16 +234,30 @@
                             <div class="card-body">
 
                                 <div class="row">
+                                    <div class="form-group col-lg-4">
+                                        <label> İl </label>
+                                        <input class="form-control" readonly="readonly" type="text" name="clubIl" id="clubIl">
+                                    </div>
 
-                                    {% for item in communication_form %}
-                                        <div class="form-group col-lg-4">
-                                            <label> {{ item.label }}</label>
-                                            {{ item }}
-                                            <label for="" id="label_{{ item.name }}"></label>
-                                        </div>
-                                    {% endfor %}
+                                    <div class="form-group col-lg-4">
+                                        <label> İlçe </label>
+                                        <input class="form-control" readonly="readonly" type="text" name="clubIlce" id="clubIlce">
+                                    </div>
 
+                                    <div class="form-group col-lg-4">
+                                        <label> Adres </label>
+                                        <textarea class="form-control" readonly="readonly" rows="2" type="text" name="clubAdres" id="clubAdres"></textarea>
+                                    </div>
 
+                                    <div class="form-group col-lg-4">
+                                        <label> Telefon Numarası </label>
+                                        <input class="form-control" readonly="readonly" type="text" id="clubPhone" name="clubPhone">
+                                    </div>
+
+                                    <div class="form-group col-lg-4">
+                                        <label> Fax </label>
+                                        <input class="form-control" readonly="readonly" type="text" id="clubFax" name="clubFax">
+                                    </div>
                                 </div>
 
 
@@ -436,11 +450,11 @@
                             document.getElementById('id_foundingDate').value = info.KurulusTarihi
                             document.getElementById('id_clubMail').value = info.Eposta
                             document.getElementById('id_derbis').value = info.DerbisKutukNo
-                            document.getElementById('id_phoneNumber').value = info.Telefon
-                            document.getElementById('id_city').value = info.Il
-                            document.getElementById('id_address').value = info.Adres
-                            document.getElementById('id_town').value = info.Ilce
-                            document.getElementById('id_fax').value = info.Faks
+                            document.getElementById('clubPhone').value = info.Telefon
+                            document.getElementById('clubIl').value = info.Il
+                            document.getElementById('clubAdres').value = info.Adres
+                            document.getElementById('clubIlce').value = info.Ilce
+                            document.getElementById('clubFax').value = info.Faks
                             document.getElementById('kulupBaskani').style.display = 'block'
 
 

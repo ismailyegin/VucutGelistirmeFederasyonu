@@ -93,7 +93,6 @@ def add_club(request):
         logout(request)
         return redirect('accounts:login')
     club_form = TransClubForm()
-    communication_form = TransCommunicationForm()
     manager_communication_form = CommunicationForm()
     manager_person_form = PersonForm()
     user_form = RefereeUserForm()
@@ -104,21 +103,25 @@ def add_club(request):
     if request.method == 'POST':
 
         club_form = TransClubForm(request.POST or None, request.FILES or None)
-        communication_form = TransCommunicationForm(request.POST or None, request.FILES)
         manager_communication_form = CommunicationForm(request.POST or None, request.FILES)
         manager_person_form = PersonForm(request.POST or None, request.FILES or None)
         user_form = RefereeUserForm(request.POST or None, request.FILES)
 
         try:
             with transaction.atomic():
-                if club_form.is_valid() and communication_form.is_valid() and user_form.is_valid() and manager_person_form.is_valid() and manager_communication_form.is_valid():
+                if club_form.is_valid() and user_form.is_valid() and manager_person_form.is_valid() and manager_communication_form.is_valid():
                     clubsave = Club()
-                    clubsave.name = club_form.cleaned_data['name'],
-                    clubsave.foundingDate = club_form.cleaned_data['foundingDate'],
-                    clubsave.derbis = club_form.cleaned_data['derbis'],
+                    clubsave.name = club_form.cleaned_data['name']
+                    clubsave.foundingDate = club_form.cleaned_data['foundingDate'].strftime("%d/%m/%Y")
+                    clubsave.derbis = club_form.cleaned_data['derbis']
                     clubsave.clubMail = club_form.cleaned_data['clubMail']
                     clubsave.save()
-                    communication = communication_form.save(commit=False)
+                    communication = Communication()
+                    communication.city = City.objects.get(name=request.POST.get("clubIl"))
+                    communication.phoneNumber = request.POST.get("clubPhone")
+                    communication.address = request.POST.get("clubAdres")
+                    communication.town = request.POST.get("clubIlce")
+                    communication.fax = request.POST.get("clubFax")
                     communication.save()
                     clubsave.communication = communication
                     clubsave.save()
@@ -171,10 +174,9 @@ def add_club(request):
             return redirect('sbs:add_club')
 
     return render(request, '_HavaSpor/Kulup/add-club.html',
-                  {'club_form': club_form, 'communication_form': communication_form, 'urls': urls,
-                   'current_url': current_url,
-                   'url_name': url_name, 'manager_communication_form': manager_communication_form,
-                   'manager_person_form': manager_person_form, 'user_form': user_form, })
+                  {'club_form': club_form, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'manager_communication_form': manager_communication_form, 'manager_person_form': manager_person_form, 'user_form': user_form, })
+
 
 
 @login_required
