@@ -434,24 +434,25 @@
                             uuid: id,
                         },
                         success: function (result) {
-                            if (result.status === 'Success') {
-                                html = '';
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Kulüp Üyesi başarıyla silindi !!',
 
-                            } else {
-                                debugger;
-                                let toast = document.getElementById('error_message');
-                                html = 'Bu Kulüp Silinemez';
-                                toast.innerHTML = html;
-                                document.getElementById('error_toast').style.display = 'block';
-                                $('.error').toast('show');
-                                $('.toast').fadeOut(5000);
+                                    })
 
+                                }
+                                else {
+                                     swal({
+                                        icon: 'error',
+                                        title: 'Kulüp Üyesi silinemedi !!',
+
+                                    })
+                                }
+                               location.reload();
 
                             }
-
-                            console.log(result.status)
-                        }
-                    });
+                        });
             }
 
         })
