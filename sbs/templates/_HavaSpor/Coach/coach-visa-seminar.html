@@ -476,14 +476,22 @@
         }
     </script>
     <script>
-        function deleteCompetition(uuid) {
+    function deleteCompetition(uuid) {
+            debugger;
 
-            console.log(uuid);
-            var html = ''
-            $("#modal-delete").on("shown.bs.modal", function (e) {
-                $("#btn-conf1").click(function () {
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+
                     $.ajax({
-                        url: "{% url "sbs:delete-coach-visa-seminar" %}".replace(),
+                          url: "{% url "sbs:delete-coach-visa-seminar" %}".replace(),
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -491,28 +499,29 @@
                             isActive: 'False'
                         },
                         success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Başarıyla silindi !!',
 
-                            html = 'Seminer Başarıyla Silindi';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
+                                    })
 
-                                    window.location.replace("{% url "sbs:coach-visa-seminar" %}");
+                                }
+                                else {
+                                     swal({
+                                        icon: 'error',
+                                        title: 'Silinemedi !!',
 
-                                });
+                                    })
+                                }
+                               location.reload();
 
-                            }).modal('show');
+                            }
+                        });
+            }
 
+            })
 
-                            console.log(result.status)
-                        }
-                    });
-                });
-            }).modal('show');
-            $('#btn-close1').click(function () {
-                $('#modal-delete').modal('hide');
-            });
 
         }
     </script>
