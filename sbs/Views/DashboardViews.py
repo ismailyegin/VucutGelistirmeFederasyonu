@@ -35,15 +35,17 @@ from django.core import serializers
 
 @login_required
 def return_directory_dashboard(request):
-    perm = general_methods.control_access(request)
-    if not perm:
-        logout(request)
-        return redirect('accounts:login')
+    # perm = general_methods.control_access(request)
+    # if not perm:
+    #     logout(request)
+    #     return redirect('accounts:login')
 
-    return render(request, 'anasayfa/federasyon.html',
+    return render(request, 'TVGFBF/Anasayfa/federasyon.html',
                   {
 
                   })
+
+
 
 
 @login_required
@@ -55,99 +57,9 @@ def return_personel_dashboard(request):
         logout(request)
         return redirect('accounts:login')
 
-    calendar_filter = {
-        'isDeleted': False,
-        'user': request.user
-    }
 
-    calendarNames = CalendarNameService(request, calendar_filter)
-    yekas = YekaService(request, None).order_by('-date')
-    comp_array = []
-    urls = last_urls(request)
-    current_url = resolve(request.path_info)
-    url_name = Permission.objects.get(codename=current_url.url_name)
-    regions = ConnectionRegionService(request, None)
-    connection_regions = ConnectionRegion.objects.filter(isDeleted=False,yeka__isDeleted=False)
 
-    days = VacationDayService(request, None)
-
-    res_count = yekas.filter(type='Rüzgar').count()
-    ges_count = yekas.filter(type='Güneş').count()
-    biyo_count = yekas.filter(type='Biyokütle').count()
-    jeo_count = yekas.filter(type='Jeotermal').count()
-    user = request.user
-    person_filter = {
-        'person__user': user,
-    }
-
-    employee = EmployeeGetService(request, person_filter)
-    competition_filter = {
-        'employee': employee,
-    }
-    competition_array = []
-    all_yeka = []
-    competitions = YekaCompetitionPersonService(request, competition_filter)
-    for competition in competitions:
-        competition_array.append(competition.competition.pk)
-    for yeka in yekas:
-        yeka_dict = dict()
-        yeka_all_dict = dict()
-        regions = yeka.connection_region.filter(isDeleted=False).filter(
-            yekacompetition__pk__in=competition_array).distinct()
-        region_all = yeka.connection_region.filter(isDeleted=False)
-        if regions:
-            yeka_dict['yeka'] = yeka
-            yeka_dict['regions'] = regions
-            comp_array.append(yeka_dict)
-        yeka_all_dict['yeka'] = yeka
-        yeka_all_dict['regions'] = region_all
-        all_yeka.append(yeka_all_dict)
-    competitions_yeka=[]
-    yeka_accept_array = []
-    for yeka in yekas:
-        accept_array = []
-        accept_dict = dict()
-        accept_dict['yeka'] = yeka
-        for region in yeka.connection_region.filter(isDeleted=False):
-            for competition in region.yekacompetition.filter(isDeleted=False):
-                yeka_accepts = YekaAccept.objects.filter(business=competition.business).filter(isDeleted=False)
-                if yeka_accepts:
-                    yeka_accept = YekaAccept.objects.get(business=competition.business, isDeleted=False)
-                    for accept in yeka_accept.accept.filter(isDeleted=False):
-                        accept_array.append(accept)
-                comp_dict = dict()
-                comp_dict['pk'] = competition.pk
-                comp_dict['competition'] = '(' + yeka.definition + ')' + ' - ' + competition.name
-                competitions_yeka.append(comp_dict)
-        accept_dict['accepts'] = accept_array
-        yeka_accept_array.append(accept_dict)
-
-    yeka_capacity_array = []
-    for yeka_accept in yeka_accept_array:
-        yeka_capacity_dict = dict()
-        yeka_capacity_dict['label'] = yeka_accept['yeka'].definition
-        total_installed = 0
-        total_current = 0
-        for accept in yeka_accept['accepts']:
-            total_installed += float(accept.installedPower)
-            total_current += float(accept.currentPower)
-        capacity_total = round(float(total_installed + total_current), 3)
-        yeka_capacity_dict['remaining_capacity'] = round(yeka_accept['yeka'].capacity - round(float(capacity_total), 3),3)
-        yeka_capacity_dict['total'] = yeka_accept['yeka'].capacity
-        yeka_capacity_dict['capacity'] = capacity_total
-        if not yeka_capacity_dict in yeka_capacity_array:
-            yeka_capacity_array.append(yeka_capacity_dict)
-
-    return render(request, 'anasayfa/personel.html',
-
-                  {'yeka_competition': competitions_yeka,
-                   # 'region_json': region_json,'yeka_json':yeka_json,
-                   'regions': regions, 'res_count': res_count, 'yeka': yekas, 'vacation_days': days,
-                   'ges_count': ges_count, 'comp_array': comp_array, 'all_yeka': all_yeka,
-                   'yeka_capacity': yeka_capacity_array,'urls': urls, 'current_url': current_url, 'url_name': url_name,
-                   'jeo_count': jeo_count, 'biyo_count': biyo_count, 'person_comp': competition_array,
-                   'calendarNames': calendarNames, 'person_competitions': competitions,'region_all':connection_regions
-                   })
+    return render(request, 'anasayfa/personel.html', {})
 
 
 @login_required
@@ -222,13 +134,33 @@ def return_yonetici_dashboard(request):
 
     regions = ConnectionRegionService(request, None)
 
-    return render(request, 'anasayfa/yonetici-anasayfa.html',
+    return render(request, 'TVGFBF/Anasayfa/federasyon.html',
                   {'res_count': res_count, 'yeka': yekas, 'vacation_days': days,
                    'ges_count': ges_count, 'yekas': comp_array,'regions':regions,
                    'jeo_count': jeo_count, 'biyo_count': biyo_count, 'yeka_capacity': yeka_capacity_array,
                    'calendarNames': calendarNames, 'competitions': competitions,
                    })
 
+
+@login_required
+def return_coach_dashboard(request):
+    perm = general_methods.control_access_klup(request)
+    login_user = request.user
+    user = User.objects.get(pk=login_user.pk)
+    coach=None
+    athlete_count=0
+    if Coach.objects.filter(person__user=user):
+        coach = Coach.objects.get(person_user=user)
+        clup = Club.objects.filter(coachs=coach)
+        clupsPk = []
+        for item in clup:
+            clupsPk.append(item.pk)
+        athletes = Athlete.objects.filter(licenses__sportsClub_id__in=clupsPk).distinct()
+        athletes |= Athlete.objects.filter(licenses__coach=coach).distinct()
+
+        athlete_count = athletes.count()
+
+    return render(request, 'TVGFBF/Anasayfa/antrenor.html', {'athlete_count': athlete_count})
 
 @login_required
 def return_club_user_dashboard(request):
@@ -241,66 +173,31 @@ def return_club_user_dashboard(request):
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     current_user = request.user
-    clubuser = SportClubUser.objects.get(user=current_user)
-    club = Club.objects.filter(clubUser=clubuser)[0]
+    total_club_user=0
+    total_coach=0
+    athletes=None
+    total_athlete=0
+    coachs=None
+    clubUsers=None
+    if SportClubUser.objects.filter(user=current_user):
+        clubuser = SportClubUser.objects.get(user=current_user)
+        club = Club.objects.filter(clubUser=clubuser)[0]
 
 
-    total_club_user = club.clubUser.count()
-    total_coach = club.coachs.all().count()
-    sc_user = SportClubUser.objects.get(user=user)
-    clubsPk = []
-    clubs = Club.objects.filter(clubUser=sc_user)
-    for club in clubs:
-        clubsPk.append(club.pk)
-    total_athlete = Athlete.objects.filter(club__in=clubsPk).distinct().count()
-
-    # Sporcu bilgilerinde eksik var mı diye control
-    athletes = Athlete.objects.none()
-    if user.groups.filter(name='Kulüp Yetkilisi'):
+        total_club_user = club.clubUser.count()
+        total_coach = club.coachs.all().count()
+        coachs=club.coachs.all()
+        clubUsers=club.clubUser.all()
         sc_user = SportClubUser.objects.get(user=user)
-        if sc_user.dataAccessControl == False or sc_user.dataAccessControl == None:
-            clubsPk = []
-            clubs = Club.objects.filter(clubUser=sc_user)
-            for club in clubs:
-                if club.dataAccessControl == False or club.dataAccessControl is None:
-                    clubsPk.append(club.pk)
-
-            if len(clubsPk) != 0:
-                athletes = Athlete.objects.filter(club__in=clubsPk).distinct()
-                athletes = athletes.filter(person__user__last_name='') | athletes.filter(person__user__first_name='') | athletes.filter(
-                    person__user__email='') | athletes.filter(person__tc='') | athletes.filter(
-                    person__birthDate=None) | athletes.filter(
-                    person__gender=None) | athletes.filter(person__birthplace='') | athletes.filter(
-                    person__motherName='') | athletes.filter(person__fatherName='') | athletes.filter(
-                    communication__city__name='') | athletes.filter(communication__country__name='')
-                # false degerinde clubun eksigi yok anlamında kulanilmistir.
-                for club in clubs:
-                    if athletes:
-                        club.dataAccessControl = False
-                        club.save()
-
-                    else:
-
-                        club.dataAccessControl = True
-                        club.save()
-
-
-                if athletes:
-                    sc_user.dataAccessControl = False
-
-                else:
-                    sc_user.dataAccessControl = True
-
-                sc_user.save()
-
-
-            else:
-                sc_user.dataAccessControl = True
-                sc_user.save()
+        clubsPk = []
+        clubs = Club.objects.filter(clubUser=sc_user)
+        for club in clubs:
+            clubsPk.append(club.pk)
+        # total_athlete = Athlete.objects.filter(club__in=clubsPk).distinct().count()
 
     return render(request, 'TVGFBF/Anasayfa/kulup-uyesi.html',
                   {'total_club_user': total_club_user, 'total_coach': total_coach,
-                   'total_athlete': total_athlete, 'athletes': athletes,
+                   'total_athlete': total_athlete, 'athletes': athletes,'coachs':coachs,'clubUsers':clubUsers,
                    'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
 @login_required
@@ -315,7 +212,12 @@ def return_referee_dashboard(request):
     url_name = Permission.objects.get(codename=current_url.url_name)
 
     user = User.objects.get(pk=request.user.pk)
-    judge = Referee.objects.get(user=user)
+    judge=None
+    visa=None
+    if Referee.objects.filter(person__user=user):
+        judge=Referee.objects.get(person__user=user)
+
+
     return render(request, 'TVGFBF/Anasayfa/hakem.html', {'user': user, 'judge': judge,
                                                    'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
@@ -405,12 +307,14 @@ def activeGroup(request, pk):
     if group.name == "Admin":
         return redirect('sbs:view_admin')
 
-    elif group.name == 'Yönetici':
+    elif group.name == 'Yönetim':
         return redirect('sbs:view_federasyon')
     elif group.name == 'Hakem':
-        return redirect('sbs:view_personel')
+        return redirect('sbs:hakem')
     elif group.name == 'Antrenör':
-        return redirect('sbs:view_personel')
+        return redirect('sbs:antrenor')
+    elif group.name == 'Kulüp Yetkilisi':
+        return redirect('sbs:kulup-uyesi')
     else:
         logout(request)
         return redirect('accounts:404')

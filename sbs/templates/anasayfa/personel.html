@@ -68,7 +68,7 @@
                     e.handled = true;
 
                     $.ajax({
-                        url: "{% url "ekabis:api_connection_region_competitions"%}",
+                        url: "{% url "sbs:api_connection_region_competitions"%}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -87,7 +87,7 @@
 
                                 for (var comp in competitions) {
 
-                                    var url_detail = "{% url 'ekabis:view_yeka_competition_detail' '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
+                                    var url_detail = "{% url 'sbs:view_yeka_competition_detail' '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
                                     url_detail = url_detail.replace('7729c6ee-739d-4a89-8ffe-1357e691ca16', competitions[comp].competition_id);
                                     html = "<a href='" + url_detail + "' class='list-group-item list-group-item-action'>" + competitions[comp].yeka+' - '+competitions[comp].competition + "</a>"
                                     $("#competition_list").prepend(html)
@@ -269,7 +269,7 @@
 
                             <i class="fa fa-wind"></i>
                         </div>
-                        <a href="{% url 'ekabis:view_yeka_by_type' 'Rüzgar' %}" class="small-box-footer">
+                        <a href="{% url 'sbs:view_yeka_by_type' 'Rüzgar' %}" class="small-box-footer">
                             <i class="fas fa-arrow-circle-right"></i>Daha Fazla Bilgi
                         </a>
                     </div>
@@ -285,7 +285,7 @@
                         <div class="icon">
                             <i class="fa fa-sun"></i>
                         </div>
-                        <a href="{% url 'ekabis:view_yeka_by_type' 'Güneş' %}" class="small-box-footer">
+                        <a href="{% url 'sbs:view_yeka_by_type' 'Güneş' %}" class="small-box-footer">
                             <i class="fas fa-arrow-circle-right"></i>Daha Fazla Bilgi
                         </a>
                     </div>
@@ -302,7 +302,7 @@
                             debugger;
 
                             $.ajax({
-                                url: "{% url "ekabis:delete_competition"%}",
+                                url: "{% url "sbs:delete_competition"%}",
                                 type: "POST",
                                 data: {
                                     'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -357,7 +357,7 @@
                         {% for item in perm %}
                             {% if item == 'add_yeka' %}
 
-                                <a href="{% url "ekabis:add_yeka" %}"
+                                <a href="{% url "sbs:add_yeka" %}"
                                    type="button" class="btn btn-outline-primary btn-sm" style="float: right"><i
                                         class="fa fa-plus" title="Yeni Yeka Ekle"></i>
                                 </a>
@@ -394,7 +394,7 @@
                                                                 <tr data-widget="expandable-table"
                                                                     aria-expanded="false">
                                                                     <td>
-                                                                        <a href="{% url 'ekabis:view_yeka_detail' item.yeka.uuid %}"
+                                                                        <a href="{% url 'sbs:view_yeka_detail' item.yeka.uuid %}"
                                                                            class="button" title="Detay"
                                                                            type="button"><i
                                                                                 class="fa fa-search"></i> Detay </a>
@@ -444,7 +444,7 @@
                                                                                                                 <tr data-widget="expandable-table"
                                                                                                                     aria-expanded="false">
                                                                                                                     <td>
-                                                                                                                        <a href="{% url 'ekabis:view_yeka_competition_detail' competition.uuid %}"> {{ competition.name }} </a>
+                                                                                                                        <a href="{% url 'sbs:view_yeka_competition_detail' competition.uuid %}"> {{ competition.name }} </a>
                                                                                                                     </td>
                                                                                                                 </tr>
                                                                                                             {% endif %}
@@ -490,7 +490,7 @@
                         {% for item in perm %}
                             {% if item == 'add_yeka' %}
 
-                                <a href="{% url "ekabis:add_yeka" %}"
+                                <a href="{% url "sbs:add_yeka" %}"
                                    type="button" class="btn btn-outline-primary btn-sm" style="float: right"><i
                                         class="fa fa-plus" title="Yeni Yeka Ekle"></i>
                                 </a>
@@ -527,7 +527,7 @@
                                                                 <tr data-widget="expandable-table"
                                                                     aria-expanded="false">
                                                                     <td>
-                                                                        <a href="{% url 'ekabis:view_yeka_detail' item.yeka.uuid %}"
+                                                                        <a href="{% url 'sbs:view_yeka_detail' item.yeka.uuid %}"
                                                                            class="button" title="Detay"
                                                                            type="button"><i
                                                                                 class="fa fa-search"></i> Detay </a>
@@ -577,7 +577,7 @@
                                                                                                             <tr data-widget="expandable-table"
                                                                                                                 aria-expanded="false">
                                                                                                                 <td>
-                                                                                                                    <a href="{% url 'ekabis:view_yeka_competition_detail' competition.uuid %}"> {{ competition.name }} </a>
+                                                                                                                    <a href="{% url 'sbs:view_yeka_competition_detail' competition.uuid %}"> {{ competition.name }} </a>
                                                                                                                 </td>
                                                                                                             </tr>
 
@@ -1053,7 +1053,7 @@
                             {% for item in perm %}
                                 {% if item == 'add_calendarName' %}
 
-                                    <a href="{% url "ekabis:add_calendarName" %}"
+                                    <a href="{% url "sbs:add_calendarName" %}"
                                        type="button" class="btn btn-outline-primary btn-sm"
                                        style="float: right"><i
                                             class="fa fa-plus" title="Not Ekle"></i>
@@ -1102,526 +1102,6 @@
 
 
 
-
-    <script>
-        $(document).ready(function () {
-            debugger;
-            all_region();
-            var z = [];
-            z ={{ yeka_capacity | safe }};
-            // LINE CHART
-            let capacity_labels = [];
-            let capacity_remaining = []
-            let capacity = [];
-
-            debugger;
-            for (var k = 0; k < z.length; k++) {
-                debugger;
-                capacity_labels.push(z[k].label)
-                capacity_remaining.push(z[k].total)
-                capacity.push(z[k].capacity)
-
-
-            }
-
-
-            var areaChartData = {
-                labels: capacity_labels,
-                datasets: [
-                    {
-                        label: 'Kurulu Güç (MWe)',
-                        backgroundColor: 'rgba(60,141,188,0.9)',
-                        borderColor: 'rgba(60,141,188,0.8)',
-                        pointRadius: false,
-                        pointColor: '#3b8bba',
-                        pointStrokeColor: 'rgba(60,141,188,1)',
-                        pointHighlightFill: '#fff',
-                        pointHighlightStroke: 'rgba(60,141,188,1)',
-                        data: capacity
-                    },
-                    {
-                        label: 'Toplam Güç (MWe)',
-                        backgroundColor: 'rgba(210, 214, 222, 1)',
-                        borderColor: 'rgba(210, 214, 222, 1)',
-                        pointRadius: false,
-                        pointColor: 'rgba(210, 214, 222, 1)',
-                        pointStrokeColor: '#c1c7d1',
-                        pointHighlightFill: '#fff',
-                        pointHighlightStroke: 'rgba(220,220,220,1)',
-                        data: capacity_remaining
-                    },
-
-                ]
-            }
-            var barChartCanvas = $('#barChart').get(0).getContext('2d')
-            var barChartData = $.extend(true, {}, areaChartData)
-            var temp0 = areaChartData.datasets[0]
-            var temp1 = areaChartData.datasets[1]
-            barChartData.datasets[0] = temp1
-            barChartData.datasets[1] = temp0
-
-            var barChartOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                datasetFill: false
-            }
-
-            new Chart(barChartCanvas, {
-                type: 'bar',
-                data: barChartData,
-                options: barChartOptions
-            })
-
-
-        })
-
-    </script>
-
-    <script>
-        $("#select_pieChart").change(function (e) {
-            var graphArray2 = []
-            var accepts = []
-            let label2 = []
-            $.ajax({
-                url: "{% url "ekabis:api_yeka_accept" %}",
-                type: "POST",
-                async: true,
-                data: {
-                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                    pk: $(this).val(),
-                },
-                success: function (result) {
-                    debugger;
-                    accepts = result.accepts;
-                    if (accepts.length > 0) {
-                        var html = ''
-                        html += '<canvas id="pieChart2" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 572px;" width="715" height="312" class="chartjs-render-monitor"></canvas>';
-                        document.getElementById('chart').innerHTML = html;
-
-                        var x = accepts;
-                        for (var i = 0; i < x.length; i++) {
-                            label2.push(x[i].label.toString())
-                            graphArray2.push(x[i].power)
-
-                        }
-
-                        var donutData2 = {
-                            labels: label2,
-                            datasets: [
-                                {
-                                    data: graphArray2,
-                                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#24c2d0', '#3c8dbc', '#d2d6df', '#ce60d0', '#f1d53b', '#3275d5', '#4659c7', '#d77399', '#fc0000'],
-                                }
-                            ]
-                        }
-
-
-                        var pieChartCanvas2 = $('#pieChart2').get(0).getContext('2d')
-                        var pieData2 = donutData2;
-                        var pieOptions2 = {
-                            maintainAspectRatio: false,
-                            responsive: true,
-                        }
-                        //Create pie or douhnut chart
-                        // You can switch between pie and douhnut using the method below.
-                        new Chart(pieChartCanvas2, {
-                            type: 'pie',
-                            data: pieData2,
-                            options: pieOptions2
-                        })
-                    } else {
-                        var html2 = ''
-                        html2 = 'Yarışmaya ait kabul bulunmamaktadır';
-                        document.getElementById('chart').innerHTML = html2;
-                    }
-
-
-                }
-            })
-
-        })
-         function degerAta(count, city) {
-
-
-            var patternAColor = '#E9A635';
-            var patternBColor = '#E7721C';
-            var patternCColor = '#EC3333';
-
-
-            switch (count) {
-                case 1:
-                    $("g[data-plakakodu=" + city + "] path").css({fill: patternAColor})
-                    break;
-                case 2:
-                    $("g[data-plakakodu=" + city + "] path").css({fill: patternAColor})
-                    break;
-                case 3:
-                    $("g[data-plakakodu=" + city + "] path").css({fill: patternAColor})
-                    break;
-                case 4:
-                    $("g[data-plakakodu=" + city + "] path").css({fill: patternBColor})
-                    break;
-                case 5:
-                    $("g[data-plakakodu=" + city + "] path").css({fill: patternBColor})
-                    break;
-                case 6:
-                    $("g[data-plakakodu=" + city + "] path").css({fill: patternBColor})
-                    break;
-
-                default:
-                    $("g[data-plakakodu=" + city + "] path").css({fill: patternCColor})
-            }
-
-        }
-        function all_region() {
-            var data = new Array();
-                {% for region in region_all %}
-                    {% for item in region.cities.all %}
-                        data.push("{{ item.plateNo }}");
-                        count = data.filter(x => x =={{ item.plateNo }}).length;
-                        degerAta(count, '{{ item.plateNo }}');
-                    {% endfor %}
-                {% endfor %}
-
-        }
-        $(function () {
-
-            $(".clickable-row").click(function () {
-                window.location = $(this).data("href");
-            });
-
-            $("#id_yeka_select").change(function (e) {
-
-                if ($(this).val() === 'all_regions') {
-                    debugger;
-                    var select2 = document.getElementById('selected_yeka')
-                    var select3 = document.getElementById('selected_yeka_type')
-                    select2.style.display = 'none';
-                    select2.value = ""
-                    select3.value = ""
-                    select3.style.display = 'none';
-                    $("g path").css({fill: '#222'});
-                    all_region();
-                } else if ($(this).val() === 'select_yeka') {
-                    var select = document.getElementById('selected_yeka_type')
-                    select.style.display = 'none';
-                    select.value = ""
-                    document.getElementById('selected_yeka').style.display = 'block';
-
-                } else if ($(this).val() === 'yeka_type_select') {
-                    var select4 = document.getElementById('selected_yeka')
-                    select4.style.display = 'none';
-                    select4.value = ""
-                    document.getElementById('selected_yeka_type').style.display = 'block';
-
-                }
-
-            });
-            $("#selected_yeka").change(function (e) {
-
-                debugger;
-
-                if (e.handled !== true) { // This will prevent event triggering more then once
-                    e.handled = true;
-
-                    $.ajax({
-                        url: "{% url "ekabis:api_connection_region_cities" %}",
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            uuid: $(this).val(),
-                        },
-                        success: function (result) {
-                            debugger;
-                            console.log(result)
-
-                            if (result.status === 'Success') {
-                                $("g path").css({fill: '#222'});
-                                var cities = JSON.parse(result.cities[0]);
-                                var regions = JSON.parse(result.cities[1]);
-                                var city_array = []
-                                for (var x in regions) {
-                                    var capacity = 0
-                                    var city = regions[x].fields.cities
-                                    capacity = regions[x].fields.capacity;
-                                    var field = {
-                                        cities: city,
-                                        capacity: capacity,
-                                    }
-                                    city_array.push(field)
-                                }
-                                for (var k in city_array) {
-                                    var region_city = $("g[data-plakakodu=" + cities[k].fields.plateNo + "] path")
-                                    console.log(cities[k].fields.plateNo);
-                                    if (city_array[k].capacity > 0 && city_array[k].capacity <= 100) {
-                                        region_city.css({fill: '#007bff'});
-                                    } else if (city_array[k].capacity > 100 && city_array[k].capacity <= 250) {
-                                        region_city.css({fill: '#28a745'});
-                                    } else if (city_array[k].capacity >= 250 && city_array[k].capacity <= 500) {
-                                        region_city.css({fill: '#ffc107'});
-                                    } else if (city_array[k].capacity >= 500 && city_array[k].capacity <= 750) {
-                                        region_city.css({fill: '#fd7e14'});
-                                    } else if (city_array[k].capacity >= 750 && city_array[k].capacity <= 1000) {
-                                        region_city.css({fill: '#dc3545'});
-                                    }
-
-                                }
-
-                                var html = '<ul class="fc-color-picker" id="color-chooser" style="font-size: 25px">';
-                                html += ' <li><a class="text-primary" style="font-size: 20px" ><i class="fas fa-square"></i> 0-100 MW</a></li>';
-                                html += ' <li><a class="text-warning" style="font-size: 20px"><i class="fas fa-square"></i> 100-250 MW</a></li>';
-                                html += ' <li><a class="text-success" style="font-size: 20px"><i class="fas fa-square"></i> 250-500 MW</a></li>';
-                                html += '<li><a class="text-orange" style="font-size: 20px"><i class="fas fa-square"></i> 500-750 MW</a></li>';
-                                html += '<li><a class="text-danger" style="font-size: 20px"><i class="fas fa-square"></i> 750-1000 MW</a></li></ul>';
-
-                                document.getElementById('color-picker').innerHTML = html;
-                            }
-
-                        }
-                    });
-
-                }
-            });
-            $("#selected_yeka_type").change(function (e) {
-
-                debugger;
-
-                if (e.handled !== true) { // This will prevent event triggering more then once
-                    e.handled = true;
-
-                    $.ajax({
-                        url: "{% url "ekabis:api_yeka_by_type" %}",
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            type: $(this).val(),
-                        },
-                        success: function (result) {
-                            debugger;
-                            console.log(result)
-
-                            if (result.status === 'Success') {
-                                $("g path").css({fill: '#222'});
-                                var type = result.yeka_type_cities;
-                                var city_array = []
-
-                                for (var i in type) {
-                                    var region_city = $("g[data-plakakodu=" + type[i].city + "] path")
-                                    console.log(type[i].city);
-                                    if (type[i].count > 0 && type[i].count <= 2) {
-                                        region_city.css({fill: '#007bff'});
-                                    } else if (type[i].count > 2 && type[i].count <= 4) {
-                                        region_city.css({fill: '#28a745'});
-                                    } else if (type[i].count >= 4 && type[i].count <= 6) {
-                                        region_city.css({fill: '#ffc107'});
-                                    } else if (type[i].count >= 6 && type[i].count <= 8) {
-                                        region_city.css({fill: '#fd7e14'});
-                                    } else if (type[i].count >= 8 && type[i].count <= 10) {
-                                        region_city.css({fill: '#dc3545'});
-                                    }
-
-                                }
-
-                                var html = '<ul class="fc-color-picker" id="color-chooser" style="font-size: 25px">';
-                                html += ' <li><a class="text-primary" style="font-size: 20px" ><i class="fas fa-square"></i> 0-2 </a></li>';
-                                html += ' <li><a class="text-warning" style="font-size: 20px"><i class="fas fa-square"></i> 2-4 </a></li>';
-                                html += ' <li><a class="text-success" style="font-size: 20px"><i class="fas fa-square"></i> 4-6 </a></li>';
-                                html += '<li><a class="text-orange" style="font-size: 20px"><i class="fas fa-square"></i> 6-8</a></li>';
-                                html += '<li><a class="text-danger" style="font-size: 20px"><i class="fas fa-square"></i> 8-10</a></li></ul>';
-
-                                document.getElementById('color-picker').innerHTML = html;
-                            }
-
-                        }
-                    });
-
-                }
-            });
-            var data = new Array();
-
-            /* initialize the external events
-             -----------------------------------------------------------------*/
-            function ini_events(ele) {
-                ele.each(function () {
-
-                    // create an Event Object (https://fullcalendar.io/docs/event-object)
-                    // it doesn't need to have a start or end
-                    var eventObject = {
-                        title: $.trim($(this).text()) // use the element's text as the event title
-                    }
-
-                    // store the Event Object in the DOM element so we can get to it later
-                    $(this).data('eventObject', eventObject)
-
-                    // make the event draggable using jQuery UI
-                    $(this).draggable({
-                        zIndex: 1070,
-                        revert: true, // will cause the event to go back to its
-                        revertDuration: 0  //  original position after the drag
-                    })
-
-                })
-            }
-
-            ini_events($('#external-events div.external-event'))
-
-            /* initialize the calendar
-             -----------------------------------------------------------------*/
-            //Date for the calendar events (dummy data)
-            var date = new Date()
-            var d = date.getDate(),
-                m = date.getMonth(),
-                y = date.getFullYear()
-
-            var Calendar = FullCalendar.Calendar;
-            var Draggable = FullCalendar.Draggable;
-
-            var containerEl = document.getElementById('external-events');
-            var calendarEl = document.getElementById('calendar');
-
-            // initialize the external events
-            // -----------------------------------------------------------------
-
-            new Draggable(containerEl, {
-                itemSelector: '.external-event',
-                eventData: function (eventEl) {
-                    console.log(containerEl)
-                    return {
-                        title: eventEl.innerText,
-                        backgroundColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
-                        borderColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
-                        textColor: window.getComputedStyle(eventEl, null).getPropertyValue('color'),
-                    };
-                }
-            });
-
-            var calendar = new Calendar(calendarEl, {
-                monthNames: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
-                monthNamesShort: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
-                dayNames: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
-                dayNamesShort: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
-                buttonText: {
-                    today: 'Bugün',
-                    month: 'Ay',
-                    week: 'Hafta',
-                    day: 'Gün',
-                    list: 'Liste',
-                    listMonth: 'Aylık Liste',
-                    listYear: 'Yıllık Liste',
-                    listWeek: 'Haftalık Liste',
-                    listDay: 'Günlük Liste'
-                },
-                locale: 'tr',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                themeSystem: 'bootstrap',
-                //Random default events
-                events: [
-                    {% for i in vacation_days %}
-                        {
-                            title: "{{ i.definition }}",
-                            start: "{{ i.date | date:"Y-m-d" }}",
-                            backgroundColor: '#f88507', //red
-                            borderColor: '#f88507', //red
-                            allDay: true,
-                        },
-                    {% endfor %}
-                    {% for x in yeka %}
-
-                        {
-                            title: "{{ x.definition }}",
-                            start: "{{ x.date | date:"Y-m-d" }}",
-                            backgroundColor: '#007bff', //red
-                            borderColor: '#007bff', //red
-                            allDay: true,
-                            url: '{% url 'ekabis:view_yeka_detail' x.uuid %}'
-                        },
-                    {% endfor %}
-                ],
-                editable: true,
-                droppable: true, // this allows things to be dropped onto the calendar !!!
-                drop: function (info) {
-
-                    var tuuid = info.draggedEl.id;
-                    var tdates = info.dateStr;
-                    console.log(tuuid);
-                    console.log(tdates);
-                    $.ajax({
-                        url: "{% url "ekabis:add_calendarfdk" %}",
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            uuid: tuuid,
-                            dates: tdates,
-                        },
-                        success: function (result) {
-                            console.log(result.status)
-                        }
-                    });
-
-                }
-
-            });
-
-            calendar.render();
-            // $('#calendar').fullCalendar()
-
-            /* ADDING EVENTS */
-            var currColor = '#3c8dbc' //Red by default
-            // Color chooser button
-            $('#color-chooser > li > a').click(function (e) {
-                e.preventDefault()
-                // Save color
-                currColor = $(this).css('color')
-                // Add color effect to button
-                $('#add-new-event').css({
-                    'background-color': currColor,
-                    'border-color': currColor
-                })
-            })
-            $('#add-new-event').click(function (e) {
-                e.preventDefault()
-                // Get value and make sure it is not null
-                var val = $('#new-event').val()
-                if (val.length == 0) {
-                    return
-                }
-
-                // Create events
-                var event = $('<div />')
-                event.css({
-                    'background-color': currColor,
-                    'border-color': currColor,
-                    'color': '#fff'
-                }).addClass('external-event')
-                event.text(val)
-                $('#external-events').prepend(event)
-
-                // Add draggable funtionality
-                ini_events(event)
-
-                // Remove event from text input
-                $('#new-event').val('')
-            })
-        })
-
-       function degerAta(count, city) {
-            if (city.length < 2) {
-                city = '0' + city;
-            }
-
-            var array_color = ['#fcee8d', '#f6af71', '#fc8553', '#f18e48', '#ff6b07', '#ee4900', '#ff0000']
-
-
-            var value = (count % 6);
-            $("g[data-plakakodu=" + city + "] path").css({fill: array_color[value]})
-
-
-        }
-    </script>
 
 
 

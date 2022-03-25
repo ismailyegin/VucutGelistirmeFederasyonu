@@ -40,16 +40,30 @@ def pagelogout(request):
 
 
 def login(request):
-
     if request.user.is_authenticated is True:
-        # aktif rol şeklinde degişmeli
-        return redirect('sbs:view_admin')
+        if User.objects.filter(username=request.user.username):
+            login_user = User.objects.get(username=request.user.username)
+            filter = {
+                'user': login_user
+            }
+            active = ActiveGroupGetService(request, filter)
+
+            if active.group.name == 'Hakem':
+                return redirect('sbs:hakem')
+            # elif active.group.name == 'Antrenör':
+            #     return redirect('sbs:antrenor')
+            elif active.group.name == 'Admin' or login_user.user.is_superuser:
+                return redirect('sbs:view_admin')
+            elif active.group.name == 'Yönetim':
+                return redirect('sbs:federasyon')
+            elif active.group.name == 'Kulüp Yetkilisi':
+                return redirect('sbs:federasyon')
 
     if request.method == 'POST':
         login_user = None
         username = request.POST.get('username')
         password = request.POST.get('password')
-
+        user = None
         if User.objects.filter(username=username):
             user = User.objects.get(username=username)
 
@@ -61,38 +75,33 @@ def login(request):
 
             log = general_methods.logwrite(request, request.user, " Giris yapti")
 
-            # eger user.groups birden fazla ise klup üyesine gönder yoksa devam et
+            filter = {
+                'user': user
+            }
+            active = ActiveGroupGetService(request, filter)
+            if not active:
+                if request.user.groups.all():
+                    active = ActiveGroup(user=request.user, group=request.user.groups.all()[0])
+                    active.save()
 
 
-
-            if user.groups.all()[0].name == 'Antrenor':
-                return redirect('sbs:antrenor')
-
-            elif user.groups.all()[0].name == 'Hakem':
+            if active.group.name == 'Hakem':
                 return redirect('sbs:hakem')
-
-            # elif user.groups.all()[0].name == 'Sporcu':
-            #     return redirect('sbs:sporcu')
-
-            elif user.groups.all()[0].name == 'Yonetim':
-                return redirect('sbs:federasyon')
-
-            elif user.groups.all()[0].name == 'Admin':
+            elif active.group.name == 'Antrenör':
+                return redirect('sbs:antrenor')
+            elif active.group.name == 'Admin' or user.is_superuser:
                 return redirect('sbs:view_admin')
-
-            elif user.groups.all()[0].name == 'Kulüp Yetkilisi':
-                return redirect('sbs:view_kulup_yonetici')
-
-
-            else:
-                return redirect('accounts:logout')
+            elif active.group.name == 'Yönetim':
+                return redirect('sbs:federasyon')
+            elif active.group.name == 'Kulüp Yetkilisi':
+                return redirect('sbs:kulup-uyesi')
 
         else:
             # eski kullanici olma ihtimaline göre sisteme girme yöntemi
 
             try:
                 user = Club.objects.get(username=request.POST.get('username'),
-                                              password=request.POST.get('password'))
+                                        password=request.POST.get('password'))
 
                 if user is not None:
                     if user.isRegister == False or user.isRegister is None:
@@ -209,6 +218,7 @@ def handle400Template(request):
 def handle500Template(request):
     return render(request, 'Ayar/500.html')
 
+
 def referenceReferee(request):
     logout(request)
     referee = RefereeForm()
@@ -219,14 +229,14 @@ def referenceReferee(request):
         if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
                 email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
             email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
-                email=mail):
+            email=mail):
             messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
             return render(request, 'registration/Referee.html', {'preRegistrationform': referee})
 
         tc = request.POST.get('tc')
         if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
                 tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
             messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
             return render(request, 'registration/Referee.html',
                           {'preRegistrationform': referee})
@@ -242,11 +252,10 @@ def referenceReferee(request):
         #     return render(request, 'registration/Referee.html',
         #                   {'preRegistrationform': referee})
 
-
         if referee.is_valid():
             if request.POST.get('kademe_definition'):
-                hakem=referee.save(commit=False)
-                hakem.kademe_definition= CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+                hakem = referee.save(commit=False)
+                hakem.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
                 hakem.save()
 
                 messages.success(request,
@@ -292,11 +301,10 @@ def referenceCoach(request):
             messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
             return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
 
-
         if coach_form.is_valid():
 
-            veri=coach_form.save(commit=False)
-            veri.kademe_definition=CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+            veri = coach_form.save(commit=False)
+            veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
 
             veri.save()
 
@@ -308,6 +316,7 @@ def referenceCoach(request):
             messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
     return render(request, 'registration/Coach.html',
                   {'preRegistrationform': coach_form})
+
 
 def pre_registration(request):
     PreRegistrationform = PreRegistrationForm()
@@ -347,7 +356,6 @@ def pre_registration(request):
 
         # -------------------------------------
 
-
         if PreRegistrationform.is_valid():
             PreRegistrationform.save()
             messages.success(request,
@@ -359,4 +367,3 @@ def pre_registration(request):
             messages.warning(request, "Alanlari kontrol ediniz")
 
     return render(request, 'registration/cluppre-registration.html', {'preRegistrationform': PreRegistrationform})
-

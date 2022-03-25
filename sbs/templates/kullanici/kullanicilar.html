@@ -252,7 +252,7 @@
                                                     {% endfor %}
                                                     {% for item in perm %}
                                                         {% if item == 'change_user_group' %}
-                                                            <a href="{% url "ekabis:change_user_group" user.pk %}"
+                                                            <a href="{% url "sbs:change_user_group" user.pk %}"
                                                                type="button" class="dropdown-item"><i
                                                                     class="fa fa-edit" title="Grup Güncelle"></i> Grup
                                                                 Güncelle
@@ -315,7 +315,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'YEKABIS-Kullanicilar',
+                        title: 'Ysbs-Kullanicilar',
                         text: '<i class="fa fa-print"></i>',
 
                         titleAttr: 'Yazdır',
@@ -326,7 +326,7 @@
                     {
                         extend: 'pdfHtml5',
                         download: 'open',
-                        title: 'YEKABIS-Kullanicilar',
+                        title: 'Ysbs-Kullanicilar',
                         text: '<i class="fa fa-file-pdf"></i>',
 
                         titleAttr: 'Pdf Kaydet',
@@ -340,7 +340,7 @@
                         extend: 'excelHtml5',
                         text: '<i class="fa fa-file-excel"></i>',
                         titleAttr: 'Excel Kaydet',
-                        title: 'YEKABIS-Kullanicilar',
+                        title: 'Ysbs-Kullanicilar',
                         exportOptions: {
                             columns: ':visible'
                         },
@@ -360,7 +360,7 @@
                 'paging': true,
                 'lengthChange': true,
                 'searching': true,
-                'ordering': true,
+                'order': true,
                 'info': true,
                 'autoWidth': true,
                 'scrollX': true,
@@ -376,7 +376,7 @@
             $("#modal-active").on("shown.bs.modal", function (e) {
                 $("#btn-conf1").click(function () {
                     $.ajax({
-                        url: "{% url "ekabis:view_status" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
+                        url: "{% url "sbs:view_status" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -390,7 +390,7 @@
                             $('#modal-success').on("shown.bs.modal", function (e) {
                                 $(".btn-ok").click(function () {
 
-                                    window.location.replace("{% url "ekabis:view_user" %}");
+                                    window.location.replace("{% url "sbs:view_user" %}");
 
                                 });
 
@@ -412,7 +412,7 @@
             $("#modal-mail").on("shown.bs.modal", function (e) {
                 $("#btn-conf12").click(function () {
                         $.ajax({
-                            url: "{% url "ekabis:view_email" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
+                            url: "{% url "sbs:view_email" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -427,7 +427,7 @@
                                     $('#modal-success-danger').on("shown.bs.modal", function (e) {
                                         $(".btn-ok").click(function () {
 
-                                            window.location.replace("{% url "ekabis:view_user" %}");
+                                            window.location.replace("{% url "sbs:view_user" %}");
 
                                         });
                                     }).modal('show');
@@ -440,7 +440,7 @@
                                     $('#modal-success').on("shown.bs.modal", function (e) {
                                         $(".btn-ok").click(function () {
 
-                                            window.location.replace("{% url "ekabis:view_user" %}");
+                                            window.location.replace("{% url "sbs:view_user" %}");
 
                                         });
                                     }).modal('show');

@@ -97,7 +97,7 @@ def change_permission(request,uuid):
                     perm=permission_form.save(request,commit=False)
                     perm.save()
                     messages.success(request, 'İzin Güncellenmiştir.')
-                    return redirect('ekabis:view_permission')
+                    return redirect('sbs:view_permission')
                 else:
                     error_messages = get_error_messages(permission_form)
                     return render(request, 'Permission/change_permission.html',

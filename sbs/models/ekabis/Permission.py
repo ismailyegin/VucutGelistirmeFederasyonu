@@ -5,15 +5,16 @@ from sbs.models.ekabis.BaseModel import BaseModel
 
 class Permission(BaseModel):
     yeka = 'Yeka'
-    employee = 'Personel'
-    company = 'Firma'
+    referee = 'Hakem'
+    coach = 'Antrenör'
     main = 'Anasayfa'
     settings = 'Ayarlar'
     other = 'Digerleri'
+
     Type = (
-        (yeka, 'Yeka'),
-        (employee, 'Personel'),
-        (company, 'Firma'),
+
+        (referee, 'Hakem'),
+        (coach, 'Antrenör'),
         (main, 'Anasayfa'),
         (settings, 'Ayarlar'),
         (other, 'Digerleri'),

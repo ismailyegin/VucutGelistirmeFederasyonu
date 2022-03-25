@@ -25,7 +25,7 @@ urlpatterns = [
     # Admin yönetimi sistem den engelendi
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
-    path('tvfbf/', include('sbs.urls')),
+    path('tvgfbf/', include('sbs.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

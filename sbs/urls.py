@@ -2,12 +2,13 @@ from django.urls import path
 
 from sbs.Views import DataTransmissonViews, ClubViews, RefereeViews, CoachViews, TransmissionViews
 from sbs.Views.ekabis import AcceptViews, ReportViews, YekaViews, SettingsViews, APIViews, VacationDayViews, AdminViews, \
-    LogViews, ExtraTimeViews, AssociateDegreeViews, DashboardViews, CityViews, CompanyView, UserViews, EmployeeViews, \
+    LogViews, ExtraTimeViews, AssociateDegreeViews, CityViews, CompanyView, UserViews, EmployeeViews, \
     HelpViews, PermissionView, YekaBussinessBlogStaticView, BusinessBlogViews, ClaimView, GroupView, EskalasyonViews, \
     ConnectionRegionViews, FactoryViews, YekaCompetitionViews, HelpMenuViews, NotificationViews, DirectoryViews, \
     ProduceAmountViews
 from sbs.services import general_methods
 from sbs.services.general_methods import add_block
+from sbs.Views import DashboardViews
 
 app_name = 'sbs'
 
@@ -16,9 +17,10 @@ urlpatterns = [
     # Dashboard
     path('anasayfa/admin/', DashboardViews.return_admin_dashboard, name='view_admin'),
     path('anasayfa/sehir-sporcu-sayisi/$', DashboardViews.City_athlete_cout, name='sehir-sporcu-sayisi'),
-    path('anasayfa/federasyon/', DashboardViews.return_directory_dashboard, name='view_federasyon'),
-    path('anasayfa/personel/', DashboardViews.return_personel_dashboard, name='view_personel'),
-    path('anasayfa/yonetici/', DashboardViews.return_club_user_dashboard, name='view_kulup_yonetici'),
+    path('anasayfa/hakem', DashboardViews.return_referee_dashboard, name='hakem'),
+    path('anasayfa/antrenor', DashboardViews.return_coach_dashboard, name='antrenor'),
+    path('anasayfa/federasyon', DashboardViews.return_directory_dashboard, name='federasyon'),
+    path('anasayfa/kulup-uyesi', DashboardViews.return_club_user_dashboard, name='kulup-uyesi'),
 
     # Takvim notları
     path('anasayfa/takvim-not-ekle/', DashboardViews.add_calendarName, name='add_calendarName'),
@@ -714,5 +716,6 @@ urlpatterns = [
     path(r'kulup/kulup-sil/', ClubViews.club_delete, name='club-delete'),
     path(r'kulup/kulup-uye-sil/', ClubViews.deleteClubUserFromClub, name='deleteClubUserFromClub'),
     path(r'kulup/kulup-antrenor-sil/', ClubViews.deleteCoachFromClub, name='deleteCoachFromClub'),
+    path(r'antrenor/antrenor-detay-api/', CoachViews.detailCoach, name='detailCoach-api'),
 
 ]

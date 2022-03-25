@@ -111,7 +111,7 @@ def return_coachs(request):
                 coachs = Coach.objects.filter(query).filter(isDeleted=0)
             # if visa == 'NONE':
             #     coachs = coachs.exclude(visa__startDate__year=timezone.now().year, visa__status='Onaylandı')
-    return render(request, '_HavaSpor/Coach/coachs.html',
+    return render(request, 'TVGFBF/Coach/coachs.html',
                   {'coachs': coachs, 'user_form': user_form, 'branch': searchClupForm, 'clubs': clubs, })
 
 
@@ -142,7 +142,7 @@ def return_add_coach(request):
         #     email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
         #     email=mail):
         #     messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-        #     return render(request, '_HavaSpor/Coach/add-coach.html',
+        #     return render(request, 'TVGFBF/Coach/add-coach.html',
         #                   {'user_form': user_form, 'person_form': person_form,
         #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
         #                    'url_name': url_name, })
@@ -152,7 +152,7 @@ def return_add_coach(request):
         #         tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
         #     tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
         #     messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-        #     return render(request, '_HavaSpor/Coach/add-coach.html',
+        #     return render(request, 'TVGFBF/Coach/add-coach.html',
         #                   {'user_form': user_form, 'person_form': person_form,
         #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
         #                    'url_name': url_name, })
@@ -165,7 +165,7 @@ def return_add_coach(request):
         # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
         # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
         #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, '_HavaSpor/Coach/add-coach.html',
+        #     return render(request, 'TVGFBF/Coach/add-coach.html',
         #                   {'user_form': user_form, 'person_form': person_form,
         #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
         #                    'url_name': url_name, })
@@ -231,7 +231,7 @@ def return_add_coach(request):
             for x in user_form.errors.as_data():
                 messages.warning(request, user_form.errors[x][0])
 
-    return render(request, '_HavaSpor/Coach/add-coach.html',
+    return render(request, 'TVGFBF/Coach/add-coach.html',
                   {'user_form': user_form, 'person_form': person_form,
                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, })
@@ -273,7 +273,7 @@ def coachUpdate(request, uuid):
         #         email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
         #         email=mail):
         #         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-        #         return render(request, '_HavaSpor/Coach/update-coach.html',
+        #         return render(request, 'TVGFBF/Coach/update-coach.html',
         #                       {'user_form': user_form, 'communication_form': communication_form,
         #                        'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
         #                        'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
@@ -285,7 +285,7 @@ def coachUpdate(request, uuid):
         #             tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
         #         tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
         #         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-        #         return render(request, '_HavaSpor/Coach/update-coach.html',
+        #         return render(request, 'TVGFBF/Coach/update-coach.html',
         #                       {'user_form': user_form, 'communication_form': communication_form,
         #                        'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
         #                        'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
@@ -299,7 +299,7 @@ def coachUpdate(request, uuid):
         # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
         # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
         #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, '_HavaSpor/Coach/update-coach.html',
+        #     return render(request, 'TVGFBF/Coach/update-coach.html',
         #                   {'user_form': user_form, 'communication_form': communication_form,
         #                    'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
         #                    'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
@@ -331,7 +331,7 @@ def coachUpdate(request, uuid):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Coach/update-coach.html',
+    return render(request, 'TVGFBF/Coach/update-coach.html',
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'grades_form': grade_form, 'coach': coach,
                    'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
@@ -413,7 +413,7 @@ def add_coach_referee(request, uuid):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     grade_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='COACH_GRADE')
-    return render(request, '_HavaSpor/Coach/add-grade-coach.html',
+    return render(request, 'TVGFBF/Coach/add-grade-coach.html',
                   {'grade_form': grade_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, })
 
@@ -474,7 +474,7 @@ def update_grade(request, grade_uuid, coach_uuid):
     grade = HavaLevel.objects.get(uuid=grade_uuid)
     coach = Coach.objects.get(uuid=coach_uuid)
     grade_form = GradeFormCoach(request.POST or None, request.FILES or None, instance=grade,
-                                  initial={'definition': grade.definition})
+                                initial={'definition': grade.definition})
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
@@ -495,7 +495,7 @@ def update_grade(request, grade_uuid, coach_uuid):
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Coach/update-grade-coach.html',
+    return render(request, 'TVGFBF/Coach/update-grade-coach.html',
                   {'grade_form': grade_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, })
 
@@ -580,7 +580,7 @@ def add_visa_coach(request, uuid):
         except:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Coach/add-visa-coach.html',
+    return render(request, 'TVGFBF/Coach/add-visa-coach.html',
                   {'visa_form': visa_form, 'category_item_form': category_item_form, 'urls': urls,
                    'current_url': current_url,
                    'url_name': url_name, })
@@ -648,7 +648,7 @@ def visa_update(request, visa_uuid, coach_uuid):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Coach/update-visa-coach.html',
+    return render(request, 'TVGFBF/Coach/update-visa-coach.html',
                   {'visa_form': visa_form})
 
 
@@ -712,7 +712,7 @@ def return_grade(request):
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
     categoryitem = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0)
-    return render(request, '_HavaSpor/Coach/grades.html',
+    return render(request, 'TVGFBF/Coach/grades.html',
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem})
 
 
@@ -734,7 +734,7 @@ def gradeUpdate(request, uuid):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Coach/update-grade.html',
+    return render(request, 'TVGFBF/Coach/update-grade.html',
                   {'category_item_form': category_item_form})
 
 
@@ -758,6 +758,7 @@ def gradeDelete(request):
     except CategoryItem.DoesNotExist:
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
+
 @login_required
 def gradeList(request):
     perm = general_methods.control_access(request)
@@ -772,9 +773,8 @@ def gradeList(request):
     grade = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE,
                                      isDeleted=0).distinct()
 
-    return render(request, '_HavaSpor/Coach/coach-grade-list.html',
+    return render(request, 'TVGFBF/Coach/coach-grade-list.html',
                   {'coachGrades': grade})
-
 
 
 @login_required
@@ -872,9 +872,8 @@ def visaList(request):
     for item in CategoryItem.objects.filter(forWhichClazz='VISA_COACH'):
         coa.append(item.pk)
     visa = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.VISA, isDeleted=0).distinct()
-    return render(request, '_HavaSpor/Coach/coach-visa-list.html',
+    return render(request, 'TVGFBF/Coach/coach-visa-list.html',
                   {'coachvisas': visa})
-
 
 
 @login_required
@@ -932,7 +931,8 @@ def returnVisaSeminarApplication(request):
     else:
         seminar = VisaSeminar.objects.filter(forWhichClazz='COACH')
 
-    return render(request, '_HavaSpor/Coach/visa-seminar.html', {'seminer': seminar, 'basvuru': basvurularim, 'coach': coach})
+    return render(request, 'TVGFBF/Coach/visa-seminar.html',
+                  {'seminer': seminar, 'basvuru': basvurularim, 'coach': coach})
 
 
 @login_required
@@ -966,8 +966,7 @@ def returnVisaSeminar(request):
             except:
                 messages.warning(request, 'Lütfen yeniden deneyiniz')
 
-    return render(request, '_HavaSpor/Coach/coach-visa-seminar.html', {'competitions': seminar})
-
+    return render(request, 'TVGFBF/Coach/coach-visa-seminar.html', {'competitions': seminar})
 
 
 @login_required
@@ -992,7 +991,7 @@ def addVisaSeminar(request):
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Coach/add-visa-seminar-coach.html',
+    return render(request, 'TVGFBF/Coach/add-visa-seminar-coach.html',
                   {'competition_form': visaSeminar})
 
 
@@ -1017,7 +1016,7 @@ def updateVisaSeminar(request, uuid):
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Coach/update-coach-visa-seminar.html',
+    return render(request, 'TVGFBF/Coach/update-coach-visa-seminar.html',
                   {'competition_form': competition_form, 'competition': seminar, 'coachs': coach})
 
 
@@ -1070,7 +1069,6 @@ def visaSeminarApproval(request, uuid):
     return redirect('sbs:update-coach-visa-seminar', uuid=uuid)
 
 
-
 @login_required
 def addCoachVisaSeminar(request, uuid):
     perm = general_methods.control_access(request)
@@ -1092,7 +1090,7 @@ def addCoachVisaSeminar(request, uuid):
                     visa.coach.add(x)
                     visa.save()
         return redirect('sbs:update-coach-visa-seminar', uuid=uuid)
-    return render(request, '_HavaSpor/Coach/add-coach-visa-seminar.html', {'coachs': coach})
+    return render(request, 'TVGFBF/Coach/add-coach-visa-seminar.html', {'coachs': coach})
 
 
 @login_required
@@ -1196,8 +1194,6 @@ def approvalCoachApplicationVisaSeminar(request):
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
-
-
 @login_required
 def document(request, uuid):
     coach = Coach.objects.get(uuid=uuid)
@@ -1227,3 +1223,68 @@ def document(request, uuid):
     response.write(pdf)
 
     return response
+
+
+@login_required
+def detailCoach(request):
+    # perm = general_methods.control_access(request)
+    #
+    # if not perm:
+    #     logout(request)
+    #     return redirect('accounts:login')
+    try:
+        with transaction.atomic():
+            if request.method == 'POST' and request.is_ajax():
+                uuid = request.POST['uuid']
+
+                obj = Coach.objects.get(uuid=uuid)
+                coachs = {}
+                coachs['name'] = obj.person.user.get_full_name()
+                coachs['tc'] = obj.person.tc
+                coachs['email'] = obj.person.user.email
+                coachs['phone'] = obj.communication.phoneNumber
+                coachs['image'] = obj.person.profileImage.url
+                branchs = ''
+                for branch in obj.branch.all():
+                    branchs = branchs + branch.title + ','
+                coachs['branch'] = branchs
+                grade_info = {}
+                visa_info = {}
+                finishDate = ''
+                startDate = ''
+                finishDate_visa = ''
+                startDate_visa = ''
+                visa_name=''
+                grade_name=''
+                if obj.grades.filter(isActive=True):
+                    grade = obj.grades.filter(isActive=True).last()
+                    if grade.expireDate:
+                        finishDate = grade.expireDate
+                    if grade.startDate:
+                        startDate = grade.startDate
+                    grade_name = grade.definition.name
+                if obj.visa.filter(isActive=True):
+                    visa = obj.visa.filter(isActive=True).last()
+                    if visa.expireDate:
+                        finishDate_visa = visa.expireDate
+                    if visa.startDate:
+                        startDate_visa = visa.startDate
+                    visa_name=visa.definition.name
+                grade_info['finishDate'] = finishDate
+                grade_info['startDate'] = startDate
+                grade_info['name'] = grade_name
+                visa_info['name'] = visa_name
+                visa_info['finishDate'] = finishDate_visa
+                visa_info['startDate'] = startDate_visa
+                coachs['grade'] = grade_info
+                coachs['visa'] = visa_info
+
+                return JsonResponse({'status': 'Success',
+                                         'results': coachs,
+                                         })
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+    except Coach.DoesNotExist:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})

@@ -152,7 +152,7 @@
                             <h3 class="card-title">Gruplar</h3>
                             {% if aktif == 'Admin' %}
 
-                                <a href="{% url "ekabis:add_group" %}"
+                                <a href="{% url "sbs:add_group" %}"
                                    type="button" class="btn btn-outline-primary btn-sm" style="float: right"><i
                                         class="fa fa-plus" title="Yeni Grup Ekle"></i>
                                 </a>
@@ -189,7 +189,7 @@
                                                     <div class="dropdown-menu" role="menu">
                                                         {% for item in perm %}
                                                             {% if item == 'change_group' %}
-                                                               <a href="{% url "ekabis:change_group" group.pk %}"
+                                                               <a href="{% url "sbs:change_group" group.pk %}"
                                                                    class="dropdown-item"> <i
                                                                         class="fa fa-edit" title="Düzenle"></i> Düzenle
                                                                 </a>
@@ -197,7 +197,7 @@
                                                         {% endfor %}
                                                         {% if aktif == 'Yonetim' or aktif == 'Admin' %}
                                                             <!-- izin kontrolü yapılacak ! -->
-                                                            <a href="{% url "ekabis:change_groupPermission"  group.pk %}"
+                                                            <a href="{% url "sbs:change_groupPermission"  group.pk %}"
                                                                class="dropdown-item"> <i
                                                                     class="fa fa-lock" title="İzinler"></i> İzinler
                                                             </a>

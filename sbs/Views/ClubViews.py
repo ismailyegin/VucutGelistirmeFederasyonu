@@ -80,7 +80,7 @@ def return_clubs(request):
                 elif active == 'Yonetim' or active == 'Admin':
                     clubs = Club.objects.filter(query).filter(isDeleted=False)
 
-    return render(request, '_HavaSpor/Kulup/clubs.html',
+    return render(request, 'TVGFBF/Kulup/clubs.html',
                   {'clubs': clubs, 'ClupsSearchForm': ClupsSearchForm, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, })
 
@@ -173,7 +173,7 @@ def add_club(request):
             messages.warning(request, 'HATA !! ' + ' ' + str(e))
             return redirect('sbs:add_club')
 
-    return render(request, '_HavaSpor/Kulup/add-club.html',
+    return render(request, 'TVGFBF/Kulup/add-club.html',
                   {'club_form': club_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, 'manager_communication_form': manager_communication_form, 'manager_person_form': manager_person_form, 'user_form': user_form, })
 
@@ -222,7 +222,7 @@ def clubUpdate(request, uuid):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Kulup/updateClub.html',
+    return render(request, 'TVGFBF/Kulup/updateClub.html',
                   {'club_form': club_form, 'communication_form': communication_form, 'clubPersons': clubPersons,
                    'athletes': athletes,
                    'club': club, 'clubCoachs': clubCoachs})
@@ -302,3 +302,6 @@ def deleteClubUserFromClub(request):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+

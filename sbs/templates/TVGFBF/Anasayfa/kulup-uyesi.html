@@ -1,0 +1,221 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+    {% load  static %}
+
+    <section class="content">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Ana Sayfa
+            </h1>
+            <ol class="breadcrumb float-sm-right" style="line-height: 0.3rem;">
+                {% for url in urls %}
+                    <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                    </li>
+                    <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                {% endfor %}
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <!-- Info boxes -->
+            <div class="row">
+
+                <!-- ./col -->
+                <div class="col-lg-6 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-green">
+                        <div class="inner">
+
+                            <h3>{{ total_club_user }}<sup style="font-size: 20px"></sup></h3>
+
+                            <p>Kulüp Yetkili Sayısı</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-male"></i>
+                        </div>
+                        <a href="{% url "sbs:return_clubs" %}" class="small-box-footer">
+                            Daha Fazla <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-6 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>{{ total_coach }}</h3>
+
+                            <p>Kulüp Antrenör Sayısı</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-users"></i>
+                        </div>
+                        <a href="" class="small-box-footer"> <!-- url "sbs:kulup-uyeleri" -->
+                            Daha Fazla <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- ./col -->
+
+            </div>
+            <!-- /.row -->
+
+            <section class="content ">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-info card-outline">
+                            <div class="card-header border-0">
+                                <h3 class="card-title">Kulüp Antrenörleri</h3>
+                            </div>
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-striped table-valign-middle">
+                                    <thead>
+                                    <tr>
+                                        <th>Fotoğraf</th>
+                                        <th>Ad Soyad</th>
+                                        <th>TC</th>
+                                        <th>Telefon</th>
+                                        <th>Detay</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for coach in coachs %}
+                                        <tr>
+
+                                            <td>
+                                                <img
+                                                        src="/media/{{ coach.person.profileImage }}"
+                                                        class="img-responsive img-bordered imagesize " alt="Resim Yok"
+                                                        style=" max-width: 10%; height: auto;"
+
+                                                >
+                                            </td>
+                                            <td>{{ coach.person.user.get_full_name }}</td>
+                                            <td>{{ coach.person.tc }}</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-phone"></i>
+                                                </small>
+                                                {{ coach.communication.phoneNumber }}
+                                            </td>
+                                            <td>
+                                                <a onclick="detailCoach('{{ coach.uuid }}')" class="text-muted">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-info card-outline">
+                            <div class="card-header border-0">
+                                <h3 class="card-title">Kulüp Yetkilileri</h3>
+                            </div>
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-striped table-valign-middle">
+                                    <thead>
+                                    <tr>
+                                        <th>Fotoğraf</th>
+                                        <th>Ad Soyad</th>
+                                        <th>TC</th>
+                                        <th>Telefon</th>
+                                        <th>Detay</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for clubUser in clubUsers %}
+                                        <tr>
+
+                                            <td>
+                                                <img
+                                                        src="/media/{{ clubUser.person.profileImage }}"
+                                                        class="img-responsive img-bordered imagesize " alt="Resim Yok"
+                                                        style=" max-width: 10%; height: auto;"
+
+                                                >
+                                            </td>
+                                            <td>{{ clubUser.person.user.get_full_name }}</td>
+                                            <td>{{ clubUser.person.tc }}</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-phone"></i>
+                                                </small>
+                                                {{ clubUser.communication.phoneNumber }}
+                                            </td>
+                                            <td>
+                                                <a href="" class="text-muted">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </section>
+    <script src="{% static 'sweeatalert2@11/sweetalert2@11.js' %}"></script>
+    <script>
+
+        function detailCoach(id) {
+            debugger;
+            console.log(id);
+
+
+            $.ajax({
+                url: "{% url "sbs:detailCoach-api" %}",
+                type: "POST",
+                data: {
+                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    isActive: 'False',
+                    uuid: id
+
+                },
+                success: function (result) {
+                    debugger;
+                    if (result.status === 'Success') {
+                        let coach = result.results
+                        let html = ''
+                        html += '<img src="' + coach.image + '" class="img-responsive img-bordered imagesize " style=" max-width: 10%; height: auto;margin-bottom:10px;">'
+                        html += ' <table class="table table-bordered"> <thead> <tr> <th>Branş</th> <th>Kademe</th>  <th>Kademe Başl.Tarih</th> <th>Kademe Bitiş Tarih</th> <th>Vize</th> <th>Vize Başl.Tarih</th> <th>Vize Bitiş Tarih</th></tr></thead>'
+                        html += ' <tbody><td>' + coach.branch + '</td><td>zxdsf' + coach.grade.name + '</td><td>sdfsdf' + coach.grade.startDate + '</td> <td>sdfsdf' + coach.grade.finishDate + '</td> <td>sdfsdf' + coach.visa.name + '</td><td>sdfsdf' + coach.visa.startDate + '</td> <td>sdfdsf' + coach.visa.finishDate + '</td></tbody></table>'
+                        Swal.fire({
+                            title: '<strong>' + coach.name + '</strong>',
+                            html: html,
+                            showCloseButton: true,
+                            focusConfirm: false,
+                            width: 'auto',
+
+
+                        })
+
+
+                    } else {
+                        swal({
+                            icon: 'error',
+                            title: 'Bulunamadı!!',
+
+                        })
+                    }
+
+
+                }
+            });
+
+
+        }
+
+    </script>
+{% endblock %}

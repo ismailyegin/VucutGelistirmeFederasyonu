@@ -12,6 +12,7 @@ from django.urls import resolve
 from sbs.Forms.UserForm import UserForm
 from sbs.Forms.UserSearchForm import UserSearchForm
 from accounts.models import Forgot
+from sbs.models import SportClubUser
 from sbs.models.ekabis.Permission import Permission
 from sbs.services import general_methods
 from sbs.services.general_methods import get_error_messages
@@ -31,7 +32,7 @@ def return_users(request):
         return redirect('accounts:login')
     user_form = UserSearchForm()
     try:
-        urls = last_urls(request)
+        # urls = last_urls(request)
         current_url = resolve(request.path_info)
         url_name = Permission.objects.get(codename=current_url.url_name)
 
@@ -39,10 +40,10 @@ def return_users(request):
                 'is_active': True,
                 'is_superuser':False
         }
-        users = UserService(request, filter)
+        users = UserService(request, filter)[:10]
 
         return render(request, 'kullanici/kullanicilar.html',
-                      {'users': users, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
+                      {'users': users, 'user_form': user_form, 'current_url': current_url,
                            'url_name': url_name})
     except Exception as e:
         traceback.print_exc()

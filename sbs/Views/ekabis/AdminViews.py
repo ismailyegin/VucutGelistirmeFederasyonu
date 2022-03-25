@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from sbs.services import general_methods
 from sbs.models.ekabis import Employee
-from sbs.models.tvfbf import DirectoryMember
+from sbs.models.tvfbf.DirectoryMember import DirectoryMember
 from sbs.services.services import CategoryItemService, DirectoryCommissionService, DirectoryMemberRoleService, \
     GroupGetService, \
     CommunicationGetService, PersonGetService, UserGetService
@@ -41,20 +41,9 @@ def activeGroup(request, pk):
             log = str(user.get_full_name()) + " grubu " + str(group.name)+" olarak güncellendi"
             log = general_methods.logwrite(request, request.user, log)
             return redirect('ekabis:view_admin')
-        elif group.name == "Personel":
-            employe = Employee(person=person,
-                               communication=communication,
-                               user=user,
-                               workDefinition=CategoryItemService(request, None)
-                               )
-            employe.save()
-            user.groups.add(group)
-            user.save()
-            log = str(user.get_full_name()) + " grubu " + str(group.name)+" olarak güncellendi"
-            log = general_methods.logwrite(request, request.user, log)
-            return redirect('ekabis:view_personel', pk=employe.pk)
 
-        elif group.name == "Yonetim":
+
+        elif group.name == "Yönetim":
             member = DirectoryMember(person=person, communication=communication, user=user,
                                      role=DirectoryMemberRoleService(request, None).first(),
                                      commission=DirectoryCommissionService(request, None).first())

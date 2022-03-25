@@ -86,7 +86,7 @@ def return_referees(request):
     else:
         print('else2')
 
-    return render(request, '_HavaSpor/Referee/referees.html',
+    return render(request, 'TVGFBF/Referee/referees.html',
                   {'referees': referees, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, })
 
@@ -123,14 +123,14 @@ def return_add_referee(request):
 
         # if User.objects.filter(email=mail):
         #     messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-        #     return render(request, '_HavaSpor/Referee/add-referee.html',
+        #     return render(request, 'TVGFBF/Referee/add-referee.html',
         #                   {'user_form': user_form, 'person_form': person_form,
         #                    'communication_form': communication_form, 'grade_form': grade_form, })
 
         tc = request.POST.get('tc')
         # if Person.objects.filter(tc=tc):
         #     messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-        #     return render(request, '_HavaSpor/Referee/add-referee.html',
+        #     return render(request, 'TVGFBF/Referee/add-referee.html',
         #                   {'user_form': user_form, 'person_form': person_form,
         #                    'communication_form': communication_form, 'grade_form': grade_form, })
 
@@ -142,7 +142,7 @@ def return_add_referee(request):
         # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
         # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
         #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, '_HavaSpor/Referee/add-referee.html',
+        #     return render(request, 'TVGFBF/Referee/add-referee.html',
         #                   {'user_form': user_form, 'person_form': person_form,
         #                    'communication_form': communication_form, 'grade_form': grade_form, })
 
@@ -202,7 +202,7 @@ def return_add_referee(request):
             for x in user_form.errors.as_data():
                 messages.warning(request, user_form.errors[x][0])
 
-    return render(request, '_HavaSpor/Referee/add-referee.html',
+    return render(request, 'TVGFBF/Referee/add-referee.html',
                   {'user_form': user_form, 'person_form': person_form,
                    'communication_form': communication_form, 'referee_form': referee_form, 'grade_form': grade_form,
                    'urls': urls, 'current_url': current_url, 'url_name': url_name, })
@@ -239,7 +239,7 @@ def update_referee(request, uuid):
         #         email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
         #         email=mail):
         #         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-        #         return render(request, '_HavaSpor/Referee/update-referee.html',
+        #         return render(request, 'TVGFBF/Referee/update-referee.html',
         #                       {'user_form': user_form, 'communication_form': communication_form,
         #                        'person_form': person_form, 'judge': judge, 'grade_form': grade_form,
         #                        'visa_form': visa_form, 'iban_form': iban_form, })
@@ -250,7 +250,7 @@ def update_referee(request, uuid):
         #             tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
         #         tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
         #         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-        #         return render(request, '_HavaSpor/Referee/update-referee.html',
+        #         return render(request, 'TVGFBF/Referee/update-referee.html',
         #                       {'user_form': user_form, 'communication_form': communication_form,
         #                        'person_form': person_form, 'judge': judge, 'grade_form': grade_form,
         #                        'visa_form': visa_form, 'iban_form': iban_form, })
@@ -263,7 +263,7 @@ def update_referee(request, uuid):
         # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
         # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
         #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, '_HavaSpor/Referee/update-referee.html',
+        #     return render(request, 'TVGFBF/Referee/update-referee.html',
         #                   {'user_form': user_form, 'communication_form': communication_form,
         #                    'person_form': person_form, 'referee': referee, 'grade_form': grade_form,
         #                    'visa_form': visa_form, })
@@ -290,7 +290,7 @@ def update_referee(request, uuid):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Referee/update-referee.html',
+    return render(request, 'TVGFBF/Referee/update-referee.html',
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'referee': referee, 'grade_form': grade_form,
                    'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
@@ -373,7 +373,7 @@ def add_grade_referee(request, uuid):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     grade_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE')
-    return render(request, '_HavaSpor/Referee/add-grade-referee.html',
+    return render(request, 'TVGFBF/Referee/add-grade-referee.html',
                   {'grade_form': grade_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, })
 
@@ -454,7 +454,7 @@ def update_grade(request, grade_uuid, referee_uuid):
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Referee/update-grade-referee.html',
+    return render(request, 'TVGFBF/Referee/update-grade-referee.html',
                   {'grade_form': grade_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, })
 
@@ -539,7 +539,7 @@ def add_visa_referee(request, uuid):
         except:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Referee/add-visa-referee.html',
+    return render(request, 'TVGFBF/Referee/add-visa-referee.html',
                   {'visa_form': visa_form, 'category_item_form': category_item_form, 'urls': urls,
                    'current_url': current_url,
                    'url_name': url_name, })
@@ -607,7 +607,7 @@ def visa_update(request, visa_uuid, referee_uuid):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Referee/update-visa-referee.html',
+    return render(request, 'TVGFBF/Referee/update-visa-referee.html',
                   {'visa_form': visa_form})
 
 
@@ -671,7 +671,7 @@ def return_level(request):
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
     categoryitem = CategoryItem.objects.filter(forWhichClazz="REFEREE_GRADE", isDeleted=0)
-    return render(request, '_HavaSpor/Referee/levels.html',
+    return render(request, 'TVGFBF/Referee/levels.html',
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem})
 
 
@@ -693,7 +693,7 @@ def levelUpdate(request, uuid):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Referee/update-level.html',
+    return render(request, 'TVGFBF/Referee/update-level.html',
                   {'category_item_form': category_item_form})
 
 
@@ -732,7 +732,7 @@ def gradeList(request):
     grade = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE,
                                      isDeleted=0).distinct()
 
-    return render(request, '_HavaSpor/Referee/referee-grade-list.html',
+    return render(request, 'TVGFBF/Referee/referee-grade-list.html',
                   {'refereeGrades': grade})
 
 
@@ -831,7 +831,7 @@ def visaList(request):
     for item in CategoryItem.objects.filter(forWhichClazz='VISA_REFEREE'):
         coa.append(item.pk)
     visa = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.VISA).distinct()
-    return render(request, '_HavaSpor/Referee/referee-visa-list.html',
+    return render(request, 'TVGFBF/Referee/referee-visa-list.html',
                   {'refereevisas': visa})
 
 
@@ -904,7 +904,7 @@ def returnVisaSeminar(request):
             except:
                 messages.warning(request, 'Lütfen yeniden deneyiniz')
 
-    return render(request, '_HavaSpor/Referee/referee-visa-seminar.html', {'competitions': seminar})
+    return render(request, 'TVGFBF/Referee/referee-visa-seminar.html', {'competitions': seminar})
 
 
 @login_required
@@ -929,7 +929,7 @@ def addVisaSeminar(request):
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Referee/add-visa-seminar-referee.html',
+    return render(request, 'TVGFBF/Referee/add-visa-seminar-referee.html',
                   {'competition_form': visaSeminar})
 
 
@@ -954,7 +954,7 @@ def updateVisaSeminar(request, uuid):
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, '_HavaSpor/Referee/update-referee-visa-seminar.html',
+    return render(request, 'TVGFBF/Referee/update-referee-visa-seminar.html',
                   {'competition_form': competition_form, 'competition': seminar, 'referees': referee})
 
 
@@ -1007,7 +1007,7 @@ def addRefereeVisaSeminar(request, uuid):
                     visa.referee.add(x)
                     visa.save()
         return redirect('sbs:update-visa-seminar', uuid=uuid)
-    return render(request, '_HavaSpor/Referee/add-referee-visa-seminar.html', {'referees': referee})
+    return render(request, 'TVGFBF/Referee/add-referee-visa-seminar.html', {'referees': referee})
 
 
 @login_required
@@ -1069,7 +1069,7 @@ def returnVisaSeminarApplication(request):
     else:
         seminar = VisaSeminar.objects.filter(forWhichClazz='REFEREE')
 
-    return render(request, '_HavaSpor/Referee/visa-seminar.html',
+    return render(request, 'TVGFBF/Referee/visa-seminar.html',
                   {'seminer': seminar, 'basvuru': basvurularim, 'user': user, 'referee': referee})
 
 
