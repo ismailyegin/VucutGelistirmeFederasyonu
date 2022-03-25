@@ -151,12 +151,12 @@
                     <div class="card-header with-border">
                         <h3 class="card-title">Hakem Filtrele</h3>
                     </div>
-                    <div class="card-body">
-                        <form method="POST" role="form" enctype="multipart/form-data">
 
-                            {% csrf_token %}
+                    <form method="POST" role="form" enctype="multipart/form-data">
 
+                        {% csrf_token %}
 
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
@@ -193,16 +193,16 @@
 
                             </div>
 
-
-                        </form>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-outline-info" type="submit" style="float:right"><i
-                                class="fa fa-search"> </i> Ara
-                        </button>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline-info" type="submit" style="float:right"><i
+                                    class="fa fa-search"> </i> Ara
+                            </button>
 
 
-                    </div>
+                        </div>
+                    </form>
+
 
                     <!-- /.box -->
 
@@ -406,11 +406,17 @@
 
     <script>
         function deleteReferee(id) {
-            debugger;
-            console.log(id);
-            var html = ''
-            $("#modal-delete").on("shown.bs.modal", function (e) {
-                $("#btn-conf1").click(function () {
+
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+
                     $.ajax({
                         url: "{% url "sbs:delete-referee"%}",
                         type: "POST",
@@ -420,85 +426,31 @@
                         },
                         success: function (result) {
                             if (result.status === 'Success') {
-                                html = 'Hakem Başarıyla Silindi';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Hakem başarıyla silindi !!',
 
-                                        window.location.replace("{% url "sbs:return_referees" %}");
+                                })
 
-                                    });
-
-                                }).modal('show');
                             } else {
-                                debugger;
-                                let toast = document.getElementById('error_message');
-                                html = 'Bu Hakem Silinemez';
-                                toast.innerHTML = html;
-                                document.getElementById('error_toast').style.display = 'block';
-                                $('.error').toast('show');
-                                $('.toast').fadeOut(5000);
+                                swal({
+                                    icon: 'error',
+                                    title: 'Hakem silinemedi !!',
 
-
+                                })
                             }
+                            location.reload();
 
-                            console.log(result.status)
                         }
                     });
-                });
-            }).modal('show');
-            $('#btn-close1').click(function () {
-                $('#modal-delete').modal('hide');
-            });
+                }
+
+            })
+
 
         }
+
     </script>
-
-
-
-    {#    <script>#}
-    {#        function deleteClub(id) {#}
-    {##}
-    {#            console.log(id);#}
-    {#            var html = ''#}
-    {#            $("#modal-danger").on("shown.bs.modal", function (e) {#}
-    {#                $("#btn-conf").click(function () {#}
-    {#                    $.ajax({#}
-    {#                        url: "{% url "sbs:delete-club" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),#}
-    {#                        type: "POST",#}
-    {#                        data: {#}
-    {#                            'csrfmiddlewaretoken': "{{  csrf_token  }}",#}
-    {#                            isActive: 'False'#}
-    {#                        },#}
-    {#                        success: function (result) {#}
-    {##}
-    {#                            html = 'Kulüp Başarıyla Silindi';#}
-    {#                            debugger;#}
-    {#                            $(".successModal").html(html);#}
-    {#                            $('#modal-success').on("shown.bs.modal", function (e) {#}
-    {#                                $(".btn-ok").click(function () {#}
-    {##}
-    {#                                    window.location.replace("{% url "sbs:kulupler" %}");#}
-    {##}
-    {#                                });#}
-    {##}
-    {#                            }).modal('show');#}
-    {##}
-    {##}
-    {#                            console.log(result.status)#}
-    {#                        }#}
-    {#                    });#}
-    {#                });#}
-    {#            }).modal('show');#}
-    {#            $('#btn-close').click(function () {#}
-    {#                $('#modal-danger').modal('hide');#}
-    {#            });#}
-    {##}
-    {#        }#}
-    {#    </script>#}
-
-
 
 
 {% endblock %}

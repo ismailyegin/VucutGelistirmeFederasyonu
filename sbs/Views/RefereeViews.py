@@ -36,6 +36,7 @@ from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Communication import Communication
 from sbs.models.ekabis.Person import Person
 from sbs.models.ekabis.Permission import Permission
+from sbs.models.tvfbf.Branch import Branch
 from sbs.models.tvfbf.RefereeApplication import RefereeApplication
 from sbs.models.tvfbf.VisaSeminar import VisaSeminar
 from sbs.models.tvfbf.HavaLevel import HavaLevel
@@ -77,7 +78,7 @@ def return_referees(request):
             if city:
                 query &= Q(communication__city__name__icontains=city)
             if branch:
-                query &= Q(grades__branch=branch)
+                query &= Q(grades__branch=Branch.objects.get(title=branch))
             if status:
                 query &= Q(grades__definition__name=status)
 

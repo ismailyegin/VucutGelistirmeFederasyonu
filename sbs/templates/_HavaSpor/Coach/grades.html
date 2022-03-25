@@ -327,53 +327,53 @@
     </script>
 
     <script>
-        function deleteGrade(uuid) {
-            debugger;
-            console.log(uuid);
-            var html = ''
-            $("#modal-delete").on("shown.bs.modal", function (e) {
-                $("#btn-conf1").click(function () {
+     function deleteGrade(uuid) {
+
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+
                     $.ajax({
-                        url: "{% url "sbs:delete_grades"%}",
+                      url: "{% url "sbs:delete_grades"%}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
                             uuid: uuid,
                         },
                         success: function (result) {
-                            if (result.status === 'Success') {
-                                html = 'Kademe Başarıyla Silindi';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Kademe başarıyla silindi !!',
 
-                                        window.location.replace("{% url "sbs:return_grade" %}");
+                                    })
 
-                                    });
+                                }
+                                else {
+                                     swal({
+                                        icon: 'error',
+                                        title: 'Kademe silinemedi !!',
 
-                                }).modal('show');
-                            } else {
-                                debugger;
-                                let toast = document.getElementById('error_message');
-                                html = 'Bu Kademe Silinemez';
-                                toast.innerHTML = html;
-                                document.getElementById('error_toast').style.display = 'block';
-                                $('.error').toast('show');
-                                $('.toast').fadeOut(5000);
-
+                                    })
+                                }
+                               location.reload();
 
                             }
+                        });
+            }
 
-                            console.log(result.status)
-                        }
-                    });
-                });
-            }).modal('show');
-            $('#btn-close1').click(function () {
-                $('#modal-delete').modal('hide');
-            });
+            })
 
-        }</script>
+
+        }
+
+
+    </script>
 
 {% endblock %}

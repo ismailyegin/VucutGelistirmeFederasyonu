@@ -384,7 +384,7 @@
                                                             <div class="btn-group">
                                                                 <a class="btn btn-outline-danger"
                                                                    data-toggle="modal" title="Sil"
-                                                                    onclick="delete_grade('{{ grade.uuid }}','{{ referee.uuid }}')"><i
+                                                                   onclick="delete_grade('{{ grade.uuid }}','{{ referee.uuid }}')"><i
                                                                         class="fa fa-trash"></i></a>
                                                             </div>
 
@@ -463,7 +463,7 @@
                                             <td>
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
 
-                                                      {% for item in perm %}
+                                                    {% for item in perm %}
                                                         {% if item == 'grade_approval' %}
                                                             <div class="btn-group">
                                                                 <a href="{% url "sbs:visa_approval" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
@@ -482,7 +482,7 @@
                                                             </div>
                                                         {% elif item == 'update_visa' %}
                                                             <div class="btn-group">
-                                                                <a  href="{% url "sbs:update_visa" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                <a href="{% url "sbs:update_visa" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
                                                                    type="button" class="btn btn-outline-warning"
                                                                    title="Düzenle"><i
                                                                         class="fa fa-edit"></i>
@@ -519,12 +519,21 @@
 
     </section>
     <script>
+
+
+
         function delete_grade(grade_uuid, referee_uuid) {
-            debugger;
-            console.log(grade_uuid, referee_uuid);
-            var html = ''
-            $("#modal-delete").on("shown.bs.modal", function (e) {
-                $("#btn-conf1").click(function () {
+
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+
                     $.ajax({
                         url: "{% url "sbs:delete_grade"%}",
                         type: "POST",
@@ -535,48 +544,42 @@
                         },
                         success: function (result) {
                             if (result.status === 'Success') {
-                                html = 'Hakem Kademesi Başarıyla Silindi';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Hakem kademesi başarıyla silindi !!',
 
-                                        window.location.replace("{% url "sbs:update_referee" referee.uuid %}");
+                                })
 
-                                    });
-
-                                }).modal('show');
                             } else {
-                                debugger;
-                                let toast = document.getElementById('error_message');
-                                html = 'Bu Hakem Kademesi Silinemez';
-                                toast.innerHTML = html;
-                                document.getElementById('error_toast').style.display = 'block';
-                                $('.error').toast('show');
-                                $('.toast').fadeOut(5000);
+                                swal({
+                                    icon: 'error',
+                                    title: 'Hakem kademesi silinemedi !!',
 
-
+                                })
                             }
+                            location.reload();
 
-                            console.log(result.status)
                         }
                     });
-                });
-            }).modal('show');
-            $('#btn-close1').click(function () {
-                $('#modal-delete').modal('hide');
-            });
+                }
+
+            })
+
 
         }
-    </script>
 
-    <script>
         function delete_visa(visa_uuid, referee_uuid) {
-            debugger;
-            console.log(visa_uuid, referee_uuid);
-            var html = ''
-            $("#modal-delete").on("shown.bs.modal", function (e) {
-                $("#btn-conf1").click(function () {
+
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+
                     $.ajax({
                         url: "{% url "sbs:delete_visa"%}",
                         type: "POST",
@@ -587,39 +590,35 @@
                         },
                         success: function (result) {
                             if (result.status === 'Success') {
-                                html = 'Hakem Vizesi Başarıyla Silindi';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Hakem kademesi başarıyla silindi !!',
 
-                                        window.location.replace("{% url "sbs:update_referee" referee.uuid %}");
+                                })
 
-                                    });
-
-                                }).modal('show');
                             } else {
-                                debugger;
-                                let toast = document.getElementById('error_message');
-                                html = 'Bu Hakem Vizesi Silinemez';
-                                toast.innerHTML = html;
-                                document.getElementById('error_toast').style.display = 'block';
-                                $('.error').toast('show');
-                                $('.toast').fadeOut(5000);
+                                swal({
+                                    icon: 'error',
+                                    title: 'Hakem kademesi silinemedi !!',
 
-
+                                })
                             }
+                            location.reload();
 
-                            console.log(result.status)
                         }
                     });
-                });
-            }).modal('show');
-            $('#btn-close1').click(function () {
-                $('#modal-delete').modal('hide');
-            });
+                }
 
-        }</script>
+            })
+
+
+        }
+
+    </script>
+
+
+
+
 {% endblock %}
 
 

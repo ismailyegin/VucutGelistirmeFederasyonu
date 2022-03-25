@@ -1,637 +1,625 @@
 {% extends 'base_layout.html' %}
 {% block content %}
 
-<div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">İşlem Başarılı</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span></button>
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
 
-            </div>
-            <div class="modal-body successModal">
-                ...
-            </div>
-            <div class="modal-footer">
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
 
-                <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
             </div>
+            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-content -->
+        <!-- /.modal-dialog -->
     </div>
-    <!-- /.modal-dialog -->
-</div>
-<div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
-     aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header orange">
-                <h4 class="modal-title">Uyarı</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span></button>
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header orange">
+                    <h4 class="modal-title">Uyarı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
 
             </div>
-
+            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-content -->
+        <!-- /.modal-dialog -->
     </div>
-    <!-- /.modal-dialog -->
-</div>
-<div class="modal modal-danger fade in deneme223" tabindex="-1" role="dialog" id="modal-delete"
-     aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header primary">
-                <h4 class="modal-title">Uyarı</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span></button>
+    <div class="modal modal-danger fade in deneme223" tabindex="-1" role="dialog" id="modal-delete"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header primary">
+                    <h4 class="modal-title">Uyarı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
 
+                </div>
+                <div class="modal-body">
+                    <p>Silmek istediğinizden emin misiniz ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf1"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close1">Hayır</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <p>Silmek istediğinizden emin misiniz ?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf1"
-                        data-dismiss="modal">Evet
-                </button>
-                <button type="button" class="btn btn-outline" id="btn-close1">Hayır</button>
-            </div>
+            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-content -->
+        <!-- /.modal-dialog -->
     </div>
-    <!-- /.modal-dialog -->
-</div>
-{% if messages %}
-    {% for message in messages %}
+    {% if messages %}
+        {% for message in messages %}
 
-        <div id="toast-container" class="toasts-top-right">
-            {% if message.tags == 'primary' %}
-                <div class="toast toast-error" aria-live="polite" style="" id="toast">
-                    <div class="toast-message">
-                        {% for message in messages %}
+            <div id="toast-container" class="toasts-top-right">
+                {% if message.tags == 'primary' %}
+                    <div class="toast toast-error" aria-live="polite" style="" id="toast">
+                        <div class="toast-message">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+
+                {% if message.tags == 'success' %}
+                    <div class="toast toast-success" aria-live="polite" style="" id="toast">
+                        <div class="toast-message"> {% for message in messages %}
                             {{ message }}
                         {% endfor %}
+                        </div>
                     </div>
-                </div>
 
 
 
-            {% endif %}
-
-            {% if message.tags == 'success' %}
-                <div class="toast toast-success" aria-live="polite" style="" id="toast">
-                    <div class="toast-message"> {% for message in messages %}
-                        {{ message }}
-                    {% endfor %}
-                    </div>
-                </div>
-
-
-
-            {% endif %}
-        </div>
-    {% endfor %}
-
-
-{% endif %}
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-
-
-        <div class="modal-content" style="height:fit-content">
-
-            <div class="modal-header" style="background-color:#3c8dbc ">
-
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+                {% endif %}
             </div>
-            <div class="modal-body bodys">
-                ...
+        {% endfor %}
+
+
+    {% endif %}
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                Antrenör Düzenle
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    {% for url in urls %}
-                        <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ url_name.name }}</li>
-                    {% endfor %}
-                </ol>
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    Antrenör Düzenle
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="content">
+    <section class="content">
 
-    <form method="post" enctype="multipart/form-data" role="form">
-        {% csrf_token %}
-        <div class="row">
+        <form method="post" enctype="multipart/form-data" role="form">
+            {% csrf_token %}
+            <div class="row">
 
-            <div class="col-lg-6">
-                <div class="card card-outline card-info">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Genel Bilgiler</h3>
-                    </div>
-                    <div class="card-body">
-
-                        <div class="row">
-
-
-                            <div class="col-lg-12 text-center ">
-                                <div class="form-group">
-                                    <label> {{ person_form.profileImage.label }}</label>
-
-                                    <center>
-                                        <img
-                                                src="/media/{{ person_form.instance.coach.person.profileImage }}"
-                                                class="img-responsive img-bordered  imagesize" alt="Resim Yok"
-                                                style=" max-width: 100px; height: auto;"
-
-
-                                        ><br>
-                                    </center>
-
-                                    {{ person_form.profileImage }}
-                                </div>
-
-                            </div>
-                            <div class="col-lg-6">
-
-
-                                <div class="form-group">
-                                    <label> {{ user_form.first_name.label }}</label>
-                                    {{ user_form.first_name }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label> {{ user_form.last_name.label }}</label>
-                                    {{ user_form.last_name }}
-                                </div>
-
-
-                                <div class="form-group">
-                                    <label> {{ person_form.birthplace.label }}</label>
-                                    {{ person_form.birthplace }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="iban">iban</label>
-                                    <input id="iban" class="form-control" type="text" name="iban"
-                                           value="{{ coach.person.iban }}"/>
-                                </div>
-
-                                <div class="form-group">
-                                    <label style="padding-top: 16px"> {{ person_form.bloodType.label }}</label>
-                                    {{ person_form.bloodType }}
-                                </div>
-
-
-                            </div>
-                            <br>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label> {{ person_form.tc.label }}</label>
-                                    {{ person_form.tc }}
-                                </div>
-
-
-                                <div class="form-group">
-                                    <label> {{ person_form.motherName.label }}</label>
-                                    {{ person_form.motherName }}
-                                </div>
-
-
-                                <div class="form-group">
-                                    <label> {{ person_form.fatherName.label }}</label>
-                                    {{ person_form.fatherName }}
-                                </div>
-
-
-                                <div class="form-group">
-                                    <label> {{ person_form.birthDate.label }}</label>
-                                    {{ person_form.birthDate }}
-                                </div>
-
-
-                                <div class="form-group">
-                                    <label> {{ person_form.gender.label }}</label>
-                                    {{ person_form.gender }}
-                                </div>
-
-
-                            </div>
-
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label> {{ person_form.iban.label }}</label>
-                                    {{ person_form.iban }}
-                                </div>
-
-
-                            </div>
-
-
+                <div class="col-lg-6">
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Genel Bilgiler</h3>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                            <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
-                        {% endif %}
-                    </div>
-                </div>
+                        <div class="card-body">
+
+                            <div class="row">
 
 
-            </div>
+                                <div class="col-lg-12 text-center ">
+                                    <div class="form-group">
+                                        <label> {{ person_form.profileImage.label }}</label>
+
+                                        <center>
+                                            <img
+                                                    src="/media/{{ person_form.instance.coach.person.profileImage }}"
+                                                    class="img-responsive img-bordered  imagesize" alt="Resim Yok"
+                                                    style=" max-width: 100px; height: auto;"
 
 
-            <div class="col-lg-6">
-                <div class="card card-outline card-info">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">İletişim Bilgileri</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label> {{ user_form.email.label }}</label>
-                                    {{ user_form.email }}
+                                            ><br>
+                                        </center>
+
+                                        {{ person_form.profileImage }}
+                                    </div>
+
                                 </div>
-                                <div class="form-group">
-                                    <label> {{ communication_form.phoneNumber.label }}</label>
-                                    {{ communication_form.phoneNumber }}
+                                <div class="col-lg-6">
+
+
+                                    <div class="form-group">
+                                        <label> {{ user_form.first_name.label }}</label>
+                                        {{ user_form.first_name }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> {{ user_form.last_name.label }}</label>
+                                        {{ user_form.last_name }}
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.birthplace.label }}</label>
+                                        {{ person_form.birthplace }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="iban">iban</label>
+                                        <input id="iban" class="form-control" type="text" name="iban"
+                                               value="{{ coach.person.iban }}"/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label style="padding-top: 16px"> {{ person_form.bloodType.label }}</label>
+                                        {{ person_form.bloodType }}
+                                    </div>
+
+
                                 </div>
-                                <div class="form-group">
-                                    <label> {{ communication_form.phoneNumber2.label }}</label>
-                                    {{ communication_form.phoneNumber2 }}
+                                <br>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ person_form.tc.label }}</label>
+                                        {{ person_form.tc }}
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.motherName.label }}</label>
+                                        {{ person_form.motherName }}
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.fatherName.label }}</label>
+                                        {{ person_form.fatherName }}
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.birthDate.label }}</label>
+                                        {{ person_form.birthDate }}
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ person_form.gender.label }}</label>
+                                        {{ person_form.gender }}
+                                    </div>
+
+
                                 </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label> {{ communication_form.country.label }}</label>
-                                    {{ communication_form.country }}
+
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> {{ person_form.iban.label }}</label>
+                                        {{ person_form.iban }}
+                                    </div>
+
+
                                 </div>
-                                <div class="form-group">
-                                    <label> {{ communication_form.city.label }}</label>
-                                    {{ communication_form.city }}
-                                </div>
-                                <div class="form-group">
-                                    <label> {{ communication_form.postalCode.label }}</label>
-                                    {{ communication_form.postalCode }}
-                                </div>
+
+
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label> {{ communication_form.address.label }}</label>
-                                    {{ communication_form.address }}
-                                </div>
-                            </div>
+                        <div class="card-footer">
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                                <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
+                            {% endif %}
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                            <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
-                        {% endif %}
                     </div>
 
 
                 </div>
 
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card card-outline card-info">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Kademe Bilgileri</h3>
-
-
-                        {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                            <a href="{% url "sbs:add_grade_coach" coach.uuid %}"
-                               type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                    class="fa fa-plus" title="Coach Kademe Ekle"></i>
-                            </a>
-                        {% endif %}
+                <div class="col-lg-6">
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">İletişim Bilgileri</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ user_form.email.label }}</label>
+                                        {{ user_form.email }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ communication_form.phoneNumber.label }}</label>
+                                        {{ communication_form.phoneNumber }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ communication_form.phoneNumber2.label }}</label>
+                                        {{ communication_form.phoneNumber2 }}
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ communication_form.country.label }}</label>
+                                        {{ communication_form.country }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ communication_form.city.label }}</label>
+                                        {{ communication_form.city }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ communication_form.postalCode.label }}</label>
+                                        {{ communication_form.postalCode }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> {{ communication_form.address.label }}</label>
+                                        {{ communication_form.address }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                                <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
+                            {% endif %}
+                        </div>
 
 
                     </div>
-                    <div class="card-body">
 
-                        <table id="grade" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th> Hak Kazanma Tarihi</th>
-                                <th> Branş</th>
-                                <th> Tanımı</th>
-                                <th>Dekont</th>
-                                <th> Onay Durumu</th>
-                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                    <th>Onayla/Reddet/Düzenle/Sil</th>
-                                {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Kademe Bilgileri</h3>
 
 
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if grades_form.all %}
-                                {% for grade in grades_form %}
-                                    <tr>
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ grade.startDate }}  </td>
-                                        <td>{{ grade.branch }}  </td>
-                                        <td>{{ grade.definition }}  </td>
-                                        <td><img src="/media/{{ grade.dekont }}" class="user-image" alt="sbs"
-                                                 style=" width: 30px;height: 30px;"></td>
-                                        <td>{{ grade.status }}  </td>
-                                        <td>
-                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                                {% for item in perm %}
-                                                    {% if item == 'coach_grade_approval' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:coach_grade_approval' grade_uuid=grade.uuid coach_uuid=coach.uuid %}"
-                                                               type="button" class="btn btn-outline-success"
-                                                               title="Onayla"><i
-                                                                    class="fa fa-check"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% elif item == 'coach_grade_reject' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:coach_grade_reject' grade_uuid=grade.uuid coach_uuid=coach.uuid %}"
-                                                               type="button" class="btn btn-outline-dark"
-                                                               title="Reddet"><i
-                                                                    class="fa fa-minus"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% elif item == 'coach_update_grade' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:coach_update_grade' grade_uuid=grade.uuid coach_uuid=coach.uuid %}"
-                                                               type="button" class="btn btn-outline-warning"
-                                                               title="Düzenle"><i
-                                                                    class="fa fa-edit"></i>
-                                                            </a>
-                                                        </div>
-
-                                                    {% elif item == 'coach_delete_grade' %}
-                                                        <div class="btn-group">
-                                                            <a class="btn btn-outline-danger"
-                                                               data-toggle="modal" title="Sil"
-                                                               onclick="delete_grade('{{ grade.uuid }}','{{ coach.uuid }}')"><i
-                                                                    class="fa fa-trash"></i></a>
-                                                        </div>
-
-                                                    {% endif %}
-                                                {% endfor %}
-
-
-
-                                            {% endif %}
-                                        </td>
-
-
-                                    </tr>
-                                {% endfor %}
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                                <a href="{% url "sbs:add_grade_coach" coach.uuid %}"
+                                   type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
+                                        class="fa fa-plus" title="Coach Kademe Ekle"></i>
+                                </a>
                             {% endif %}
 
 
-                            </tbody>
-                        </table>
+                        </div>
+                        <div class="card-body">
 
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-12">
-                <div class="card card-outline card-info">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Vize Bilgileri</h3>
-
-
-                        {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                            <a href="{% url "sbs:add_visa_coach" coach.uuid %}"
-                               type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                    class="fa fa-plus" title="Vize Ekle"></i>
-                            </a>
-                        {% endif %}
-
-
-                    </div>
-                    <div class="card-body">
-
-                        <table id="visa" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th> Hak Kazanma Yılı</th>
-                                <th> Branş</th>
-                                <th> Dekont</th>
-                                <th> Onay Durumu</th>
-                                <th>Onayla/Reddet/Düzenle/Sil</th>
-
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if visa_form.all %}
-
-
-                                {% for grade in visa_form %}
+                            <table id="grade" class="table table-bordered table-hover">
+                                <thead>
                                 <tr>
-
-                                <td>{{ forloop.counter }} </td>
-                                <td>{{ grade.startDate.year }}  </td>
-                                <td>{{ grade.branch }}  </td>
-
-
-                                <td><img src="/media/{{ grade.dekont }}" class="user-image"
-                                         alt="KOBİLTEK"
-                                         style=" width: 30px;height: 30px;"></td>
-                                <td>{{ grade.status }}  </td>
-
-                                <td>
+                                    <th>#</th>
+                                    <th> Hak Kazanma Tarihi</th>
+                                    <th> Branş</th>
+                                    <th> Tanımı</th>
+                                    <th>Dekont</th>
+                                    <th> Onay Durumu</th>
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <th>Onayla/Reddet/Düzenle/Sil</th>
+                                    {% endif %}
 
 
-                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                    {% for item in perm %}
-                                        {% if item == 'coach_grade_approval' %}
-                                            <div class="btn-group">
-                                                <a href="{% url 'sbs:coach_visa_approval' visa_uuid=grade.uuid coach_uuid=coach.uuid %}"
-                                                   type="button" class="btn btn-outline-success"
-                                                   title="Onayla"><i
-                                                        class="fa fa-check"></i>
-                                                </a>
-                                            </div>
-                                        {% elif item == 'coach_grade_reject' %}
-                                            <div class="btn-group">
-                                                <a href="{% url 'sbs:coach_visa_reject' visa_uuid=grade.uuid coach_uuid=coach.uuid %}"
-                                                   type="button" class="btn btn-outline-dark"
-                                                   title="Reddet"><i
-                                                        class="fa fa-minus"></i>
-                                                </a>
-                                            </div>
-                                        {% elif item == 'coach_update_grade' %}
-                                            <div class="btn-group">
-                                                <a href="{% url 'sbs:coach_update_visa' visa_uuid=grade.uuid coach_uuid=coach.uuid %}"
-                                                   type="button" class="btn btn-outline-warning"
-                                                   title="Düzenle"><i
-                                                        class="fa fa-edit"></i>
-                                                </a>
-                                            </div>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if grades_form.all %}
+                                    {% for grade in grades_form %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ grade.startDate }}  </td>
+                                            <td>{{ grade.branch }}  </td>
+                                            <td>{{ grade.definition }}  </td>
+                                            <td><img src="/media/{{ grade.dekont }}" class="user-image" alt="sbs"
+                                                     style=" width: 30px;height: 30px;"></td>
+                                            <td>{{ grade.status }}  </td>
+                                            <td>
+                                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                    {% for item in perm %}
+                                                        {% if item == 'coach_grade_approval' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url 'sbs:coach_grade_approval' grade_uuid=grade.uuid coach_uuid=coach.uuid %}"
+                                                                   type="button" class="btn btn-outline-success"
+                                                                   title="Onayla"><i
+                                                                        class="fa fa-check"></i>
+                                                                </a>
+                                                            </div>
+                                                        {% elif item == 'coach_grade_reject' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url 'sbs:coach_grade_reject' grade_uuid=grade.uuid coach_uuid=coach.uuid %}"
+                                                                   type="button" class="btn btn-outline-dark"
+                                                                   title="Reddet"><i
+                                                                        class="fa fa-minus"></i>
+                                                                </a>
+                                                            </div>
+                                                        {% elif item == 'coach_update_grade' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url 'sbs:coach_update_grade' grade_uuid=grade.uuid coach_uuid=coach.uuid %}"
+                                                                   type="button" class="btn btn-outline-warning"
+                                                                   title="Düzenle"><i
+                                                                        class="fa fa-edit"></i>
+                                                                </a>
+                                                            </div>
 
-                                        {% elif item == 'coach_delete_grade' %}
-                                            <div class="btn-group">
-                                                <a class="btn btn-outline-danger"
-                                                   data-toggle="modal" title="Sil"
-                                                   onclick="delete_visa('{{ grade.uuid }}','{{ coach.uuid }}')"><i
-                                                        class="fa fa-trash"></i></a>
-                                            </div>
+                                                        {% elif item == 'coach_delete_grade' %}
+                                                            <div class="btn-group">
+                                                                <a class="btn btn-outline-danger"
+                                                                   data-toggle="modal" title="Sil"
+                                                                   onclick="delete_grade('{{ grade.uuid }}','{{ coach.uuid }}')"><i
+                                                                        class="fa fa-trash"></i></a>
+                                                            </div>
 
-                                        {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+
+
+
+                                                {% endif %}
+                                            </td>
+
+
+                                        </tr>
                                     {% endfor %}
-
-
-
                                 {% endif %}
 
 
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Vize Bilgileri</h3>
+
+
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                                <a href="{% url "sbs:add_visa_coach" coach.uuid %}"
+                                   type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
+                                        class="fa fa-plus" title="Vize Ekle"></i>
+                                </a>
+                            {% endif %}
+
+
+                        </div>
+                        <div class="card-body">
+
+                            <table id="visa" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> Hak Kazanma Yılı</th>
+                                    <th> Branş</th>
+                                    <th> Dekont</th>
+                                    <th> Onay Durumu</th>
+                                    <th>Onayla/Reddet/Düzenle/Sil</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if visa_form.all %}
+
+
+                                    {% for grade in visa_form %}
+                                        <tr>
+
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ grade.startDate.year }}  </td>
+                                            <td>{{ grade.branch }}  </td>
+
+
+                                            <td><img src="/media/{{ grade.dekont }}" class="user-image"
+                                                     alt="KOBİLTEK"
+                                                     style=" width: 30px;height: 30px;"></td>
+                                            <td>{{ grade.status }}  </td>
+
+                                            <td>
+
+
+                                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                                    {% for item in perm %}
+                                                        {% if item == 'coach_grade_approval' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url 'sbs:coach_visa_approval' visa_uuid=grade.uuid coach_uuid=coach.uuid %}"
+                                                                   type="button" class="btn btn-outline-success"
+                                                                   title="Onayla"><i
+                                                                        class="fa fa-check"></i>
+                                                                </a>
+                                                            </div>
+                                                        {% elif item == 'coach_grade_reject' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url 'sbs:coach_visa_reject' visa_uuid=grade.uuid coach_uuid=coach.uuid %}"
+                                                                   type="button" class="btn btn-outline-dark"
+                                                                   title="Reddet"><i
+                                                                        class="fa fa-minus"></i>
+                                                                </a>
+                                                            </div>
+                                                        {% elif item == 'coach_update_grade' %}
+                                                            <div class="btn-group">
+                                                                <a href="{% url 'sbs:coach_update_visa' visa_uuid=grade.uuid coach_uuid=coach.uuid %}"
+                                                                   type="button" class="btn btn-outline-warning"
+                                                                   title="Düzenle"><i
+                                                                        class="fa fa-edit"></i>
+                                                                </a>
+                                                            </div>
+
+                                                        {% elif item == 'coach_delete_grade' %}
+                                                            <div class="btn-group">
+                                                                <a class="btn btn-outline-danger"
+                                                                   data-toggle="modal" title="Sil"
+                                                                   onclick="delete_visa('{{ grade.uuid }}','{{ coach.uuid }}')"><i
+                                                                        class="fa fa-trash"></i></a>
+                                                            </div>
+
+                                                        {% endif %}
+                                                    {% endfor %}
 
 
 
+                                                {% endif %}
 
 
-                            </td>
+                                            </td>
 
 
-                            </tr>
-                            {% endfor %}
- {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
 
-</section>
-<script>
-    function delete_grade(grade_uuid, coach_uuid) {
-        debugger;
-        console.log(grade_uuid, coach_uuid);
-        var html = ''
-        $("#modal-delete").on("shown.bs.modal", function (e) {
-            $("#btn-conf1").click(function () {
-                $.ajax({
-                    url: "{% url "sbs:coach_delete_grade"%}",
-                    type: "POST",
-                    data: {
-                        'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                        grade_uuid: grade_uuid,
-                        coach_uuid: coach_uuid,
-                    },
-                    success: function (result) {
-                        if (result.status === 'Success') {
-                            html = 'Antrenör Kademesi Başarıyla Silindi';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
+    </section>
+    <script>
+        function delete_grade(grade_uuid, coach_uuid) {
 
-                                    window.location.replace("{% url "sbs:update_coach" coach.uuid %}");
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
 
-                                });
+                    $.ajax({
+                        url: "{% url "sbs:coach_delete_grade"%}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            grade_uuid: grade_uuid,
+                            coach_uuid: coach_uuid,
+                        },
+                        success: function (result) {
+                            if (result.status === 'Success') {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Antrenör kademesi başarıyla silindi !!',
 
-                            }).modal('show');
-                        } else {
-                            debugger;
-                            let toast = document.getElementById('error_message');
-                            html = 'Bu Antrenör Kademesi Silinemez';
-                            toast.innerHTML = html;
-                            document.getElementById('error_toast').style.display = 'block';
-                            $('.error').toast('show');
-                            $('.toast').fadeOut(5000);
+                                })
 
+                            } else {
+                                swal({
+                                    icon: 'error',
+                                    title: 'Antrenör kademesi silinemedi !!',
 
-                        }
-
-                        console.log(result.status)
-                    }
-                });
-            });
-        }).modal('show');
-        $('#btn-close1').click(function () {
-            $('#modal-delete').modal('hide');
-        });
-
-    }
-</script>
-
-<script>
-    function delete_visa(visa_uuid, coach_uuid) {
-        debugger;
-        console.log(visa_uuid, coach_uuid);
-        var html = ''
-        $("#modal-delete").on("shown.bs.modal", function (e) {
-            $("#btn-conf1").click(function () {
-                $.ajax({
-                    url: "{% url "sbs:coach_delete_visa"%}",
-                    type: "POST",
-                    data: {
-                        'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                        visa_uuid: visa_uuid,
-                        coach_uuid: coach_uuid,
-                    },
-                    success: function (result) {
-                        if (result.status === 'Success') {
-                            html = 'Antrenör Vizesi Başarıyla Silindi';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
-
-                                    window.location.replace("{% url "sbs:update_coach" coach.uuid %}");
-
-                                });
-
-                            }).modal('show');
-                        } else {
-                            debugger;
-                            let toast = document.getElementById('error_message');
-                            html = 'Bu Antrenör Vizesi Silinemez';
-                            toast.innerHTML = html;
-                            document.getElementById('error_toast').style.display = 'block';
-                            $('.error').toast('show');
-                            $('.toast').fadeOut(5000);
-
+                                })
+                            }
+                            location.reload();
 
                         }
+                    });
+                }
 
-                        console.log(result.status)
-                    }
-                });
-            });
-        }).modal('show');
-        $('#btn-close1').click(function () {
-            $('#modal-delete').modal('hide');
-        });
+            })
 
-    }</script>
+
+        }
+
+        function delete_visa(visa_uuid, coach_uuid) {
+
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+
+                    $.ajax({
+                        url: "{% url "sbs:coach_delete_visa"%}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            visa_uuid: visa_uuid,
+                            coach_uuid: coach_uuid,
+                        },
+                        success: function (result) {
+                            if (result.status === 'Success') {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Antrenör vizesi başarıyla silindi !!',
+
+                                })
+
+                            } else {
+                                swal({
+                                    icon: 'error',
+                                    title: 'Antrenör vizesi silinemedi !!',
+
+                                })
+                            }
+                            location.reload();
+
+                        }
+                    });
+                }
+
+            })
+
+
+        }
+
+    </script>
+
 {% endblock %}
 
 
