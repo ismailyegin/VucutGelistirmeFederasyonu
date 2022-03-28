@@ -1248,6 +1248,10 @@ def detailCoach(request):
                 for branch in obj.branch.all():
                     branchs = branchs + branch.title + ','
                 coachs['branch'] = branchs
+                club = ''
+                if Club.objects.filter(coachs=obj):
+                    club = Club.objects.get(coachs=obj).name
+                coachs['club']=club
                 grade_info = {}
                 visa_info = {}
                 finishDate = ''

@@ -7,6 +7,7 @@ from django.contrib.auth.models import Group, User
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from accounts.models import Forgot
+from sbs.Forms.havaspor.PreRefereeForm import PreRefereeForm
 from sbs.Forms.havaspor.PreRegidtrationForm import PreRegistrationForm
 from sbs.Forms.havaspor.RefereeForm import RefereeForm
 from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
@@ -52,12 +53,12 @@ def login(request):
                 return redirect('sbs:hakem')
             # elif active.group.name == 'Antrenör':
             #     return redirect('sbs:antrenor')
-            elif active.group.name == 'Admin' or login_user.user.is_superuser:
+            elif active.group.name == 'Admin' or login_user.is_superuser:
                 return redirect('sbs:view_admin')
             elif active.group.name == 'Yönetim':
                 return redirect('sbs:federasyon')
             elif active.group.name == 'Kulüp Yetkilisi':
-                return redirect('sbs:federasyon')
+                return redirect('sbs:kulup-uyesi')
 
     if request.method == 'POST':
         login_user = None
@@ -221,10 +222,10 @@ def handle500Template(request):
 
 def referenceReferee(request):
     logout(request)
-    referee = RefereeForm()
+    referee = PreRefereeForm()
 
     if request.method == 'POST':
-        referee = RefereeForm(request.POST, request.FILES)
+        referee = PreRefereeForm(request.POST, request.FILES)
         mail = request.POST.get('email')
         if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
                 email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(

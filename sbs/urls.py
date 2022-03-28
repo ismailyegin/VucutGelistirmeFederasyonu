@@ -717,5 +717,9 @@ urlpatterns = [
     path(r'kulup/kulup-uye-sil/', ClubViews.deleteClubUserFromClub, name='deleteClubUserFromClub'),
     path(r'kulup/kulup-antrenor-sil/', ClubViews.deleteCoachFromClub, name='deleteCoachFromClub'),
     path(r'antrenor/antrenor-detay-api/', CoachViews.detailCoach, name='detailCoach-api'),
+    path(r'antrenor/kulup-yetkili-detay-api/', ClubViews.detailClubUser, name='detailClubUser-api'),
+    path(r'kulup/kulup-uyesi-ekle/<uuid:uuid>', ClubViews.return_add_club_person, name='kulup-uyesi-ekle'),
+    path(r'kulup/antrenorSec/<uuid:uuid>', ClubViews.choose_coach_clup,
+        name='choose-coach-club'),
 
 ]

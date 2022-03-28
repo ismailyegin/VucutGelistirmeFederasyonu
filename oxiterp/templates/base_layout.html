@@ -105,7 +105,7 @@
         color: black;
     }
 
-    .datepicker{
+    .datepicker {
         z-index: 1040 !important;
     }
 
@@ -117,7 +117,7 @@
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
         <img class="animation" src="{% static 'thsf-header-logo.png' %}" alt="THSF"
-              style="display: block">
+             style="display: block">
     </div>
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -280,8 +280,7 @@
         <!-- Brand Logo -->
 
 
-                <span class="logo-lg"><img class="" src="{% static 'thsf-header-logo.png' %}" alt="User Image" > </span>
-
+        <span class="logo-lg"><img class="" src="{% static 'thsf-header-logo.png' %}" alt="User Image"> </span>
 
 
         <!-- Sidebar -->
@@ -370,6 +369,7 @@
 
 
         <script src="{% static 'alert/sweetalert.min.js' %}"></script>
+        <script src="{% static 'sweeatalert2@11/sweetalert2@11.js' %}"></script>
         <div id="toastsContainerTopRight" class="toasts-top-right fixed"></div>
         {% block content %}
 
@@ -501,7 +501,7 @@
                     <div class="os-scrollbar-handle" style="transform: translate(0px, 207px); height: 20.5108%;"></div>
                 </div>
             </div>
-        <div class="os-scrollbar-corner"></div>
+            <div class="os-scrollbar-corner"></div>
         </div>
     </aside>
     <div id="sidebar-overlay"></div><!-- /.control-sidebar -->
@@ -619,7 +619,7 @@
 
 
     $(function () {
-         $('.toast').delay(4000).fadeOut(3000);
+        $('.toast').delay(4000).fadeOut(3000);
         $('#brc_menu td').css({
             color: '#fff'
         });
@@ -830,7 +830,6 @@
     {#        }#}
     {#    });#}
     {#, 50000);#}
-
 
 
 </script>

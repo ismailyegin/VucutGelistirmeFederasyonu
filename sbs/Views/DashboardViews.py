@@ -233,7 +233,7 @@ def return_admin_dashboard(request):
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
 
-    last_athlete = Athlete.objects.order_by('-creationDate')[:8]
+    last_coach = Coach.objects.order_by('-creationDate')[:8]
     total_club = Club.objects.all().count()
     total_athlete = Athlete.objects.all().count()
     total_athlete_gender_man = Athlete.objects.filter(person__gender=Person.MALE).count()
@@ -246,7 +246,7 @@ def return_admin_dashboard(request):
 
     return render(request, 'TVGFBF/Anasayfa/admin.html',
                   {'total_club_user': total_club_user, 'total_club': total_club,
-                   'total_athlete': total_athlete, 'total_coachs': total_coachs, 'last_athletes': last_athlete,
+                   'total_athlete': total_athlete, 'total_coachs': total_coachs, 'last_coaches': last_coach,
                    'total_athlete_gender_man': total_athlete_gender_man,
                    'total_athlete_gender_woman': total_athlete_gender_woman,
                    'total_athlate_last_month': total_athlate_last_month,

@@ -252,6 +252,43 @@
                 </div>
                 <!-- /.col -->
 
+<div class="col-lg-6">
+       <div class="card card-warning card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Son Eklenen Antrenörler</h3>
+
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="card-body no-padding">
+                        <ul class="users-list clearfix">
+                            {% for coach in last_coaches %}
+                                <li>
+                                <img src="/media/{{ coach.person.profileImage }}" style="width: 100px;height: 100px"
+                                     alt="User Image">
+                                <a href="{% url "sbs:update_coach" coach.uuid %}"
+                                   class="users-list-name">{{ coach.person.user.first_name }} {{ coach.person.user.last_name }}
+( {% for branch in coach.branch.all %}
+                                    {{ branch.title }}
+{% endfor %})
+                                </a>
+
+                            {% endfor %}
+
+
+                            </li>
+
+                        </ul>
+                        <!-- /.users-list -->
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="card-footer text-center">
+                        <a href="{% url "sbs:return_coachs" %}" class="uppercase">Tüm Antrenörleri Görüntüle</a>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+</div>
+
+
             </div>
 
 

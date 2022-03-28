@@ -250,7 +250,7 @@
 
 
                             {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                                <a href=""
+                                <a href="{% url 'sbs:kulup-uyesi-ekle' club.uuid %}"
                                    type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
                                         class="fa fa-plus" title="Kulüp Üyesi Ekle"></i>
                                 </a>
@@ -310,9 +310,9 @@
 
 
                             {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                                <a href=""
+                                <a href="{%  url 'sbs:choose-coach-club' club.uuid %}"
                                    type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                        class="fa fa-plus" title="Antrenör Ekle"></i>
+                                        class="fa fa-plus" title="Antrenör Seç"></i>
                                 </a>
                             {% endif %}
 
