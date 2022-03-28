@@ -17,6 +17,7 @@ from django.urls import resolve
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 from unicode_tr import unicode_tr
+from zeep import Client
 
 from accounts.models import Forgot
 from sbs.Forms.CategoryItemForm import CategoryItemForm
@@ -24,12 +25,13 @@ from sbs.Forms.UserForm import UserForm
 from sbs.Forms.havaspor.CommunicationForm import CommunicationForm
 from sbs.Forms.havaspor.GradeFormReferee import GradeFormReferee
 from sbs.Forms.havaspor.PersonForm import PersonForm
+from sbs.Forms.havaspor.PreRefereeForm import PreRefereeForm
 from sbs.Forms.havaspor.RefereeForm import RefereeForm
 from sbs.Forms.havaspor.RefereeSearchForm import RefereeSearchForm
 from sbs.Forms.havaspor.HavaUserForm import HavaUserForm
 from sbs.Forms.havaspor.VisaForm import VisaForm
 from sbs.Forms.havaspor.VisaSeminarForm import VisaSeminarForm
-from sbs.models import Logs
+from sbs.models import Logs, ReferenceCoach
 from sbs.models.ekabis.Competition import Competition
 from sbs.models.ekabis.EnumFields import EnumFields
 from sbs.models.ekabis.CategoryItem import CategoryItem
@@ -37,7 +39,9 @@ from sbs.models.ekabis.Communication import Communication
 from sbs.models.ekabis.Person import Person
 from sbs.models.ekabis.Permission import Permission
 from sbs.models.tvfbf.Branch import Branch
+from sbs.models.tvfbf.PreRegistration import PreRegistration
 from sbs.models.tvfbf.RefereeApplication import RefereeApplication
+from sbs.models.tvfbf.ReferenceReferee import ReferenceReferee
 from sbs.models.tvfbf.VisaSeminar import VisaSeminar
 from sbs.models.tvfbf.HavaLevel import HavaLevel
 from sbs.models.tvfbf.Referee import Referee
@@ -1152,8 +1156,6 @@ def approvalRefereeApplicationVisaSeminar(request):
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
-
-
 @login_required
 def document(request, uuid):
     referee = Referee.objects.get(uuid=uuid)
@@ -1183,3 +1185,196 @@ def document(request, uuid):
     response.write(pdf)
 
     return response
+
+
+@login_required
+def referencedListReferee(request):  # Hakem başvuruları
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    referee = ReferenceReferee.objects.all().order_by('status')
+    return render(request, 'TVGFBF/Referee/referenceListReferee.html', {'referees': referee})
+
+
+@login_required
+def refenceapprovalReferee(request):  # Hakem basvuru onayla
+    # perm = general_methods.control_access(request)
+    #
+    # if not perm:
+    #     logout(request)
+    #     return redirect('accounts:login')
+    reference = ReferenceReferee.objects.get(uuid=request.POST['uuid'])
+    if request.method == 'POST' and request.is_ajax():
+        try:
+          with transaction.atomic():
+
+            if reference.status == ReferenceReferee.WAITED:
+                user = User()
+                user.username = reference.email
+                user.first_name = reference.first_name
+                user.last_name = reference.last_name
+                user.email = reference.email
+                user.is_active = True
+                user.save()
+                group = Group.objects.get(name='Hakem')
+                user.groups.add(group)
+
+                user.save()
+
+                person = Person()
+                person.tc = reference.tc
+                person.motherName = reference.motherName
+                person.fatherName = reference.fatherName
+                person.profileImage = reference.profileImage
+                person.birthDate = reference.birthDate
+                person.bloodType = reference.bloodType
+                person.birthplace = reference.birthplace
+                if reference.gender == 'Erkek':
+                    person.gender = Person.MALE
+                else:
+                    person.gender = Person.FEMALE
+                person.save()
+                person.user=user
+                person.save()
+                communication = Communication()
+                communication.postalCode = reference.postalCode
+                communication.phoneNumber = reference.phoneNumber
+                communication.phoneNumber2 = reference.phoneNumber2
+                communication.address = reference.address
+                communication.city = reference.city
+                communication.country = reference.country
+                communication.save()
+
+                judge = Referee(person=person, communication=communication)
+                # judge.iban = reference.iban
+                judge.save()
+
+                grade = HavaLevel(definition=reference.kademe_definition,
+                                  startDate=reference.kademe_startDate,
+                                  )
+                grade.levelType = EnumFields.LEVELTYPE.GRADE
+                grade.status = HavaLevel.APPROVED
+                grade.isActive = True
+                grade.save()
+
+                judge.grades.add(grade)
+                judge.save()
+
+                reference.status = ReferenceReferee.APPROVED
+                reference.save()
+
+                messages.success(request, 'Hakem Başarıyla Eklenmiştir')
+
+                fdk = Forgot(user=user, status=False)
+                fdk.save()
+                print(fdk)
+
+                # html_content = ''
+                # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+                # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+                # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
+                #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(
+                #     fdk.uuid) + '</p></a>'
+                # msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                # msg.attach_alternative(html_content, "text/html")
+                # msg.send()
+
+                log = str(user.get_full_name()) + " Hakem basvurusu onaylandi"
+                log = general_methods.logwrite(request, request.user, log)
+
+
+            else:
+                messages.success(request, 'Hakem daha önce onaylanmıştır.')
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Referee.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def referenceUpdateReferee(request, uuid):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    refere = ReferenceReferee.objects.get(uuid=uuid)
+    refere_form = PreRefereeForm(request.POST or None, request.FILES or None, instance=refere,
+                              initial={'kademe_definition': refere.kademe_definition})
+
+    try:
+         with transaction.atomic():
+            if request.method == 'POST':
+                # mail = request.POST.get('email')
+                # if mail != refere.email:
+                #
+                #     if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                #             email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                #         email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+                #         email=mail):
+                #         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                #         return render(request, 'TVGFBF/Referee/updateReferenceReferee.html',
+                #                       {'preRegistrationform': refere_form})
+
+                # tc = request.POST.get('tc')
+                # if tc != refere.tc:
+                #
+                #     if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                #             tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                #         tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+                #         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+                #         return render(request, 'TVGFBF/Referee/updateReferenceReferee.html',
+                #                       {'preRegistrationform': refere_form})
+
+                name = request.POST.get('first_name')
+                surname = request.POST.get('last_name')
+                year = request.POST.get('birthDate')
+                year = year.split('/')
+
+                # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+                # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+                #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+                #     return render(request, 'TVGFBF/Referee/updateReferenceReferee.html',
+                #                   {'preRegistrationform': refere_form})
+
+                if refere_form.is_valid():
+                    refere_form.save()
+                    messages.success(request, 'Hakem Başvurusu Güncellendi')
+                    return redirect('sbs:referencedListReferee')
+                else:
+                    messages.warning(request, 'Alanları Kontrol Ediniz')
+         return render(request, 'TVGFBF/Referee/updateReferenceReferee.html', {'preRegistrationform': refere_form })
+    except ReferenceReferee.DoesNotExist:
+            traceback.print_exc()
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+
+@login_required
+def refencedeleteReferee(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = ReferenceReferee.objects.get(uuid=request.POST['uuid'])
+            obj.status = ReferenceReferee.DENIED
+            obj.save()
+
+            log = str(obj.first_name) + " " + str(obj.last_name) + "     Hakem basvurusu reddedildi"
+            log = general_methods.logwrite(request, request.user, log)
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Referee.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

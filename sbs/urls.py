@@ -630,7 +630,6 @@ urlpatterns = [
          name='visa_list_approval'),
     path(r'hakem/vize-listesi/reddet/<uuid:uuid>', RefereeViews.visaListReject, name='visa_list_reject'),
 
-
     # HAKEM VİZE SEMİNER
 
     path(r'hakem/visa-seminar', RefereeViews.returnVisaSeminar, name='referee-visa-seminar'),
@@ -720,6 +719,16 @@ urlpatterns = [
     path(r'antrenor/kulup-yetkili-detay-api/', ClubViews.detailClubUser, name='detailClubUser-api'),
     path(r'kulup/kulup-uyesi-ekle/<uuid:uuid>', ClubViews.return_add_club_person, name='kulup-uyesi-ekle'),
     path(r'kulup/antrenorSec/<uuid:uuid>', ClubViews.choose_coach_clup,
-        name='choose-coach-club'),
+         name='choose-coach-club'),
+
+    path(r'hakem/hakem-basvuru', RefereeViews.referencedListReferee, name='referencedListReferee'),
+    path(r'hakem/basvuru-onayla', RefereeViews.refenceapprovalReferee,
+         name='refenceapprovalReferee'),
+
+    path(r'hakem/basvuru-duzenle/<uuid:uuid>', RefereeViews.referenceUpdateReferee,
+         name='update-referenceReferee'),
+
+    path(r'hakem/basvuru-reddet', RefereeViews.refencedeleteReferee,
+        name='refencedeleteReferee'),
 
 ]

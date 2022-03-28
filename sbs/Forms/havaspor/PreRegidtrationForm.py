@@ -40,8 +40,8 @@ class PreRegistrationForm(ModelForm):
                        'onkeyup': 'if(this.value.length > 34){this.value=this.value.substr(0, 34);}', 'value': ''}),
 
             'kademe_startDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right', 'id': 'datepicker4', 'autocomplete': 'off',
-                       'onkeydown': 'return false', }),
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker2', 'autocomplete': 'off',
+                       'onkeydown': 'return true', }),
 
             'isCoach': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                            'style': 'width: 100%; ', 'required': 'required'}),

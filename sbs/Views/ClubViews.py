@@ -178,13 +178,15 @@ def add_club(request):
                 else:
 
                     messages.warning(request, 'Alanları Kontrol Ediniz')
+                return render(request, 'TVGFBF/Kulup/add-club.html',
+                              {'club_form': club_form, 'urls': urls, 'current_url': current_url,
+                               'url_name': url_name, 'manager_communication_form': manager_communication_form,
+                               'manager_person_form': manager_person_form, 'user_form': user_form, })
+
+
         except Exception as e:
             messages.warning(request, 'HATA !! ' + ' ' + str(e))
             return redirect('sbs:add_club')
-
-    return render(request, 'TVGFBF/Kulup/add-club.html',
-                  {'club_form': club_form, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name, 'manager_communication_form': manager_communication_form, 'manager_person_form': manager_person_form, 'user_form': user_form, })
 
 
 

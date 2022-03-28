@@ -49,12 +49,12 @@ class PreRefereeForm(ModelForm):
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
 
             'kademe_startDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right', 'id': 'datepicker4', 'autocomplete': 'off',
-                       'onkeydown': 'return false', 'required': 'required'}),
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker2', 'autocomplete': 'off',
+                       'onkeydown': 'return true', 'required': 'required'}),
 
             'birthDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
-                       'onkeydown': 'return false', 'required': 'required'}),
+                       'onkeydown': 'return true', 'required': 'required'}),
 
             'bloodType': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                              'style': 'width: 100%; '}),
