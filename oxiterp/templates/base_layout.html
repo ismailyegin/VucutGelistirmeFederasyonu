@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="description" content=THSF/>
-    <meta name="keywords" content="THSF"/>
+    <meta name="description" content="Türkiye Vücut Geliştirme Fitness ve Bilek Güreşi Federasyonu"/>
+    <meta name="keywords" content="TVGFBF, Vucüt Geliştirme, Fitness, Bilek Güreşi, Federasyon"/>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     {% load static %}
 
-    <link rel="shortcut icon" type="image/png" href="/media/turkey_favicon.png"/>
-    <title>TÜRKİYE HAVA SPORLARI FEDERASYONU </title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'tvgfbf-logo-eski.png' %}"/>
+    <title>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU</title>
 
 
     <!-- Google Font: Source Sans Pro -->
@@ -117,7 +117,7 @@
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
         <img class="animation" src="{% static 'thsf-header-logo.png' %}" alt="THSF"
-             style="display: block">
+              style="display: block">
     </div>
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -281,6 +281,7 @@
 
 
         <span class="logo-lg"><img class="" src="{% static 'thsf-header-logo.png' %}" alt="User Image"> </span>
+                <span class="ml-2 logo-lg" style="color: #c2c7d0; font-size: 30px;"><img class="mt-2 mr-3" src="{% static 'tvgfbf-navbar.png' %}" alt="User Image" > TVGFBF </span>
 
 
         <!-- Sidebar -->
@@ -369,7 +370,6 @@
 
 
         <script src="{% static 'alert/sweetalert.min.js' %}"></script>
-        <script src="{% static 'sweeatalert2@11/sweetalert2@11.js' %}"></script>
         <div id="toastsContainerTopRight" class="toasts-top-right fixed"></div>
         {% block content %}
 
