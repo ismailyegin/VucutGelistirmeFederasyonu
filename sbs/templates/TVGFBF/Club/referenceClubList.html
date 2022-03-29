@@ -1,0 +1,315 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+
+
+
+    <!-- success modal -->
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Uyarı</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Beklemede olanlari degiştirmek istediginizden emin misiniz?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+
+    {% if messages %}
+        {% for message in messages %}
+
+
+            {% if message.tags == 'warning' %}
+
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+
+
+            {% if message.tags == 'success' %}
+
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Başarılı!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+        {% endfor %}
+
+
+    {% endif %}
+
+
+
+
+
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <section class="content">
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Klüp Başvuru Listesi</h3>
+                    </div>
+
+                    <div class="card-body">
+
+                        <table id="basvuru" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th> İsim</th>
+
+                                <th>Kulüp</th>
+
+                                <th> email</th>
+                                <th> Onay Durumu</th>
+
+                                {#                                <th> Form</th>#}
+                                <th> İşlemler</th>
+
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if prepegidtration.all %}
+                                {% for pre in prepegidtration %}
+                                    <tr>
+
+                                        <td>{{ forloop.counter }} </td>
+
+                                        <td>
+
+                                            <a target="_blank"> {{ pre.first_name }} {{ pre.last_name }} </a>
+
+                                        </td>
+
+                                        {#                                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}#}
+                                        <td>{{ pre.name }}</td>
+                                        <td>{{ pre.email }}  </td>
+                                        <td>{{ pre.status }}  </td>
+
+
+                                        {#                                        <td><a target="_blank" href="{{ MEDIA_URL }}{{ pre.petition }}"><img#}
+                                        {#                                                src="{{ MEDIA_URL }}{{ pre.petition }}" class="user-image" alt="None"#}
+                                        {#                                                style=" width: 30px;height: 30px;"></a></td>#}
+
+
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="{% url "sbs:approveClub" pre.pk %}"
+                                                   type="button" class="btn btn-outline-success" title="onayla"><i
+                                                        class="fa fa-check"></i>
+                                                </a>
+                                            </div>
+                                            <div class="btn-group">
+                                                <a href="{% url 'sbs:updateReferenceClub' pre.pk %}"
+                                                   type="button" class="btn btn-outline-warning"><i
+                                                        class="fa fa-edit" title="Düzenle"></i>
+                                                </a>
+                                            </div>
+                                            <div class="btn-group">
+                                                <a class="btn btn-outline-danger"
+                                                   data-toggle="modal"
+                                                   href="{% url "sbs:rejectedClub" pre.pk %}"><i
+                                                        class="fa fa-trash" title="Reddet"></i></a>
+                                            </div>
+
+                                        </td>
+
+
+                                    </tr>
+
+                                {% endfor %}
+                            {% endif %}
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    {% load static %}
+
+    <script>
+        $(function () {
+            $('#basvuru').DataTable({
+                dom: 'Bfrtip',
+
+
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                ],
+
+                'buttons': [
+
+
+                    {
+                        extend: "pageLength",
+                    },
+
+
+                    {
+                        extend: 'colvis',
+                        titleAttr: 'Ekle Çıkar'
+
+
+                    },
+                    {
+                        extend: 'print',
+                        title: 'YEKA LİSTESİ',
+                        text: '<i class="fa fa-print"></i>',
+
+                        titleAttr: 'Yazdır',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        download: 'open',
+                        text: '<i class="fa fa-file-pdf"></i>',
+
+                        titleAttr: 'Pdf Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel"></i>',
+                        titleAttr: 'Excel Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+
+                ],
+                "search": {
+                    "caseInsensitive": true,
+                },
+                'language': {
+                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                },
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'order': true,
+                'info': true,
+                'autoWidth': true,
+                'responsive': true,
+            });
+            table.on('draw.dt', function () {
+                debugger;
+                table.column(0, {
+                    search: 'applied',
+                    order: 'applied',
+                    page: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            });
+
+        })
+    </script>
+
+
+
+
+
+
+{% endblock %}
+
