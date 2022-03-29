@@ -81,3 +81,4 @@ from .tvfbf.AirSportsCompetition import AirSportsCompetition
 from .tvfbf.EducationSeminar import EducationSeminar
 from .tvfbf.HavaLevel import HavaLevel
 from .tvfbf.ReferenceCoach import ReferenceCoach
+from .tvfbf.ReferenceClub import ReferenceClub

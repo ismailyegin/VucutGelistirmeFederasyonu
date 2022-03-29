@@ -83,6 +83,7 @@ class PreRegistration(models.Model):
     foundingDate = models.DateField(blank=True, null=True, max_length=120,verbose_name='Kuruluş Tarihi')
     clubMail = models.CharField(blank=True, null=True, max_length=120)
     logo = models.ImageField(upload_to='club/', null=True, blank=True, verbose_name='Kulüp Logo')
+    derbis = models.CharField(max_length=100, null=True, blank=True, verbose_name='Derbis Kütük No')
 
     creationDate = models.DateTimeField(auto_now_add=True)
     modificationDate = models.DateTimeField(auto_now=True)
@@ -94,9 +95,9 @@ class PreRegistration(models.Model):
     clubaddress = models.TextField(blank=True, null=True, verbose_name='Adres')
     clubcity = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl')
     clubcountry = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Ülke')
-
+    clubTown=models.CharField(max_length=200,null=True,blank=True)
+    clubFax=models.CharField(max_length=11,null=True,blank=True)
     isCoach = models.BooleanField(default=False, choices=IsCoach)
-
 
      #userForm
     first_name = models.CharField( max_length=30, blank=True)

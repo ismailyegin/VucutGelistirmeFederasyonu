@@ -13,17 +13,23 @@ from django.urls import resolve
 from unicode_tr import unicode_tr
 from zeep import Client
 
+from accounts.models import Forgot
 from sbs.Forms.havaspor.ClubForm import ClubForm
 from sbs.Forms.havaspor.ClubUserForm import ClubUserForm
 from sbs.Forms.havaspor.ClupUserSearchForm import ClubSearchForm
 from sbs.Forms.havaspor.CommunicationForm import CommunicationForm
 from sbs.Forms.havaspor.PersonForm import PersonForm
+from sbs.Forms.havaspor.PreRegidtrationForm import PreRegistrationForm
 from sbs.Forms.havaspor.RefereeUserForm import RefereeUserForm
+from sbs.Forms.havaspor.ReferenceClubUpdateForm import ReferenceClubUpdateForm
 from sbs.Forms.havaspor.TransClubForm import TransClubForm
 from sbs.Forms.havaspor.TransCommunicationForm import TransCommunicationForm
 from sbs.Forms.havaspor.UserForm import UserForm
-from sbs.models import Club, SportClubUser, Coach, Communication, Person
+from sbs.models import Club, SportClubUser, Coach, Communication, Person, City, HavaLevel, Country
+from sbs.models.ekabis.EnumFields import EnumFields
+from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Permission import Permission
+from sbs.models.tvfbf.ReferenceClub import ReferenceClub
 from sbs.models.tvfbf.License import License
 from sbs.models.tvfbf.ClubRole import ClubRole
 from sbs.models.tvfbf.Athlete import Athlete
@@ -89,7 +95,7 @@ def return_clubs(request):
                 elif active == 'Yonetim' or active == 'Admin':
                     clubs = Club.objects.filter(query).filter(isDeleted=False)
 
-    return render(request, 'TVGFBF/Kulup/clubs.html',
+    return render(request, 'TVGFBF/Club/clubs.html',
                   {'clubs': clubs, 'ClupsSearchForm': ClupsSearchForm, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, })
 
@@ -108,16 +114,14 @@ def add_club(request):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
+    try:
+        with transaction.atomic():
+            if request.method == 'POST':
 
-    if request.method == 'POST':
-
-        club_form = TransClubForm(request.POST or None, request.FILES or None)
-        manager_communication_form = CommunicationForm(request.POST or None, request.FILES)
-        manager_person_form = PersonForm(request.POST or None, request.FILES or None)
-        user_form = RefereeUserForm(request.POST or None, request.FILES)
-
-        try:
-            with transaction.atomic():
+                club_form = TransClubForm(request.POST or None, request.FILES or None)
+                manager_communication_form = CommunicationForm(request.POST or None, request.FILES)
+                manager_person_form = PersonForm(request.POST or None, request.FILES or None)
+                user_form = RefereeUserForm(request.POST or None, request.FILES)
                 if club_form.is_valid() and user_form.is_valid() and manager_person_form.is_valid() and manager_communication_form.is_valid():
                     clubsave = Club()
                     clubsave.name = club_form.cleaned_data['name']
@@ -178,13 +182,12 @@ def add_club(request):
                 else:
 
                     messages.warning(request, 'Alanları Kontrol Ediniz')
-                return render(request, 'TVGFBF/Kulup/add-club.html',
+            return render(request, 'TVGFBF/Club/add-club.html',
                               {'club_form': club_form, 'urls': urls, 'current_url': current_url,
                                'url_name': url_name, 'manager_communication_form': manager_communication_form,
                                'manager_person_form': manager_person_form, 'user_form': user_form, })
 
-
-        except Exception as e:
+    except Exception as e:
             messages.warning(request, 'HATA !! ' + ' ' + str(e))
             return redirect('sbs:add_club')
 
@@ -233,7 +236,7 @@ def clubUpdate(request, uuid):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    return render(request, 'TVGFBF/Kulup/updateClub.html',
+    return render(request, 'TVGFBF/Club/updateClub.html',
                   {'club_form': club_form, 'communication_form': communication_form, 'clubPersons': clubPersons,
                    'athletes': athletes,
                    'club': club, 'clubCoachs': clubCoachs})
@@ -458,7 +461,7 @@ def return_add_club_person(request,uuid):
             for x in user_form.errors.as_data():
                 messages.warning(request, user_form.errors[x][0])
 
-    return render(request, 'TVGFBF/Kulup/add_clubuser.html',
+    return render(request, 'TVGFBF/Club/add_clubuser.html',
                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
                    'sportClubUser_form': sportClubUser_form,
                    })
@@ -493,4 +496,246 @@ def choose_coach_clup(request, uuid):
             log = general_methods.logwrite(request, request.user, log)
 
         return redirect('sbs:update_club', club.uuid)
-    return render(request, 'TVGFBF/Kulup/chosee-coach.html', {'coaches': coaches,'club':club})
+    return render(request, 'TVGFBF/Club/chosee-coach.html', {'coaches': coaches, 'club':club})
+
+
+@login_required
+def return_preRegistration(request):
+    perm = general_methods.control_access(request)
+
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    prepegidtration = ReferenceClub.objects.all().order_by('-creationDate')
+    return render(request, 'TVGFBF/Club/referenceClubList.html',
+                  {'prepegidtration': prepegidtration })
+
+
+
+@login_required
+def rejected_preRegistration(request,pk):
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    messages.success(request, 'Klup basvurusu reddedildi ')
+    veri=PreRegistration.objects.get(pk=pk)
+    veri.status=PreRegistration.DENIED
+    veri.save()
+    prepegidtration=PreRegistration.objects.all()
+    log = str(veri.name) + " Klup basvurusu reddedildi"
+    log = general_methods.logwrite(request, request.user, log)
+    return render(request, 'TVGFBF/Club/referenceClubList.html',
+                  {'prepegidtration': prepegidtration })
+
+@login_required
+def approve_preRegistration(request,pk):
+    # perm = general_methods.control_access(request)
+    # if not perm:
+    #     logout(request)
+    #     return redirect('accounts:login')
+    basvuru=ReferenceClub.objects.get(pk=pk)
+    if basvuru.status!=ReferenceClub.APPROVED:
+        mail = basvuru.email
+        if not (User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(email=mail)):
+
+            user = User()
+            user.username = basvuru.email
+            user.first_name = basvuru.first_name
+            user.last_name = basvuru.last_name
+            user.email = basvuru.email
+            user.is_active = True
+            user.is_staff = basvuru.is_staff
+            group = Group.objects.get(name='Kulüp Yetkilisi')
+            password = User.objects.make_random_password()
+            user.set_password(password)
+            user.save()
+            user.groups.add(group)
+            user.save()
+
+            # person kaydet
+            person = Person()
+            person.tc = basvuru.tc
+            person.birthplace = basvuru.birthplace
+            person.motherName = basvuru.motherName
+            person.fatherName = basvuru.fatherName
+            person.profileImage = basvuru.profileImage
+            person.birthDate = basvuru.birthDate
+            person.bloodType = basvuru.bloodType
+            if basvuru.gender == 'Erkek':
+                person.gender = Person.MALE
+            else:
+                person.gender = Person.FEMALE
+            person.user=user
+            person.save()
+
+            # Communication kaydet
+            com = Communication()
+            com.phoneNumber = basvuru.phoneNumber
+            com.phoneNumber2 = basvuru.phoneNumber2
+            com.address = basvuru.address
+            com.city = basvuru.city
+            com.country = basvuru.country
+            com.save()
+
+            Sportclup = SportClubUser()
+            Sportclup.user = user
+            Sportclup.person = person
+            Sportclup.communication = com
+            Sportclup.role = basvuru.role
+            Sportclup.save()
+
+            comclup = Communication()
+            comclup.phoneNumber = basvuru.clubphoneNumber
+            comclup.address = basvuru.clubaddress
+            if City.objects.filter(name=basvuru.clubcity):
+                comclup.city = City.objects.get(name=basvuru.clubcity)
+            if Country.objects.filter(name='Türkiye'):
+                comclup.country = Country.objects.get(name='Türkiye')
+            comclup.save()
+
+            # SportClup
+            clup =Club()
+            clup.name = basvuru.name
+            clup.foundingDate = basvuru.foundingDate
+            clup.clubMail = basvuru.clubMail
+            clup.logo = basvuru.logo
+            # clup.isFormal = basvuru.isFormal
+            # clup.petition = basvuru.petition
+            clup.communication = comclup
+            clup.save()
+            clup.clubUser.add(Sportclup)
+            clup.save()
+
+            if basvuru.isCoach:
+
+                coach = Coach()
+                coach.user = user
+                coach.person = person
+                coach.communication = com
+                coach.iban = basvuru.iban
+                coach.save()
+                group = Group.objects.get(name='Antrenör')
+                user.groups.add(group)
+                user.save()
+                grade = HavaLevel(
+                    startDate=basvuru.kademe_startDate,
+                    dekont=basvuru.kademe_belge)
+                    # branch=EnumFields.HALTER.value)
+                try:
+                    grade.definition = CategoryItem.objects.get(name=basvuru.kademe_definition)
+                except:
+                    grade.definition = CategoryItem.objects.get(name='1.Kademe')
+
+                grade.levelType = EnumFields.LEVELTYPE.GRADE
+                grade.status = HavaLevel.APPROVED
+                grade.isActive = True
+                grade.save()
+                coach.grades.add(grade)
+                coach.save()
+
+                clup.coachs.add(coach)
+                clup.save()
+
+            basvuru.status = ReferenceClub.APPROVED
+            basvuru.save()
+
+            fdk = Forgot(user=user, status=False)
+            fdk.save()
+
+            # html_content = ''
+            # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+            # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+            # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
+            #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+            # msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            # msg.attach_alternative(html_content, "text/html")
+            # msg.send()
+            # messages.success(request, 'Başari ile kaydedildi')
+
+            log = str(clup) + " Kulüp basvurusu onaylandi"
+            log = general_methods.logwrite(request, request.user, log)
+
+            try:
+                # user kaydet
+                print()
+            except:
+                messages.warning(request, 'Lütfen sistem yöneticisi ile görüşünüz ')
+                log = str(basvuru.name) + " Kulup basvurusunda hata oldu"
+                log = general_methods.logwrite(request, request.user, log)
+
+        else:
+            messages.warning(request, 'Mail adresi sistem de kayıtlıdır.')
+    else:
+        messages.warning(request,'Bu basvuru sisteme kaydedilmistir.')
+    return redirect('sbs:ReferenceClubList')
+
+
+
+
+def updateReferenceClub(request, pk):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    veri=ReferenceClub.objects.get(pk=pk)
+
+    try:
+        if CategoryItem.objects.get(name=veri.kademe_definition):
+            kategori = CategoryItem.objects.get(name=veri.kademe_definition)
+            form = ReferenceClubUpdateForm(request.POST or None, request.FILES or None, instance=veri,
+                                       initial={'kademe_definition': kategori.name})
+        else:
+            form = ReferenceClubUpdateForm(request.POST or None, request.FILES or None, instance=veri)
+    except:
+        form = ReferenceClubUpdateForm(request.POST or None, request.FILES or None, instance=veri)
+    if request.method == 'POST':
+        mail = request.POST.get('email')
+        # if mail != veri.email:
+        #     if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+        #             email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+        #         email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+        #         email=mail):
+        #         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+        #         return render(request, 'registration/referenceRegisterClub.html',
+        #                       {'preRegistrationform': form, })
+
+        # tc = request.POST.get('tc')
+        # if tc != veri.tc:
+        #
+        #     if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+        #             tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+        #         tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+        #         messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+        #         return render(request, 'registration/referenceRegisterClub.html',
+        #                       {'preRegistrationform': form, })
+
+        name = request.POST.get('first_name')
+        surname = request.POST.get('last_name')
+        year = request.POST.get('birthDate')
+        year = year.split('/')
+
+        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        #
+        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+        #     messages.warning(request, 'Tc kimlik numarasi ile isim,soyisim,dogum yılı  bilgileri uyuşmamaktadır. ')
+        #     return render(request, 'registration/referenceRegisterClub.html',
+        #                   {'preRegistrationform': form, })
+        form = ReferenceClubUpdateForm(request.POST, request.FILES or None, instance=veri)
+
+        if form.is_valid():
+            form.save()
+            print(request.POST.get('kademe_definition'))
+
+            messages.success(request,'Basarili bir şekilde kaydedildi ')
+            return redirect('sbs:ReferenceClubList')
+        else:
+            messages.warning(request,'Alanlari kontrol ediniz')
+    return render(request, 'registration/referenceRegisterClub.html',
+                  {'preRegistrationform': form,'club':veri})

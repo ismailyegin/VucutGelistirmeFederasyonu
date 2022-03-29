@@ -320,45 +320,45 @@ def referenceCoach(request):
 
 
 def pre_registration(request):
-    PreRegistrationform = PreRegistrationForm()
+    preRegistrationform = PreRegistrationForm()
 
     if request.method == 'POST':
-        PreRegistrationform = PreRegistrationForm(request.POST or None, request.FILES or None)
+        preRegistrationform = PreRegistrationForm(request.POST or None, request.FILES or None)
 
-        mail = request.POST.get('email')
+        # mail = request.POST.get('email')
+        #
+        # if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+        #         email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+        #     email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+        #     email=mail):
+        #     messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+        #     return render(request, 'registration/referenceRegisterClub.html',
+        #                   {'preRegistrationform': PreRegistrationform})
 
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
-            email=mail):
-            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-            return render(request, 'registration/cluppre-registration.html',
-                          {'preRegistrationform': PreRegistrationform})
-
-        tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
-            messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
-            return render(request, 'registration/cluppre-registration.html',
-                          {'preRegistrationform': PreRegistrationform})
+        # tc = request.POST.get('tc')
+        # if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+        #         tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+        #     tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+        #     messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
+        #     return render(request, 'registration/referenceRegisterClub.html',
+        #                   {'preRegistrationform': PreRegistrationform})
 
         name = request.POST.get('first_name')
         surname = request.POST.get('last_name')
         year = request.POST.get('birthDate')
         year = year.split('/')
 
-        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-            messages.warning(request,
-                             'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-            return render(request, 'registration/cluppre-registration.html',
-                          {'preRegistrationform': PreRegistrationform})
+        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+        #     messages.warning(request,
+        #                      'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+        #     return render(request,'registration/referenceRegisterClub.html',
+        #                   {'preRegistrationform': PreRegistrationform})
 
         # -------------------------------------
 
-        if PreRegistrationform.is_valid():
-            PreRegistrationform.save()
+        if preRegistrationform.is_valid():
+            preRegistrationform.save()
             messages.success(request,
                              "Başarili bir şekilde kayıt başvurunuz alındı Yetkili onayından sonra girdiginiz mail adresinize gelen mail ile Spor Bilgi Sistemine  giris yapabilirsiniz.")
             return redirect('accounts:login')
@@ -367,4 +367,4 @@ def pre_registration(request):
         else:
             messages.warning(request, "Alanlari kontrol ediniz")
 
-    return render(request, 'registration/cluppre-registration.html', {'preRegistrationform': PreRegistrationform})
+    return render(request, 'registration/referenceRegisterClub.html', {'preRegistrationform': preRegistrationform})

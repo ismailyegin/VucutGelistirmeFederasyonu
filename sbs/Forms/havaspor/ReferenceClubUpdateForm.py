@@ -6,7 +6,7 @@ from sbs.models.tvfbf.ReferenceClub import ReferenceClub
 from sbs.models.tvfbf.PreRegistration import PreRegistration
 
 
-class PreRegistrationForm(ModelForm):
+class ReferenceClubUpdateForm(ModelForm):
     kademe_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'),
                                                to_field_name='name',
                                                empty_label="Seçiniz",
@@ -55,14 +55,14 @@ class PreRegistrationForm(ModelForm):
 
             'shortName': forms.TextInput(attrs={'class': 'form-control',}),
 
-            'clubaddress': forms.Textarea(attrs={'class': 'form-control ', 'rows': '3','readonly': 'readonly'}),
+            'clubaddress': forms.Textarea(attrs={'class': 'form-control ', 'rows': '3',}),
 
-            'clubphoneNumber': forms.TextInput(attrs={'class': 'form-control ','readonly': 'readonly'}),
+            'clubphoneNumber': forms.TextInput(attrs={'class': 'form-control ',}),
 
             'clubphoneNumber2': forms.TextInput(attrs={'class': 'form-control '}),
 
             'clubpostalCode': forms.TextInput(attrs={'class': 'form-control '}),
-            'clubcity': forms.TextInput(attrs={'class': 'form-control ','readonly': 'readonly'}),
+            'clubcity': forms.TextInput(attrs={'class': 'form-control ',}),
 
 
             'clubcountry': forms.Select(
@@ -73,9 +73,9 @@ class PreRegistrationForm(ModelForm):
                 attrs={'class': 'form-control ', 'rows': '2', 'cols': '5'}),
 
             'phoneNumber': forms.TextInput(attrs={'class': 'form-control '}),
-            'clubFax': forms.TextInput(attrs={'class': 'form-control ','readonly': 'readonly'}),
+            'clubFax': forms.TextInput(attrs={'class': 'form-control ',}),
 
-            'clubTown': forms.TextInput(attrs={'class': 'form-control ','readonly': 'readonly'}),
+            'clubTown': forms.TextInput(attrs={'class': 'form-control ',}),
             'phoneNumber2': forms.TextInput(attrs={'class': 'form-control '}),
 
             'postalCode': forms.TextInput(attrs={'class': 'form-control '}),
@@ -126,11 +126,11 @@ class PreRegistrationForm(ModelForm):
 
             'name': forms.TextInput(
                 attrs={'class': 'form-control ', 'required': 'required', "style": "text-transform:uppercase",
-                       'readonly': 'readonly'}),
+                       }),
 
-            'clubMail': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
-            'derbis': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'clubMail': forms.TextInput(attrs={'class': 'form-control',}),
+            'derbis': forms.TextInput(attrs={'class': 'form-control', }),
             'foundingDate': forms.TextInput(
-                attrs={'class': 'form-control', 'readonly': 'readonly'}),
+                attrs={'class': 'form-control', }),
 
         }

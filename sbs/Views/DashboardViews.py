@@ -233,7 +233,9 @@ def return_admin_dashboard(request):
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
 
-    last_coach = Coach.objects.order_by('-creationDate')[:8]
+    last_coach = Coach.objects.order_by('-creationDate')[:4]
+    last_referee = Referee.objects.order_by('-creationDate')[:4]
+
     total_club = Club.objects.all().count()
     total_athlete = Athlete.objects.all().count()
     total_athlete_gender_man = Athlete.objects.filter(person__gender=Person.MALE).count()
@@ -250,7 +252,7 @@ def return_admin_dashboard(request):
                    'total_athlete_gender_man': total_athlete_gender_man,
                    'total_athlete_gender_woman': total_athlete_gender_woman,
                    'total_athlate_last_month': total_athlate_last_month,
-                   'total_judge': total_judge, 'total_user': total_user,
+                   'total_judge': total_judge, 'total_user': total_user,'last_referee':last_referee,
                    'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
 
