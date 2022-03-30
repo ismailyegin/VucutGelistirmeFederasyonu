@@ -20,7 +20,7 @@ class YekaBusinessBlog(BaseModel):
     status = models.CharField(max_length=100, null=True, blank=True, default='Başlanmadı')
     sorting = models.IntegerField(default=0)
     companies = models.ManyToManyField(Company)
-    parameter = models.ManyToManyField(YekaBusinessBlogParemetre, null=True, blank=True) #dinamik parametre bilgileri
+    parameter = models.ManyToManyField(YekaBusinessBlogParemetre, blank=True) #dinamik parametre bilgileri
     indefinite = models.BooleanField(default=False, choices=INDEFINETE_CHOICES)
     explanation = models.CharField(max_length=250,null=True, blank=True)
     dependence_parent = models.ForeignKey('self', on_delete=models.DO_NOTHING, related_name='depence_parent', null=True,

@@ -17,7 +17,7 @@ class Company(BaseModel):
     taxnumber = models.CharField(null=True, blank=True, max_length=120, verbose_name='Vergi Numarasi  ')
     mail = models.CharField(blank=True, null=True, max_length=120, verbose_name='mail')
     files = models.ManyToManyField(CompanyFiles)
-    companyuser = models.ManyToManyField(CompanyUser, null=True, blank=True)
+    companyuser = models.ManyToManyField(CompanyUser, blank=True)
     is_consortium = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):

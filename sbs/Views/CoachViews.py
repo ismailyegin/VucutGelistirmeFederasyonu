@@ -953,7 +953,7 @@ def returnVisaSeminar(request):
     if request.method == 'POST':
         if user.groups.filter(name='Antrenör').exists():
             vizeSeminer = VisaSeminar.objects.get(pk=request.POST.get('pk'))
-            coach = Coach.objects.get(user=request.user)
+            coach = Coach.objects.get(person__user=request.user)
             try:
                 if request.FILES['file']:
                     document = request.FILES['file']
@@ -1037,8 +1037,8 @@ def deleteVisaSeminar(request):
             if request.method == 'POST' and request.is_ajax():
                 uuid = request.POST['uuid']
                 obj = VisaSeminar.objects.get(uuid=uuid)
-                obj.isDeleted = 1
-                obj.save()
+                obj.delete()
+
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
             else:
                 return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
@@ -1108,11 +1108,10 @@ def deleteCoachVisaSeminar(request):
     try:
         with transaction.atomic():
             if request.method == 'POST' and request.is_ajax():
-                coach_uuid = request.POST['coach_uuid']
-                competition_uuid = request.POST['competition_uuid']
+
+                competition_uuid = request.POST['uuid']
                 visa = VisaSeminar.objects.get(uuid=competition_uuid)
-                visa.coach.remove(Coach.objects.get(uuid=coach_uuid))
-                visa.save()
+                visa.delete()
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
             else:
                 return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

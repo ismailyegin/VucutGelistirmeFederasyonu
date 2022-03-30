@@ -80,7 +80,7 @@ def return_clubs(request):
                 if city:
                     query &= Q(communication__city__name__icontains=city)
                 if name:
-                    query &= Q(name__icontains=name)
+                    query &= Q(name__icontains=name.title())
                 if clubMail:
                     query &= Q(clubMail__icontains=clubMail)
                 if shortName:
@@ -515,17 +515,22 @@ def return_preRegistration(request):
 
 
 @login_required
-def rejected_preRegistration(request,pk):
+def rejected_preRegistrationClub(request,pk):
     perm = general_methods.control_access(request)
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    messages.success(request, 'Klup basvurusu reddedildi ')
-    veri=PreRegistration.objects.get(pk=pk)
-    veri.status=PreRegistration.DENIED
+    messages.success(request, 'Kulüp başvurusu reddedildi ')
+    veri=ReferenceClub.objects.get(pk=pk)
+    veri.status=ReferenceClub.DENIED
     veri.save()
-    prepegidtration=PreRegistration.objects.all()
-    log = str(veri.name) + " Klup basvurusu reddedildi"
+    prepegidtration=ReferenceClub.objects.all()
+    if Club.objects.filter(derbis=veri.derbis):
+        club=Club.objects.get(derbis=veri.derbis)
+        club.infoStatus=False
+        club.save()
+
+    log = str(veri.name) + " Kulüp başvurusu reddedildi"
     log = general_methods.logwrite(request, request.user, log)
     return render(request, 'TVGFBF/Club/referenceClubList.html',
                   {'prepegidtration': prepegidtration })
@@ -538,139 +543,148 @@ def approve_preRegistration(request,pk):
     #     return redirect('accounts:login')
     basvuru=ReferenceClub.objects.get(pk=pk)
     if basvuru.status!=ReferenceClub.APPROVED:
-        mail = basvuru.email
-        if not (User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(email=mail)):
+        if not Club.objects.filter(derbis=basvuru.derbis):
+            mail = basvuru.email
+            if not (User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(email=mail)):
 
-            user = User()
-            user.username = basvuru.email
-            user.first_name = basvuru.first_name
-            user.last_name = basvuru.last_name
-            user.email = basvuru.email
-            user.is_active = True
-            user.is_staff = basvuru.is_staff
-            group = Group.objects.get(name='Kulüp Yetkilisi')
-            password = User.objects.make_random_password()
-            user.set_password(password)
-            user.save()
-            user.groups.add(group)
-            user.save()
-
-            # person kaydet
-            person = Person()
-            person.tc = basvuru.tc
-            person.birthplace = basvuru.birthplace
-            person.motherName = basvuru.motherName
-            person.fatherName = basvuru.fatherName
-            person.profileImage = basvuru.profileImage
-            person.birthDate = basvuru.birthDate
-            person.bloodType = basvuru.bloodType
-            if basvuru.gender == 'Erkek':
-                person.gender = Person.MALE
-            else:
-                person.gender = Person.FEMALE
-            person.user=user
-            person.save()
-
-            # Communication kaydet
-            com = Communication()
-            com.phoneNumber = basvuru.phoneNumber
-            com.phoneNumber2 = basvuru.phoneNumber2
-            com.address = basvuru.address
-            com.city = basvuru.city
-            com.country = basvuru.country
-            com.save()
-
-            Sportclup = SportClubUser()
-            Sportclup.user = user
-            Sportclup.person = person
-            Sportclup.communication = com
-            Sportclup.role = basvuru.role
-            Sportclup.save()
-
-            comclup = Communication()
-            comclup.phoneNumber = basvuru.clubphoneNumber
-            comclup.address = basvuru.clubaddress
-            if City.objects.filter(name=basvuru.clubcity):
-                comclup.city = City.objects.get(name=basvuru.clubcity)
-            if Country.objects.filter(name='Türkiye'):
-                comclup.country = Country.objects.get(name='Türkiye')
-            comclup.save()
-
-            # SportClup
-            clup =Club()
-            clup.name = basvuru.name
-            clup.foundingDate = basvuru.foundingDate
-            clup.clubMail = basvuru.clubMail
-            clup.logo = basvuru.logo
-            # clup.isFormal = basvuru.isFormal
-            # clup.petition = basvuru.petition
-            clup.communication = comclup
-            clup.save()
-            clup.clubUser.add(Sportclup)
-            clup.save()
-
-            if basvuru.isCoach:
-
-                coach = Coach()
-                coach.user = user
-                coach.person = person
-                coach.communication = com
-                coach.iban = basvuru.iban
-                coach.save()
-                group = Group.objects.get(name='Antrenör')
+                user = User()
+                user.username = basvuru.email
+                user.first_name = basvuru.first_name
+                user.last_name = basvuru.last_name
+                user.email = basvuru.email
+                user.is_active = True
+                user.is_staff = basvuru.is_staff
+                group = Group.objects.get(name='Kulüp Yetkilisi')
+                password = User.objects.make_random_password()
+                user.set_password(password)
+                user.save()
                 user.groups.add(group)
                 user.save()
-                grade = HavaLevel(
-                    startDate=basvuru.kademe_startDate,
-                    dekont=basvuru.kademe_belge)
-                    # branch=EnumFields.HALTER.value)
-                try:
-                    grade.definition = CategoryItem.objects.get(name=basvuru.kademe_definition)
-                except:
-                    grade.definition = CategoryItem.objects.get(name='1.Kademe')
 
-                grade.levelType = EnumFields.LEVELTYPE.GRADE
-                grade.status = HavaLevel.APPROVED
-                grade.isActive = True
-                grade.save()
-                coach.grades.add(grade)
-                coach.save()
+                # person kaydet
+                person = Person()
+                person.tc = basvuru.tc
+                person.birthplace = basvuru.birthplace
+                person.motherName = basvuru.motherName
+                person.fatherName = basvuru.fatherName
+                person.profileImage = basvuru.profileImage
+                person.birthDate = basvuru.birthDate
+                person.bloodType = basvuru.bloodType
+                if basvuru.gender == 'Erkek':
+                    person.gender = Person.MALE
+                else:
+                    person.gender = Person.FEMALE
+                person.user=user
+                person.save()
 
-                clup.coachs.add(coach)
+                # Communication kaydet
+                com = Communication()
+                com.phoneNumber = basvuru.phoneNumber
+                com.phoneNumber2 = basvuru.phoneNumber2
+                com.address = basvuru.address
+                com.city = basvuru.city
+                com.country = basvuru.country
+                com.save()
+
+                Sportclup = SportClubUser()
+                Sportclup.user = user
+                Sportclup.person = person
+                Sportclup.communication = com
+                Sportclup.role = basvuru.role
+                Sportclup.save()
+
+                comclup = Communication()
+                comclup.phoneNumber = basvuru.clubphoneNumber
+                comclup.address = basvuru.clubaddress
+                if City.objects.filter(name=basvuru.clubcity):
+                    comclup.city = City.objects.get(name=basvuru.clubcity)
+                if Country.objects.filter(name='Türkiye'):
+                    comclup.country = Country.objects.get(name='Türkiye')
+                comclup.save()
+
+                # SportClup
+                clup =Club()
+                clup.name = basvuru.name
+                clup.foundingDate = basvuru.foundingDate
+                clup.clubMail = basvuru.clubMail
+                clup.logo = basvuru.logo
+                # clup.isFormal = basvuru.isFormal
+                # clup.petition = basvuru.petition
+                clup.communication = comclup
+                clup.save()
+                clup.clubUser.add(Sportclup)
                 clup.save()
 
-            basvuru.status = ReferenceClub.APPROVED
-            basvuru.save()
+                if basvuru.isCoach:
 
-            fdk = Forgot(user=user, status=False)
-            fdk.save()
+                    coach = Coach()
+                    coach.user = user
+                    coach.person = person
+                    coach.communication = com
+                    coach.iban = basvuru.iban
+                    coach.save()
+                    group = Group.objects.get(name='Antrenör')
+                    user.groups.add(group)
+                    user.save()
+                    grade = HavaLevel(
+                        startDate=basvuru.kademe_startDate,
+                        dekont=basvuru.kademe_belge)
+                        # branch=EnumFields.HALTER.value)
+                    try:
+                        grade.definition = CategoryItem.objects.get(name=basvuru.kademe_definition)
+                    except:
+                        grade.definition = CategoryItem.objects.get(name='1.Kademe')
 
-            # html_content = ''
-            # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
-            # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
-            # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-            # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
-            #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
-            # msg = EmailMultiAlternatives(subject, '', from_email, [to])
-            # msg.attach_alternative(html_content, "text/html")
-            # msg.send()
-            # messages.success(request, 'Başari ile kaydedildi')
+                    grade.levelType = EnumFields.LEVELTYPE.GRADE
+                    grade.status = HavaLevel.APPROVED
+                    grade.isActive = True
+                    grade.save()
+                    coach.grades.add(grade)
+                    coach.save()
 
-            log = str(clup) + " Kulüp basvurusu onaylandi"
-            log = general_methods.logwrite(request, request.user, log)
+                    clup.coachs.add(coach)
+                    clup.save()
 
-            try:
-                # user kaydet
-                print()
-            except:
-                messages.warning(request, 'Lütfen sistem yöneticisi ile görüşünüz ')
-                log = str(basvuru.name) + " Kulup basvurusunda hata oldu"
+                basvuru.status = ReferenceClub.APPROVED
+                basvuru.save()
+
+                fdk = Forgot(user=user, status=False)
+                fdk.save()
+
+                # html_content = ''
+                # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+                # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+                # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
+                #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+                # msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                # msg.attach_alternative(html_content, "text/html")
+                # msg.send()
+                # messages.success(request, 'Başari ile kaydedildi')
+
+                log = str(clup) + " Kulüp basvurusu onaylandi"
                 log = general_methods.logwrite(request, request.user, log)
 
+                try:
+                    # user kaydet
+                    print()
+                except:
+                    messages.warning(request, 'Lütfen sistem yöneticisi ile görüşünüz ')
+                    log = str(basvuru.name) + " Kulup basvurusunda hata oldu"
+                    log = general_methods.logwrite(request, request.user, log)
+
+            else:
+                messages.warning(request, 'Mail adresi sistem de kayıtlıdır.')
         else:
-            messages.warning(request, 'Mail adresi sistem de kayıtlıdır.')
+            basvuru.status = ReferenceClub.APPROVED
+            basvuru.save()
+            club= Club.objects.get(derbis=basvuru.derbis)
+            club.infoStatus=True
+            club.save()
+            messages.success(request, 'Basvuru sisteme kaydedilmistir.')
     else:
+
         messages.warning(request,'Bu basvuru sisteme kaydedilmistir.')
     return redirect('sbs:ReferenceClubList')
 
@@ -739,3 +753,30 @@ def updateReferenceClub(request, pk):
             messages.warning(request,'Alanlari kontrol ediniz')
     return render(request, 'registration/referenceRegisterClub.html',
                   {'preRegistrationform': form,'club':veri})
+
+
+@login_required
+def rejectedClub(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = SportClubUser.objects.get(uuid=request.POST['user_uuid'])
+            club = Club.objects.get(uuid=request.POST['club_uuid'])
+
+            club.clubUser.remove(obj)
+
+            log = str(club) + " Kulüp üyesi çıkarıldı"
+            log = general_methods.logwrite(request, request.user, log)
+
+            club.save()
+
+            return JsonResponse({'status': 'Success', 'messages': 'delete successfully'})
+        except ClubRole.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

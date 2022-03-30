@@ -229,7 +229,7 @@
                                 <th>Yer</th>
                                 <th>Geçerlilik Yılı</th>
                                 <th>Onay Durumu</th>
-                                <th>İşlemler</th>
+                                <th>Onayla/Sil/Başvuru Yap</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -396,88 +396,9 @@
 
         })
     </script>
+
     <script>
-        function onay() {
-            var html = '';
-            $("#modal-delete").on("shown.bs.modal", function (e) {
-                $("#btn-conf1").click(function () {
-                    $.ajax({
-                        url: "{% url "sbs:grade-list-approval-all"%}".replace(),
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            isActive: 'False'
-                        },
-                        success: function (result) {
-
-                            html = 'Başari ile onaylandı.';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
-
-                                    window.location.replace("{% url "sbs:grade_list"%}");
-
-                                });
-
-                            }).modal('show');
-
-
-                            console.log(result.status)
-                        }
-                    });
-                });
-            }).modal('show');
-            $('#btn-close1').click(function () {
-                $('#modal-delete').modal('hide');
-            });
-        }
-
-
-    </script>
-    <script>
-        function reddet() {
-
-            console.log("reddet çalisti");
-            var html = '';
-            $("#modal-delete").on("shown.bs.modal", function (e) {
-                $("#btn-conf1").click(function () {
-                    $.ajax({
-                        url: "{% url "sbs:grade-list-reject-all"%}".replace(),
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            isActive: 'False'
-                        },
-                        success: function (result) {
-
-                            html = 'Başarı ile reddedildi.';
-                            debugger;
-                            $(".successModal").html(html);
-                            $('#modal-success').on("shown.bs.modal", function (e) {
-                                $(".btn-ok").click(function () {
-
-                                    window.location.replace("{% url "sbs:grade_list"%}");
-
-                                });
-
-                            }).modal('show');
-
-
-                            console.log(result.status)
-                        }
-                    });
-                });
-            }).modal('show');
-            $('#btn-close1').click(function () {
-                $('#modal-delete').modal('hide');
-            });
-
-        }
-    </script>
-    <script>
-    function deleteCompetition(uuid) {
-            debugger;
+        function deleteCompetition(uuid) {
 
             swal({
                 title: "Silmek istediğinizden emin misiniz?",
@@ -489,36 +410,36 @@
                 ],
             }).then((result) => {
                 if (result.dismiss !== 'Evet') {
-
                     $.ajax({
-                          url: "{% url "sbs:delete-coach-visa-seminar" %}".replace(),
+                        url: "{% url "sbs:coachDeleteVisaSeminar" %}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
                             uuid: uuid,
-                            isActive: 'False'
+
+
                         },
                         success: function (result) {
-                                if (result.status === 'Success') {
-                                    swal({
-                                        icon: 'success',
-                                        title: 'Başarıyla silindi !!',
+                            debugger;
+                            if (result.status === 'Success') {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Başarıyla silindi !!',
 
-                                    })
+                                })
 
-                                }
-                                else {
-                                     swal({
-                                        icon: 'error',
-                                        title: 'Silinemedi !!',
+                            } else {
+                                swal({
+                                    icon: 'error',
+                                    title: 'Silinemedi !!',
 
-                                    })
-                                }
-                               location.reload();
-
+                                })
                             }
-                        });
-            }
+                            location.reload();
+
+                        }
+                    });
+                }
 
             })
 

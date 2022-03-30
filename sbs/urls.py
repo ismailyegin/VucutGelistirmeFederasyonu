@@ -1,6 +1,6 @@
 from django.urls import path
 
-from sbs.Views import DataTransmissonViews, ClubViews, RefereeViews, CoachViews, TransmissionViews, \
+from sbs.Views import  ClubViews, RefereeViews, CoachViews, TransmissionViews, \
     ClubTransmissionViews
 from sbs.Views.ekabis import AcceptViews, ReportViews, YekaViews, SettingsViews, APIViews, VacationDayViews, AdminViews, \
     LogViews, ExtraTimeViews, AssociateDegreeViews, CityViews, CompanyView, UserViews, EmployeeViews, \
@@ -561,31 +561,7 @@ urlpatterns = [
          name='add_progressreport'),
     # --------------------------------- HAVA SPORLARI -----------------------------------------------------------------
 
-    path('hava-sporlari/brans-transmission', DataTransmissonViews.branchTransmission, name='branchTransmission'),
-    path('hava-sporlari/alt-brans-transmission', DataTransmissonViews.branchSubTransmission,
-         name='branchSubTransmission'),
-    path('hava-sporlari/city-transmission', DataTransmissonViews.city, name='aktarma-city'),
-    path('hava-sporlari/country-transmission', DataTransmissonViews.country, name='aktarma-country'),
-    path('hava-sporlari/user-transmission', DataTransmissonViews.UserTransmission, name='UserTransmission'),
-    path('hava-sporlari/club-transmission', DataTransmissonViews.ClubTransmission, name='ClubTransmission'),
-    path('hava-sporlari/club-sil', DataTransmissonViews.deleteClub, name='deleteClub'),
-    path('hava-sporlari/coach-transmission', DataTransmissonViews.CoachTransmission, name='CoachTransmission'),
-    path('hava-sporlari/club-coach-transmission', DataTransmissonViews.ClubCoachTransmission,
-         name='ClubCoachTransmission'),
-    path('hava-sporlari/referee-status-transmission', DataTransmissonViews.RefereeStatusTransmission,
-         name='RefereeStatusTransmission'),
-    path('hava-sporlari/referee-transmission', DataTransmissonViews.RefereeTransmission,
-         name='RefereeTransmission'),
-    path('hava-sporlari/athlete-transmission', DataTransmissonViews.AthleteTransmission,
-         name='AthleteTransmission'),
-    path('hava-sporlari/organizer-transmission', DataTransmissonViews.OrganizerTransmission,
-         name='OrganizerTransmission'),
-    path('hava-sporlari/air-sports-competition-transmission', DataTransmissonViews.AirSportsCompetitionTransmission,
-         name='AirSportsCompetitionTransmission'),
-    path('hava-sporlari/coach-transmission-2', DataTransmissonViews.CoachTransmission2,
-         name='CoachTransmission2'),
-    path('hava-sporlari/education-seminar-transmission', DataTransmissonViews.EducationSeminarTransmission,
-         name='EducationSeminarTransmission'),
+
     # KULUP
     path('kulupler', ClubViews.return_clubs,
          name='return_clubs'),
@@ -704,7 +680,7 @@ urlpatterns = [
     path('antrenor/visa-seminar/antrenor-sec/<uuid:uuid>', CoachViews.addCoachVisaSeminar,
          name='add-coach-visa-seminar'),
     path('antrenor/visa-seminar/antrenor-kaldir/', CoachViews.deleteCoachVisaSeminar,
-         name='delete-coach-visa-seminar'),
+         name='coachDeleteVisaSeminar'),
     path('antrenor/visa-Seminar/antrenor-basvuru-reddet/',
          CoachViews.deleteCoachApplicationVisaSeminar, name='delete-coach-application-visa-seminar'),
     path('antrenor/visa-Seminar/antrenor-basvuru-onayla/',
@@ -743,7 +719,7 @@ urlpatterns = [
         name='refencedeleteReferee'),
     path('kulup/basvuru-listesi', ClubViews.return_preRegistration, name='ReferenceClubList'),
     path('kulup/basvuru/onayla/<int:pk>', ClubViews.approve_preRegistration, name='approveClub'),
-    path('kulup/basvuru/reddet/<int:pk>', ClubViews.rejected_preRegistration, name='rejectedClub'),
+    path('kulup/basvuru/reddet/<int:pk>', ClubViews.rejected_preRegistrationClub, name='rejectedClub'),
     path('kulup/basvuru/duzenle/<int:pk>', ClubViews.updateReferenceClub, name='updateReferenceClub'),
 
     path('kulupAktarimi/', ClubTransmissionViews.ClubTransmission, name='api-club-transmission'),

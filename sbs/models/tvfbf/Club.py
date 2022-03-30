@@ -21,7 +21,7 @@ class Club(BaseModel):
     communication = models.OneToOneField(Communication, on_delete=models.CASCADE, db_column='communication', null=True,
                                          blank=True)
     coachs = models.ManyToManyField(Coach)
-    branch=models.ManyToManyField(Branch,null=True,blank=True)
+    branch = models.ManyToManyField(Branch,blank=True)
     isFormal = models.BooleanField(default=True, choices=IsFormal)
     clubUser = models.ManyToManyField(SportClubUser)
     dataAccessControl = models.BooleanField(blank=True, null=True, default=False)
@@ -29,8 +29,8 @@ class Club(BaseModel):
     username = models.CharField(blank=True, null=True, max_length=120)
     isRegister = models.BooleanField(default=False)
     petition = models.FileField(upload_to='club/', null=True, blank=True, verbose_name='Yetki Belgesi ')
-    infoStatus=models.BooleanField(default=True,null=True,blank=True)
-    infoLevel=models.BooleanField(default=True,null=True,blank=True)
+    infoStatus = models.BooleanField(default=True, null=True, blank=True)
+    infoLevel = models.BooleanField(default=True, null=True, blank=True)
     secretId = models.CharField(null=True, blank=True, max_length=20)
     derbis = models.CharField(max_length=100, null=True, blank=True, verbose_name='Derbis Kütük No')
     guidId = models.CharField(max_length=100, null=True, blank=True, verbose_name='Kulüp Guid No')
@@ -42,6 +42,3 @@ class Club(BaseModel):
     #     default_permissions = ()
     #     db_table = 'sportclub'
     #     managed = False
-
-
-

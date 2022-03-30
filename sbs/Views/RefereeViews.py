@@ -76,9 +76,9 @@ def return_referees(request):
         else:
             query = Q()
             if lastName:
-                query &= Q(person__user__last_name__icontains=lastName)
+                query &= Q(person__user__last_name__icontains=lastName.title())
             if firstName:
-                query &= Q(person__user__first_name__icontains=firstName)
+                query &= Q(person__user__first_name__icontains=firstName.title())
             if city:
                 query &= Q(communication__city__name__icontains=city)
             if branch:

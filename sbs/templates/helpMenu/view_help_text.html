@@ -145,7 +145,7 @@
                             <h3 class="card-title">Yardım Metin Bilgileri</h3>
                             {% for item in perm %}
                                 {% if item == 'add_help_text' %}
-                                    <a href="{% url "ekabis:add_help_text" %}"
+                                    <a href="{% url "sbs:add_help_text" %}"
                                        class="btn btn-outline-primary" style="float: right"> <i
                                             class="fa fa-plus" title="Tatil Günü Ekle"></i>
                                     </a>
@@ -181,7 +181,7 @@
                                                     <div class="dropdown-menu" role="menu">
                                                     {% for item in perm %}
                                                         {% if item == 'change_help_text' %}
-                                                            <a href="{% url 'ekabis:change_help_text' text.uuid %}"
+                                                            <a href="{% url 'sbs:change_help_text' text.uuid %}"
                                                                type="button" class="dropdown-item"><i
                                                                     class="fa fa-edit"></i> Düzenle
                                                             </a>

@@ -40,7 +40,7 @@ def help_text_add(request):
                     messages.success(request, 'Yardım Metni Eklendi.')
 
 
-                    return redirect('ekabis:view_help_text')
+                    return redirect('sbs:view_help_text')
                 else:
                     error_messages = get_error_messages(help_form)
 
@@ -100,7 +100,7 @@ def update_help_menu(request, uuid):
                     if len(str(url))>5:
                         if str(request.META.get('HTTP_REFERER')) != request.POST.get('hiden_url',''):
                             return HttpResponseRedirect(request.POST.get('hiden_url'))
-                    return redirect('ekabis:view_help_text')
+                    return redirect('sbs:view_help_text')
                 else:
                     error_messages = get_error_messages(help_form)
                     return render(request, 'helpMenu/add_help_text.html',
@@ -115,4 +115,4 @@ def update_help_menu(request, uuid):
     except Exception as e:
         traceback.print_exc()
         messages.warning(request, 'Lütfen Tekrar Deneyiniz.')
-        return redirect('ekabis:view_help_text')
+        return redirect('sbs:view_help_text')
