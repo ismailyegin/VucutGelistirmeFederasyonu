@@ -1,6 +1,7 @@
 from django.urls import path
 
-from sbs.Views import DataTransmissonViews, ClubViews, RefereeViews, CoachViews, TransmissionViews
+from sbs.Views import DataTransmissonViews, ClubViews, RefereeViews, CoachViews, TransmissionViews, \
+    ClubTransmissionViews
 from sbs.Views.ekabis import AcceptViews, ReportViews, YekaViews, SettingsViews, APIViews, VacationDayViews, AdminViews, \
     LogViews, ExtraTimeViews, AssociateDegreeViews, CityViews, CompanyView, UserViews, EmployeeViews, \
     HelpViews, PermissionView, YekaBussinessBlogStaticView, BusinessBlogViews, ClaimView, GroupView, EskalasyonViews, \
@@ -720,6 +721,16 @@ urlpatterns = [
     path('kulup/kulup-uyesi-ekle/<uuid:uuid>', ClubViews.return_add_club_person, name='kulup-uyesi-ekle'),
     path('kulup/antrenorSec/<uuid:uuid>', ClubViews.choose_coach_clup,
          name='choose-coach-club'),
+    path(r'reference/antrenor/basvuru', CoachViews.antrenor, name='coach-application'),
+
+    path(r'antrenor/antrenor-kayit-düzenle/<uuid:uuid>', CoachViews.coachreferenceUpdate,
+         name='update-coach-reference'),
+
+    path(r'antrenor/basvuru-onayla', CoachViews.approvelReferenceCoach,
+         name='approvel-coach-application'),
+
+    path(r'antrenor/basvuru-reddet', CoachViews.refencedeleteCoach,
+         name='refencedeleteCoach'),
 
     path('hakem/hakem-basvuru', RefereeViews.referencedListReferee, name='referencedListReferee'),
     path('hakem/basvuru-onayla', RefereeViews.refenceapprovalReferee,
@@ -734,5 +745,9 @@ urlpatterns = [
     path('kulup/basvuru/onayla/<int:pk>', ClubViews.approve_preRegistration, name='approveClub'),
     path('kulup/basvuru/reddet/<int:pk>', ClubViews.rejected_preRegistration, name='rejectedClub'),
     path('kulup/basvuru/duzenle/<int:pk>', ClubViews.updateReferenceClub, name='updateReferenceClub'),
+
+    path('kulupAktarimi/', ClubTransmissionViews.ClubTransmission, name='api-club-transmission'),
+    path('kulup/kulup-yonetici-ekle-api/', TransmissionViews.getClubForRegisterManager,
+         name='kulup-yönetici-ekle-api'),
 
 ]

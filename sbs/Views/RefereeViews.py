@@ -57,7 +57,7 @@ def return_referees(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    referees = Referee.objects.filter(infoStatus=1)
+    referees = Referee.objects.filter(infoStatus=1, isDeleted=0)
     user_form = RefereeSearchForm()
     urls = last_urls(request)
     current_url = resolve(request.path_info)
@@ -72,7 +72,7 @@ def return_referees(request):
 
         # print(firstName, lastName, email, branch, grade, visa)
         if not (firstName or lastName or city or branch or status):
-            referees = Referee.objects.all()
+            referees = Referee.objects.all().filter(isDeleted=0)
         else:
             query = Q()
             if lastName:
@@ -86,7 +86,7 @@ def return_referees(request):
             if status:
                 query &= Q(grades__definition__name=status)
 
-            referees = Referee.objects.filter(query)
+            referees = Referee.objects.filter(query).filter(isDeleted=0)
     else:
         print('else2')
 
@@ -1287,6 +1287,8 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
 
 
             else:
+                reference.status = reference.APPROVED
+                reference.save()
                 messages.success(request, 'Hakem daha önce onaylanmıştır.')
 
             return JsonResponse({'status': 'Success', 'messages': 'save successfully'})

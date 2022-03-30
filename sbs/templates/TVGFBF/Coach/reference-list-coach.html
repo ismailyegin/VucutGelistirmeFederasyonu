@@ -1,61 +1,9 @@
 {% extends 'base_layout.html' %}
-
+{% load static %}
 {% block content %}
-    {% load static %}
-    <div class="modal modal-title fade in" tabindex="-1" role="dialog" id="application"
-         aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Bilgileri Giriniz</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" enctype="multipart/form-data" role="form">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label> İsim</label>
 
 
-                            <input type="text" name="name" class="form-control" readonly="readonly" required=""
-                                   maxlength="1000" id="name">
 
-                        </div>
-                        <div class="form-group">
-                            <label> Başlangıç Tarihi </label>
-                            <input type="text" name="start" class="form-control" readonly="readonly" required=""
-                                   maxlength="1000" id="start">
-                        </div>
-                        <div class="form-group">
-                            <label> Bitis tarihi</label>
-                            <input type="text" name="finish" class="form-control" readonly="readonly" required=""
-                                   maxlength="1000" id="finish">
-                        </div>
-                        <div class="form-group">
-                            <label> Yeri</label>
-                            <input type="text" name="location" class="form-control" readonly="readonly" required=""
-                                   maxlength="1000" id="location">
-                        </div>
-                        <div class="form-group">
-                            <label> Dekont </label>
-                            <input type="file" name="file" class="form-control" required
-                                   maxlength="1000" id="location">
-                        </div>
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <input type="text" name="pk" id="pk" class="form-control" readonly="readonly" required=""
-                           maxlength="1000">
-                    <button type="submit" class="btn btn-outline-primary">Kaydet</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- success modal -->
     <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -150,25 +98,7 @@
 
 
     {% endif %}
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
 
-
-            <div class="modal-content" style="height:fit-content">
-
-                <div class="modal-header" style="background-color:#3c8dbc ">
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body bodys">
-                    ...
-                </div>
-            </div>
-        </div>
-    </div>
     <style>
         #loading {
             position: fixed;
@@ -190,19 +120,21 @@
             z-index: 100;
         }
     </style>
+
+
     <section class="content-header">
 
 
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Hakem Başvuruları</h1>
+                    <h1>Antrenör Başvuruları</h1>
                 </div>
 
             </div>
         </div>
-
     </section>
+
     <section class="content">
         <div id="loading" style="display: none">
 
@@ -210,102 +142,82 @@
         </div>
 
         <div class="row">
-
-
             <section class="col-lg-12 ">
-
-
                 <div class="card-body">
-
-
                     <div class="card card-info card-outline">
                         <div class="card-header with-border">
-                            <h3 class="card-title">Hakemler</h3>
+                            <h3 class="card-title">Antrenörler</h3>
 
-                            <a href="{% url "sbs:add_referee" %}"
-                                    type="button" class="btn btn-outline-info" title="Hakem Ekle" style="float: right">
-                                <i
-                                        class="fa fa-plus"></i>
+                            <a href="{% url "sbs:add_coach" %}"
+                               type="button" class="btn btn-outline-info"
+                               style="float: right">
+                                <i class="fa fa-plus"></i>
                             </a>
                         </div>
-
                         <div class="card-header with-border">
 
                         </div>
-
                         <div class="card-body">
-                            <table id="hakemler" class="table table-bordered table-hover">
+                            <table id="basvuru" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
                                     <th> Ad Soyad</th>
                                     <th>E-Mail</th>
-                                    <th>Onayla</th>
+                                    <th>Onay Durumu</th>
 
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                        <th>İncele/Reddet</th>
+                                        <th>İncele/Sil</th>
                                     {% endif %}
 
 
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% if referees.all %}
-                                    {% for referee in referees %}
-                                        <tr id="refere-{{ referee.pk }}">
+                                {% if coaches.all %}
+                                    {% for coach in coaches %}
+                                        <tr id="coach-{{ coach.pk }}">
                                             <td>{{ forloop.counter }} </td>
-                                            <td>{{ referee.first_name }} {{ referee.last_name }} </td>
-                                            <td>{{ referee.email }} </td>
-                                            <td>{{ referee.status }}</td>
-
-
+                                            <td>{{ coach.first_name }} {{ coach.last_name }} </td>
+                                            <td>{{ coach.email }} </td>
+                                            <td>{{ coach.status }} </td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <a onclick="approvalReferee('{{ referee.uuid }}')"
-                                                       type="button" class="btn btn-outline-success"><i
-                                                            class="fa fa-check"></i>
+                                                    <a onclick="approvalCoach('{{ coach.uuid }}')"
+                                                       type="button" class="btn btn-outline-success">
+                                                        <i class="fa fa-check"></i>
                                                     </a>
                                                 </div>
                                                 <div class="btn-group">
-                                                    <a href="{% url 'sbs:update-referenceReferee' referee.uuid %}"
-                                                       type="button" class="btn btn-outline-warning"><i
-                                                            class="fa fa-edit" title="Düzenle"></i>
+                                                    <a href="{% url "sbs:update-coach-reference" coach.uuid %}"
+                                                       type="button" class="btn btn-outline-warning">
+                                                        <i class="fa fa-edit" title="Düzenle"></i>
                                                     </a>
                                                 </div>
                                                 <div class="btn-group">
                                                     <a class="btn btn-outline-danger"
-                                                       data-toggle="modal"
-                                                       onclick=deleteReferee('{{ referee.uuid }}')><i
-                                                            class="fa fa-trash" title="Reddet"></i></a>
+                                                       data-toggle="modal" onclick=deleteReferee('{{ coach.uuid }}')>
+                                                        <i class="fa fa-trash" title="Reddet"></i>
+                                                    </a>
                                                 </div>
                                             </td>
-
                                         </tr>
-
                                     {% endfor %}
                                 {% endif %}
-
-
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
                     <!-- /.box -->
-
-
                 </div>
             </section>
-
-
         </div>
         <!-- /.row (main row) -->
-
     </section>
 
     <script>
         $(function () {
-            $('#hakemler').DataTable({
+            $('#basvuru').DataTable({
                 dom: 'Bfrtip',
 
 
@@ -388,7 +300,6 @@
         })
     </script>
 
-
     <script>
         function deleteReferee(id) {
             debugger;
@@ -405,7 +316,7 @@
                 if (result.dismiss !== 'Evet') {
 
                     $.ajax({
-                        url: "{% url "sbs:refencedeleteReferee" %}",
+                        url: "{% url "sbs:refencedeleteCoach" %}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -416,7 +327,7 @@
                             if (result.status === 'Success') {
                                 swal({
                                     icon: 'success',
-                                    title: 'Hakem Başvurusu Reddedildi !!',
+                                    title: 'Antrenör Başvurusu Reddedildi !!',
 
                                 })
 
@@ -437,48 +348,66 @@
 
 
         }
+    </script>
 
-
-        function approvalReferee(id) {
-            debugger;
+    <script>
+        function approvalCoach(id) {
             $('#loading').show()
-            $.ajax({
-                url: "{% url "sbs:refenceapprovalReferee" %}",
-                type: "POST",
-                data: {
-                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                    isActive: 'False',
-                    uuid: id
-                },
-                success: function (result) {
+            debugger;
+            console.log(id);
+            swal({
+                title: "Onaylamak istediğinizden emin misiniz?",
 
-                    if (result.status === 'Success') {
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
 
-                        swal({
-                            icon: 'success',
-                            title: 'Hakem başarıyla kayıt edildi !!',
+                    $.ajax({
+                        url: "{% url "sbs:approvel-coach-application" %}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False',
+                            uuid: id
+                        },
+                        success: function (result) {
 
-                        })
+                            if (result.status === 'Success') {
+
+                                swal({
+                                    icon: 'success',
+                                    title: 'Antrenör başarıyla onaylandı !!',
+
+                                })
 
 
-                    } else {
+                            } else {
 
-                        swal({
-                            icon: 'error',
-                            title: 'Başarısız! Hakem eklenemedi !',
+                                swal({
+                                    icon: 'error',
+                                    title: 'işlem başarısız oldu.',
 
-                        })
+                                })
 
-                    }
-                    $('#loading').hide()
+                            }
+                            $('#loading').hide()
 
-                    location.reload();
+                            location.reload();
 
+                        }
+                    });
                 }
-            });
+
+            })
 
 
         }
+
+
     </script>
 
 

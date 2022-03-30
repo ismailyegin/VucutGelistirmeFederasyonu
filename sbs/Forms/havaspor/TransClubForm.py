@@ -22,12 +22,12 @@ class TransClubForm(ModelForm):
         widgets = {
 
             'name': forms.TextInput(
-                attrs={'class': 'form-control ', 'required': 'required', "style": "text-transform:uppercase",'readonly':'readonly'}),
+                attrs={'class': 'form-control ', 'required': 'required', "style": "text-transform:uppercase", 'readonly': 'readonly'}),
 
-            'clubMail': forms.TextInput(attrs={'class': 'form-control','readonly':'readonly'}),
-            'derbis': forms.TextInput(attrs={'class': 'form-control','readonly':'readonly'}),
+            'clubMail': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'derbis': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
             'foundingDate': forms.TextInput(
-                attrs={'class': 'form-control','readonly':'readonly'}),
+                attrs={'class': 'form-control', 'readonly': 'readonly'}),
 
 
 

@@ -105,7 +105,6 @@ def TransmissionClubDetail(request, derbisKutukNo):
             id = derbisKutukNo
             url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/KulupGetirDetayli?derbisKutukNo=' + id + '&KulupGuid=00000000-0000-0000-0000-000000000000'
 
-
             payload = {}
             files = {}
             headers = {
@@ -160,6 +159,43 @@ def transmissionOffsetLimit(request):
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
 
+
+def getClubForRegisterManager(request):
+    try:
+        with transaction.atomic():
+
+            if request.method == 'POST':
+                guid = str(request.POST['guid'])
+                result = []
+                if Club.objects.filter(guidId=guid):
+                    club = Club.objects.get(guidId=guid)
+                    clubList = {}
+                    clubList['KulupAdi'] = club.name
+                    if club.foundingDate:
+                        clubList['KurulusTarihi'] = club.foundingDate
+                    else:
+                        clubList['KurulusTarihi'] = ''
+                    clubList['Il'] = club.communication.city.name
+                    clubList['Telefon'] = club.communication.phoneNumber
+                    clubList['Adres'] = club.communication.address
+                    clubList['Ilce'] = club.communication.town
+                    clubList['DerbisKutukNo'] = club.derbis
+                    clubList['Eposta'] = club.clubMail
+                    clubList['Faks'] = club.communication.fax
+                    clubList['Guid'] = club.guidId
+                    clubList['FaaliyetDurumu'] = club.infoStatus
+                    result.append(clubList)
+                if result:
+                    return JsonResponse({'status': 'Success',
+                                         'result': result,
+                                         })
+                else:
+                    return JsonResponse({'status': 'Fail', 'msg': 'Kulüp Bulunamadı',
+                                         'result': result,
+                                         })
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:return_clubs')
 
 # from apscheduler.schedulers.background import BackgroundScheduler
 #

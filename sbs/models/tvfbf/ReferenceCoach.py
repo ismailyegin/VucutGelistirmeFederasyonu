@@ -3,10 +3,10 @@ from django.db import models
 from sbs.models.ekabis.Country import Country
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.City import City
+from sbs.models.tvfbf.BaseModel import BaseModel
 
 
-
-class ReferenceCoach(models.Model):
+class ReferenceCoach(BaseModel):
     MALE = 'Erkek'
     FEMALE = 'Kadın'
 

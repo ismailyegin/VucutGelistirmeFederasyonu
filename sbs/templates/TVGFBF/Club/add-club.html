@@ -142,7 +142,7 @@
 
                     <div class="card card-info">
                         <div class="card-header with-border">
-                            <h3 class="card-title">Kulüp Bilgilerini Getir</h3>
+                            <h3 class="card-title">Kulüp Ekle</h3>
                         </div>
 
 
@@ -150,24 +150,22 @@
 
                             <div class="row">
                                 <div class="form-group col-lg-12">
-                                    <label> Kulüp Derbis Kütük No </label>
+                                    <label> Kulüp Seçiniz </label>
 
                                     <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                                        </div>
-                                        <input id="guid" type="text" value="" class="form-control">
+                                        <select class="form-control" name="selected" id="selectedClub"
+                                                onchange="GetClub()">
+                                            <option selected="True" disabled="disabled" class="selected">Seçiniz...
+                                            </option>
+                                            {% for club in clubs %}
+                                                <option value="{{ club.guidId }}"
+                                                        class="selected">{{ club.name }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-outline-info" type="button" onclick="GetClub()"
-                                    style="float:right">
-                                Kulüp Getir
-                            </button>
-                            <small style="color: red ">Kulüp Bilgilerine erişmek için lütfen Kulüp Kütük Numarasını
-                                girin </small>
+                            <small style="color: red ">Kulüp Bilgilerine erişmek için lütfen Kulüp Seçiniz </small>
                         </div>
                     </div>
                 </div>
@@ -236,27 +234,32 @@
                                 <div class="row">
                                     <div class="form-group col-lg-4">
                                         <label> İl </label>
-                                        <input class="form-control" readonly="readonly" type="text" name="clubIl" id="clubIl">
+                                        <input class="form-control" readonly="readonly" type="text" name="clubIl"
+                                               id="clubIl">
                                     </div>
 
                                     <div class="form-group col-lg-4">
                                         <label> İlçe </label>
-                                        <input class="form-control" readonly="readonly" type="text" name="clubIlce" id="clubIlce">
+                                        <input class="form-control" readonly="readonly" type="text" name="clubIlce"
+                                               id="clubIlce">
                                     </div>
 
                                     <div class="form-group col-lg-4">
                                         <label> Adres </label>
-                                        <textarea class="form-control" readonly="readonly" rows="2" type="text" name="clubAdres" id="clubAdres"></textarea>
+                                        <textarea class="form-control" readonly="readonly" rows="2" type="text"
+                                                  name="clubAdres" id="clubAdres"></textarea>
                                     </div>
 
                                     <div class="form-group col-lg-4">
                                         <label> Telefon Numarası </label>
-                                        <input class="form-control" readonly="readonly" type="text" id="clubPhone" name="clubPhone">
+                                        <input class="form-control" readonly="readonly" type="text" id="clubPhone"
+                                               name="clubPhone">
                                     </div>
 
                                     <div class="form-group col-lg-4">
                                         <label> Fax </label>
-                                        <input class="form-control" readonly="readonly" type="text" id="clubFax" name="clubFax">
+                                        <input class="form-control" readonly="readonly" type="text" id="clubFax"
+                                               name="clubFax">
                                     </div>
                                 </div>
 
@@ -431,16 +434,20 @@
                 );
 
             })
-
+        </script>
+        <script>
             function GetClub() {
                 debugger;
-                let id = document.getElementById('guid').value
+                let select = document.getElementById('selectedClub');
+                let option = select.options[select.selectedIndex];
+                let id = option.value;
+                console.log(id);
                 if (id) {
                     $.ajax({
-                        url: "{% url "sbs:kulup-ekle-api" %}",
+                        url: "/tvgfbf/kulup/kulup-yonetici-ekle-api/",
                         type: "POST",
                         data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            'csrfmiddlewaretoken': "BE4Zpz7OWfSuN8mw7GN0Kk6gy29yD8z4stoCz0vYejqimTWZn12uXoHGjv8I4w35",
                             guid: id,
                         },
                         success: function (result) {
@@ -461,10 +468,7 @@
                         }
                     });
                 }
-
-
             }
-
         </script>
 
 

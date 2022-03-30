@@ -214,7 +214,7 @@
                         html += ' <table class="table table-bordered"> <thead><tbody> <tr><tr> <th>Kulüp</th><td>' + coach.club + '</td></tr> <th>Branş</th><td>' + coach.branch + '</td></tr><tr> <th>Kademe</th><td>' + coach.grade.name + '</td></tr> <tr> <th>Kademe Başl.Tarih</th><td>' + coach.grade.startDate + '</td></tr><tr> <th>Kademe Bitiş Tarih</th><td>' + coach.grade.finishDate + '</td></tr> <tr> <th>Vize</th><td>' + coach.visa.name + '</td></tr><tr> <th>Vize Başl.Tarih</th><td>' + coach.visa.startDate + '</td></tr> <tr> <th>Vize Bitiş Tarih</th><td>' + coach.visa.finishDate + '</td></tr><tr> <th>Email</th><td>' + coach.email + '</td></tr></thead>'
                         html += '  </tbody></table>'
 
-                        Swal.fire({
+                        swal.fire({
                             title: '<strong>' + coach.name + '</strong>',
                             html: html,
                             focusConfirm: false,

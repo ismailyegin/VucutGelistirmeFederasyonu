@@ -23,7 +23,8 @@ class Communication(BaseModel):
     neighborhood = models.CharField(max_length=120, null=True, blank=True)
     acildurum_kisi = models.CharField(max_length=250, null=True, blank=True, verbose_name='Acil Durum Kişisi')
     acildurum_phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='Acil Durum Telefonu')
-    fax = models.CharField(max_length=12, null=True, blank=True)
+    fax = models.CharField(max_length=250, null=True, blank=True)
+    webSite = models.CharField(max_length=250, null=True, blank=True, verbose_name='web sitesi')
 
     # class Meta:
     #     default_permissions = ()

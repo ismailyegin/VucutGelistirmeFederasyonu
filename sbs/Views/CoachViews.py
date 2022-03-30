@@ -26,9 +26,11 @@ from sbs.Forms.havaspor.CoachSearchForm import CoachSearchForm
 from sbs.Forms.havaspor.CommunicationForm import CommunicationForm
 from sbs.Forms.havaspor.HavaUserForm import HavaUserForm
 from sbs.Forms.havaspor.PersonForm import PersonForm
+from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
 from sbs.Forms.havaspor.SearchClupForm import SearchClupForm
 from sbs.Forms.havaspor.VisaForm import VisaForm
 from sbs.Forms.havaspor.VisaSeminarForm import VisaSeminarForm
+from sbs.models import Branch
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Competition import Competition
 from sbs.models.tvfbf.CoachApplication import CoachApplication
@@ -40,6 +42,9 @@ from sbs.models.ekabis.Person import Person
 from sbs.models.ekabis.Communication import Communication
 from sbs.models.tvfbf.Coach import Coach
 from sbs.models.tvfbf.Club import Club
+from sbs.models.tvfbf.PreRegistration import PreRegistration
+from sbs.models.tvfbf.ReferenceCoach import ReferenceCoach
+from sbs.models.tvfbf.ReferenceReferee import ReferenceReferee
 from sbs.models.tvfbf.SportClubUser import SportClubUser
 from sbs.models.tvfbf.VisaSeminar import VisaSeminar
 from sbs.services import general_methods
@@ -1292,3 +1297,201 @@ def detailCoach(request):
     except Coach.DoesNotExist:
         traceback.print_exc()
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+
+
+@login_required
+def antrenor(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    coach = ReferenceCoach.objects.all().order_by('status')
+    return render(request, 'TVGFBF/Coach/reference-list-coach.html', {'coaches': coach})
+
+
+@login_required
+def coachreferenceUpdate(request, uuid):
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    try:
+        with transaction.atomic():
+            coach = ReferenceCoach.objects.get(uuid=uuid)
+            coach_form = RefereeCoachForm(request.POST or None, request.FILES or None, instance=coach,
+                                          initial={'kademe_definition': coach.kademe_definition})
+            if request.method == 'POST':
+
+                mail = request.POST.get('email')
+                if mail != coach.email:
+
+                    if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                            email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                        email=mail):
+                        messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                        return render(request, 'TVGFBF/Coach/update-coach-application.html',
+                                      {'preRegistrationform': coach_form})
+
+                tc = request.POST.get('tc')
+                if tc != coach.tc:
+                    if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                            tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                        tc=tc):
+                        messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+                        return render(request, 'TVGFBF/Coach/update-coach-application.html',
+                                      {'preRegistrationform': coach_form})
+
+                name = request.POST.get('first_name')
+                surname = request.POST.get('last_name')
+                year = request.POST.get('birthDate')
+                year = year.split('/')
+
+                # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+                # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+                #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+                #     return render(request, 'TVGFBF/Coach/update-coach-application.html',
+                #                   {'preRegistrationform': coach_form})
+
+                if coach_form.is_valid():
+                    coach_form.save()
+
+                    messages.success(request, 'Antrenör Başvurusu Güncellendi')
+                else:
+                    messages.warning(request, 'Alanları Kontrol Ediniz')
+
+            return render(request, 'TVGFBF/Coach/update-coach-application.html',
+                          {'preRegistrationform': coach_form})
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return render(request, 'TVGFBF/Coach/update-coach-application.html',
+                      {'preRegistrationform': coach_form})
+
+
+@login_required
+def approvelReferenceCoach(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    try:
+        with transaction.atomic():
+            if request.method == 'POST' and request.is_ajax():
+                uuid = request.POST['uuid']
+                referenceCoach = ReferenceCoach.objects.get(uuid=uuid)
+
+                if referenceCoach.status == ReferenceCoach.WAITED:
+                    user = User()
+                    user.username = referenceCoach.email
+                    user.first_name = referenceCoach.first_name
+                    user.last_name = referenceCoach.last_name
+                    user.email = referenceCoach.email
+                    user.is_active = True
+                    group = Group.objects.get(name='Antrenör')
+
+                    user.save()
+
+                    user.groups.add(group)
+
+                    user.save()
+
+                    person = Person()
+                    person.tc = referenceCoach.tc
+                    person.motherName = referenceCoach.motherName
+                    person.fatherName = referenceCoach.fatherName
+                    person.profileImage = referenceCoach.profileImage
+                    person.birthDate = referenceCoach.birthDate
+                    person.birthplace = referenceCoach.birthplace
+                    person.bloodType = referenceCoach.bloodType
+                    if referenceCoach.gender == 'Erkek':
+                        person.gender = Person.MALE
+                    else:
+                        person.gender = Person.FEMALE
+                    person.save()
+                    person.user = user
+                    person.save()
+
+                    communication = Communication()
+                    communication.postalCode = referenceCoach.postalCode
+                    communication.phoneNumber = referenceCoach.phoneNumber
+                    communication.phoneNumber2 = referenceCoach.phoneNumber2
+                    communication.address = referenceCoach.address
+                    communication.city = referenceCoach.city
+                    communication.country = referenceCoach.country
+                    communication.save()
+
+                    coach = Coach(person=person, communication=communication)
+                    coach.iban = referenceCoach.iban
+                    coach.save()
+
+                    grade = HavaLevel(definition=referenceCoach.kademe_definition,
+                                  startDate=referenceCoach.kademe_startDate,
+                                  form=referenceCoach.kademe_belge)
+
+                    grade.levelType = EnumFields.LEVELTYPE.GRADE
+                    grade.status = HavaLevel.APPROVED
+                    grade.isActive = True
+                    grade.save()
+                    coach.grades.add(grade)
+                    coach.save()
+
+                    messages.success(request, 'Antrenör Başarıyla Eklenmiştir')
+                    referenceCoach.status = ReferenceCoach.APPROVED
+                    referenceCoach.save()
+
+                    fdk = Forgot(user=user, status=False)
+                    fdk.save()
+
+                    html_content = ''
+                    subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+                    html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                    html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+                    html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
+                        fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(
+                        fdk.uuid) + '</p></a>'
+                    msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                    msg.attach_alternative(html_content, "text/html")
+                    msg.send()
+
+                    log = str(user.get_full_name()) + " Antrenor basvurusu onaylandi"
+                    log = general_methods.logwrite(request, request.user, log)
+
+                    return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+
+                else:
+                    referenceCoach.status = ReferenceCoach.APPROVED
+                    referenceCoach.save()
+                    messages.success(request, 'Antrenör daha önce onaylanmıştır.')
+                    return JsonResponse({'status': 'Success', 'msg': 'Antrenör daha önce onylanmıştır.'})
+
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+    except referenceCoach.DoesNotExist:
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+
+@login_required
+def refencedeleteCoach(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = ReferenceCoach.objects.get(uuid=request.POST['uuid'])
+            obj.status = ReferenceCoach.DENIED
+            obj.save()
+
+            log = str(obj.first_name) + " " + str(obj.last_name) + "     Antrenör basvurusu reddedildi"
+            log = general_methods.logwrite(request, request.user, log)
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Coach.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

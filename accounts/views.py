@@ -7,6 +7,7 @@ from django.contrib.auth.models import Group, User
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from accounts.models import Forgot
+from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
 from sbs.Forms.havaspor.PreRefereeForm import PreRefereeForm
 from sbs.Forms.havaspor.PreRegidtrationForm import PreRegistrationForm
 from sbs.Forms.havaspor.RefereeForm import RefereeForm

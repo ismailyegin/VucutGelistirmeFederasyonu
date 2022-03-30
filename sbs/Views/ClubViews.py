@@ -25,6 +25,7 @@ from sbs.Forms.havaspor.ReferenceClubUpdateForm import ReferenceClubUpdateForm
 from sbs.Forms.havaspor.TransClubForm import TransClubForm
 from sbs.Forms.havaspor.TransCommunicationForm import TransCommunicationForm
 from sbs.Forms.havaspor.UserForm import UserForm
+from sbs.models import Club, SportClubUser, Coach, Communication, Person, City
 from sbs.models import Club, SportClubUser, Coach, Communication, Person, City, HavaLevel, Country
 from sbs.models.ekabis.EnumFields import EnumFields
 from sbs.models.ekabis.CategoryItem import CategoryItem
@@ -107,6 +108,7 @@ def add_club(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    clubs = Club.objects.exclude(name__isnull=True).exclude(name__exact='').exclude(derbis__isnull=True).exclude(derbis__exact='')
     club_form = TransClubForm()
     manager_communication_form = CommunicationForm()
     manager_person_form = PersonForm()
@@ -114,30 +116,21 @@ def add_club(request):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
-    try:
-        with transaction.atomic():
-            if request.method == 'POST':
 
-                club_form = TransClubForm(request.POST or None, request.FILES or None)
-                manager_communication_form = CommunicationForm(request.POST or None, request.FILES)
-                manager_person_form = PersonForm(request.POST or None, request.FILES or None)
-                user_form = RefereeUserForm(request.POST or None, request.FILES)
+    if request.method == 'POST':
+
+        club_form = TransClubForm(request.POST or None, request.FILES or None)
+        manager_communication_form = CommunicationForm(request.POST or None, request.FILES)
+        manager_person_form = PersonForm(request.POST or None, request.FILES or None)
+        user_form = RefereeUserForm(request.POST or None, request.FILES)
+
+        try:
+            with transaction.atomic():
                 if club_form.is_valid() and user_form.is_valid() and manager_person_form.is_valid() and manager_communication_form.is_valid():
-                    clubsave = Club()
-                    clubsave.name = club_form.cleaned_data['name']
-                    clubsave.foundingDate = club_form.cleaned_data['foundingDate'].strftime("%d/%m/%Y")
-                    clubsave.derbis = club_form.cleaned_data['derbis']
-                    clubsave.clubMail = club_form.cleaned_data['clubMail']
-                    clubsave.save()
-                    communication = Communication()
-                    communication.city = City.objects.get(name=request.POST.get("clubIl"))
-                    communication.phoneNumber = request.POST.get("clubPhone")
-                    communication.address = request.POST.get("clubAdres")
-                    communication.town = request.POST.get("clubIlce")
-                    communication.fax = request.POST.get("clubFax")
-                    communication.save()
-                    clubsave.communication = communication
-                    clubsave.save()
+
+                    derbisKutukNo = club_form.cleaned_data['derbis']
+
+                    clubsave = Club.objects.get(derbis=derbisKutukNo)
 
                     managerUser = User()
                     managerUser.username = user_form.cleaned_data['email']
@@ -175,7 +168,7 @@ def add_club(request):
                     log = str(club_form.cleaned_data['name']) + " Klup eklendi"
                     log = general_methods.logwrite(request, request.user, log)
 
-                    messages.success(request, 'Kulüp ve Kulüp Başkanı Başarıyla Kayıt Edilmiştir.')
+                    messages.success(request, 'Kulüp Başkanı Başarıyla Kayıt Edilmiştir.')
 
                     return redirect('sbs:return_clubs')
 
@@ -185,11 +178,18 @@ def add_club(request):
             return render(request, 'TVGFBF/Club/add-club.html',
                               {'club_form': club_form, 'urls': urls, 'current_url': current_url,
                                'url_name': url_name, 'manager_communication_form': manager_communication_form,
-                               'manager_person_form': manager_person_form, 'user_form': user_form, })
+                               'manager_person_form': manager_person_form, 'user_form': user_form,
+                               'clubs': clubs, })
 
-    except Exception as e:
+
+        except Exception as e:
             messages.warning(request, 'HATA !! ' + ' ' + str(e))
             return redirect('sbs:add_club')
+    return render(request, 'TVGFBF/Club/add-club.html',
+                  {'club_form': club_form, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'manager_communication_form': manager_communication_form,
+                   'manager_person_form': manager_person_form, 'user_form': user_form,
+                   'clubs': clubs, })
 
 
 
@@ -385,7 +385,7 @@ def return_add_club_person(request,uuid):
         #     email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
         #     email=mail):
         #     messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-        #     return render(request, 'kulup/kulup-uyesi-ekle.html',
+        #     return render(request, 'Club/kulup-uyesi-ekle.html',
         #                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
         #                    'sportClubUser_form': sportClubUser_form,
         #                    })
@@ -395,7 +395,7 @@ def return_add_club_person(request,uuid):
         #         tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
         #     tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
         #     messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-        #     return render(request, 'kulup/kulup-uyesi-ekle.html',
+        #     return render(request, 'Club/kulup-uyesi-ekle.html',
         #                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
         #                    'sportClubUser_form': sportClubUser_form,
         #                    })
@@ -408,7 +408,7 @@ def return_add_club_person(request,uuid):
         # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
         # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
         #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, 'kulup/kulup-uyesi-ekle.html',
+        #     return render(request, 'Club/kulup-uyesi-ekle.html',
         #                   {'user_form': user_form, 'person_form': person_form, 'communication_form': communication_form,
         #                    'sportClubUser_form': sportClubUser_form,
         #                    })
