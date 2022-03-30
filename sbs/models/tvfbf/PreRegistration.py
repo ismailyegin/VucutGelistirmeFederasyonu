@@ -74,8 +74,8 @@ class PreRegistration(models.Model):
     phoneNumber = models.CharField(max_length=120, null=True, blank=True)
     phoneNumber2 = models.CharField(max_length=120, null=True, blank=True)
     address = models.TextField(blank=True, null=True, verbose_name='Adres')
-    city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl',related_name='user_city')
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Ülke',related_name='user_country')
+    city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl')
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Ülke')
 
     # sportClup
     name = models.CharField(blank=True, null=True, max_length=120)
@@ -93,8 +93,8 @@ class PreRegistration(models.Model):
     clubphoneNumber = models.CharField(max_length=120, null=True, blank=True)
     clubphoneNumber2 = models.CharField(max_length=120, null=True, blank=True)
     clubaddress = models.TextField(blank=True, null=True, verbose_name='Adres')
-    clubcity = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl')
-    clubcountry = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Ülke')
+    clubcity = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl',related_name='city')
+    clubcountry = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Ülke',related_name='country')
     clubTown=models.CharField(max_length=200,null=True,blank=True)
     clubFax=models.CharField(max_length=11,null=True,blank=True)
     isCoach = models.BooleanField(default=False, choices=IsCoach)

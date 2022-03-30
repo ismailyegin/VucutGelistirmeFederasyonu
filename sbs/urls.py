@@ -17,7 +17,7 @@ urlpatterns = [
     path('anasayfa/maintenance-page/', AdminViews.viewRepairPage, name='view_repair_page'),
     # Dashboard
     path('anasayfa/admin/', DashboardViews.return_admin_dashboard, name='view_admin'),
-    path('anasayfa/sehir-sporcu-sayisi/$', DashboardViews.City_athlete_cout, name='sehir-sporcu-sayisi'),
+    path('anasayfa/sehir-sporcu-sayisi', DashboardViews.City_athlete_cout, name='sehir-sporcu-sayisi'),
     path('anasayfa/hakem', DashboardViews.return_referee_dashboard, name='hakem'),
     path('anasayfa/antrenor', DashboardViews.return_coach_dashboard, name='antrenor'),
     path('anasayfa/federasyon', DashboardViews.return_directory_dashboard, name='federasyon'),
