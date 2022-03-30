@@ -22,10 +22,10 @@ def add_group(request):
         logout(request)
         return redirect('accounts:login')
     group_form = GroupForm()
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     try:
-        urls = last_urls(request)
-        current_url = resolve(request.path_info)
-        url_name = Permission.objects.get(codename=current_url.url_name)
         with transaction.atomic():
             if request.method == 'POST':
                 group_form = GroupForm(request.POST)
@@ -43,7 +43,7 @@ def add_group(request):
                             perm.save()
 
                     messages.success(request, 'Grup Kayıt Edilmiştir.')
-                    return redirect('ekabis:view_group')
+                    return redirect('sbs:view_group')
                 else:
                     error_messages = get_error_messages(group_form)
                     return render(request, 'Group/GrupEkle.html',
@@ -75,7 +75,7 @@ def return_list_group(request):
     except Exception as e:
         traceback.print_exc()
         messages.warning(request, 'Lütfen Tekrar Deneyiniz.')
-        return redirect('ekabis:view_group')
+        return redirect('sbs:view_group')
 
 # group update to system
 @login_required
@@ -100,7 +100,7 @@ def return_update_group(request, pk):
                     group=group_form.save(request, commit=False)
                     group.save()
                     messages.success(request, 'Grup Güncellenmiştir.')
-                    return redirect('ekabis:view_group')
+                    return redirect('sbs:view_group')
 
                 else:
                     error_messages = get_error_messages(group_form)
