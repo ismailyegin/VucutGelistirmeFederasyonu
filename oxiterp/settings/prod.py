@@ -4,7 +4,7 @@ from oxiterp.settings.base import *
 
 
 DEBUG = True
-ALLOWED_HOSTS = ['yekabis.enerji.gov.tr']
+ALLOWED_HOSTS = ['tvgfbf.kobiltek.com']
 
 # DATABASES = {
 #   'default': {
@@ -17,26 +17,26 @@ ALLOWED_HOSTS = ['yekabis.enerji.gov.tr']
 # }
 # }
 
-#DATABASES = {
- #   'default': {
-  #      'ENGINE': 'django.db.backends.mysql',
-   #     'NAME': 'admin_sbs',
-    #    'HOST': 'localhost',
-     #   'PORT': '3306',
-      #  'USER': 'admin_sbs',
-       # 'PASSWORD': 'kobil2013'
-    #}
-#}
-
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.oracle',
-        'NAME': 'sp000dbo-scan/kdstdw',
-        'USER': 'sbs',
-        'PASSWORD': 'qwerty1234',        
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'vucutgelistirme',
+       'HOST': 'localhost',
+       'PORT': '3306',
+       'USER': 'kobiltek',
+       'PASSWORD': 'kobil2013'
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.oracle',
+#         'NAME': 'sp000dbo-scan/kdstdw',
+#         'USER': 'sbs',
+#         'PASSWORD': 'qwerty1234',
+#     }
+# }
 
 
 SESSION_COOKIE_SECURE = True
