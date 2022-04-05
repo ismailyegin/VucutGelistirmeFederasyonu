@@ -182,24 +182,26 @@
                                             <td>{{ coach.email }} </td>
                                             <td>{{ coach.status }} </td>
                                             <td>
-                                                <div class="btn-group">
-                                                    <a onclick="approvalCoach('{{ coach.uuid }}')"
-                                                       type="button" class="btn btn-outline-success">
-                                                        <i class="fa fa-check"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="btn-group">
-                                                    <a href="{% url "sbs:update-coach-reference" coach.uuid %}"
-                                                       type="button" class="btn btn-outline-warning">
-                                                        <i class="fa fa-edit" title="Düzenle"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="btn-group">
-                                                    <a class="btn btn-outline-danger"
-                                                       data-toggle="modal" onclick=deleteReferee('{{ coach.uuid }}')>
-                                                        <i class="fa fa-trash" title="Reddet"></i>
-                                                    </a>
-                                                </div>
+                                                {% if coach.status == coach.WAITED %}
+                                                    <div class="btn-group">
+                                                        <a onclick="approvalCoach('{{ coach.uuid }}')"
+                                                           type="button" class="btn btn-outline-success">
+                                                            <i class="fa fa-check"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <a href="{% url "sbs:update-coach-reference" coach.uuid %}"
+                                                           type="button" class="btn btn-outline-warning">
+                                                            <i class="fa fa-edit" title="Düzenle"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <a class="btn btn-outline-danger"
+                                                           data-toggle="modal" onclick=deleteReferee('{{ coach.uuid }}')>
+                                                            <i class="fa fa-trash" title="Reddet"></i>
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endfor %}

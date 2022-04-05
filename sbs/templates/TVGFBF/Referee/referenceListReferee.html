@@ -223,7 +223,7 @@
                             <h3 class="card-title">Hakemler</h3>
 
                             <a href="{% url "sbs:add_referee" %}"
-                                    type="button" class="btn btn-outline-info" title="Hakem Ekle" style="float: right">
+                               type="button" class="btn btn-outline-info" title="Hakem Ekle" style="float: right">
                                 <i
                                         class="fa fa-plus"></i>
                             </a>
@@ -257,27 +257,28 @@
                                             <td>{{ referee.first_name }} {{ referee.last_name }} </td>
                                             <td>{{ referee.email }} </td>
                                             <td>{{ referee.status }}</td>
-
-
                                             <td>
-                                                <div class="btn-group">
-                                                    <a onclick="approvalReferee('{{ referee.uuid }}')"
-                                                       type="button" class="btn btn-outline-success"><i
-                                                            class="fa fa-check"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="btn-group">
-                                                    <a href="{% url 'sbs:update-referenceReferee' referee.uuid %}"
-                                                       type="button" class="btn btn-outline-warning"><i
-                                                            class="fa fa-edit" title="Düzenle"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="btn-group">
-                                                    <a class="btn btn-outline-danger"
-                                                       data-toggle="modal"
-                                                       onclick=deleteReferee('{{ referee.uuid }}')><i
-                                                            class="fa fa-trash" title="Reddet"></i></a>
-                                                </div>
+                                                {% if referee.status == referee.WAITED %}
+                                                    <div class="btn-group">
+                                                        <a onclick="approvalReferee('{{ referee.uuid }}')"
+                                                           type="button" class="btn btn-outline-success"><i
+                                                                class="fa fa-check"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <a href="{% url 'sbs:update-referenceReferee' referee.uuid %}"
+                                                           type="button" class="btn btn-outline-warning"><i
+                                                                class="fa fa-edit" title="Düzenle"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <a class="btn btn-outline-danger"
+                                                           data-toggle="modal"
+                                                           onclick=deleteReferee('{{ referee.uuid }}')><i
+                                                                class="fa fa-trash" title="Reddet"></i></a>
+                                                    </div>
+
+                                                {% endif %}
                                             </td>
 
                                         </tr>

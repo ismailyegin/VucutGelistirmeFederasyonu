@@ -164,13 +164,13 @@
                         </div>
                     </div>
                 </div>
+                <form method="post" enctype="multipart/form-data" role="form">
                 <div class="card card-info card-outline">
                     <div class="card-header with-border">
                         <h3 class="card-title">Genel Bilgiler</h3>
                     </div>
 
                     <div class="card-body">
-                        <form method="post" enctype="multipart/form-data" role="form">
                             {% csrf_token %}
                             <div class="row">
 
@@ -221,7 +221,6 @@
                                 </div>
 
                             </div>
-                        </form>
                     </div>
                     <div class="card-footer">
                         {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
@@ -231,6 +230,7 @@
 
                     </div>
                 </div>
+                </form>
                 <div class="card card-info card-outline">
                     <div class="card-header with-border">
                         <h3 class="card-title"> Seçili Antrenörler</h3>
