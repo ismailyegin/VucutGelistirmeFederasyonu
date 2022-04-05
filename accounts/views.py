@@ -23,7 +23,7 @@ from sbs.models.ekabis.Settings import Settings
 from sbs.models.tvfbf.PreRegistration import PreRegistration
 from sbs.models.tvfbf.ReferenceCoach import ReferenceCoach
 from sbs.models.tvfbf.ReferenceReferee import ReferenceReferee
-from sbs.services import general_methods, LDAPService
+from sbs.services import general_methods
 
 from sbs.services.services import UserService, UserGetService, EmployeeGetService, CompanyUserGetService, \
     ActiveGroupGetService
