@@ -94,52 +94,52 @@
  127.0.0.1    [18-08-2020 16:51] admin  Cikis yapti  
  127.0.0.1    [18-08-2020 16:56] admin  Giris yapti 
  127.0.0.1    [19-08-2020 16:07] admin  Giris yapti 
- 127.0.0.1    [19-08-2020 16:08] admin ILHAN RAMAZAN sporcu birleþtirildi ve silindi  
+ 127.0.0.1    [19-08-2020 16:08] admin ILHAN RAMAZAN sporcu birleï¿½tirildi ve silindi  
  127.0.0.1    [22-08-2020 13:18] admin  Cikis yapti  
  127.0.0.1    [22-08-2020 13:22] admin  Cikis yapti  
  127.0.0.1    [22-08-2020 13:53] admin  Giris yapti 
  127.0.0.1    [22-08-2020 13:54] admin  Cikis yapti  
- 127.0.0.1    [22-08-2020 14:06] admin mevlüde gülmez Hakem basvurusu reddedildi 
+ 127.0.0.1    [22-08-2020 14:06] admin mevlï¿½de gï¿½lmez Hakem basvurusu reddedildi 
  127.0.0.1    [24-08-2020 09:00] admin  Giris yapti 
  127.0.0.1    [24-08-2020 09:03] admin  Cikis yapti  
  127.0.0.1    [24-08-2020 09:10] admin  Giris yapti 
- 127.0.0.1    [24-08-2020 09:33] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:33] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:33] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:34] admin Antrenör test Antrenör     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:33] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:33] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:33] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:34] admin Antrenï¿½r test Antrenï¿½r     Hakem basvurusu reddedildi 
  127.0.0.1    [24-08-2020 09:34] admin resimsiz berktug     Hakem basvurusu reddedildi 
- 127.0.0.1    [24-08-2020 09:35] admin mevlüde gülmez     Hakem basvurusu reddedildi 
+ 127.0.0.1    [24-08-2020 09:35] admin mevlï¿½de gï¿½lmez     Hakem basvurusu reddedildi 
  127.0.0.1    [24-08-2020 09:42] admin resimsiz berktug Antrenor   basvurusu reddedildi 
  127.0.0.1    [24-08-2020 09:43] admin Veli Kamiloglu Antrenor   basvurusu reddedildi 
  127.0.0.1    [24-08-2020 15:02] admin  Cikis yapti  
  127.0.0.1    [24-08-2020 15:02] info@kobiltek.com  Giris yapti 
  127.0.0.1    [24-08-2020 15:04] admin  Giris yapti 
- 127.0.0.1    [24-08-2020 15:05] admin KOBILTEK Klup üyesi cikarildi 
+ 127.0.0.1    [24-08-2020 15:05] admin KOBILTEK Klup ï¿½yesi cikarildi 
  127.0.0.1    [24-08-2020 15:05] admin KOBILTEK Klup uyesi ekledi 
  127.0.0.1    [24-08-2020 15:05] admin  Cikis yapti  
  127.0.0.1    [24-08-2020 15:05] info@kobiltek.com  Giris yapti 
  127.0.0.1    [24-08-2020 15:12] info@kobiltek.com  Giris yapti 
  127.0.0.1    [24-08-2020 15:12] info@kobiltek.com  Cikis yapti  
- 127.0.0.1    [25-08-2020 11:42] fatih@kobiltek.com Fatih Berktugyeni þifre emaili gönderildi 
+ 127.0.0.1    [25-08-2020 11:42] fatih@kobiltek.com Fatih Berktugyeni ï¿½ifre emaili gï¿½nderildi 
  127.0.0.1    [25-08-2020 12:32] admin  Giris yapti 
  127.0.0.1    [25-08-2020 12:32] admin  Kurul eklendi 
  127.0.0.1    [25-08-2020 12:33] admin . kurul silindi 
- 127.0.0.1    [26-08-2020 13:59] admin GAZÝANTEP ÞEHÝT ADEM YAVUZ ORTAOKULU SPOR KULÜBÜ Klup basvurusu hata oldu 
+ 127.0.0.1    [26-08-2020 13:59] admin GAZï¿½ANTEP ï¿½EHï¿½T ADEM YAVUZ ORTAOKULU SPOR KULï¿½Bï¿½ Klup basvurusu hata oldu 
  127.0.0.1    [26-08-2020 14:42] admin   Cikis yapti  
  127.0.0.1    [26-08-2020 14:46] admin  Giris yapti 
  127.0.0.1    [26-08-2020 14:59] admin   Cikis yapti  
@@ -156,18 +156,18 @@
  127.0.0.1    [26-08-2020 17:32] admin   Cikis yapti  
  127.0.0.1    [26-08-2020 17:44] fatih@kobiltek.com  Giris yapti 
  127.0.0.1    [26-08-2020 17:55] admin KOBILTEK Klup antrenor ekledi 
- 127.0.0.1    [26-08-2020 17:56] admin KOBILTEKXXX Klup güncellendi 
+ 127.0.0.1    [26-08-2020 17:56] admin KOBILTEKXXX Klup gï¿½ncellendi 
  127.0.0.1    [26-08-2020 18:13] fatih@kobiltek.com   Cikis yapti  
  127.0.0.1    [26-08-2020 18:13] admin  Giris yapti 
- 127.0.0.1    [26-08-2020 18:15] admin BÝLAL DOÐAN Lisans güncellendi 
+ 127.0.0.1    [26-08-2020 18:15] admin Bï¿½LAL DOï¿½AN Lisans gï¿½ncellendi 
  127.0.0.1    [26-08-2020 18:16] admin   Cikis yapti  
  127.0.0.1    [26-08-2020 18:16] fatih@kobiltek.com  Giris yapti 
- 127.0.0.1    [26-08-2020 18:19] fatih@kobiltek.com FATIH BERKTUG Lisans güncelledi 
- 127.0.0.1    [26-08-2020 18:19] fatih@kobiltek.com FATIH BERKTUG Lisans güncelledi 
+ 127.0.0.1    [26-08-2020 18:19] fatih@kobiltek.com FATIH BERKTUG Lisans gï¿½ncelledi 
+ 127.0.0.1    [26-08-2020 18:19] fatih@kobiltek.com FATIH BERKTUG Lisans gï¿½ncelledi 
  127.0.0.1    [26-08-2020 18:29] fatih@kobiltek.com FATIH BERKTUG Lisans ekledi 
- 127.0.0.1    [26-08-2020 18:32] fatih@kobiltek.com FATIH BERKTUG Lisans güncelledi 
+ 127.0.0.1    [26-08-2020 18:32] fatih@kobiltek.com FATIH BERKTUG Lisans gï¿½ncelledi 
  127.0.0.1    [26-08-2020 18:32] fatih@kobiltek.com FATIH BERKTUG Lisans silindi 
- 127.0.0.1    [26-08-2020 18:32] fatih@kobiltek.com FATIH BERKTUG Lisans güncelledi 
+ 127.0.0.1    [26-08-2020 18:32] fatih@kobiltek.com FATIH BERKTUG Lisans gï¿½ncelledi 
  127.0.0.1    [26-08-2020 18:41] fatih@kobiltek.com   Cikis yapti  
  127.0.0.1    [26-08-2020 18:41] admin  Giris yapti 
  127.0.0.1    [26-08-2020 19:20] admin  Giris yapti 
@@ -175,8 +175,8 @@
  127.0.0.1    [26-08-2020 19:47] fatih@kobiltek.com  Giris yapti 
  127.0.0.1    [26-08-2020 19:50] fatih@kobiltek.com   Cikis yapti  
  127.0.0.1    [26-08-2020 19:50] admin  Giris yapti 
- 127.0.0.1    [26-08-2020 19:50] admin Rüzgar enerjisi klubü Klup basvurusu onaylandi 
- 127.0.0.1    [26-08-2020 19:56] admin Rüzgar enerjisi klubü Klup basvurusu onaylandi 
+ 127.0.0.1    [26-08-2020 19:50] admin Rï¿½zgar enerjisi klubï¿½ Klup basvurusu onaylandi 
+ 127.0.0.1    [26-08-2020 19:56] admin Rï¿½zgar enerjisi klubï¿½ Klup basvurusu onaylandi 
  127.0.0.1    [27-08-2020 10:48] admin   Cikis yapti  
  127.0.0.1    [27-08-2020 10:48] info@kobiltek.com  Giris yapti 
  127.0.0.1    [27-08-2020 10:50] info@kobiltek.com   Cikis yapti  
@@ -192,4 +192,5 @@
  [28-06-2021 16:57]  lag kaydetme hata   
  [07-12-2021 17:08]  lag kaydetme hata   
  [28-03-2022 12:54]  lag kaydetme hata   
+ [29-03-2022 11:34]  lag kaydetme hata   
  
