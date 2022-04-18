@@ -13,8 +13,7 @@ from sbs.services.services import last_urls
 
 
 import inspect
-from sbs.Views.ekabis import YekaViews, VacationDayViews, AdminViews, CompanyView, EmployeeViews, \
-    YekaBussinessBlogStaticView, BusinessBlogViews, GroupView, ConnectionRegionViews, FactoryViews, YekaCompetitionViews
+from sbs.Views.ekabis import AdminViews, GroupView
 
 
 @login_required
@@ -60,35 +59,8 @@ def change_permission(request,uuid):
             if url[2]=='AdminViews':
                 result = getattr(AdminViews, url[3])
                 code = inspect.getsource(result)
-            elif url[2]=='CompanyView':
-                result = getattr(CompanyView, url[3])
-                code = inspect.getsource(result)
-            elif url[2]=='EmployeeViews':
-                result = getattr(EmployeeViews, url[3])
-                code = inspect.getsource(result)
-            elif url[2]=='YekaViews':
-                result = getattr(YekaViews, url[3])
-                code = inspect.getsource(result)
-            elif url[2]=='BusinessBlogViews':
-                result = getattr(BusinessBlogViews, url[3])
-                code = inspect.getsource(result)
-            elif url[2]=='YekaBussinessBlogStaticView':
-                result = getattr(YekaBussinessBlogStaticView, url[3])
-                code = inspect.getsource(result)
-            elif url[2]=='YekaCompetitionViews':
-                result = getattr(YekaCompetitionViews, url[3])
-                code = inspect.getsource(result)
-            elif url[2] == 'ConnectionRegionViews':
-                result = getattr(ConnectionRegionViews, url[3])
-                code = inspect.getsource(result)
             elif url[2]=='GroupView':
                 result = getattr(GroupView, url[3])
-                code = inspect.getsource(result)
-            elif url[2] == 'VacationDayViews':
-                result = getattr(VacationDayViews, url[3])
-                code = inspect.getsource(result)
-            elif url[2] == 'FactoryViews':
-                result = getattr(FactoryViews, url[3])
                 code = inspect.getsource(result)
 
         with transaction.atomic():

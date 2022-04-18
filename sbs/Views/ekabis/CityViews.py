@@ -1,12 +1,14 @@
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from sbs.models.ekabis.Neighborhood import Neighborhood
+
+
+# Fetch county by city id
 from sbs.models.ekabis.District import District
+from sbs.models.ekabis.Neighborhood import Neighborhood
 from sbs.serializers.DistrictSerializer import DistrictSerializer
 from sbs.serializers.NeighborhoodSerializer import NeighborhoodSerializer
 
 
-# Fetch county by city id
 @api_view(http_method_names=['POST'])
 def get_districts(request):
     if request.POST:
@@ -40,9 +42,7 @@ def get_neighborhood(request):
         try:
 
             ilce_id = request.POST.get('ilce_id')
-            neighborhoods = Neighborhood.objects.filter(district=ilce_id)
 
-            data = NeighborhoodSerializer(neighborhoods, many=True)
 
             responseData = dict()
             responseData['neighborhoods'] = data.data

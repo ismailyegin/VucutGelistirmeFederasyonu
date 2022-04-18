@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from sbs.services import general_methods
-from sbs.models.ekabis import Employee
 from sbs.models.tvfbf.DirectoryMember import DirectoryMember
 from sbs.services.services import CategoryItemService, DirectoryCommissionService, DirectoryMemberRoleService, \
     GroupGetService, \
@@ -59,5 +58,3 @@ def activeGroup(request, pk):
         messages.warning(request, 'Lütfen Tekrar Deneyiniz.')
 
 
-def viewRepairPage(request):
-    return render(request, 'maintenancePage.html')

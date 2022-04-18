@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from sbs.models import Communication
+from sbs.models.ekabis.Communication import Communication
 from sbs.models.ekabis.Country import Country
 
 

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from sbs.models import Person
+from sbs.models.ekabis.Person import Person
 
 
 class PersonForm(ModelForm):
@@ -12,21 +12,15 @@ class PersonForm(ModelForm):
             'height', 'weight',
             'birthDate', 'bloodType',
             'gender', 'birthplace',
-            'motherName',
-            'profileImage', 'fatherName',
-            'is_unvani', 'hesKodu')
+            'profileImage',)
 
         labels = {'tc': 'T.C*.',
                   'gender': 'Cinsiyet*',
                   'profileImage': 'Profil Resmi',
-                  'is_unvani': 'İs Unvanı ',
                   'height': 'Boy',
                   'weight': 'Kilo',
                   'birthplace': 'Doğum Yeri',
                   'birthDate': 'Doğum Tarihi',
-                  'motherName': 'Anne Adı',
-                  'fatherName': 'Baba Adı',
-                  'hesKodu': 'HES Kodu',
 
                   }
 
@@ -34,7 +28,6 @@ class PersonForm(ModelForm):
 
             'profileImage': forms.FileInput(),
 
-            'is_unvani': forms.TextInput(attrs={'class': 'form-control ', "style": "text-transform:uppercase"}),
 
             'tc': forms.TextInput(
                 attrs={'class': 'form-control ', 'required': 'required', 'onkeypress': 'validate(event)',
@@ -48,12 +41,6 @@ class PersonForm(ModelForm):
             'birthplace': forms.TextInput(
                 attrs={'class': 'form-control ', 'value': '', "style": "text-transform:uppercase"}),
 
-            'motherName': forms.TextInput(
-                attrs={'class': 'form-control ', 'value': '', "style": "text-transform:uppercase"}),
-
-            'fatherName': forms.TextInput(
-                attrs={'class': 'form-control ', 'value': '', "style": "text-transform:uppercase"}),
-
             'birthDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right datemask', 'id': 'datepicker', 'autocomplete': 'off',
                        'required': 'required'}),
@@ -63,8 +50,6 @@ class PersonForm(ModelForm):
 
             'gender': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%;', 'required': 'required'}),
-            'hesKodu': forms.TextInput(
-                attrs={'class': 'form-control ', 'value': '', "style": "text-transform:uppercase"}),
 
         }
 

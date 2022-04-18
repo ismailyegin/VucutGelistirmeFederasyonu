@@ -30,9 +30,7 @@ from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
 from sbs.Forms.havaspor.SearchClupForm import SearchClupForm
 from sbs.Forms.havaspor.VisaForm import VisaForm
 from sbs.Forms.havaspor.VisaSeminarForm import VisaSeminarForm
-from sbs.models import Branch
 from sbs.models.ekabis.CategoryItem import CategoryItem
-from sbs.models.ekabis.Competition import Competition
 from sbs.models.tvfbf.CoachApplication import CoachApplication
 from sbs.models.tvfbf.HavaLevel import HavaLevel
 from sbs.models.ekabis.Logs import Logs
@@ -42,7 +40,6 @@ from sbs.models.ekabis.Person import Person
 from sbs.models.ekabis.Communication import Communication
 from sbs.models.tvfbf.Coach import Coach
 from sbs.models.tvfbf.Club import Club
-from sbs.models.tvfbf.PreRegistration import PreRegistration
 from sbs.models.tvfbf.ReferenceCoach import ReferenceCoach
 from sbs.models.tvfbf.ReferenceReferee import ReferenceReferee
 from sbs.models.tvfbf.SportClubUser import SportClubUser
@@ -1042,7 +1039,7 @@ def deleteVisaSeminar(request):
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
             else:
                 return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
-    except Competition.DoesNotExist:
+    except VisaSeminar.DoesNotExist:
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 

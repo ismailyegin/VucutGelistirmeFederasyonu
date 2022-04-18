@@ -31,11 +31,10 @@ from sbs.Forms.havaspor.RefereeSearchForm import RefereeSearchForm
 from sbs.Forms.havaspor.HavaUserForm import HavaUserForm
 from sbs.Forms.havaspor.VisaForm import VisaForm
 from sbs.Forms.havaspor.VisaSeminarForm import VisaSeminarForm
-from sbs.models import Logs, ReferenceCoach
-from sbs.models.ekabis.Competition import Competition
 from sbs.models.ekabis.EnumFields import EnumFields
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Communication import Communication
+from sbs.models.ekabis.Logs import Logs
 from sbs.models.ekabis.Person import Person
 from sbs.models.ekabis.Permission import Permission
 from sbs.models.tvfbf.Branch import Branch
@@ -62,33 +61,34 @@ def return_referees(request):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
-    if request.method == 'POST':
-        user_form = RefereeSearchForm(request.POST)
-        branch = request.POST.get('branch')
-        status = request.POST.get('status')
-        city = request.POST.get('city')
-        firstName = unicode_tr(request.POST.get('first_name')).title()
-        lastName = unicode_tr(request.POST.get('last_name')).title()
+    with transaction.atomic():
+        if request.method == 'POST':
+            user_form = RefereeSearchForm(request.POST)
+            branch = request.POST.get('branch')
+            status = request.POST.get('status')
+            city = request.POST.get('city')
+            firstName = unicode_tr(request.POST.get('first_name')).title()
+            lastName = unicode_tr(request.POST.get('last_name')).title()
 
-        # print(firstName, lastName, email, branch, grade, visa)
-        if not (firstName or lastName or city or branch or status):
-            referees = Referee.objects.all().filter(isDeleted=0)
+            # print(firstName, lastName, email, branch, grade, visa)
+            if not (firstName or lastName or city or branch or status):
+                referees = Referee.objects.all().filter(isDeleted=0)
+            else:
+                query = Q()
+                if lastName:
+                    query &= Q(person__user__last_name__icontains=lastName.title())
+                if firstName:
+                    query &= Q(person__user__first_name__icontains=firstName.title())
+                if city:
+                    query &= Q(communication__city__name__icontains=city)
+                if branch:
+                    query &= Q(grades__branch=Branch.objects.get(title=branch))
+                if status:
+                    query &= Q(grades__definition__name=status)
+
+                referees = Referee.objects.filter(query).filter(isDeleted=0)
         else:
-            query = Q()
-            if lastName:
-                query &= Q(person__user__last_name__icontains=lastName.title())
-            if firstName:
-                query &= Q(person__user__first_name__icontains=firstName.title())
-            if city:
-                query &= Q(communication__city__name__icontains=city)
-            if branch:
-                query &= Q(grades__branch=Branch.objects.get(title=branch))
-            if status:
-                query &= Q(grades__definition__name=status)
-
-            referees = Referee.objects.filter(query).filter(isDeleted=0)
-    else:
-        print('else2')
+            print('else2')
 
     return render(request, 'TVGFBF/Referee/referees.html',
                   {'referees': referees, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
@@ -114,97 +114,97 @@ def return_add_referee(request):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
+    with transaction.atomic():
+        if request.method == 'POST':
 
-    if request.method == 'POST':
+            user_form = HavaUserForm(request.POST)
+            person_form = PersonForm(request.POST, request.FILES or None)
+            communication_form = CommunicationForm(request.POST)
+            referee_form = RefereeForm(request.POST, request.FILES or None)
+            grade_form = GradeFormReferee(request.POST, request.FILES or None)
 
-        user_form = HavaUserForm(request.POST)
-        person_form = PersonForm(request.POST, request.FILES or None)
-        communication_form = CommunicationForm(request.POST)
-        referee_form = RefereeForm(request.POST, request.FILES or None)
-        grade_form = GradeFormReferee(request.POST, request.FILES or None)
+            mail = request.POST.get('email')
 
-        mail = request.POST.get('email')
+            # if User.objects.filter(email=mail):
+            #     messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            #     return render(request, 'TVGFBF/Referee/add-referee.html',
+            #                   {'user_form': user_form, 'person_form': person_form,
+            #                    'communication_form': communication_form, 'grade_form': grade_form, })
 
-        # if User.objects.filter(email=mail):
-        #     messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-        #     return render(request, 'TVGFBF/Referee/add-referee.html',
-        #                   {'user_form': user_form, 'person_form': person_form,
-        #                    'communication_form': communication_form, 'grade_form': grade_form, })
+            tc = request.POST.get('tc')
+            # if Person.objects.filter(tc=tc):
+            #     messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            #     return render(request, 'TVGFBF/Referee/add-referee.html',
+            #                   {'user_form': user_form, 'person_form': person_form,
+            #                    'communication_form': communication_form, 'grade_form': grade_form, })
 
-        tc = request.POST.get('tc')
-        # if Person.objects.filter(tc=tc):
-        #     messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-        #     return render(request, 'TVGFBF/Referee/add-referee.html',
-        #                   {'user_form': user_form, 'person_form': person_form,
-        #                    'communication_form': communication_form, 'grade_form': grade_form, })
+            name = request.POST.get('first_name')
+            surname = request.POST.get('last_name')
+            year = request.POST.get('birthDate')
+            year = year.split('/')
 
-        name = request.POST.get('first_name')
-        surname = request.POST.get('last_name')
-        year = request.POST.get('birthDate')
-        year = year.split('/')
+            # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+            # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            #     return render(request, 'TVGFBF/Referee/add-referee.html',
+            #                   {'user_form': user_form, 'person_form': person_form,
+            #                    'communication_form': communication_form, 'grade_form': grade_form, })
 
-        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-        #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, 'TVGFBF/Referee/add-referee.html',
-        #                   {'user_form': user_form, 'person_form': person_form,
-        #                    'communication_form': communication_form, 'grade_form': grade_form, })
+            if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and grade_form.is_valid() and referee_form.is_valid():
+                user = User()
+                user.username = user_form.cleaned_data['email']
 
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid() and grade_form.is_valid() and referee_form.is_valid():
-            user = User()
-            user.username = user_form.cleaned_data['email']
+                user.first_name = unicode_tr(user_form.cleaned_data['first_name']).upper()
+                user.last_name = unicode_tr(user_form.cleaned_data['last_name']).upper()
+                user.email = user_form.cleaned_data['email']
+                group = Group.objects.get(name='Hakem')
+                password = User.objects.make_random_password()
+                user.set_password(password)
+                user.is_active = True
+                user.save()
 
-            user.first_name = unicode_tr(user_form.cleaned_data['first_name']).upper()
-            user.last_name = unicode_tr(user_form.cleaned_data['last_name']).upper()
-            user.email = user_form.cleaned_data['email']
-            group = Group.objects.get(name='Hakem')
-            password = User.objects.make_random_password()
-            user.set_password(password)
-            user.is_active = True
-            user.save()
+                user.groups.add(group)
+                user.save()
 
-            user.groups.add(group)
-            user.save()
+                person = person_form.save(commit=False)
+                communication = communication_form.save(commit=False)
+                iban = request.POST.get("iban")
+                person.iban = iban
+                person.user = user
+                person.save()
+                communication.save()
+                grade = grade_form.save()
+                grade.save()
 
-            person = person_form.save(commit=False)
-            communication = communication_form.save(commit=False)
-            iban = request.POST.get("iban")
-            person.iban = iban
-            person.user = user
-            person.save()
-            communication.save()
-            grade = grade_form.save()
-            grade.save()
+                referee = referee_form.save(commit=False)
+                referee.person = person
+                referee.communication = communication
+                referee.save()
+                referee.grades.add(grade)  ####!!!!!
+                referee.save()
 
-            referee = referee_form.save(commit=False)
-            referee.person = person
-            referee.communication = communication
-            referee.save()
-            referee.grades.add(grade)  ####!!!!!
-            referee.save()
+                fdk = Forgot(user=user, status=False)
+                fdk.save()
 
-            fdk = Forgot(user=user, status=False)
-            fdk.save()
+                # html_content = ''
+                # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@badminton.gov.tr', user.email
+                # html_content = '<h2>TÜRKİYE BADMİNTON FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+                # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.badminton.gov.tr/newpassword?query=' + str(
+                #     fdk.uuid) + '">http://sbs.badminton.gov.tr/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+                # msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                # msg.attach_alternative(html_content, "text/html")
+                # msg.send()
 
-            html_content = ''
-            subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@badminton.gov.tr', user.email
-            html_content = '<h2>TÜRKİYE BADMİNTON FEDERASYONU BİLGİ SİSTEMİ</h2>'
-            html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.badminton.gov.tr/newpassword?query=' + str(
-                fdk.uuid) + '">http://sbs.badminton.gov.tr/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
-            msg = EmailMultiAlternatives(subject, '', from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+                messages.success(request, 'Hakem Başarıyla Kayıt Edilmiştir.')
 
-            messages.success(request, 'Hakem Başarıyla Kayıt Edilmiştir.')
+                # return redirect('sbs:hakem-duzenle', referee.pk)
+                return redirect('sbs:return_referees')
 
-            # return redirect('sbs:hakem-duzenle', referee.pk)
-            return redirect('sbs:return_referees')
+            else:
 
-        else:
-
-            for x in user_form.errors.as_data():
-                messages.warning(request, user_form.errors[x][0])
+                for x in user_form.errors.as_data():
+                    messages.warning(request, user_form.errors[x][0])
 
     return render(request, 'TVGFBF/Referee/add-referee.html',
                   {'user_form': user_form, 'person_form': person_form,
@@ -233,66 +233,67 @@ def update_referee(request, uuid):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
-    if request.method == 'POST':
+    with transaction.atomic():
+        if request.method == 'POST':
 
-        mail = request.POST.get('email')
-        # if mail != referee.user.email:
-        #
-        #     if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-        #             email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-        #         email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
-        #         email=mail):
-        #         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-        #         return render(request, 'TVGFBF/Referee/update-referee.html',
-        #                       {'user_form': user_form, 'communication_form': communication_form,
-        #                        'person_form': person_form, 'judge': judge, 'grade_form': grade_form,
-        #                        'visa_form': visa_form, 'iban_form': iban_form, })
+            mail = request.POST.get('email')
+            # if mail != referee.user.email:
+            #
+            #     if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+            #             email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            #         email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+            #         email=mail):
+            #         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            #         return render(request, 'TVGFBF/Referee/update-referee.html',
+            #                       {'user_form': user_form, 'communication_form': communication_form,
+            #                        'person_form': person_form, 'judge': judge, 'grade_form': grade_form,
+            #                        'visa_form': visa_form, 'iban_form': iban_form, })
 
-        tc = request.POST.get('tc')
-        # if tc != referee.person.tc:
-        #     if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-        #             tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-        #         tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
-        #         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-        #         return render(request, 'TVGFBF/Referee/update-referee.html',
-        #                       {'user_form': user_form, 'communication_form': communication_form,
-        #                        'person_form': person_form, 'judge': judge, 'grade_form': grade_form,
-        #                        'visa_form': visa_form, 'iban_form': iban_form, })
+            tc = request.POST.get('tc')
+            # if tc != referee.person.tc:
+            #     if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+            #             tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            #         tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+            #         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            #         return render(request, 'TVGFBF/Referee/update-referee.html',
+            #                       {'user_form': user_form, 'communication_form': communication_form,
+            #                        'person_form': person_form, 'judge': judge, 'grade_form': grade_form,
+            #                        'visa_form': visa_form, 'iban_form': iban_form, })
 
-        name = request.POST.get('first_name')
-        surname = request.POST.get('last_name')
-        year = request.POST.get('birthDate')
-        year = year.split('/')
+            name = request.POST.get('first_name')
+            surname = request.POST.get('last_name')
+            year = request.POST.get('birthDate')
+            year = year.split('/')
 
-        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-        #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, 'TVGFBF/Referee/update-referee.html',
-        #                   {'user_form': user_form, 'communication_form': communication_form,
-        #                    'person_form': person_form, 'referee': referee, 'grade_form': grade_form,
-        #                    'visa_form': visa_form, })
+            # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+            # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            #     return render(request, 'TVGFBF/Referee/update-referee.html',
+            #                   {'user_form': user_form, 'communication_form': communication_form,
+            #                    'person_form': person_form, 'referee': referee, 'grade_form': grade_form,
+            #                    'visa_form': visa_form, })
 
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
+            if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
 
-            user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name']
-            user.last_name = user_form.cleaned_data['last_name']
-            user.email = user_form.cleaned_data['email']
-            user.save()
+                user.username = user_form.cleaned_data['email']
+                user.first_name = user_form.cleaned_data['first_name']
+                user.last_name = user_form.cleaned_data['last_name']
+                user.email = user_form.cleaned_data['email']
+                user.save()
 
-            log = str(user.get_full_name()) + " Hakemi güncelledi"
-            log = general_methods.logwrite(request, request.user, log)
+                log = str(user.get_full_name()) + " Hakemi güncelledi"
+                log = general_methods.logwrite(request, request.user, log)
 
-            person = person_form.save(commit=False)
-            iban = request.POST.get("iban")
-            person.iban = iban
-            person.save()
-            communication_form.save()
+                person = person_form.save(commit=False)
+                iban = request.POST.get("iban")
+                person.iban = iban
+                person.save()
+                communication_form.save()
 
-            messages.success(request, 'Hakem Başarıyla Güncellendi')
-            return redirect('sbs:return_referees')
-        else:
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+                messages.success(request, 'Hakem Başarıyla Güncellendi')
+                return redirect('sbs:return_referees')
+            else:
+                messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/update-referee.html',
                   {'user_form': user_form, 'communication_form': communication_form,
@@ -346,35 +347,36 @@ def add_grade_referee(request, uuid):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
-    if request.method == 'POST':
-        grade_form = GradeFormReferee(request.POST, request.FILES)
+    with transaction.atomic():
+        if request.method == 'POST':
+            grade_form = GradeFormReferee(request.POST, request.FILES)
 
-        if grade_form.is_valid() and grade_form.cleaned_data['dekont'] is not None and request.POST.get(
-                'branch') is not None:
-            grade = HavaLevel(definition=grade_form.cleaned_data['definition'],
-                              startDate=grade_form.cleaned_data['startDate'],
-                              dekont=grade_form.cleaned_data['dekont'],
-                              branch=grade_form.cleaned_data['branch'])
-            grade.levelType = EnumFields.LEVELTYPE.GRADE
-            grade.status = HavaLevel.WAITED
-            grade.isActive = True
-            grade.save()
-            for item in referee.grades.all():
-                if item.branch == grade.branch:
-                    item.isActive = False
-                    item.save()
+            if grade_form.is_valid() and grade_form.cleaned_data['dekont'] is not None and request.POST.get(
+                    'branch') is not None:
+                grade = HavaLevel(definition=grade_form.cleaned_data['definition'],
+                                  startDate=grade_form.cleaned_data['startDate'],
+                                  dekont=grade_form.cleaned_data['dekont'],
+                                  branch=grade_form.cleaned_data['branch'])
+                grade.levelType = EnumFields.LEVELTYPE.GRADE
+                grade.status = HavaLevel.WAITED
+                grade.isActive = True
+                grade.save()
+                for item in referee.grades.all():
+                    if item.branch == grade.branch:
+                        item.isActive = False
+                        item.save()
 
-            referee.grades.add(grade)
-            referee.save()
+                referee.grades.add(grade)
+                referee.save()
 
-            log = str(referee.person.user.get_full_name()) + " Kademe eklendi"
-            log = general_methods.logwrite(request, request.user, log)
+                log = str(referee.person.user.get_full_name()) + " Kademe eklendi"
+                log = general_methods.logwrite(request, request.user, log)
 
-            messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
-            return redirect('sbs:update_referee', uuid=uuid)
+                messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
+                return redirect('sbs:update_referee', uuid=uuid)
 
-        else:
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+            else:
+                messages.warning(request, 'Alanları Kontrol Ediniz')
 
     grade_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE')
     return render(request, 'TVGFBF/Referee/add-grade-referee.html',
@@ -511,37 +513,37 @@ def add_visa_referee(request, uuid):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
+    with transaction.atomic():
+        if request.method == 'POST':
+            visa_form = VisaForm(request.POST, request.FILES)
+            category_item_form = CategoryItemForm(request.POST, request.FILES)
 
-    if request.method == 'POST':
-        visa_form = VisaForm(request.POST, request.FILES)
-        category_item_form = CategoryItemForm(request.POST, request.FILES)
+            try:
+                if visa_form.is_valid():
 
-        try:
-            if visa_form.is_valid():
+                    visa = HavaLevel(dekont=visa_form.cleaned_data['dekont'], branch=visa_form.cleaned_data['branch'])
+                    visa.startDate = visa_form.cleaned_data['startDate']
 
-                visa = HavaLevel(dekont=visa_form.cleaned_data['dekont'], branch=visa_form.cleaned_data['branch'])
-                visa.startDate = visa_form.cleaned_data['startDate']
+                    visa.definition = CategoryItem.objects.get(forWhichClazz='VISA_REFEREE')
+                    visa.levelType = EnumFields.LEVELTYPE.VISA
+                    visa.status = HavaLevel.WAITED
+                    for item in referee.visa.all():
+                        if item.branch == visa.branch:
+                            item.isActive = False
+                            item.save()
+                    visa.isActive = True
 
-                visa.definition = CategoryItem.objects.get(forWhichClazz='VISA_REFEREE')
-                visa.levelType = EnumFields.LEVELTYPE.VISA
-                visa.status = HavaLevel.WAITED
-                for item in referee.visa.all():
-                    if item.branch == visa.branch:
-                        item.isActive = False
-                        item.save()
-                visa.isActive = True
+                    visa.save()
+                    referee.visa.add(visa)
+                    referee.save()
 
-                visa.save()
-                referee.visa.add(visa)
-                referee.save()
+                    log = str(referee.person.user.get_full_name()) + " hakem  vize eklendi"
+                    log = general_methods.logwrite(request, request.user, log)
 
-                log = str(referee.person.user.get_full_name()) + " hakem  vize eklendi"
-                log = general_methods.logwrite(request, request.user, log)
-
-                messages.success(request, 'Vize Başarıyla Eklenmiştir.')
-                return redirect('sbs:update_referee', uuid=uuid)
-        except:
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+                    messages.success(request, 'Vize Başarıyla Eklenmiştir.')
+                    return redirect('sbs:update_referee', uuid=uuid)
+            except:
+                messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/add-visa-referee.html',
                   {'visa_form': visa_form, 'category_item_form': category_item_form, 'urls': urls,
@@ -595,21 +597,21 @@ def visa_update(request, visa_uuid, referee_uuid):
     visa = HavaLevel.objects.get(uuid=visa_uuid)
     referee = Referee.objects.get(uuid=referee_uuid)
     visa_form = VisaForm(request.POST or None, request.FILES or None, instance=visa)
+    with transaction.atomic():
+        if request.method == 'POST':
+            if visa_form.is_valid():
+                visa_form.save()
+                if visa.status != HavaLevel.APPROVED:
+                    visa.status = HavaLevel.WAITED
+                    visa.save()
 
-    if request.method == 'POST':
-        if visa_form.is_valid():
-            visa_form.save()
-            if visa.status != HavaLevel.APPROVED:
-                visa.status = HavaLevel.WAITED
-                visa.save()
+                    log = str(referee.person.user.get_full_name()) + " hakem  vize güncellendi"
+                    log = general_methods.logwrite(request, request.user, log)
 
-                log = str(referee.person.user.get_full_name()) + " hakem  vize güncellendi"
-                log = general_methods.logwrite(request, request.user, log)
-
-                messages.success(request, 'Vize Başarıyla Güncellenmiştir.')
-                return redirect('sbs:update_referee', uuid=referee_uuid)
-        else:
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+                    messages.success(request, 'Vize Başarıyla Güncellenmiştir.')
+                    return redirect('sbs:update_referee', uuid=referee_uuid)
+            else:
+                messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/update-visa-referee.html',
                   {'visa_form': visa_form})
@@ -658,22 +660,22 @@ def return_level(request):
         logout(request)
         return redirect('accounts:login')
     category_item_form = CategoryItemForm()
+    with transaction.atomic():
+        if request.method == 'POST':
 
-    if request.method == 'POST':
+            category_item_form = CategoryItemForm(request.POST)
 
-        category_item_form = CategoryItemForm(request.POST)
+            if category_item_form.is_valid():
 
-        if category_item_form.is_valid():
+                categoryItem = CategoryItem(name=category_item_form.cleaned_data['name'])
+                categoryItem.forWhichClazz = "REFEREE_GRADE"
+                categoryItem.save()
 
-            categoryItem = CategoryItem(name=category_item_form.cleaned_data['name'])
-            categoryItem.forWhichClazz = "REFEREE_GRADE"
-            categoryItem.save()
+                return redirect('sbs:return_levels')
 
-            return redirect('sbs:return_levels')
+            else:
 
-        else:
-
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+                messages.warning(request, 'Alanları Kontrol Ediniz')
     categoryitem = CategoryItem.objects.filter(forWhichClazz="REFEREE_GRADE", isDeleted=0)
     return render(request, 'TVGFBF/Referee/levels.html',
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem})
@@ -688,14 +690,15 @@ def levelUpdate(request, uuid):
         return redirect('accounts:login')
     categoryItem = CategoryItem.objects.get(uuid=uuid)
     category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
-    if request.method == 'POST':
-        if category_item_form.is_valid():
-            category = category_item_form.save(request, commit=False)
-            category.save()
-            messages.success(request, 'Başarıyla Güncellendi')
-            return redirect('sbs:return_levels')
-        else:
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+    with transaction.atomic():
+        if request.method == 'POST':
+            if category_item_form.is_valid():
+                category = category_item_form.save(request, commit=False)
+                category.save()
+                messages.success(request, 'Başarıyla Güncellendi')
+                return redirect('sbs:return_levels')
+            else:
+                messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/update-level.html',
                   {'category_item_form': category_item_form})
@@ -888,25 +891,25 @@ def returnVisaSeminar(request):
     user = request.user
 
     seminar = VisaSeminar.objects.filter(forWhichClazz='REFEREE', isDeleted=0)
+    with transaction.atomic():
+        if request.method == 'POST':
+            if user.groups.filter(name='Hakem').exists():
+                vizeSeminer = VisaSeminar.objects.get(pk=request.POST.get('pk'))
+                referee = Referee.objects.get(user=request.user)
+                try:
+                    if request.FILES['file']:
+                        document = request.FILES['file']
+                        data = RefereeApplication()
+                        data.dekont = document
+                        data.referee = referee
+                        data.save()
+                        vizeSeminer.refereeApplication.add(data)
+                        vizeSeminer.save()
 
-    if request.method == 'POST':
-        if user.groups.filter(name='Hakem').exists():
-            vizeSeminer = VisaSeminar.objects.get(pk=request.POST.get('pk'))
-            referee = Referee.objects.get(user=request.user)
-            try:
-                if request.FILES['file']:
-                    document = request.FILES['file']
-                    data = RefereeApplication()
-                    data.dekont = document
-                    data.referee = referee
-                    data.save()
-                    vizeSeminer.refereeApplication.add(data)
-                    vizeSeminer.save()
-
-                    messages.success(request, 'Vize Seminerine Başvuru gerçekleşmiştir.')
-                    return redirect('sbs:return-visa-seminar-application')
-            except:
-                messages.warning(request, 'Lütfen yeniden deneyiniz')
+                        messages.success(request, 'Vize Seminerine Başvuru gerçekleşmiştir.')
+                        return redirect('sbs:return-visa-seminar-application')
+                except:
+                    messages.warning(request, 'Lütfen yeniden deneyiniz')
 
     return render(request, 'TVGFBF/Referee/referee-visa-seminar.html', {'competitions': seminar})
 
@@ -919,19 +922,20 @@ def addVisaSeminar(request):
         logout(request)
         return redirect('accounts:login')
     visaSeminar = VisaSeminarForm()
-    if request.method == 'POST':
-        visaSeminar = VisaSeminarForm(request.POST)
-        if visaSeminar.is_valid():
+    with transaction.atomic():
+        if request.method == 'POST':
+            visaSeminar = VisaSeminarForm(request.POST)
+            if visaSeminar.is_valid():
 
-            visa = visaSeminar.save()
-            visa.forWhichClazz = 'REFEREE'
-            visa.save()
-            messages.success(request, 'Vize Semineri Başari  Kaydedilmiştir.')
+                visa = visaSeminar.save()
+                visa.forWhichClazz = 'REFEREE'
+                visa.save()
+                messages.success(request, 'Vize Semineri Başari  Kaydedilmiştir.')
 
-            return redirect('sbs:referee-visa-seminar')
-        else:
+                return redirect('sbs:referee-visa-seminar')
+            else:
 
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+                messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/add-visa-seminar-referee.html',
                   {'competition_form': visaSeminar})
@@ -948,15 +952,16 @@ def updateVisaSeminar(request, uuid):
     seminar = VisaSeminar.objects.get(uuid=uuid)
     referee = seminar.referee.all()
     competition_form = VisaSeminarForm(request.POST or None, instance=seminar)
-    if request.method == 'POST':
-        if competition_form.is_valid():
-            competition_form.save()
-            messages.success(request, 'Vize Seminer Başarıyla Güncellenmiştir.')
+    with transaction.atomic():
+        if request.method == 'POST':
+            if competition_form.is_valid():
+                competition_form.save()
+                messages.success(request, 'Vize Seminer Başarıyla Güncellenmiştir.')
 
-            return redirect('sbs:referee-visa-seminar')
-        else:
+                return redirect('sbs:referee-visa-seminar')
+            else:
 
-            messages.warning(request, 'Alanları Kontrol Ediniz')
+                messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/update-referee-visa-seminar.html',
                   {'competition_form': competition_form, 'competition': seminar, 'referees': referee})
@@ -1002,15 +1007,15 @@ def addRefereeVisaSeminar(request, uuid):
     for item in visa.referee.all():
         coa.append(item.person.user.pk)
     referee = Referee.objects.exclude(person__user__id__in=coa)
-
-    if request.method == 'POST':
-        athletes1 = request.POST.getlist('selected_options')
-        if athletes1:
-            for x in athletes1:
-                if not visa.referee.filter(person__user_id__in=x):
-                    visa.referee.add(x)
-                    visa.save()
-        return redirect('sbs:update-visa-seminar', uuid=uuid)
+    with transaction.atomic():
+        if request.method == 'POST':
+            athletes1 = request.POST.getlist('selected_options')
+            if athletes1:
+                for x in athletes1:
+                    if not visa.referee.filter(person__user_id__in=x):
+                        visa.referee.add(x)
+                        visa.save()
+            return redirect('sbs:update-visa-seminar', uuid=uuid)
     return render(request, 'TVGFBF/Referee/add-referee-visa-seminar.html', {'referees': referee})
 
 
@@ -1053,7 +1058,7 @@ def deleteVisaSeminar(request):
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
             else:
                 return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
-    except Competition.DoesNotExist:
+    except VisaSeminar.DoesNotExist:
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
@@ -1206,97 +1211,98 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
     #     logout(request)
     #     return redirect('accounts:login')
     reference = ReferenceReferee.objects.get(uuid=request.POST['uuid'])
-    if request.method == 'POST' and request.is_ajax():
-        try:
-          with transaction.atomic():
+    with transaction.atomic():
+        if request.method == 'POST' and request.is_ajax():
+            try:
+              with transaction.atomic():
 
-            if reference.status == ReferenceReferee.WAITED:
-                user = User()
-                user.username = reference.email
-                user.first_name = reference.first_name
-                user.last_name = reference.last_name
-                user.email = reference.email
-                user.is_active = True
-                user.save()
-                group = Group.objects.get(name='Hakem')
-                user.groups.add(group)
+                if reference.status == ReferenceReferee.WAITED:
+                    user = User()
+                    user.username = reference.email
+                    user.first_name = reference.first_name
+                    user.last_name = reference.last_name
+                    user.email = reference.email
+                    user.is_active = True
+                    user.save()
+                    group = Group.objects.get(name='Hakem')
+                    user.groups.add(group)
 
-                user.save()
+                    user.save()
 
-                person = Person()
-                person.tc = reference.tc
-                person.motherName = reference.motherName
-                person.fatherName = reference.fatherName
-                person.profileImage = reference.profileImage
-                person.birthDate = reference.birthDate
-                person.bloodType = reference.bloodType
-                person.birthplace = reference.birthplace
-                if reference.gender == 'Erkek':
-                    person.gender = Person.MALE
+                    person = Person()
+                    person.tc = reference.tc
+                    person.motherName = reference.motherName
+                    person.fatherName = reference.fatherName
+                    person.profileImage = reference.profileImage
+                    person.birthDate = reference.birthDate
+                    person.bloodType = reference.bloodType
+                    person.birthplace = reference.birthplace
+                    if reference.gender == 'Erkek':
+                        person.gender = Person.MALE
+                    else:
+                        person.gender = Person.FEMALE
+                    person.save()
+                    person.user=user
+                    person.save()
+                    communication = Communication()
+                    communication.postalCode = reference.postalCode
+                    communication.phoneNumber = reference.phoneNumber
+                    communication.phoneNumber2 = reference.phoneNumber2
+                    communication.address = reference.address
+                    communication.city = reference.city
+                    communication.country = reference.country
+                    communication.save()
+
+                    judge = Referee(person=person, communication=communication)
+                    # judge.iban = reference.iban
+                    judge.save()
+
+                    grade = HavaLevel(definition=reference.kademe_definition,
+                                      startDate=reference.kademe_startDate,
+                                      )
+                    grade.levelType = EnumFields.LEVELTYPE.GRADE
+                    grade.status = HavaLevel.APPROVED
+                    grade.isActive = True
+                    grade.save()
+
+                    judge.grades.add(grade)
+                    judge.save()
+
+                    reference.status = ReferenceReferee.APPROVED
+                    reference.save()
+
+                    messages.success(request, 'Hakem Başarıyla Eklenmiştir')
+
+                    fdk = Forgot(user=user, status=False)
+                    fdk.save()
+                    print(fdk)
+
+                    # html_content = ''
+                    # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+                    # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                    # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+                    # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
+                    #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(
+                    #     fdk.uuid) + '</p></a>'
+                    # msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                    # msg.attach_alternative(html_content, "text/html")
+                    # msg.send()
+
+                    log = str(user.get_full_name()) + " Hakem basvurusu onaylandi"
+                    log = general_methods.logwrite(request, request.user, log)
+
+
                 else:
-                    person.gender = Person.FEMALE
-                person.save()
-                person.user=user
-                person.save()
-                communication = Communication()
-                communication.postalCode = reference.postalCode
-                communication.phoneNumber = reference.phoneNumber
-                communication.phoneNumber2 = reference.phoneNumber2
-                communication.address = reference.address
-                communication.city = reference.city
-                communication.country = reference.country
-                communication.save()
+                    reference.status = reference.APPROVED
+                    reference.save()
+                    messages.success(request, 'Hakem daha önce onaylanmıştır.')
 
-                judge = Referee(person=person, communication=communication)
-                # judge.iban = reference.iban
-                judge.save()
+                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+            except Referee.DoesNotExist:
+                return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
-                grade = HavaLevel(definition=reference.kademe_definition,
-                                  startDate=reference.kademe_startDate,
-                                  )
-                grade.levelType = EnumFields.LEVELTYPE.GRADE
-                grade.status = HavaLevel.APPROVED
-                grade.isActive = True
-                grade.save()
-
-                judge.grades.add(grade)
-                judge.save()
-
-                reference.status = ReferenceReferee.APPROVED
-                reference.save()
-
-                messages.success(request, 'Hakem Başarıyla Eklenmiştir')
-
-                fdk = Forgot(user=user, status=False)
-                fdk.save()
-                print(fdk)
-
-                # html_content = ''
-                # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
-                # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
-                # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-                # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
-                #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(
-                #     fdk.uuid) + '</p></a>'
-                # msg = EmailMultiAlternatives(subject, '', from_email, [to])
-                # msg.attach_alternative(html_content, "text/html")
-                # msg.send()
-
-                log = str(user.get_full_name()) + " Hakem basvurusu onaylandi"
-                log = general_methods.logwrite(request, request.user, log)
-
-
-            else:
-                reference.status = reference.APPROVED
-                reference.save()
-                messages.success(request, 'Hakem daha önce onaylanmıştır.')
-
-            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
-        except Referee.DoesNotExist:
-            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
-
-    else:
-        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+        else:
+            return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
 @login_required
@@ -1365,18 +1371,19 @@ def refencedeleteReferee(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    if request.method == 'POST' and request.is_ajax():
-        try:
-            obj = ReferenceReferee.objects.get(uuid=request.POST['uuid'])
-            obj.status = ReferenceReferee.DENIED
-            obj.save()
+    with transaction.atomic():
+        if request.method == 'POST' and request.is_ajax():
+            try:
+                obj = ReferenceReferee.objects.get(uuid=request.POST['uuid'])
+                obj.status = ReferenceReferee.DENIED
+                obj.save()
 
-            log = str(obj.first_name) + " " + str(obj.last_name) + "     Hakem basvurusu reddedildi"
-            log = general_methods.logwrite(request, request.user, log)
+                log = str(obj.first_name) + " " + str(obj.last_name) + "     Hakem basvurusu reddedildi"
+                log = general_methods.logwrite(request, request.user, log)
 
-            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
-        except Referee.DoesNotExist:
-            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+            except Referee.DoesNotExist:
+                return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
-    else:
-        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+        else:
+            return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
