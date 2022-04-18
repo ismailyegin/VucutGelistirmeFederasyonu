@@ -398,8 +398,13 @@ def delete_member_role(request):
                     'uuid': uuid
                 }
                 obj = DirectoryMemberRoleGetService(request, memberrolefilter)
-                obj.deleted()
-                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+                if not DirectoryMember.objects.filter(role=obj):
+                    obj.deleted()
+
+                    return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+                else:
+                    return JsonResponse({'status': 'Fail', 'messages': 'save successfully'})
+
 
             else:
                 return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
@@ -514,8 +519,12 @@ def delete_commission(request):
                 obj = DirectoryCommissionGetService(request, commissonfilter)
                 log = str(obj.name) + " kurul silindi"
                 log = general_methods.logwrite(request, request.user, log)
-                obj.delete()
-                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+                if not DirectoryMember.objects.filter(commission=obj):
+                    obj.delete()
+                    return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+                else:
+                    return JsonResponse({'status': 'Fail', 'messages': 'save successfully'})
+
 
 
             else:

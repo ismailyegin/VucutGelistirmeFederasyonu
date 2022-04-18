@@ -12,7 +12,7 @@ def ClubTransmission(request):
     try:
         with transaction.atomic():
 
-            url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/KulupleriGetir?limit=1000&offset=3000'
+            url = 'https://servis3.gsb.gov.tr/fedprotokoltest/api/FederasyonServisleri/KulupleriGetir?limit=1000&offset=3000'
 
             payload = {}
             files = {}

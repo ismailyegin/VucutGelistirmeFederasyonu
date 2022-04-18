@@ -6,24 +6,15 @@ from sbs.models.ekabis.Country import Country
 
 
 class CommunicationForm(ModelForm):
-    country = forms.ModelChoiceField(queryset=Country.objects.all(),
-                                     to_field_name='name',
-                                     empty_label="Seçiniz",
-                                     label="Ülke",
-                                     initial=Country.objects.get(name="Türkiye"),
-                                     # required=True,
-                                     widget=forms.Select(
-                                         attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                                'style': 'width: 100%; '}))
     class Meta:
         model = Communication
 
         fields = (
             'phoneNumber', 'country', 'city', 'phoneJop'
-        , 'address',)
+            , 'address',)
         labels = {'phoneNumber': 'Cep Telefonu', 'phoneJop': 'Sabit Telefon',
                   'address': 'Adres',
-                  'city': 'İl', }
+                  'city': 'İl', 'country': 'Ülke'}
         widgets = {
 
             'address': forms.Textarea(
@@ -35,7 +26,8 @@ class CommunicationForm(ModelForm):
             'city': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                         'style': 'width: 100%;'}),
 
-
+            'country': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                           'style': 'width: 100%;'}),
 
             'phoneJop': forms.TextInput(attrs={'class': 'form-control', 'onkeypress': 'validate(event)'}),
 

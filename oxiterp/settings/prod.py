@@ -4,14 +4,14 @@ from oxiterp.settings.base import *
 
 
 DEBUG = True
-ALLOWED_HOSTS = ['tvgfbf.kobiltek.com']
+ALLOWED_HOSTS = ['sbs.tvgfbf.gov.tr']
 
 # DATABASES = {
 #   'default': {
 #      'ENGINE': 'django.db.backends.postgresql',
-#     'NAME': 'oxiterp',
-#    'USER': 'oxitowner',
-#   'PASSWORD': 'oxit2016',
+#     'NAME': '',
+#    'USER': '',
+#   'PASSWORD': '',
 #  'HOST': 'localhost',
 # 'PORT': '5432',
 # }
@@ -20,11 +20,11 @@ ALLOWED_HOSTS = ['tvgfbf.kobiltek.com']
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.mysql',
-       'NAME': 'vucutgelistirme',
+       'NAME': 'kobiltek_tvgfbf',
        'HOST': 'localhost',
        'PORT': '3306',
-       'USER': 'kobiltek',
-       'PASSWORD': 'kobil2013'
+       'USER': 'kobiltek_tvgfbf',
+       'PASSWORD': 'Kobil2013*'
     }
 }
 
@@ -32,9 +32,9 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.oracle',
-#         'NAME': 'sp000dbo-scan/kdstdw',
+#         'NAME': '',
 #         'USER': 'sbs',
-#         'PASSWORD': 'qwerty1234',
+#         'PASSWORD': '',
 #     }
 # }
 
@@ -42,13 +42,8 @@ DATABASES = {
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/yekadmin/static/'
-#LDAP_URL = 'https://api.enerji.gov.tr/apigateway/merkezi-ldap-api'
-LDAP_URL = 'https://servisetkb.enerji.gov.tr/etkb/servis/epassport-gateway'
-LDAP_USERNAME = 'yekabis_user'
-LDAP_PASSWORD = 'YeC@38c47c15!!'
-LDAP_SECRET = 'deneme'
-
+STATICFILES_DIRS = (os.path.join('oxiterp/static'),)
+STATIC_ROOT = ''
 
 try:
     from oxiterp.settings.local import *

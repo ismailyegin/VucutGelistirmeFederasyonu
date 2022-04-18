@@ -164,21 +164,48 @@
 
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label> {{ ClupsSearchForm.city.label }}</label>
-                                        {{ ClupsSearchForm.city }}
+                                        <div class="form-group">
+                                            <label for="city">Şehir</label>
+                                            <select class="form-control select2 select2-hidden-accessible"
+                                                    style="width: 100%;" data-select2-id="1" tabindex="-1"
+                                                    aria-hidden="true" id="city" name="city">
+                                                <option selected value=""></option>
+
+                                                {% for city in cities %}
+                                                    <option value="{{ city.pk }}">{{ city.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label> {{ ClupsSearchForm.branch.label }}</label>
-                                        {{ ClupsSearchForm.branch }}
+                                        <div class="form-group">
+                                            <label for="branch">Branş</label>
+                                            <select class="form-control select2 select2-hidden-accessible"
+                                                    style="width: 100%;" data-select2-id="1" tabindex="-1"
+                                                    aria-hidden="true" id="branch" name="branch">
+                                                <option selected value=""></option>
+
+                                                {% for branch in branches %}
+                                                    <option value="{{ branch.pk }}">{{ branch.title }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 {% if aktif == 'Admin' %}
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label> {{ ClupsSearchForm.kisi.label }}</label>
-                                            {{ ClupsSearchForm.kisi }}
+                                            <label for="clubUser">Kulüp Yetkilisi</label>
+                                            <select class="form-control select2 select2-hidden-accessible"
+                                                    style="width: 100%;" data-select2-id="1" tabindex="-1"
+                                                    aria-hidden="true" id="clubUser" name="clubUser">
+                                                <option selected value=""></option>
+                                                {% for clubUser in clubUsers %}
+                                                    <option value="{{ clubUser.pk }}">{{ clubUser.person.user.get_full_name }}</option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                     </div>
                                 {% endif %}
