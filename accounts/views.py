@@ -12,7 +12,7 @@ from sbs.Forms.havaspor.PreRefereeForm import PreRefereeForm
 from sbs.Forms.havaspor.PreRegidtrationForm import PreRegistrationForm
 from sbs.Forms.havaspor.RefereeForm import RefereeForm
 from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
-from sbs.models import Club
+from sbs.models.tvfbf.Club import Club
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Permission import Permission
 from sbs.models.ekabis.ActiveGroup import ActiveGroup
@@ -25,8 +25,7 @@ from sbs.models.tvfbf.ReferenceCoach import ReferenceCoach
 from sbs.models.tvfbf.ReferenceReferee import ReferenceReferee
 from sbs.services import general_methods
 
-from sbs.services.services import UserService, UserGetService, EmployeeGetService, CompanyUserGetService, \
-    ActiveGroupGetService
+from sbs.services.services import UserService, UserGetService, ActiveGroupGetService
 from sbs.urls import urlpatterns
 
 
@@ -52,8 +51,8 @@ def login(request):
 
             if active.group.name == 'Hakem':
                 return redirect('sbs:hakem')
-            # elif active.group.name == 'Antrenör':
-            #     return redirect('sbs:antrenor')
+            elif active.group.name == 'Antrenör':
+                return redirect('sbs:antrenor')
             elif active.group.name == 'Admin' or login_user.is_superuser:
                 return redirect('sbs:view_admin')
             elif active.group.name == 'Yönetim':
