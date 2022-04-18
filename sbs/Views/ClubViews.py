@@ -30,6 +30,7 @@ from sbs.models import Club, SportClubUser, Coach, Communication, Person, City, 
 from sbs.models.ekabis.EnumFields import EnumFields
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Permission import Permission
+from sbs.models.tvfbf.Branch import Branch
 from sbs.models.tvfbf.ReferenceClub import ReferenceClub
 from sbs.models.tvfbf.License import License
 from sbs.models.tvfbf.ClubRole import ClubRole
@@ -52,15 +53,18 @@ def return_clubs(request):
     user = request.user
     clubs = Club.objects.filter(infoStatus=1).filter(isDeleted=False)
     ClupsSearchForm = ClubSearchForm(request.POST)
+    clubUsers=SportClubUser.objects.filter(isDeleted=False).filter(person__user__is_active=True)
+    cities=City.objects.all()
+    branches=Branch.objects.filter(is_show=True)
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
     if request.method == 'POST':
 
         if ClupsSearchForm.is_valid():
-            kisi = ClupsSearchForm.cleaned_data.get('kisi')
-            branch = ClupsSearchForm.cleaned_data.get('branch')
-            city = ClupsSearchForm.cleaned_data.get('city')
+            kisi = request.POST['clubUser']
+            branch = request.POST['branch']
+            city = request.POST['city']
             name = ClupsSearchForm.cleaned_data.get('name')
             shortName = ClupsSearchForm.cleaned_data.get('shortName')
             clubMail = ClupsSearchForm.cleaned_data.get('clubMail')
@@ -76,6 +80,12 @@ def return_clubs(request):
 
 
             else:
+                if kisi != '':
+                    kisi = SportClubUser.objects.get(pk=int(request.POST['clubUser']))
+                if branch != '':
+                    branch = Branch.objects.get(pk=int(request.POST['branch']))
+                if city != '':
+                    city = City.objects.get(pk=int(request.POST['city']))
                 query = Q()
                 if city:
                     query &= Q(communication__city__name__icontains=city)
@@ -98,7 +108,7 @@ def return_clubs(request):
 
     return render(request, 'TVGFBF/Club/clubs.html',
                   {'clubs': clubs, 'ClupsSearchForm': ClupsSearchForm, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name, })
+                   'url_name': url_name,'clubUsers':clubUsers,'cities':cities,'branches':branches})
 
 
 @login_required

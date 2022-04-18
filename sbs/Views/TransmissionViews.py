@@ -103,7 +103,7 @@ def TransmissionClubDetail(request, derbisKutukNo):
     try:
         with transaction.atomic():
             id = derbisKutukNo
-            url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/KulupGetirDetayli?derbisKutukNo=' + id + '&KulupGuid=00000000-0000-0000-0000-000000000000'
+            url = 'https://servis3.gsb.gov.tr/fedprotokoltest/api/FederasyonServisleri/KulupGetirDetayli?derbisKutukNo=' + id + '&KulupGuid=00000000-0000-0000-0000-000000000000'
 
             payload = {}
             files = {}

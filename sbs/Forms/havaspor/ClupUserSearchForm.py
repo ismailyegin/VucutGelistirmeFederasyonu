@@ -8,42 +8,6 @@ from sbs.models.ekabis.City import City
 
 
 class ClubSearchForm(ModelForm):
-    if SportClubUser.objects.all():
-        kisi = forms.ModelChoiceField(queryset=SportClubUser.objects.all().distinct(),
-                                      to_field_name='user',
-                                      empty_label="Seçiniz",
-                                      label="Kulüp Yetkilisi",
-                                      required=False,
-                                      widget=forms.Select(
-                                          attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                                 'style': 'width: 100%; '}))
-    else:
-        kisi = forms.ModelChoiceField(queryset=[],
-                                      to_field_name='user',
-                                      empty_label="Seçiniz",
-                                      label="Kulüp Yetkilisi",
-                                      required=False,
-                                      widget=forms.Select(
-                                          attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                                 'style': 'width: 100%; '}))
-    if City.objects.all():
-        city = forms.ModelChoiceField(queryset=City.objects.all().distinct(),
-                                      to_field_name='name',
-                                      empty_label="Seçiniz",
-                                      label="Şehir",
-                                      required=False,
-                                      widget=forms.Select(
-                                          attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                                 'style': 'width: 100%; '}))
-    if Branch.objects.all():
-        branch = forms.ModelChoiceField(queryset=Branch.objects.all(),
-                                      to_field_name='title',
-                                      empty_label="Seçiniz",
-                                      label="Branş",
-                                      required=False,
-                                      widget=forms.Select(
-                                          attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                                 'style': 'width: 100%; '}))
     class Meta:
         model = Club
 
