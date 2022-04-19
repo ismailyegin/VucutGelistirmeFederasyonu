@@ -103,6 +103,8 @@ urlpatterns = [
     path(r'kulup-duzenle/<uuid:uuid>', ClubViews.clubUpdate,
          name='update_club'),
     path('kulup/kulup-ekle-api/', TransmissionViews.transmissionOffsetLimit, name='kulup-ekle-api'),
+    path('kulup/kulup-getir-api/', TransmissionViews.GetCurrentClubDetail, name='kulup-getir-api'),
+
     path('kulup/kulup-sil/', ClubViews.club_delete, name='club-delete'),
     path('kulup/kulup-uye-sil/', ClubViews.deleteClubUserFromClub, name='deleteClubUserFromClub'),
     path('kulup/kulup-antrenor-sil/', ClubViews.deleteCoachFromClub, name='deleteCoachFromClub'),

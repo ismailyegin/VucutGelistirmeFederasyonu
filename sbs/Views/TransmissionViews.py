@@ -2,7 +2,6 @@ import json
 from datetime import datetime
 
 import requests
-import schedule
 from django.contrib import messages
 from django.db import transaction
 from django.http import JsonResponse
@@ -103,7 +102,7 @@ def TransmissionClubDetail(request, derbisKutukNo):
     try:
         with transaction.atomic():
             id = derbisKutukNo
-            url = 'https://servis3.gsb.gov.tr/fedprotokoltest/api/FederasyonServisleri/KulupGetirDetayli?derbisKutukNo=' + id + '&KulupGuid=00000000-0000-0000-0000-000000000000'
+            url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/KulupGetirDetayli?derbisKutukNo=' + id + '&KulupGuid=00000000-0000-0000-0000-000000000000'
 
             payload = {}
             files = {}
@@ -133,6 +132,37 @@ def TransmissionClubDetail(request, derbisKutukNo):
                 result.append(club)
             return result
 
+
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:return_clubs')
+
+
+def GetCurrentClubDetail(request):
+    try:
+        with transaction.atomic():
+            id = request.POST['derbis']
+            club_info=Club.objects.get(derbis=id)
+
+            club = {}
+            club['KulupAdi'] = club_info.name
+            club['KurulusTarihi'] = club_info.foundingDate
+            city_name=''
+            if club_info.communication.city:
+                city_name=club_info.communication.city.name
+            club['Il'] = city_name
+            club['Telefon'] = club_info.communication.phoneNumber
+            club['Adres'] =club_info.communication.address
+            club['Ilce'] = club_info.communication.town
+            club['DerbisKutukNo'] = club_info.derbis
+            club['Eposta'] = club_info.clubMail
+            club['Faks'] =  club_info.communication.fax
+            club['Guid'] = club_info.guidId
+
+
+            return JsonResponse({'status': 'Success',
+                                     'result': club,
+                                     })
 
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))

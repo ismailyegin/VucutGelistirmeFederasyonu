@@ -321,7 +321,7 @@ def referenceCoach(request):
 
 def pre_registration(request):
     preRegistrationform = PreRegistrationForm()
-
+    clubs=Club.objects.all()
     if request.method == 'POST':
         preRegistrationform = PreRegistrationForm(request.POST or None, request.FILES or None)
 
@@ -367,4 +367,4 @@ def pre_registration(request):
         else:
             messages.warning(request, "Alanlari kontrol ediniz")
 
-    return render(request, 'registration/referenceRegisterClub.html', {'preRegistrationform': preRegistrationform})
+    return render(request, 'registration/referenceRegisterClub.html', {'preRegistrationform': preRegistrationform,'clubs':clubs})

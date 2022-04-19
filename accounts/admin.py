@@ -1,7 +1,11 @@
 from django.apps import apps
 from django.contrib import admin
 from django.contrib.admin.sites import AlreadyRegistered
+from django.contrib.auth.models import Group
 
+from sbs.models.ekabis.Country import Country
+from sbs.models.ekabis.City import City
+from sbs.models.tvfbf.Branch import Branch
 from sbs.models.tvfbf.SportClubUser import SportClubUser
 from sbs.models.tvfbf.Referee import Referee
 from sbs.models.tvfbf.Coach import Coach
@@ -17,3 +21,7 @@ admin.site.register(Referee)
 admin.site.register(Person)
 admin.site.register(Coach)
 admin.site.register(Menu)
+admin.site.register(Branch)
+admin.site.register(City)
+admin.site.register(Country)
+

@@ -215,8 +215,42 @@
 </section>
 {% load static %}
 <section class="content">
+    <section class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Kulüpler</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-lg-12">
+                                <label for="club">Kulüpler</label>
+                                <select id="club" class="form-control select2 select2-hidden-accessible"
+                                        style="width: 100%;"
+                                        data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                    <option value="noRegister">------</option>
+                                    {% for club in clubs %}
+                                        <option value="{{ club.derbis }}">{{ club.name }}</option>
 
-    <section class="col-lg-12 ">
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <label for="is_club">Kulüp Seçimler Arasında Bulunmmuyorsa İşaretleyiniz </label>
+                        <input style="margin-left: 5px" type="checkbox" id="is_club" name="is_club">
+                        <button id="currentClub" class="btn btn-outline-info" onclick="functionClick()" type="button"
+                                style="float: right;">Devam Et
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section style="display: none" id="show_club" class="col-lg-12">
         <div class="row">
             <div class="col-lg-12">
 
@@ -239,24 +273,25 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                                     </div>
-                                    <input id="guid" type="text"  value='{{ club.derbis }}' class="form-control">
+                                    <input id="guid" type="text" value='{{ club.derbis }}' class="form-control">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-outline-info" type="button" onclick="GetClub()"
+                        <button class="btn btn-outline-info" type="button"
+                                onclick="GetClub(document.getElementById('guid').value)"
                                 style="float:right">
                             Kulüp Getir
                         </button>
                         <small style="color: red ">Kulübün güncel bilgilerine erişmek için kulüp getire tıklayın
-                             </small>
+                        </small>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <section class="col-lg-12">
+    <section style="display: none" id="show_club_info" class="col-lg-12">
         <form method="post" id="clubForm" role="form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="card">
@@ -616,7 +651,24 @@
 
 
     <script>
+        function functionClick() {
+            debugger;
+            if (document.getElementById('club').value !== 'noRegister') {
+                document.getElementById("kulupBaskani").style.display = 'block';
+                document.getElementById('show_club_info').style.display = 'block'
+                GetCurrentClub(document.getElementById('club').value);
+            } else {
+                swal({
+                    icon: 'error',
+                    title: 'Kulüp Seçiniz !!',
+
+                })
+            }
+
+        }
+
         $(function () {
+
             $('#kategori').DataTable({
                 'paging': false,
                 'lengthChange': false,
@@ -625,6 +677,18 @@
                 'info': false,
                 'autoWidth': true
             })
+            const checkbox = document.getElementById('is_club')
+
+            checkbox.addEventListener('change', (event) => {
+                if (event.currentTarget.checked) {
+                    document.getElementById('show_club').style.display = 'block'
+                    document.getElementById('show_club_info').style.display = 'block'
+                } else {
+                    document.getElementById('show_club').style.display = 'none'
+                    document.getElementById('show_club_info').style.display = 'none'
+                }
+            })
+
 
         })
     </script>
@@ -652,9 +716,9 @@
         })
 
 
-        function GetClub() {
+        function GetClub(id) {
             debugger;
-            let id = document.getElementById('guid').value
+            {#let id = document.getElementById('guid').value#}
             if (id) {
                 $.ajax({
                     url: "{% url "sbs:kulup-ekle-api" %}",
@@ -686,6 +750,39 @@
 
         }
 
+        function GetCurrentClub(id) {
+            debugger;
+            {#let id = document.getElementById('guid').value#}
+            if (id) {
+                $.ajax({
+                    url: "{% url "sbs:kulup-getir-api" %}",
+                    type: "POST",
+                    data: {
+                        'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                        derbis: id,
+                    },
+                    success: function (result) {
+                        debugger;
+                        let info = result['result']
+                        document.getElementById('id_name').value = info.KulupAdi
+                        document.getElementById('id_foundingDate').value = info.KurulusTarihi
+                        document.getElementById('id_clubMail').value = info.Eposta
+                        document.getElementById('id_derbis').value = info.DerbisKutukNo
+                        document.getElementById('id_clubphoneNumber').value = info.Telefon
+                        document.getElementById('id_clubcity').value = info.Il
+                        document.getElementById('id_clubaddress').value = info.Adres
+                        document.getElementById('id_clubTown').value = info.Ilce
+                        document.getElementById('id_clubFax').value = info.Faks
+                        document.getElementById('kulupBaskani').style.display = 'block'
+                        document.getElementById('formButton').style.display = 'block'
+
+
+                    }
+                });
+            }
+
+
+        }
     </script>
 
 
