@@ -654,8 +654,9 @@
         function functionClick() {
             debugger;
             if (document.getElementById('club').value !== 'noRegister') {
-                document.getElementById("kulupBaskani").style.display = 'block';
                 document.getElementById('show_club_info').style.display = 'block'
+                document.getElementById("kulupBaskani").style.display = 'block';
+
                 GetCurrentClub(document.getElementById('club').value);
             } else {
                 swal({
@@ -683,9 +684,11 @@
                 if (event.currentTarget.checked) {
                     document.getElementById('show_club').style.display = 'block'
                     document.getElementById('show_club_info').style.display = 'block'
+                    document.getElementById("kulupBaskani").style.display = 'block';
                 } else {
                     document.getElementById('show_club').style.display = 'none'
                     document.getElementById('show_club_info').style.display = 'none'
+                    document.getElementById("kulupBaskani").style.display = 'none';
                 }
             })
 
