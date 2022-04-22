@@ -1,42 +1,82 @@
 {% extends 'base_layout.html' %}
 {% block content %}
-
-
-    <section class="content">
-
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            Anasayfa
-
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Ana Sayfa</a></li>
-
-        </ol>
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-        <!-- Info boxes -->
-        <div class="row">
-            <div class="col-lg-6 col-xs-6">
-                <!-- small box -->
-                <div class="small-box bg-aqua">
-                    <div class="inner">
-                        <h3>{{ athlete_count }}</h3>
-
-                        <p>Sporcu Sayisi </p>
+    <div class="modal fade" id="modal-lg">
+        {% for announcementUser in announcementUsers %}
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="title"
+                            style="color: #DC143C">{{ announcementUser.announcement.title }}</h5>
                     </div>
-                    <div class="icon">
-                        <i class="ion ion-ios-people-outline"></i>
+                    <div class="modal-body">
+                        <small style="float: left;" id="date">{{ announcementUser.announcement.startDate }}
+                            - {{ announcementUser.announcement.finishDate }}</small><br>
+                        <p id="text">{{ announcementUser.announcement.text|safe }}</p>
                     </div>
-                    <a href="" class="small-box-footer">Daha Fazla <i
-                            class="fa fa-arrow-circle-right"></i></a>
+                    <div class="modal-footer justify-content-between">
+                        <small>Güncellenme Tarihi: <span
+                                id="updateDate">{{ announcementUser.announcement.modificationDate }}</span></small>
+                    </div>
                 </div>
+                <!-- /.modal-content -->
             </div>
+        {% endfor %}
+    </div>
 
-        </div>
+    <section class="content">
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Anasayfa
+
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Ana Sayfa</a></li>
+
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <!-- Info boxes -->
+            <div class="row">
+                <div class="col-lg-6 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-aqua">
+                        <div class="inner">
+                            <h3>{{ athlete_count }}</h3>
+
+                            <p>Sporcu Sayisi </p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-ios-people-outline"></i>
+                        </div>
+                        <a href="" class="small-box-footer">Daha Fazla <i
+                                class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
     </section>
+
+    <script>
+        $(function announcements() {
+            debugger;
+            let announcementUsers = "{{ announcementUsers }}"
+            if ("{{ announcementUsers }}" !== "None") {
+                $("#modal-lg").on("shown.bs.modal", function (e) {
+
+                }).modal('show');
+                $('#btn-closereddet').click(function () {
+
+                    $('#modal-lg').modal('hide');
+                    $('.modal').modal('hide');
+
+                });
+            }
+        })
+    </script>
 
 {% endblock %}

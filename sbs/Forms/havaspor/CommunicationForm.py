@@ -10,15 +10,15 @@ class CommunicationForm(ModelForm):
         model = Communication
 
         fields = (
-            'phoneNumber', 'country', 'city', 'phoneJop'
+            'phoneNumber', 'country', 'city', 'phoneNumber2'
             , 'address',)
-        labels = {'phoneNumber': 'Cep Telefonu', 'phoneJop': 'Sabit Telefon',
+        labels = {'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon',
                   'address': 'Adres',
                   'city': 'İl', 'country': 'Ülke'}
         widgets = {
 
             'address': forms.Textarea(
-                attrs={'class': 'form-control ', 'rows': '1', "style": "text-transform:uppercase"}),
+                attrs={'class': 'form-control ', 'rows': '2'}),
 
             'phoneNumber': forms.TextInput(
                 attrs={'class': 'form-control ', 'onkeypress': 'validate(event)'}),
@@ -29,6 +29,6 @@ class CommunicationForm(ModelForm):
             'country': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                            'style': 'width: 100%;'}),
 
-            'phoneJop': forms.TextInput(attrs={'class': 'form-control', 'onkeypress': 'validate(event)'}),
+            'phoneNumber2': forms.TextInput(attrs={'class': 'form-control', 'onkeypress': 'validate(event)'}),
 
         }

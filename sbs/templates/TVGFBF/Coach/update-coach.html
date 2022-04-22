@@ -149,8 +149,6 @@
                         <div class="card-body">
 
                             <div class="row">
-
-
                                 <div class="col-lg-12 text-center ">
                                     <div class="form-group">
                                         <label> {{ person_form.profileImage.label }}</label>
@@ -169,14 +167,12 @@
                                     </div>
 
                                 </div>
+
                                 <div class="col-lg-6">
-
-
                                     <div class="form-group">
                                         <label> {{ user_form.first_name.label }}</label>
                                         {{ user_form.first_name }}
                                     </div>
-
                                     <div class="form-group">
                                         <label> {{ user_form.last_name.label }}</label>
                                         {{ user_form.last_name }}
@@ -189,61 +185,43 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="iban">iban</label>
-                                        <input id="iban" class="form-control" type="text" name="iban"
-                                               value="{{ coach.person.iban }}"/>
+                                        <label for="İban Adresi">iban</label>
+                                        <input id="iban" class="form-control" type="text" name="iban" value="{{ personCoach.iban }}"/>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label style="padding-top: 16px"> {{ person_form.bloodType.label }}</label>
-                                        {{ person_form.bloodType }}
-                                    </div>
-
-
                                 </div>
-                                <br>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label> {{ person_form.tc.label }}</label>
                                         {{ person_form.tc }}
                                     </div>
 
-
-                                    <div class="form-group">
-                                        <label> {{ person_form.motherName.label }}</label>
-                                        {{ person_form.motherName }}
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ person_form.fatherName.label }}</label>
-                                        {{ person_form.fatherName }}
-                                    </div>
-
-
                                     <div class="form-group">
                                         <label> {{ person_form.birthDate.label }}</label>
                                         {{ person_form.birthDate }}
                                     </div>
 
-
                                     <div class="form-group">
                                         <label> {{ person_form.gender.label }}</label>
                                         {{ person_form.gender }}
                                     </div>
-
-
-                                </div>
-
-                                <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label> {{ person_form.iban.label }}</label>
-                                        {{ person_form.iban }}
+                                        <label for="club">Kayıtlı Olduğu Kulüp</label>
+                                        <select id="club" name="club" class="form-control select2 select2-hidden-accessible"
+                                                style="width: 100%;"
+                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                            {% if coachclub %}
+                                                <option selected="selected" value="{{ coachclub.derbis }}">{{ coachclub.name }}</option>
+                                            {% endif %}
+                                            <option value="noRegister">------</option>
+                                            <option value="noClub">Kayıtlı Olunan Kulüp Seçeneklerde
+                                                Bulunmamaktadır.
+                                            </option>
+                                            {% for club in clubs %}
+                                                <option value="{{ club.derbis }}">{{ club.name }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
-
-
                                 </div>
-
 
                             </div>
                         </div>

@@ -20,7 +20,7 @@ class RefereeCoachForm(ModelForm):
         model = ReferenceCoach
         fields = (
             'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
-            'country', 'iban', 'tc', 'profileImage', 'birthDate', 'bloodType', 'gender', 'birthplace', 'motherName',
+            'country', 'iban', 'tc', 'profileImage', 'birthDate', 'gender', 'birthplace', 'motherName',
         'fatherName','kademe_belge','kademe_startDate')
 
 
@@ -52,9 +52,6 @@ class RefereeCoachForm(ModelForm):
             'birthDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
                        'onkeydown': 'return true', 'required': 'required'}),
-
-            'bloodType': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                             'style': 'width: 100%; '}),
 
             'gender': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%; '}),

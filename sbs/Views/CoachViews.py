@@ -1,3 +1,4 @@
+import datetime
 import traceback
 from datetime import date
 from io import BytesIO
@@ -66,6 +67,7 @@ def return_coachs(request):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
+    current_date = datetime.date.today()
 
     if request.method == 'POST':
         user_form = CoachSearchForm(request.POST)
@@ -114,7 +116,7 @@ def return_coachs(request):
             # if visa == 'NONE':
             #     coachs = coachs.exclude(visa__startDate__year=timezone.now().year, visa__status='Onaylandı')
     return render(request, 'TVGFBF/Coach/coachs.html',
-                  {'coachs': coachs, 'user_form': user_form, 'branch': searchClupForm, 'clubs': clubs, })
+                  {'coachs': coachs, 'user_form': user_form, 'branch': searchClupForm, 'clubs': clubs, 'current_date': current_date})
 
 
 @login_required
@@ -127,6 +129,7 @@ def return_add_coach(request):
     user_form = HavaUserForm()
     person_form = PersonForm()
     communication_form = CommunicationForm()
+    clubs = Club.objects.all().exclude(derbis__isnull=True)
 
     urls = last_urls(request)
     current_url = resolve(request.path_info)
@@ -147,7 +150,7 @@ def return_add_coach(request):
         #     return render(request, 'TVGFBF/Coach/add-coach.html',
         #                   {'user_form': user_form, 'person_form': person_form,
         #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
-        #                    'url_name': url_name, })
+        #                    'url_name': url_name, 'clubs': clubs})
 
         tc = request.POST.get('tc')
         # if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
@@ -157,7 +160,7 @@ def return_add_coach(request):
         #     return render(request, 'TVGFBF/Coach/add-coach.html',
         #                   {'user_form': user_form, 'person_form': person_form,
         #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
-        #                    'url_name': url_name, })
+        #                    'url_name': url_name, 'clubs': clubs})
 
         name = request.POST.get('first_name')
         surname = request.POST.get('last_name')
@@ -170,7 +173,7 @@ def return_add_coach(request):
         #     return render(request, 'TVGFBF/Coach/add-coach.html',
         #                   {'user_form': user_form, 'person_form': person_form,
         #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
-        #                    'url_name': url_name, })
+        #                    'url_name': url_name, 'clubs': clubs})
 
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
             user = User()
@@ -200,6 +203,11 @@ def return_add_coach(request):
 
             coach = Coach(person=person, communication=communication)
             coach.save()
+
+            clubDersbis = request.POST.get('club', None)
+            coachClub = Club.objects.get(derbis=clubDersbis)
+            coachClub.coachs.add(coach)
+            coachClub.save()
             # antroner kaydından sonra mail gönderilmeyecek
 
             # subject, from_email, to = 'Halter - Antrenör Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr', user.email
@@ -214,15 +222,15 @@ def return_add_coach(request):
             fdk = Forgot(user=user, status=False)
             fdk.save()
 
-            html_content = ''
-            subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
-            html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
-            html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
-                fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
-            msg = EmailMultiAlternatives(subject, '', from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            # html_content = ''
+            # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+            # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+            # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
+            #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+            # msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            # msg.attach_alternative(html_content, "text/html")
+            # msg.send()
 
             messages.success(request, 'Antrenör Başarıyla Kayıt Edilmiştir.')
 
@@ -236,7 +244,7 @@ def return_add_coach(request):
     return render(request, 'TVGFBF/Coach/add-coach.html',
                   {'user_form': user_form, 'person_form': person_form,
                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name, })
+                   'url_name': url_name, 'clubs': clubs})
 
 
 @login_required
@@ -247,7 +255,12 @@ def coachUpdate(request, uuid):
         logout(request)
         return redirect('accounts:login')
     coach = Coach.objects.get(uuid=uuid)
-
+    coachclub = None
+    if Club.objects.filter(coachs=coach):
+        coachclub = Club.objects.get(coachs=coach)
+        clubs = Club.objects.exclude(coachs=coach).exclude(derbis__isnull=True)
+    else:
+        clubs = Club.objects.all().exclude(derbis__isnull=True)
     grade_form = coach.grades.filter(isDeleted=0)
     visa_form = coach.visa.filter(isDeleted=0)
     user = User.objects.get(pk=coach.person.user.pk)
@@ -324,6 +337,10 @@ def coachUpdate(request, uuid):
 
             person = person_form.save(commit=False)
             iban = request.POST.get("iban")
+            clubDersbis = request.POST.get('club', None)
+            coachClub = Club.objects.get(derbis=clubDersbis)
+            coachClub.coachs.add(coach)
+            coachClub.save()
             person.iban = iban
             person.save()
             communication_form.save()
@@ -337,7 +354,7 @@ def coachUpdate(request, uuid):
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'grades_form': grade_form, 'coach': coach,
                    'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name, })
+                   'url_name': url_name, 'clubs': clubs, 'coachclub': coachclub})
 
 
 @login_required
@@ -859,7 +876,7 @@ def gradeListRejectAll(request):
     for grade in grades:
         grade.status = HavaLevel.DENIED
         grade.save()
-    messages.success(request, 'Beklemede olan kademeler   Onaylanmıştır')
+    messages.success(request, 'Beklemede olan kademeler   Reddedilmiştir.')
     return redirect('sbs:coach_grade_list')
 
 

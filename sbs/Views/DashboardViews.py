@@ -7,6 +7,7 @@ from django.urls import resolve
 
 from sbs.models.ekabis.Permission import Permission
 from sbs.models.ekabis.Person import Person
+from sbs.models.tvfbf.AnnouncementUser import AnnouncementUser
 from sbs.models.tvfbf.Athlete import Athlete
 from sbs.models.tvfbf.Club import Club
 from sbs.models.tvfbf.Coach import Coach
@@ -44,8 +45,6 @@ def return_personel_dashboard(request):
     return render(request, 'anasayfa/personel.html', {})
 
 
-
-
 @login_required
 def return_coach_dashboard(request):
     perm = general_methods.control_access_klup(request)
@@ -64,7 +63,17 @@ def return_coach_dashboard(request):
 
         athlete_count = athletes.count()
 
-    return render(request, 'TVGFBF/Anasayfa/antrenor.html', {'athlete_count': athlete_count})
+    announcementUsers = AnnouncementUser.objects.filter(user=request.user).filter(
+        announcement__startDate__lte=datetime.date.today()).filter(
+        announcement__finishDate__gte=datetime.date.today()).filter(isShow=False)
+    for announcementUser in announcementUsers:
+        announcementUser.isShow = True
+        announcementUser.save()
+    if not announcementUsers:
+        announcementUsers = None
+
+    return render(request, 'TVGFBF/Anasayfa/antrenor.html',
+                  {'athlete_count': athlete_count, 'announcementUsers': announcementUsers})
 
 
 @login_required

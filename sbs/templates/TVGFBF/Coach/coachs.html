@@ -152,54 +152,53 @@
                         <h3 class="card-title">Antrenör Filtrele</h3>
                     </div>
 
-                        <form method="POST" role="form" enctype="multipart/form-data">
+                    <form method="POST" role="form" enctype="multipart/form-data">
 
-                            {% csrf_token %}
+                        {% csrf_token %}
 
 
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ user_form.first_name.label }}</label>
-                                            {{ user_form.first_name }}
-                                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.first_name.label }}</label>
+                                        {{ user_form.first_name }}
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ user_form.last_name.label }}</label>
-                                            {{ user_form.last_name }}
-                                        </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.last_name.label }}</label>
+                                        {{ user_form.last_name }}
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ user_form.email.label }}</label>
-                                            {{ user_form.email }}
-                                        </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.email.label }}</label>
+                                        {{ user_form.email }}
                                     </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ user_form.branch.label }}</label>
-                                            {{ user_form.branch }}
-                                        </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.branch.label }}</label>
+                                        {{ user_form.branch }}
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
 
-                            <div class="card-footer">
-                                <button class="btn btn-outline-info" type="submit" style="float:right"><i
-                                        class="fa fa-search"></i> Ara
-                                </button>
+                        <div class="card-footer">
+                            <button class="btn btn-outline-info" type="submit" style="float:right"><i
+                                    class="fa fa-search"></i> Ara
+                            </button>
 
 
-                            </div>
+                        </div>
 
 
-                        </form>
-
+                    </form>
 
 
                     <!-- /.box -->
@@ -239,7 +238,8 @@
                                 <th> Ad Soyad</th>
                                 <th>E-Mail</th>
                                 <th>Branş</th>
-{#                                <th>Kulüp</th>#}
+                                <th>Vize Durumu</th>
+                                {#                                <th>Kulüp</th>#}
                                 {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
                                     <th>Düzenle/Sil</th>
                                 {% endif %}
@@ -254,28 +254,36 @@
                                         <td>{{ coach.person.user.first_name }} {{ coach.person.user.last_name }} </td>
                                         <td>{{ coach.person.user.email }} </td>
                                         <td>
-                                            {% for grade in coach.branch.all %}
-
-                                                <span class="badge badge-info">{{ grade.title }}</span>
-
+                                            {% for grade in coach.grades.all %}
+                                                {% if grade.isActive and grade.startDate > current_date and grade.status == 'Onaylandı' %}
+                                                    {{ grade.branch.title }},
+                                                {% endif %}
                                             {% endfor %}
                                         </td>
-{#                                        <td>#}
-{#                                            {% for club in clubs %}#}
-{#                                                {% for item in club.coachs.all %}#}
-{#                                                    {% if item == coach %}#}
-{#                                                        {{ club.name }}#}
-{#                                                    {% endif %}#}
-{#                                                {% endfor %}#}
-{#                                            {% endfor %}#}
-{#                                        </td>#}
+                                        <td>
+                                            {% for visa in coach.visa.all %}
+                                                {% if visa.isActive and visa.startDate > current_date and visa.status == 'Onaylandı' %}
+                                                    {{ visa.branch.title }},
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        {#                                        <td>#}
+                                        {#                                            {% for club in clubs %}#}
+                                        {#                                                {% for item in club.coachs.all %}#}
+                                        {#                                                    {% if item == coach %}#}
+                                        {#                                                        {{ club.name }}#}
+                                        {#                                                    {% endif %}#}
+                                        {#                                                {% endfor %}#}
+                                        {#                                            {% endfor %}#}
+                                        {#                                        </td>#}
                                         {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                             <td>
                                                 {% for item in perm %}
                                                     {% if item == 'update_coach' %}
                                                         <div class="btn-group">
                                                             <a href="{% url "sbs:update_coach" coach.uuid %}"
-                                                               type="button" class="btn btn-outline-warning" title="Düzenle"><i
+                                                               type="button" class="btn btn-outline-warning"
+                                                               title="Düzenle"><i
                                                                     class="fa fa-edit"></i>
                                                             </a>
                                                         </div>
@@ -289,8 +297,6 @@
                                                         </div>
                                                     {% endif %}
                                                 {% endfor %}
-
-
 
 
                                             </td>
@@ -394,7 +400,7 @@
         })
     </script>
     <script>
-     function deleteCoach(uuid) {
+        function deleteCoach(uuid) {
             debugger;
 
             swal({
@@ -409,33 +415,32 @@
                 if (result.dismiss !== 'Evet') {
 
                     $.ajax({
-                         url: "{% url "sbs:delete-coach"%}",
+                        url: "{% url "sbs:delete-coach"%}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
                             uuid: uuid,
                         },
                         success: function (result) {
-                                if (result.status === 'Success') {
-                                    swal({
-                                        icon: 'success',
-                                        title: 'Antrenör başarıyla silindi !!',
+                            if (result.status === 'Success') {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Antrenör başarıyla silindi !!',
 
-                                    })
+                                })
 
-                                }
-                                else {
-                                     swal({
-                                        icon: 'error',
-                                        title: 'Antrenör silinemedi !!',
+                            } else {
+                                swal({
+                                    icon: 'error',
+                                    title: 'Antrenör silinemedi !!',
 
-                                    })
-                                }
-                               location.reload();
-
+                                })
                             }
-                        });
-            }
+                            location.reload();
+
+                        }
+                    });
+                }
 
             })
 

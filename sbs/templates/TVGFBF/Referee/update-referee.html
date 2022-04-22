@@ -190,13 +190,7 @@
 
                                     <div class="form-group">
                                         <label for="iban">iban</label>
-                                        <input id="iban" class="form-control" type="text" name="iban"
-                                               value="{{ referee.person.iban }}"/>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label style="padding-top: 16px"> {{ person_form.bloodType.label }}</label>
-                                        {{ person_form.bloodType }}
+                                        <input id="iban" class="form-control" type="text" name="iban" value="{{ referee.person.iban }}"/>
                                     </div>
 
 
@@ -208,18 +202,10 @@
                                         {{ person_form.tc }}
                                     </div>
 
-
                                     <div class="form-group">
-                                        <label> {{ person_form.motherName.label }}</label>
-                                        {{ person_form.motherName }}
+                                        <label> {{ person_form.gender.label }}</label>
+                                        {{ person_form.gender }}
                                     </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ person_form.fatherName.label }}</label>
-                                        {{ person_form.fatherName }}
-                                    </div>
-
 
                                     <div class="form-group">
                                         <label> {{ person_form.birthDate.label }}</label>
@@ -265,10 +251,6 @@
                                         <label> {{ communication_form.phoneNumber.label }}</label>
                                         {{ communication_form.phoneNumber }}
                                     </div>
-                                    <div class="form-group">
-                                        <label> {{ communication_form.phoneNumber2.label }}</label>
-                                        {{ communication_form.phoneNumber2 }}
-                                    </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
@@ -278,10 +260,6 @@
                                     <div class="form-group">
                                         <label> {{ communication_form.city.label }}</label>
                                         {{ communication_form.city }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label> {{ communication_form.postalCode.label }}</label>
-                                        {{ communication_form.postalCode }}
                                     </div>
                                 </div>
                             </div>
@@ -519,7 +497,6 @@
 
     </section>
     <script>
-
 
 
         function delete_grade(grade_uuid, referee_uuid) {

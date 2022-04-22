@@ -233,11 +233,11 @@
 
                                 <div class="col-lg-12">
                                     <center>
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.profileImage.label }}</label>
-                                        {{ preRegistrationform.profileImage }}
-                                    </div>
-</center>
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.profileImage.label }}</label>
+                                            {{ preRegistrationform.profileImage }}
+                                        </div>
+                                    </center>
                                 </div>
 
                                 <div class="col-lg-6">
@@ -260,8 +260,8 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label style="padding-top: 16px"> {{ preRegistrationform.bloodType.label }}</label>
-                                        {{ preRegistrationform.bloodType }}
+                                        <label> {{ preRegistrationform.iban.label }}</label>
+                                        {{ preRegistrationform.iban }}
                                     </div>
                                 </div>
 
@@ -271,28 +271,14 @@
                                         {{ preRegistrationform.tc }}
                                     </div>
 
-
                                     <div class="form-group">
-                                        <label> {{ preRegistrationform.motherName.label }}</label>
-                                        {{ preRegistrationform.motherName }}
+                                        <label> {{ preRegistrationform.gender.label }}</label>
+                                        {{ preRegistrationform.gender }}
                                     </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.fatherName.label }}</label>
-                                        {{ preRegistrationform.fatherName }}
-                                    </div>
-
 
                                     <div class="form-group">
                                         <label> {{ preRegistrationform.birthDate.label }}</label>
                                         {{ preRegistrationform.birthDate }}
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.gender.label }}</label>
-                                        {{ preRegistrationform.gender }}
                                     </div>
 
                                 </div>
@@ -510,7 +496,7 @@
 
         });
 
-     $('#datepicker2').datepicker({
+        $('#datepicker2').datepicker({
             autoclose: true,
             language: 'tr',
             format: 'dd/mm/yyyy',

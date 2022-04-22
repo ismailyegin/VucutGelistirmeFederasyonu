@@ -1,5 +1,6 @@
 from django.db import models
 
+from sbs.models.tvfbf.Club import Club
 from sbs.models.ekabis.Country import Country
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.City import City
@@ -84,6 +85,8 @@ class ReferenceCoach(BaseModel):
     kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
     kademe_startDate = models.DateField(null=True,blank=True,verbose_name='Başlangıç Tarihi ')
     kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')
+
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
 
 
 

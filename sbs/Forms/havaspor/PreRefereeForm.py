@@ -20,7 +20,7 @@ class PreRefereeForm(ModelForm):
         fields = (
             'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'phoneNumber2',
             'city', 'kademe_startDate',
-            'country',  'tc', 'profileImage', 'birthDate', 'bloodType', 'gender',
+            'country',  'tc', 'profileImage', 'birthDate', 'iban', 'gender',
             'birthplace', 'motherName',
             'fatherName')
         labels = { 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
@@ -56,8 +56,7 @@ class PreRefereeForm(ModelForm):
                 attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
                        'onkeydown': 'return true', 'required': 'required'}),
 
-            'bloodType': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                             'style': 'width: 100%; '}),
+            'iban': forms.TextInput(attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
 
             'gender': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%; '}),

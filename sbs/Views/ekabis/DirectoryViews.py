@@ -399,7 +399,7 @@ def delete_member_role(request):
                 }
                 obj = DirectoryMemberRoleGetService(request, memberrolefilter)
                 if not DirectoryMember.objects.filter(role=obj):
-                    obj.deleted()
+                    obj.delete()
 
                     return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
                 else:

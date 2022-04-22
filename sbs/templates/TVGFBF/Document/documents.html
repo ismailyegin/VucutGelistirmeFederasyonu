@@ -125,7 +125,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-
+                    <h1>Belge İşlemleri</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -149,187 +149,101 @@
 
                 <div class="card card-info card-outline">
                     <div class="card-header with-border">
-                        <h3 class="card-title">Hakem Filtrele</h3>
+                        <h3 class="card-title">Belge İsmi Ekle</h3>
                     </div>
+                    <div class="card-body">
+                        <form method="POST" role="form" enctype="multipart/form-data">
 
-                    <form method="POST" role="form" enctype="multipart/form-data">
+                            {% csrf_token %}
 
-                        {% csrf_token %}
 
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.first_name.label }}</label>
-                                        {{ user_form.first_name }}
-                                    </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label> {{ document_form.name.label }}</label>
+                                    {{ document_form.name }}
                                 </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.last_name.label }}</label>
-                                        {{ user_form.last_name }}
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.city.label }}</label>
-                                        {{ user_form.city }}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.branch.label }}</label>
-                                        {{ user_form.branch }}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.status.label }}</label>
-                                        {{ user_form.status }}
-                                    </div>
-                                </div>
-
                             </div>
 
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-outline-info" type="submit" style="float:right"><i
-                                    class="fa fa-search"> </i> Ara
-                            </button>
 
+                            <div class="card-footer">
+                                <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
+                            </div>
+                        </form>
 
-                        </div>
-                    </form>
-
-
-                    <!-- /.box -->
-
-
-                </div>
-            </section>
-
-        </div>
-
-
-        <div class="row">
-            <section class="col-lg-12 ">
-
-
-                <div class="card card-outline card-info">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Hakem Listesi</h3>
-
-                        {% for item in perm %}
-                            {% if item == 'add_referee' %}
-                                {% if aktif == 'Admin' %}
-                                    <a href="{% url 'sbs:add_referee' %}"
-                                       type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                            class="fa fa-plus" title="Yeni Hakem Ekle"></i>
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
 
                     </div>
-
+                </div>
+            </section>
+        </div>
+        <div class="row">
+            <section class="col-lg-12">
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Belge İsimleri</h3>
+                    </div>
                     <div class="card-body">
-                        <table id="hakem" class="table table-bordered table-hover">
+                        <table id="documents" class="table table-bordered table-hover" style="width: 100%">
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th> Adı</th>
-                                <th>İl</th>
-                                <th>Kademe - Branş</th>
-                                <th>Vize Durumu</th>
-
-                                {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
+                                <th>Belge Adı</th>
+                                {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                     <th>Düzenle/Sil</th>
                                 {% endif %}
-
-
                             </tr>
                             </thead>
                             <tbody>
-                            {% if referees.all %}
-
-                                {% for referee in referees %}
+                            {% if documents.all %}
+                                {% for document in documents %}
                                     <tr>
                                         <td>{{ forloop.counter }} </td>
-                                        <td>{{ referee.person.user.get_full_name }}</td>
-                                        <td>{{ referee.communication.city }}</td>
+                                        <td>{{ document.name }}</td>
                                         <td>
-                                            {% for statu in referee.grades.all %}
-                                                {% if statu.isActive and statu.startDate > current_date and statu.status == 'Onaylandı' %}
-                                                    <span class="badge badge-info"> {{ statu.definition.name }} - {{ statu.branch }}</span>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </td>
-                                        <td>
-                                            {% for visa in referee.visa.all %}
-                                                {% if visa.isActive and visa.startDate > current_date and visa.status == 'Onaylandı' %}
-                                                    {{ visa.branch.title }},
-                                                {% endif %}
-                                            {% endfor %}
-                                        </td>
+                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
 
-
-                                        {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                                            <td>
                                                 {% for item in perm %}
-                                                    {% if item == 'update_referee' %}
+                                                    {% if item == 'document_update' %}
                                                         <div class="btn-group">
-                                                            <a href="{% url "sbs:update_referee" referee.uuid %}"
-                                                               type="button" class="btn btn-outline-warning"
-                                                               title="Düzenle"><i
+                                                            <a href="{% url 'sbs:document_update' uuid=document.uuid %}"
+                                                               type="button" class="btn btn-outline-warning" title="Düzenle"><i
                                                                     class="fa fa-edit"></i>
                                                             </a>
                                                         </div>
 
-                                                    {% elif item == 'delete-referee' %}
+                                                    {% elif item == 'document_delete' %}
                                                         <div class="btn-group">
                                                             <a class="btn btn-outline-danger"
                                                                data-toggle="modal" title="Sil"
-                                                               onclick="deleteReferee('{{ referee.uuid }}')"><i
+                                                                onclick="deleteDocument('{{ document.uuid }}')"><i
                                                                     class="fa fa-trash"></i></a>
                                                         </div>
                                                     {% endif %}
 
 
-                                                {% endfor %}
 
-
-                                            </td>
-                                        {% endif %}
-
+                                                  {% endfor %}
+                                            {% endif %}
+                                        </td>
 
                                     </tr>
 
                                 {% endfor %}
                             {% endif %}
-
-
                             </tbody>
                         </table>
-
                     </div>
                 </div>
-                <!-- /.box -->
-
 
             </section>
-
-
         </div>
-        <!-- /.row (main row) -->
+
 
     </section>
 
     {% load  static %}
     <script>
         $(function () {
-            $('#hakem').DataTable({
+            $('#documents').DataTable({
                 dom: 'Bfrtip',
 
 
@@ -413,7 +327,7 @@
     </script>
 
     <script>
-        function deleteReferee(id) {
+     function deleteDocument(uuid) {
 
             swal({
                 title: "Silmek istediğinizden emin misiniz?",
@@ -426,40 +340,40 @@
                 if (result.dismiss !== 'Evet') {
 
                     $.ajax({
-                        url: "{% url "sbs:delete-referee"%}",
+                      url: "{% url "sbs:document_delete"%}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            uuid: id,
+                            uuid: uuid,
                         },
                         success: function (result) {
-                            if (result.status === 'Success') {
-                                swal({
-                                    icon: 'success',
-                                    title: 'Hakem başarıyla silindi !!',
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Kademe başarıyla silindi !!',
 
-                                })
+                                    })
 
-                            } else {
-                                swal({
-                                    icon: 'error',
-                                    title: 'Hakem silinemedi !!',
+                                }
+                                else {
+                                     swal({
+                                        icon: 'error',
+                                        title: 'Kademe silinemedi !!',
 
-                                })
+                                    })
+                                }
+                               location.reload();
+
                             }
-                            location.reload();
-
-                        }
-                    });
-                }
+                        });
+            }
 
             })
 
 
         }
 
+
     </script>
 
-
 {% endblock %}
-

@@ -1,3 +1,4 @@
+import datetime
 import traceback
 from datetime import date
 from io import BytesIO
@@ -61,6 +62,8 @@ def return_referees(request):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
+
+    current_date = datetime.date.today()
     with transaction.atomic():
         if request.method == 'POST':
             user_form = RefereeSearchForm(request.POST)
@@ -92,7 +95,7 @@ def return_referees(request):
 
     return render(request, 'TVGFBF/Referee/referees.html',
                   {'referees': referees, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name, })
+                   'url_name': url_name, 'current_date': current_date, })
 
 
 @login_required

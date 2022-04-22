@@ -1,7 +1,7 @@
 from django.urls import path
 
 from sbs.Views import ClubViews, RefereeViews, CoachViews, TransmissionViews, \
-    ClubTransmissionViews
+    ClubTransmissionViews, DocumentViews, AnnouncementViews
 from sbs.Views.ekabis import APIViews, AdminViews, \
     LogViews, CityViews, UserViews, \
     HelpViews, PermissionView, GroupView, \
@@ -122,8 +122,7 @@ urlpatterns = [
     path('kulup/kulup-yonetici-ekle-api/', TransmissionViews.getClubForRegisterManager,
          name='kulup-yönetici-ekle-api'),
 
-
-# Yönetim
+    # Yönetim
     path('kurul/kurul-uyeleri/', DirectoryViews.return_directory_members, name='view_directoryMember'),
     path('kurul/kurul-uyesi-ekle/', DirectoryViews.add_directory_member, name='add_directorymember'),
     path('kurul/kurul-uyesi-duzenle/<uuid:uuid>/', DirectoryViews.update_directory_member,
@@ -142,7 +141,7 @@ urlpatterns = [
     path('kurul/kurul-sil/', DirectoryViews.delete_commission, name='delete_directorycommission'),
     path('kurul/kurul-duzenle/<uuid:pk>/', DirectoryViews.update_commission, name='change_directorycommission'),
 
-# Kullanıcılar
+    # Kullanıcılar
     path('kullanici/kullanicilar/', UserViews.return_users, name='view_user'),
     path('kullanici/kullanici-duzenle/<int:pk>/', UserViews.update_user, name='change_user'),
     path('kullanici/kullanicilar/aktifet<int:pk>/', UserViews.active_user, name='view_status'),
@@ -155,10 +154,6 @@ urlpatterns = [
     #
     # path('yonetim/yonetim-kurul-profil-guncelle/', DirectoryViews.updateDirectoryProfile,
     #      name='yonetim-kurul-profil-guncelle'),
-
-
-
-
 
     #   log kayıtlari
     path('log/log-kayitlari/', LogViews.view_log, name='view_logs'),
@@ -190,16 +185,11 @@ urlpatterns = [
 
     path('log/api-log-listesi/', APIViews.GetLog.as_view(), name='view_log_api'),
 
-
     # Mahalle
     path('yeka/mahalle-getir/', CityViews.get_neighborhood, name='get_neighborhood'),
 
-
-
     path('yeka/izin-listesi/', PermissionView.view_permission, name='view_permission'),
     path('yeka/izin-guncelle/<uuid:uuid>', PermissionView.change_permission, name='change_permission'),
-
-
 
     path('bildirim/bildirim-getir/', NotificationViews.get_notification, name='bildirim-getir'),
     path('bildirim/bildirimler/', NotificationViews.view_notification, name='bildirimler'),
@@ -280,5 +270,17 @@ urlpatterns = [
 
     path('hakem/basvuru-reddet', RefereeViews.refencedeleteReferee,
          name='refencedeleteReferee'),
+
+    # DOCUMENTS
+    path('belgeler/', DocumentViews.return_document, name='return_document'),
+    path('belge/sil/', DocumentViews.document_delete, name='document_delete'),
+    path('belge/guncelle/<uuid:uuid>', DocumentViews.document_update, name='document_update'),
+
+    # Announcement
+    path('duyuru/duyurular', AnnouncementViews.returnAnnouncement, name='announcements'),
+    path('duyuru/duyuru-ekle', AnnouncementViews.addAnnouncement, name='add_announcements'),
+    path('duyuru/duyuru-duzenle/<uuid:uuid>', AnnouncementViews.updateAnnouncement, name='update_announcements'),
+    path('duyuru/duyuru-sil/', AnnouncementViews.delete_announcement, name='delete_announcement'),
+    path('duyuru/duyuru-getir/', AnnouncementViews.getAnnouncement, name='get_announcement'),
 
 ]
