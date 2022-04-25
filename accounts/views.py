@@ -85,7 +85,6 @@ def login(request):
                     active = ActiveGroup(user=request.user, group=request.user.groups.all()[0])
                     active.save()
 
-
             if active.group.name == 'Hakem':
                 return redirect('sbs:hakem')
             elif active.group.name == 'Antrenör':
@@ -274,38 +273,43 @@ def referenceReferee(request):
 def referenceCoach(request):
     logout(request)
     coach_form = RefereeCoachForm()
+    clubs = Club.objects.all().exclude(derbis__isnull=True)
     if request.method == 'POST':
         coach_form = RefereeCoachForm(request.POST, request.FILES)
         mail = request.POST.get('email')
 
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
-            email=mail):
-            messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
-            return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
+        # if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+        #         email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+        #     email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+        #     email=mail):
+        #     messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
+        #     return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form, 'clubs': clubs})
 
         tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
-            messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
-            return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
+        # if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+        #         tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+        #     tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+        #     messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
+        #     return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form, 'clubs': clubs})
 
         name = request.POST.get('first_name')
         surname = request.POST.get('last_name')
         year = request.POST.get('birthDate')
         year = year.split('/')
 
-        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-            return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form})
+        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+        #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+        #     return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form, 'clubs': clubs})
 
         if coach_form.is_valid():
 
             veri = coach_form.save(commit=False)
             veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+
+            clubDersbis = request.POST.get('club', None)
+            coachClub = Club.objects.get(derbis=clubDersbis)
+            veri.club = coachClub
 
             veri.save()
 
@@ -316,12 +320,12 @@ def referenceCoach(request):
         else:
             messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
     return render(request, 'registration/Coach.html',
-                  {'preRegistrationform': coach_form})
+                  {'preRegistrationform': coach_form, 'clubs': clubs})
 
 
 def pre_registration(request):
     preRegistrationform = PreRegistrationForm()
-    clubs=Club.objects.all()
+    clubs = Club.objects.all()
     if request.method == 'POST':
         preRegistrationform = PreRegistrationForm(request.POST or None, request.FILES or None)
 
@@ -367,4 +371,5 @@ def pre_registration(request):
         else:
             messages.warning(request, "Alanlari kontrol ediniz")
 
-    return render(request, 'registration/referenceRegisterClub.html', {'preRegistrationform': preRegistrationform,'clubs':clubs})
+    return render(request, 'registration/referenceRegisterClub.html',
+                  {'preRegistrationform': preRegistrationform, 'clubs': clubs})

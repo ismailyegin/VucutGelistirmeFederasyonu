@@ -1,0 +1,405 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+
+
+            {% if message.tags == 'warning' %}
+
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Hata!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+
+
+            {% if message.tags == 'success' %}
+
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-check"></i> Başarılı!</h4>
+
+
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+
+                </div>
+
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+
+    <div class="modal fade" id="modal-lg">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="title" style="color: #DC143C"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <small style="float: left;" id="date"></small><br>
+                    <p id="text">One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <small>Güncellenme Tarihi: <span id="updateDate"></span></small>
+                    <button id="btn-closereddet" type="button" class="btn btn-default pull-right" data-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+    <section class="content-header">
+
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>
+                        Duyurular </h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section class="content">
+        <div class="row">
+            <section class="col-lg-12 ">
+                <div class="card-body">
+
+
+                    <div class="card card-primary card-outline">
+                        <div class="card-header with-border">
+                            <h3 class="card-title"> Duyurular </h3>
+
+                            {% for item in perm %}
+                                {% if item == 'add_announcements' %}
+                                    {% if aktif == 'Admin' %}
+                                        <a href="{% url 'sbs:add_announcements' %}"
+                                           type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
+                                                class="fa fa-plus" title="Duyuru Ekle"></i>
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <div class="card-body">
+                            {% if aktif == 'Yonetim' or aktif == 'Admin' %}
+                                <table id="announcements" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Başlık</th>
+                                        <th>Oluşturulma Tarihi</th>
+                                        <th>Duyuru Başlangıç Tarihi</th>
+                                        <th>Duyuru Bitiş Tarihi</th>
+                                        <th>Gruplar</th>
+                                        <th>İncele/Düzenle/Sil</th>
+
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for announcement in announcements %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ announcement.title }}</td>
+
+                                            <td>{{ announcement.creationDate }}</td>
+                                            <td>{{ announcement.startDate }}</td>
+                                            <td>{{ announcement.finishDate }}</td>
+                                            <td>
+                                                {% for grup in announcement.group.all %}
+                                                    {{ grup.name }},
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a onclick="getAnnouncement('{{ announcement.uuid }}')"
+                                                       type="button" class="btn btn-outline-primary">
+                                                        <i class="fa fa-search"></i>
+                                                    </a>
+
+                                                </div>
+                                                {% for item in perm %}
+                                                    {% if item == 'update_announcements' %}
+                                                        <div class="btn-group">
+                                                            <a href="{% url 'sbs:update_announcements' uuid=announcement.uuid %}"
+                                                               type="button" class="btn btn-outline-warning"
+                                                               title="Düzenle"><i
+                                                                    class="fa fa-edit"></i>
+                                                            </a>
+                                                        </div>
+
+                                                    {% elif item == 'delete_announcement' %}
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-outline-danger"
+                                                               data-toggle="modal" title="Sil"
+                                                               onclick="deleteAnnouncement('{{ announcement.uuid }}')"><i
+                                                                    class="fa fa-trash"></i></a>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+
+                                    {% endfor %}
+
+
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <table id="announcements" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Başlık</th>
+                                        <th>Oluşturulma Tarihi</th>
+                                        <th>Güncellenme Tarihi</th>
+                                        <th>Okunma Tarihi</th>
+                                        <th>Görüntüle</th>
+
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for announcement in announcements %}
+                                        {% if  announcement.isRead %}
+                                            <tr style="color: #a3a3a3">
+
+                                                <td>{{ forloop.counter }} </td>
+                                                <td>{{ announcement.announcement.title }}</td>
+
+                                                <td>{{ announcement.announcement.creationDate.date }}</td>
+                                                <td>{{ announcement.announcement.modificationDate.date }}</td>
+                                                <td>{{ announcement.readDate }}</td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a onclick="getAnnouncement('{{ announcement.announcement.uuid }}')"
+                                                           type="button" class="btn btn-outline-success">
+                                                            <i class="fa fa-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+
+
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+
+                                                <td>{{ forloop.counter }} </td>
+                                                <td>{{ announcement.announcement.title }}</td>
+                                                <td>{{ announcement.announcement.creationDate }}</td>
+                                                <td>{{ announcement.announcement.modificationDate.date }}</td>
+                                                <td>-----</td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a onclick="getAnnouncement('{{ announcement.announcement.uuid }}')"
+                                                           type="button" class="btn btn-outline-primary">
+                                                            <i class="fa fa-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+
+
+                                            </tr>
+                                        {% endif %}
+
+                                    {% endfor %}
+
+
+                                    </tbody>
+                                </table>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    <!-- /.card -->
+
+
+                </div>
+            </section>
+
+
+        </div>
+        <!-- /.row (main row) -->
+
+    </section>
+    <script>
+        {% load  static %}
+        $(function () {
+            table = $('#announcements').DataTable({
+
+
+                'language': {
+                    "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                },
+
+                "search": {
+                    "caseInsensitive": true,
+                },
+                'bubble': true,
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                'responsive': true,
+                'select': true,
+            });
+            table.on('draw.dt', function () {
+                var info = table.page.info();
+                table.column(0, {
+                    search: 'applied',
+                    order: 'applied',
+                    page: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1 + info.start;
+                });
+            });
+
+
+        })
+    </script>
+    <script>
+        function deleteAnnouncement(uuid) {
+            debugger;
+
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+
+                    $.ajax({
+                        url: "{% url "sbs:delete_announcement"%}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            uuid: uuid,
+                        },
+                        success: function (result) {
+                            if (result.status === 'Success') {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Duyuru başarıyla silindi !!',
+
+                                })
+
+                            } else {
+                                swal({
+                                    icon: 'error',
+                                    title: 'Duyuru silinemedi !!',
+
+                                })
+                            }
+                            location.reload();
+
+                        }
+                    });
+                }
+
+            })
+
+
+        }
+    </script>
+
+    <script>
+        function getAnnouncement(id) {
+            $.ajax({
+                url: "{% url "sbs:get_announcement" %}",
+                type: "POST",
+                data: {
+                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    uuid: id,
+                },
+
+                success: function (result) {
+                    debugger;
+
+                    if (result) {
+                        document.getElementById('title').innerHTML = result.announcement[0].title;
+                        document.getElementById('date').innerHTML = result.announcement[0].startDate + ' - ' + result.announcement[0].finishDate;
+                        document.getElementById('text').innerHTML = result.announcement[0].text;
+
+                        var currentDate = new Date(result.announcement[0].modificationDate);
+
+                        var date = currentDate.getDate();
+                        var month = currentDate.getMonth() + 1;
+                        var year = currentDate.getFullYear();
+                        if (month < 10) {
+                            month = '0' + month
+                        }
+
+                        document.getElementById('updateDate').innerHTML = year + "-" + month + "-" + date;
+                        $("#modal-lg").on("shown.bs.modal", function (e) {
+
+                        }).modal('show');
+                        $('#btn-closereddet').click(function () {
+                            var aktif = "{{ aktif }}"
+                            if (aktif !== 'Admin'){
+                                location.reload()
+                            }
+
+                            $('#modal-lg').modal('hide');
+                            $('.modal').modal('hide');
+
+                        });
+
+
+                    } else {
+                        swal({
+                            icon: 'error',
+                            title: 'Duyuru Görüntülenemedi !!',
+
+                        })
+                        location.reload();
+                    }
+
+
+
+                }
+            })
+
+
+        }
+    </script>
+{% endblock %}
