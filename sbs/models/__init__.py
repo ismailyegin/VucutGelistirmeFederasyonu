@@ -15,7 +15,7 @@ from .ekabis.HelpMenu import HelpMenu
 from .ekabis.Neighborhood import Neighborhood
 
 
-# HAVASPOR İMPORT
+# Vucut import
 
 from .tvfbf.Branch import Branch
 from .tvfbf.ClubRole import ClubRole
@@ -32,6 +32,8 @@ from .tvfbf.HavaLevel import HavaLevel
 from .tvfbf.ReferenceCoach import ReferenceCoach
 from .tvfbf.ReferenceClub import ReferenceClub
 from .tvfbf.PreRegistration import PreRegistration
-from .tvfbf.DocumentName import DocumentName
-from .tvfbf.Announcement import Announcement
-from .tvfbf.AnnouncementUser import AnnouncementUser
+# from .tvfbf.SportFacility import SportFacility
+# from .tvfbf.SportFacilityManager import SportFacilityManager
+# from .tvfbf.DocumentName import DocumentName
+# from .tvfbf.Announcement import Announcement
+# from .tvfbf.AnnouncementUser import AnnouncementUser

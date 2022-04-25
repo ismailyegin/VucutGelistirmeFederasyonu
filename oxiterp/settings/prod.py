@@ -20,14 +20,13 @@ ALLOWED_HOSTS = ['sbs.tvgfbf.gov.tr']
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.mysql',
-       'NAME': 'kobiltek_tvgfbf',
+       'NAME': 'kobiltek_vucutdb',
        'HOST': 'localhost',
        'PORT': '3306',
-       'USER': 'kobiltek_tvgfbf',
-       'PASSWORD': 'Kobil2013*'
+       'USER': 'vucut_root',
+       'PASSWORD': 'kobil2013'
     }
 }
-
 
 # DATABASES = {
 #     'default': {

@@ -1,0 +1,458 @@
+import traceback
+
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, Group
+from django.db import transaction
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
+from django.urls import resolve
+from unicode_tr import unicode_tr
+
+from sbs.Forms.SportFacilityForm import SportFacilityForm
+from sbs.Forms.havaspor.CommunicationForm import CommunicationForm
+from sbs.Forms.havaspor.FacilityCommunicationForm import FacilityCommunicationForm
+from sbs.Forms.havaspor.FacilitySearchForm import FacilitySearchForm
+from sbs.Forms.havaspor.PersonForm import PersonForm
+from sbs.Forms.havaspor.RefereeSearchForm import RefereeSearchForm
+from sbs.Forms.havaspor.RefereeUserForm import RefereeUserForm
+from sbs.Forms.havaspor.SportFacilityManagerForm import SportFacilityManagerForm
+from sbs.Forms.havaspor.SportFacilityManagerPersonForm import SportFacilityManagerPersonForm
+from sbs.models import Communication, Person, Coach
+from sbs.models.ekabis.City import City
+from sbs.models.tvfbf.Branch import Branch
+from sbs.models.tvfbf.SportFacilityManager import SportFacilityManager
+from sbs.models.ekabis.Permission import Permission
+from sbs.models.tvfbf.SportFacility import SportFacility
+from sbs.services import general_methods
+from sbs.services.services import last_urls
+
+
+@login_required
+def AddSportFacility(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    facilityForm = SportFacilityForm()
+    facilitymanagerForm = SportFacilityManagerForm()
+    manager_communication_form = FacilityCommunicationForm()
+    manager_person_form = SportFacilityManagerPersonForm()
+    user_form = RefereeUserForm()
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+
+    if request.method == 'POST':
+
+        facilityForm = SportFacilityForm(request.POST or None, request.FILES or None)
+        manager_communication_form = FacilityCommunicationForm(request.POST or None, request.FILES)
+        manager_person_form = SportFacilityManagerPersonForm(request.POST or None, request.FILES or None)
+        user_form = RefereeUserForm(request.POST or None, request.FILES)
+        facilitymanagerForm = SportFacilityManagerForm(request.POST or None, request.FILES or None)
+
+        try:
+            with transaction.atomic():
+                if facilityForm.is_valid() and user_form.is_valid() and manager_person_form.is_valid() and manager_communication_form.is_valid() and facilitymanagerForm.is_valid():
+
+                    manager = SportFacilityManager()
+
+                    managerUser = User()
+                    managerUser.username = user_form.cleaned_data['email']
+                    managerUser.first_name = unicode_tr(user_form.cleaned_data['first_name']).upper()
+                    managerUser.last_name = unicode_tr(user_form.cleaned_data['last_name']).upper()
+                    managerUser.email = user_form.cleaned_data['email']
+                    # group = Group.objects.get(name='Spor Tesisi')
+                    # password = User.objects.make_random_password()
+                    # managerUser.set_password(password)
+                    # managerUser.is_active = True
+                    # managerUser.save()
+                    # managerUser.groups.add(group)
+                    managerUser.save()
+
+                    person = manager_person_form.save(commit=False)
+                    managerCommunication = manager_communication_form.save(commit=False)
+                    managerCommunication.save()
+
+                    person.user = managerUser
+                    person.save()
+
+                    manager.person = person
+
+                    manager.personalityType = facilitymanagerForm.cleaned_data['personalityType']
+                    manager.save()
+                    branches = request.POST.getlist('branch')
+                    for branch in branches:
+                        manager.branch.add(Branch.objects.get(pk=int(branch)))
+                    sportFacility = facilityForm.save(commit=False)
+                    sportFacility.communication = managerCommunication
+                    sportFacility.save()
+                    sportFacility.manager.add(manager)
+
+                    log = str(facilityForm.cleaned_data['name']) + " Özel Spor Tesisi eklendi"
+                    log = general_methods.logwrite(request, request.user, log)
+
+                    messages.success(request, 'Özel Spor Tesisi Başarıyla Kayıt Edilmiştir.')
+
+                    return redirect('sbs:AddSportFacility')
+
+                else:
+
+                    messages.warning(request, 'Alanları Kontrol Ediniz')
+            return render(request, 'TVGFBF/SportFacility/add_sportFacility.html',
+                          {'urls': urls, 'current_url': current_url,
+                           'url_name': url_name, 'manager_communication_form': manager_communication_form,
+                           'manager_person_form': manager_person_form, 'user_form': user_form,
+                           'facilityForm': facilityForm, 'facilitymanagerForm': facilitymanagerForm})
+
+
+        except Exception as e:
+            messages.warning(request, 'HATA !! ' + ' ' + str(e))
+            return redirect('sbs:AddSportFacility')
+    return render(request, 'TVGFBF/SportFacility/add_sportFacility.html',
+                  {'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'manager_communication_form': manager_communication_form,
+                   'manager_person_form': manager_person_form, 'user_form': user_form,
+                   'facilityForm': facilityForm, 'facilitymanagerForm': facilitymanagerForm})
+
+
+@login_required
+def return_facility(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    facilities = SportFacility.objects.all()
+    user_form = FacilitySearchForm()
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+    city = City.objects.all()
+    with transaction.atomic():
+        if request.method == 'POST':
+            user_form = FacilitySearchForm(request.POST)
+            derbis = request.POST.get('derbis')
+            name = request.POST.get('name')
+            city = request.POST.get('city')
+
+            if not (derbis or name or city):
+                facilities = SportFacility.objects.all().filter(isDeleted=0)
+            else:
+                query = Q()
+                if name:
+                    query &= Q(name__icontains=name.title())
+                if derbis:
+                    query &= Q(derbis__icontains=derbis)
+                if city:
+                    query &= Q(communication__city__name__icontains=city)
+
+                facilities = SportFacility.objects.filter(query).filter(isDeleted=0)
+        else:
+            print('else2')
+
+    return render(request, 'TVGFBF/SportFacility/facilities.html',
+                  {'facilities': facilities, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'cities': city})
+
+
+@login_required
+def delete_facility(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    try:
+        with transaction.atomic():
+            if request.method == 'POST' and request.is_ajax():
+                uuid = request.POST['uuid']
+
+                obj = SportFacility.objects.get(uuid=uuid)
+                obj.delete()
+
+                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+
+@login_required
+def update_sport_facility(request, uuid):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    facility = SportFacility.objects.get(uuid=uuid)
+    facilityForm = SportFacilityForm(request.POST or None, request.FILES or None, instance=facility)
+    facilitymanagerForm = SportFacilityManagerForm(request.POST or None, request.FILES or None)
+    communication = Communication.objects.get(pk=facility.communication.pk)
+    person = Person.objects.get(pk=facility.manager.person.pk)
+    user = User.objects.get(pk=facility.manager.person.user.pk)
+    manager = facility.manager
+    manager_communication_form = FacilityCommunicationForm(request.POST or None, request.FILES or None,
+                                                           instance=communication)
+    manager_person_form = SportFacilityManagerPersonForm(request.POST or None, request.FILES or None, instance=person)
+    user_form = RefereeUserForm(request.POST or None, request.FILES or None, instance=user)
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+
+    if request.method == 'POST':
+
+        try:
+            with transaction.atomic():
+                if facilityForm.is_valid() and user_form.is_valid() and manager_person_form.is_valid() and manager_communication_form.is_valid() and facilitymanagerForm.is_valid():
+
+                    user.username = user_form.cleaned_data['email']
+                    user.first_name = unicode_tr(user_form.cleaned_data['first_name']).upper()
+                    user.last_name = unicode_tr(user_form.cleaned_data['last_name']).upper()
+                    user.email = user_form.cleaned_data['email']
+                    # group = Group.objects.get(name='Spor Tesisi')
+                    # password = User.objects.make_random_password()
+                    # managerUser.set_password(password)
+                    # managerUser.is_active = True
+                    # managerUser.save()
+                    # managerUser.groups.add(group)
+                    user.save()
+
+                    manager_person_form.save()
+                    manager_communication_form.save()
+
+                    manager.personalityType = facilitymanagerForm.cleaned_data['personalityType']
+                    manager.save()
+                    branches = request.POST.getlist('branch')
+                    for branch in branches:
+                        manager.branch.add(Branch.objects.get(pk=int(branch)))
+                    facilityForm.save()
+
+                    log = str(facilityForm.cleaned_data['name']) + " Özel Spor Tesisi düzenlendi"
+                    log = general_methods.logwrite(request, request.user, log)
+
+                    messages.success(request, 'Özel Spor Tesisi Başarıyla Kayıt Edilmiştir.')
+
+                    return redirect('sbs:return_facility')
+
+                else:
+
+                    messages.warning(request, 'Alanları Kontrol Ediniz')
+            return render(request, 'TVGFBF/SportFacility/add_sportFacility.html',
+                          {'urls': urls, 'current_url': current_url,
+                           'url_name': url_name, 'manager_communication_form': manager_communication_form,
+                           'manager_person_form': manager_person_form, 'user_form': user_form,
+                           'facilityForm': facilityForm, 'facilitymanagerForm': facilitymanagerForm})
+
+
+        except Exception as e:
+            messages.warning(request, 'HATA !! ' + ' ' + str(e))
+            return redirect('sbs:return_facility')
+    return render(request, 'TVGFBF/SportFacility/add_sportFacility.html',
+                  {'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'manager_communication_form': manager_communication_form,
+                   'manager_person_form': manager_person_form, 'user_form': user_form,
+                   'facilityForm': facilityForm, 'facilitymanagerForm': facilitymanagerForm})
+
+
+@login_required
+def return_facilityUser(request, uuid):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    facility = SportFacility.objects.get(uuid=uuid)
+    user_form = FacilitySearchForm()
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+    city = City.objects.all()
+
+    return render(request, 'TVGFBF/SportFacility/facility_manager_list.html',
+                  {'facility': facility, 'urls': urls, 'current_url': current_url, 'url_name': url_name, })
+
+
+@login_required
+def return_facilityCoach(request, uuid):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    facility = SportFacility.objects.get(uuid=uuid)
+    user_form = FacilitySearchForm()
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+    city = City.objects.all()
+
+    return render(request, 'TVGFBF/SportFacility/facility_coach_list.html',
+                  {'facility': facility, 'urls': urls, 'current_url': current_url, 'url_name': url_name, })
+
+
+@login_required
+def delete_facility_manager(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    try:
+        with transaction.atomic():
+            if request.method == 'POST' and request.is_ajax():
+                uuid = request.POST['uuid']
+
+                obj = SportFacilityManager.objects.get(uuid=uuid)
+                facility = SportFacility.objects.get(manager=obj)
+                facility.manager.remove(obj)
+
+                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+
+@login_required
+def delete_facility_coach(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    try:
+        with transaction.atomic():
+            if request.method == 'POST' and request.is_ajax():
+                uuid = request.POST['uuid']
+                obj = Coach.objects.get(uuid=uuid)
+                facility = SportFacility.objects.get(coach=obj)
+                facility.coach.remove(obj)
+
+                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+
+@login_required
+def AddSportFacilityManager(request, uuid):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    facility = SportFacility.objects.get(uuid=uuid)
+    facilitymanagerForm = SportFacilityManagerForm()
+    manager_communication_form = FacilityCommunicationForm()
+    manager_person_form = SportFacilityManagerPersonForm()
+    urls = last_urls(request)
+    user_form = RefereeUserForm()
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+
+    if request.method == 'POST':
+
+        manager_communication_form = FacilityCommunicationForm(request.POST or None, request.FILES)
+        manager_person_form = SportFacilityManagerPersonForm(request.POST or None, request.FILES or None)
+        user_form = RefereeUserForm(request.POST or None, request.FILES)
+        facilitymanagerForm = SportFacilityManagerForm(request.POST or None, request.FILES or None)
+
+        try:
+            with transaction.atomic():
+                if user_form.is_valid() and manager_person_form.is_valid() and manager_communication_form.is_valid() and facilitymanagerForm.is_valid():
+
+                    manager = SportFacilityManager()
+
+                    managerUser = User()
+                    managerUser.username = user_form.cleaned_data['email']
+                    managerUser.first_name = unicode_tr(user_form.cleaned_data['first_name']).upper()
+                    managerUser.last_name = unicode_tr(user_form.cleaned_data['last_name']).upper()
+                    managerUser.email = user_form.cleaned_data['email']
+                    # group = Group.objects.get(name='Spor Tesisi')
+                    # password = User.objects.make_random_password()
+                    # managerUser.set_password(password)
+                    # managerUser.is_active = True
+                    # managerUser.save()
+                    # managerUser.groups.add(group)
+                    managerUser.save()
+
+                    person = manager_person_form.save(commit=False)
+                    managerCommunication = manager_communication_form.save(commit=False)
+                    managerCommunication.save()
+
+                    person.user = managerUser
+                    person.save()
+
+                    manager.person = person
+
+                    manager.personalityType = facilitymanagerForm.cleaned_data['personalityType']
+                    manager.save()
+                    branches = request.POST.getlist('branch')
+                    for branch in branches:
+                        manager.branch.add(Branch.objects.get(pk=int(branch)))
+
+                    facility.manager.add(manager)
+                    messages.success(request, 'Yetkili Başarıyla Kayıt Edilmiştir.')
+
+                    return redirect('sbs:return_facilityUser', facility.uuid)
+
+                else:
+
+                    messages.warning(request, 'Alanları Kontrol Ediniz')
+            return render(request, 'TVGFBF/SportFacility/add_facility_manager.html',
+                          {'urls': urls, 'current_url': current_url,
+                           'url_name': url_name, 'manager_communication_form': manager_communication_form,
+                           'manager_person_form': manager_person_form,
+                           'facilitymanagerForm': facilitymanagerForm, 'user_form': user_form, 'facility': facility})
+
+
+        except Exception as e:
+            messages.warning(request, 'HATA !! ' + ' ' + str(e))
+            return redirect('sbs:return_facilityUser', facility.uuid)
+    return render(request, 'TVGFBF/SportFacility/add_facility_manager.html',
+                  {'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'manager_communication_form': manager_communication_form,
+                   'manager_person_form': manager_person_form,
+                   'facilitymanagerForm': facilitymanagerForm, 'user_form': user_form, 'facility': facility})
+
+
+@login_required
+def AddSportFacilityCoach(request, uuid):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    facility = SportFacility.objects.get(uuid=uuid)
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+    coaches = Coach.objects.all()
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                if request.POST['coach'] != '':
+                    coaches = request.POST.getlist('coach')
+                    for coach in coaches:
+                        facility.coach.add(Coach.objects.get(uuid=coach))
+
+                messages.success(request, 'Çalıştırıcı Başarıyla Kayıt Edilmiştir.')
+
+                return redirect('sbs:return_facilityCoach', facility.uuid)
+
+
+
+        except Exception as e:
+            messages.warning(request, 'HATA !! ' + ' ' + str(e))
+            return redirect('sbs:return_facilityCoach', facility.uuid)
+    return render(request, 'TVGFBF/SportFacility/add_facility_coach.html',
+                  {'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'facility': facility, 'coachs': coaches})

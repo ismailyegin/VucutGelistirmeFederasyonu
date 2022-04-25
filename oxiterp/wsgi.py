@@ -15,6 +15,6 @@ os.environ.setdefault("PYTHON_EGG_CACHE", "C:/Users/Administrator/Bitnami Django
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'oxiterp.settings.dev')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'oxiterp.settings.prod')
 
 application = get_wsgi_application()

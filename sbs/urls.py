@@ -1,13 +1,12 @@
 from django.urls import path
 
 from sbs.Views import ClubViews, RefereeViews, CoachViews, TransmissionViews, \
-    ClubTransmissionViews, DocumentViews, AnnouncementViews
+    ClubTransmissionViews, DocumentViews, SportFacilityViews, AnnouncementViews
 from sbs.Views.ekabis import APIViews, AdminViews, \
     LogViews, CityViews, UserViews, \
     HelpViews, PermissionView, GroupView, \
     HelpMenuViews, NotificationViews, DirectoryViews
 from sbs.Views import DashboardViews
-
 app_name = 'sbs'
 
 urlpatterns = [
@@ -122,7 +121,8 @@ urlpatterns = [
     path('kulup/kulup-yonetici-ekle-api/', TransmissionViews.getClubForRegisterManager,
          name='kulup-yönetici-ekle-api'),
 
-    # Yönetim
+
+# Yönetim
     path('kurul/kurul-uyeleri/', DirectoryViews.return_directory_members, name='view_directoryMember'),
     path('kurul/kurul-uyesi-ekle/', DirectoryViews.add_directory_member, name='add_directorymember'),
     path('kurul/kurul-uyesi-duzenle/<uuid:uuid>/', DirectoryViews.update_directory_member,
@@ -270,9 +270,22 @@ urlpatterns = [
 
     path('hakem/basvuru-reddet', RefereeViews.refencedeleteReferee,
          name='refencedeleteReferee'),
+    #Özel Spor Tesisi
+
+    path('tesis/tesis-ekle', SportFacilityViews.AddSportFacility, name='AddSportFacility'),
+    path('tesis/tesis-listesi', SportFacilityViews.return_facility, name='return_facility'),
+    path('tesis/tesis-sil', SportFacilityViews.delete_facility, name='delete_facility'),
+    path('tesis/tesis-duzenle/<uuid:uuid>', SportFacilityViews.update_sport_facility, name='update_sport_facility'),
+    path('tesis/tesis-yetkilisi-sil', SportFacilityViews.delete_facility_manager, name='delete_facility_manager'),
+    path('tesis/tesis-yetkili-listesi/<uuid:uuid>', SportFacilityViews.return_facilityUser, name='return_facilityUser'),
+    path('tesis/tesis-yetkili-ekle/<uuid:uuid>', SportFacilityViews.AddSportFacilityManager, name='AddSportFacilityManager'),
+    path('tesis/tesis-calistirici-sil', SportFacilityViews.delete_facility_coach, name='delete_facility_coach'),
+    path('tesis/tesis-calistirici-listesi/<uuid:uuid>', SportFacilityViews.return_facilityCoach, name='return_facilityCoach'),
+    path('tesis/tesis-calistirici-ekle/<uuid:uuid>', SportFacilityViews.AddSportFacilityCoach,
+         name='AddSportFacilityCoach'),
 
     # DOCUMENTS
-    path('belgeler/', DocumentViews.return_document, name='return_document'),
+    path('belgeler', DocumentViews.return_document, name='return_document'),
     path('belge/sil/', DocumentViews.document_delete, name='document_delete'),
     path('belge/guncelle/<uuid:uuid>', DocumentViews.document_update, name='document_update'),
 

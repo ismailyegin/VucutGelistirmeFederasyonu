@@ -2,17 +2,27 @@ from oxiterp.settings.base import *
 
 # Override base.py settings here
 
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'vucutgelistirme',
-        'USER': 'kobiltek',
-        'PASSWORD': 'kobil2013',
-        'HOST': 'localhost',
-        'PORT': '3306',
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'kobiltek_vucutdb',
+       'HOST': 'localhost',
+       'PORT': '3306',
+       'USER': 'vucut_root',
+       'PASSWORD': 'kobil2013'
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'vucut',
+#         'USER': 'root',
+#         'PASSWORD': 'kobil2013',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
