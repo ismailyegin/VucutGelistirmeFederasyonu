@@ -182,12 +182,12 @@
                             <tbody>
 
 
-                            {% for facility in facility.manager.all %}
+                            {% for manager in facility.manager.all %}
                                 <tr>
                                     <td>{{ forloop.counter }} </td>
-                                    <td>{{ facility.person.user.get_full_name }}</td>
-                                    <td>{{ facility.person.tc }}</td>
-                                    {% if facility.personalityType %}
+                                    <td>{{ manager.person.user.get_full_name }}</td>
+                                    <td>{{ manager.person.tc }}</td>
+                                    {% if manager.personalityType %}
                                         <td>Gerçek Kişi</td>
                                     {% else %}
                                         <td>Tüzel Kişi</td>
@@ -197,7 +197,7 @@
                                             {% for item in perm %}
                                                 {% if item == 'update_referee' %}
                                                     <div class="btn-group">
-                                                        <a href=""
+                                                        <a href="{% url 'sbs:updateSportFacilityManager' manager.uuid facility.uuid %}"
                                                            type="button" class="btn btn-outline-warning"
                                                            title="Düzenle"><i
                                                                 class="fa fa-edit"></i>
@@ -208,7 +208,7 @@
                                                     <div class="btn-group">
                                                         <a class="btn btn-outline-danger"
                                                            data-toggle="modal" title="Sil"
-                                                           onclick="deleteFacilityManager('{{ facility.uuid }}')"><i
+                                                           onclick="deleteFacilityManager('{{ manager.uuid }}')"><i
                                                                 class="fa fa-trash"></i></a>
                                                     </div>
 

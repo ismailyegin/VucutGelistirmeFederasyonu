@@ -12,7 +12,7 @@ class SportFacilityManagerForm(ModelForm):
         model = SportFacilityManager
 
         fields = (
-             'personalityType',)
+             'personalityType','branch',)
 
         labels = {'personalityType': 'Tesis Kişilik Türü', }
 

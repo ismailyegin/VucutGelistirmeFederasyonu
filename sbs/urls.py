@@ -283,6 +283,9 @@ urlpatterns = [
     path('tesis/tesis-calistirici-listesi/<uuid:uuid>', SportFacilityViews.return_facilityCoach, name='return_facilityCoach'),
     path('tesis/tesis-calistirici-ekle/<uuid:uuid>', SportFacilityViews.AddSportFacilityCoach,
          name='AddSportFacilityCoach'),
+    path('tesis/tesis-yetkili-duzenle/<uuid:uuid>/<uuid:facility_uuid>', SportFacilityViews.updateSportFacilityManager,name='updateSportFacilityManager'),
+    path('tesis/tesis-belge-listesi/<uuid:uuid>', SportFacilityViews.return_facilityDocument, name='return_facilityDocument'),
+    path('tesis/tesis-belge-sil', SportFacilityViews.delete_facility_document, name='delete_facility_document'),
 
     # DOCUMENTS
     path('belgeler', DocumentViews.return_document, name='return_document'),

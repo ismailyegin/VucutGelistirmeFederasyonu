@@ -3,6 +3,7 @@ from django.db import models
 from sbs.models import Coach
 from sbs.models.ekabis.Communication import Communication
 from sbs.models.ekabis.Person import Person
+from sbs.models.tvfbf.FacilityDocument import FacilityDocument
 from sbs.models.tvfbf.SportFacilityManager import SportFacilityManager
 from sbs.models.tvfbf.HavaLevel import HavaLevel
 from sbs.models.tvfbf.BaseModel import BaseModel
@@ -26,6 +27,6 @@ class SportFacility(BaseModel):
     registrationNumber = models.CharField(max_length=250, null=True, blank=True, verbose_name='İşyeri Tescil No')
     taxNumber = models.CharField(max_length=250, null=True, blank=True, verbose_name='Vergi Numarası')
     coach=models.ManyToManyField(Coach,related_name='facilityCoach')
-
+    document=models.ManyToManyField(FacilityDocument,related_name='facilityDocument')
     def __str__(self):
         return '%s' % (self.name)

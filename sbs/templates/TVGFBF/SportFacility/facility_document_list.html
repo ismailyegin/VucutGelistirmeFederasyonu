@@ -125,7 +125,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-
+                    <h1> {{ facility.name }} - Belge Listesi</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -143,166 +143,85 @@
 
     <section class="content">
 
-        <div class="row">
-            <section class="col-lg-12 ">
-
-
-                <div class="card card-info card-outline">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Özel Spor Tesisi Filtrele</h3>
-                    </div>
-                    <form method="POST" role="form" enctype="multipart/form-data">
-
-                        {% csrf_token %}
-
-                        <div class="card-body">
-                            <div class="row">
-                                {% for form in user_form %}
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ form.label }}</label>
-                                            {{ form }}
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label for="city">İl</label>
-                                        <select class="form-control select2 select2-hidden-accessible"
-                                                style="width: 100%;"
-                                                data-select2-id="1" tabindex="-1" aria-hidden="true" id="city"
-                                                name="city">
-                                            <option value="">----</option>
-                                            {% for city in cities %}
-
-                                                <option value="{{ city.name }}"> {{ city.name }}</option>
-
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-footer">
-                            <button class="btn btn-outline-info" type="submit" style="float:right"><i
-                                    class="fa fa-search"> </i> Ara
-                            </button>
-
-                        </div>
-                    </form>
-
-
-                    <!-- /.box -->
-
-
-                </div>
-            </section>
-
-        </div>
-
 
         <div class="row">
             <section class="col-lg-12 ">
 
-
+ <form method="post" role="form" enctype="multipart/form-data" id="form-container">
                 <div class="card card-outline card-info">
                     <div class="card-header with-border">
-                        <h3 class="card-title">Özel Spor Tesis Listesi</h3>
+                        <h3 class="card-title">Özel Spor Tesis Belgeleri</h3>
 
-                        {% for item in perm %}
-                            {% if item == 'AddSportFacility' %}
-                                {% if aktif == 'Admin' %}
-                                    <a href="{% url 'sbs:AddSportFacility' %}"
-                                       type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                            class="fa fa-plus" title="Yeni Tesis Ekle"></i>
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
+                        {% if aktif == 'Admin' %}
+                            <button class="btn btn-outline-info" type="submit"
+                                    style="float:right">
+                               Değişiklikleri Kaydet
+                            </button>
+
+                        {% endif %}
 
                     </div>
 
-                    <div class="card-body">
-                        <table id="facility" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Adı</th>
-                                <th>İl/İlçe</th>
-                                <th>Tesis Durumu</th>
-                                {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
-                                    <th>Düzenle/Sil/Yetkililer/Çalıştırıcılar</th>
-                                {% endif %}
+                        {% csrf_token %}
+                        <div class="card-body">
+
+                            <table id="facility" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Belge Adı</th>
+                                    <th>Belge</th>
+                                    {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
+                                        <th>Belge Sil</th>
+                                    {% endif %}
+
+                                </tr>
+                                </thead>
+                                <tbody>
 
 
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if facilities.all %}
-
-                                {% for facility in facilities %}
+                                {% for document in facility.document.all %}
                                     <tr>
                                         <td>{{ forloop.counter }} </td>
-                                        <td>{{ facility.name }}</td>
-                                        <td>{{ facility.communication.city }}/{{ facility.communication.town }}</td>
-                                        {% if facility.status %}
-                                            <td>Açık</td>
-                                        {% else %}
-                                            <td>Kapalı</td>
-                                        {% endif %}
+                                        <td>{{ document.name.name }}</td>
+                                        <td>
+
+                                            {% if document.file %}
+                                                <small><label for="{{ document.name.name }}">Değiştir</label></small>
+                                                <input value="{{ document.file }}" type="file"
+                                                       id="{{ document.name.name }}"
+                                                       name="{{ document.name.name }}">
+
+
+                                                <small> <label style="color:#727272" for="current">Mevcut Dosya</label></small>
+                                                <a href="
+
+                                                        {{ MEDIA_URL }}{{ document.file.url }}"> {{ document.file.name|cut:"tesis-belge" }}</a>
+
+
+
+                                            {% else %}
+                                                <small><label for="{{ document.name.name }}">Dosya Seç</label></small>
+                                                <input type="file" id="{{ document.name.name }}"
+                                                       name="{{ document.name.name }}">
+                                            {% endif %}
+                                        </td>
+
                                         {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                             <td>
                                                 {% for item in perm %}
-                                                    {% if item == 'update_referee' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:update_sport_facility' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-warning"
-                                                               title="Düzenle"><i
-                                                                    class="fa fa-edit"></i>
-                                                            </a>
-                                                        </div>
 
-                                                    {% elif item == 'delete_facility' %}
-                                                        <div class="btn-group">
-                                                            <a class="btn btn-outline-danger"
-                                                               data-toggle="modal" title="Sil"
-                                                               onclick="deleteFacility('{{ facility.uuid }}')"><i
-                                                                    class="fa fa-trash"></i></a>
-                                                        </div>
-                                                    {% elif item == 'return_facilityUser' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityUser' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-info"
-                                                               title="Yetkili Listesi"><i
-                                                                    class="fa fa-user"></i>
-                                                            </a>
-                                                        </div>
-                                                     {% elif item == 'return_facilityUser' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityUser' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-info"
-                                                               title="Yetkili Listesi"><i
-                                                                    class="fa fa-user"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% elif item == 'return_facilityCoach' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityCoach' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-success"
-                                                               title="Çalıştırıcılar"><i
-                                                                    class="fa fa-user-friends"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% elif item == 'return_facilityDocument' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityDocument' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-secondary"
-                                                               title="Belgeler"><i
-                                                                    class="fa fa-file"></i>
-                                                            </a>
-                                                        </div>
 
+
+                                                    {% if item == 'delete_facility_document' %}
+                                                        {% if document.file %}
+                                                            <div class="btn-group">
+                                                                <a class="btn btn-outline-danger"
+                                                                   data-toggle="modal" title="Sil"
+                                                                   onclick="deleteFacilityDocument('{{ document.uuid }}')"><i
+                                                                        class="fa fa-trash"></i></a>
+                                                            </div>
+                                                        {% endif %}
                                                     {% endif %}
 
 
@@ -316,17 +235,18 @@
 
                                     </tr>
 
+
                                 {% endfor %}
-                            {% endif %}
+
+                                </tbody>
+                            </table>
+
+                        </div>
 
 
-                            </tbody>
-                        </table>
-
-                    </div>
                 </div>
                 <!-- /.box -->
-
+ </form>
 
             </section>
 
@@ -364,7 +284,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'Özel Spor Tesis Listesi',
+                        title: 'Özel Spor Tesis Yetkilileri',
                         text: '<i class="fa fa-print"></i>',
 
                         titleAttr: 'Yazdır',
@@ -423,7 +343,7 @@
     </script>
 
     <script>
-        function deleteFacility(id) {
+        function deleteFacilityDocument(id) {
 
             swal({
                 title: "Silmek istediğinizden emin misiniz?",
@@ -436,7 +356,7 @@
                 if (result.dismiss !== 'Evet') {
 
                     $.ajax({
-                        url: "{% url 'sbs:delete_facility' %}",
+                        url: "{% url 'sbs:delete_facility_document' %}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -446,14 +366,14 @@
                             if (result.status === 'Success') {
                                 swal({
                                     icon: 'success',
-                                    title: 'Özel spor tesisi aşarıyla silindi !!',
+                                    title: 'Belge başarıyla silindi !!',
 
                                 })
 
                             } else {
                                 swal({
                                     icon: 'error',
-                                    title: 'Özel spor tesisi silinemedi !!',
+                                    title: 'Belge silinemedi !!',
 
                                 })
                             }
