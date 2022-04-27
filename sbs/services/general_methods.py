@@ -3,13 +3,11 @@ from datetime import datetime, timedelta
 
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages import get_messages
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import redirect
 from django.urls import resolve
-from django.utils.safestring import mark_safe
-
-
 
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen
@@ -23,6 +21,7 @@ from sbs.models.ekabis.Menu import Menu
 from sbs.models.ekabis.NotificationUser import NotificationUser
 from sbs.models.ekabis.Permission import Permission
 from sbs.models.ekabis.PermissionGroup import PermissionGroup
+from sbs.models.tvfbf.AnnouncementUser import AnnouncementUser
 from sbs.services.services import MenuService, PermissionGroupService, ActiveGroupService, ActiveGroupGetService, \
     UserService, UserGetService
 
@@ -332,7 +331,6 @@ def sendmail(request, pk):
         traceback.print_exc()
 
 
-
 def log(request):
     try:
         log = Logs()
@@ -358,8 +356,6 @@ def log_model(request, pre, next):
         return log
     except Exception as e:
         traceback.print_exc()
-
-
 
 
 def kur():
@@ -426,12 +422,6 @@ def kur():
 #     return data
 
 
-
-
-
-
-
-
 def control_access_kulup(request):
     groups = request.user.groups.all()
     is_exist = False
@@ -473,6 +463,7 @@ def control_access_klup(request):
 
     return is_exist
 
+
 def control_access_referee(request):
     group = request.user.groups.all()[0]
 
@@ -489,3 +480,23 @@ def control_access_referee(request):
         is_exist = True
 
     return is_exist
+
+
+def getAnnouncement(request):
+    if request.user.id:
+        if AnnouncementUser.objects.filter(user=request.user).filter(
+                announcement__startDate__lte=datetime.today()).filter(
+                announcement__finishDate__gte=datetime.today()).filter(isShow=False):
+            announcementUsers = AnnouncementUser.objects.filter(user=request.user).filter(
+                announcement__startDate__lte=datetime.today()).filter(
+                announcement__finishDate__gte=datetime.today()).filter(isShow=False)
+            for announcementUser in announcementUsers:
+                announcementUser.isShow = True
+                announcementUser.save()
+        else:
+            announcementUsers = None
+
+        return {'announcementUsers': announcementUsers}
+    else:
+        announcementUsers = None
+        return {'announcementUsers': announcementUsers}

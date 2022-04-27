@@ -63,17 +63,8 @@ def return_coach_dashboard(request):
 
         athlete_count = athletes.count()
 
-    announcementUsers = AnnouncementUser.objects.filter(user=request.user).filter(
-        announcement__startDate__lte=datetime.date.today()).filter(
-        announcement__finishDate__gte=datetime.date.today()).filter(isShow=False)
-    for announcementUser in announcementUsers:
-        announcementUser.isShow = True
-        announcementUser.save()
-    if not announcementUsers:
-        announcementUsers = None
-
     return render(request, 'TVGFBF/Anasayfa/antrenor.html',
-                  {'athlete_count': athlete_count, 'announcementUsers': announcementUsers})
+                  {'athlete_count': athlete_count, })
 
 
 @login_required

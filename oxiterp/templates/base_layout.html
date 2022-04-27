@@ -112,11 +112,34 @@
 
 </style>
 
+<div class="modal fade" id="modal-lg">
+    {% for announcementUser in announcementUsers %}
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="title"
+                        style="color: #DC143C">{{ announcementUser.announcement.title }}</h5>
+                </div>
+                <div class="modal-body">
+                    <small style="float: left;" id="date">{{ announcementUser.announcement.startDate }}
+                        - {{ announcementUser.announcement.finishDate }}</small><br>
+                    <p id="text">{{ announcementUser.announcement.text|safe }}</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <small>Güncellenme Tarihi: <span
+                            id="updateDate">{{ announcementUser.announcement.modificationDate }}</span></small>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    {% endfor %}
+</div>
+
 <div class="wrapper">
 
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-        <img class="animation" src="{% static 'tvgfbf.png' %}"  alt="TVGFBF"
+        <img class="animation" src="{% static 'tvgfbf.png' %}" alt="TVGFBF"
              style="display: block;width: 150px;height:150px">
     </div>
     <!-- Navbar -->
@@ -170,11 +193,11 @@
                     <i class="fas fa-question"></i>
                 </a>
             </li>
-{#            <li class="nav-item">#}
-{#                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">#}
-{#                    <i class="fa fa-fan "></i>#}
-{#                </a>#}
-{#            </li>#}
+            {#            <li class="nav-item">#}
+            {#                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">#}
+            {#                    <i class="fa fa-fan "></i>#}
+            {#                </a>#}
+            {#            </li>#}
 
 
             {##}
@@ -831,6 +854,24 @@
     {#, 50000);#}
 
 
+</script>
+
+<script>
+    $(function announcements() {
+        debugger;
+        let announcementUsers = "{{ announcementUsers }}"
+        if ("{{ announcementUsers }}" !== "None") {
+            $("#modal-lg").on("shown.bs.modal", function (e) {
+
+            }).modal('show');
+            $('#btn-closereddet').click(function () {
+
+                $('#modal-lg').modal('hide');
+                $('.modal').modal('hide');
+
+            });
+        }
+    })
 </script>
 </body>
 </html>

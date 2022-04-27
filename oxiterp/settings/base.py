@@ -53,7 +53,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'sbs.middleware.repairPage.OnarimSayfasiMiddleware'
 ]
 
 ROOT_URLCONF = 'oxiterp.urls'
@@ -77,6 +76,7 @@ TEMPLATES = [
                 'sbs.services.general_methods.getProfileImage',
                 'sbs.services.general_methods.get_notification',
                 'sbs.services.general_methods.get_help_text',
+                'sbs.services.general_methods.getAnnouncement',
 
                 # "education.services.general_methods.append_privileges",
             ],
