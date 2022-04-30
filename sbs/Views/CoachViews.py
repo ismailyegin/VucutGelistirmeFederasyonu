@@ -205,9 +205,10 @@ def return_add_coach(request):
             coach.save()
 
             clubDersbis = request.POST.get('club', None)
-            coachClub = Club.objects.get(derbis=clubDersbis)
-            coachClub.coachs.add(coach)
-            coachClub.save()
+            if clubDersbis:
+                coachClub = Club.objects.get(derbis=clubDersbis)
+                coachClub.coachs.add(coach)
+                coachClub.save()
             # antroner kaydından sonra mail gönderilmeyecek
 
             # subject, from_email, to = 'Halter - Antrenör Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr', user.email
