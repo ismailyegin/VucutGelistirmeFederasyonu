@@ -116,7 +116,8 @@ def return_coachs(request):
             # if visa == 'NONE':
             #     coachs = coachs.exclude(visa__startDate__year=timezone.now().year, visa__status='Onaylandı')
     return render(request, 'TVGFBF/Coach/coachs.html',
-                  {'coachs': coachs, 'user_form': user_form, 'branch': searchClupForm, 'clubs': clubs, 'current_date': current_date})
+                  {'coachs': coachs, 'user_form': user_form, 'branch': searchClupForm, 'clubs': clubs,
+                   'current_date': current_date})
 
 
 @login_required
@@ -136,111 +137,111 @@ def return_add_coach(request):
     url_name = Permission.objects.get(codename=current_url.url_name)
 
     if request.method == 'POST':
+        with transaction.atomic():
+            user_form = HavaUserForm(request.POST)
+            person_form = PersonForm(request.POST, request.FILES)
+            communication_form = CommunicationForm(request.POST)
+            mail = request.POST.get('email')
 
-        user_form = HavaUserForm(request.POST)
-        person_form = PersonForm(request.POST, request.FILES)
-        communication_form = CommunicationForm(request.POST)
-        mail = request.POST.get('email')
+            # if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+            #         email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            #     email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+            #     email=mail):
+            #     messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            #     return render(request, 'TVGFBF/Coach/add-coach.html',
+            #                   {'user_form': user_form, 'person_form': person_form,
+            #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
+            #                    'url_name': url_name, 'clubs': clubs})
 
-        # if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-        #         email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-        #     email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
-        #     email=mail):
-        #     messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-        #     return render(request, 'TVGFBF/Coach/add-coach.html',
-        #                   {'user_form': user_form, 'person_form': person_form,
-        #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
-        #                    'url_name': url_name, 'clubs': clubs})
+            tc = request.POST.get('tc')
+            # if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+            #         tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+            #     tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+            #     messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+            #     return render(request, 'TVGFBF/Coach/add-coach.html',
+            #                   {'user_form': user_form, 'person_form': person_form,
+            #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
+            #                    'url_name': url_name, 'clubs': clubs})
 
-        tc = request.POST.get('tc')
-        # if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-        #         tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-        #     tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
-        #     messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-        #     return render(request, 'TVGFBF/Coach/add-coach.html',
-        #                   {'user_form': user_form, 'person_form': person_form,
-        #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
-        #                    'url_name': url_name, 'clubs': clubs})
+            name = request.POST.get('first_name')
+            surname = request.POST.get('last_name')
+            year = request.POST.get('birthDate')
+            year = year.split('/')
 
-        name = request.POST.get('first_name')
-        surname = request.POST.get('last_name')
-        year = request.POST.get('birthDate')
-        year = year.split('/')
+            # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+            # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            #     return render(request, 'TVGFBF/Coach/add-coach.html',
+            #                   {'user_form': user_form, 'person_form': person_form,
+            #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
+            #                    'url_name': url_name, 'clubs': clubs})
 
-        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-        #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, 'TVGFBF/Coach/add-coach.html',
-        #                   {'user_form': user_form, 'person_form': person_form,
-        #                    'communication_form': communication_form, 'urls': urls, 'current_url': current_url,
-        #                    'url_name': url_name, 'clubs': clubs})
+            if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
+                user = User()
+                user.username = user_form.cleaned_data['email']
+                user.first_name = user_form.cleaned_data['first_name']
+                user.last_name = user_form.cleaned_data['last_name']
+                user.email = user_form.cleaned_data['email']
+                group = Group.objects.get(name='Antrenör')
+                password = User.objects.make_random_password()
+                user.set_password(password)
+                user.is_active = True
+                user.save()
+                user.groups.add(group)
 
-        if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
-            user = User()
-            user.username = user_form.cleaned_data['email']
-            user.first_name = user_form.cleaned_data['first_name']
-            user.last_name = user_form.cleaned_data['last_name']
-            user.email = user_form.cleaned_data['email']
-            group = Group.objects.get(name='Antrenör')
-            password = User.objects.make_random_password()
-            user.set_password(password)
-            user.is_active = True
-            user.save()
-            user.groups.add(group)
+                user.save()
 
-            user.save()
+                log = str(user.get_full_name()) + " Antrenoru ekledi"
+                log = general_methods.logwrite(request, request.user, log)
 
-            log = str(user.get_full_name()) + " Antrenoru ekledi"
-            log = general_methods.logwrite(request, request.user, log)
+                person = person_form.save(commit=False)
+                iban = request.POST.get("iban")
+                person.iban = iban
+                person.user = user
+                communication = communication_form.save(commit=False)
+                person.save()
+                communication.save()
 
-            person = person_form.save(commit=False)
-            iban = request.POST.get("iban")
-            person.iban = iban
-            person.user = user
-            communication = communication_form.save(commit=False)
-            person.save()
-            communication.save()
+                coach = Coach(person=person, communication=communication)
+                coach.save()
 
-            coach = Coach(person=person, communication=communication)
-            coach.save()
+                clubDersbis = request.POST.get('club', None)
+                if clubDersbis:
+                    coachClub = Club.objects.get(derbis=clubDersbis)
+                    coachClub.coachs.add(coach)
+                    coachClub.save()
+                # antroner kaydından sonra mail gönderilmeyecek
 
-            clubDersbis = request.POST.get('club', None)
-            if clubDersbis:
-                coachClub = Club.objects.get(derbis=clubDersbis)
-                coachClub.coachs.add(coach)
-                coachClub.save()
-            # antroner kaydından sonra mail gönderilmeyecek
+                # subject, from_email, to = 'Halter - Antrenör Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr', user.email
+                # text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
+                # html_content = '<p> <strong>Site adresi: </strong> <a href="http://sbs.twf.gov.tr:81/"></a>sbs.twf.gov.tr:81</p>'
+                # html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
+                # html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
+                # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+                # msg.attach_alternative(html_content, "text/html")
+                # msg.send()
 
-            # subject, from_email, to = 'Halter - Antrenör Bilgi Sistemi Kullanıcı Giriş Bilgileri', 'no-reply@twf.gov.tr', user.email
-            # text_content = 'Aşağıda ki bilgileri kullanarak sisteme giriş yapabilirsiniz.'
-            # html_content = '<p> <strong>Site adresi: </strong> <a href="http://sbs.twf.gov.tr:81/"></a>sbs.twf.gov.tr:81</p>'
-            # html_content = html_content + '<p><strong>Kullanıcı Adı:  </strong>' + user.username + '</p>'
-            # html_content = html_content + '<p><strong>Şifre: </strong>' + password + '</p>'
-            # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            # msg.attach_alternative(html_content, "text/html")
-            # msg.send()
+                fdk = Forgot(user=user, status=False)
+                fdk.save()
 
-            fdk = Forgot(user=user, status=False)
-            fdk.save()
+                # html_content = ''
+                # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
+                # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+                # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
+                #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+                # msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                # msg.attach_alternative(html_content, "text/html")
+                # msg.send()
 
-            # html_content = ''
-            # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
-            # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
-            # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-            # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
-            #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
-            # msg = EmailMultiAlternatives(subject, '', from_email, [to])
-            # msg.attach_alternative(html_content, "text/html")
-            # msg.send()
+                messages.success(request, 'Antrenör Başarıyla Kayıt Edilmiştir.')
 
-            messages.success(request, 'Antrenör Başarıyla Kayıt Edilmiştir.')
+                return redirect('sbs:return_coachs')
 
-            return redirect('sbs:return_coachs')
+            else:
 
-        else:
-
-            for x in user_form.errors.as_data():
-                messages.warning(request, user_form.errors[x][0])
+                for x in user_form.errors.as_data():
+                    messages.warning(request, user_form.errors[x][0])
 
     return render(request, 'TVGFBF/Coach/add-coach.html',
                   {'user_form': user_form, 'person_form': person_form,
@@ -1270,15 +1271,15 @@ def detailCoach(request):
                 club = ''
                 if Club.objects.filter(coachs=obj):
                     club = Club.objects.get(coachs=obj).name
-                coachs['club']=club
+                coachs['club'] = club
                 grade_info = {}
                 visa_info = {}
                 finishDate = ''
                 startDate = ''
                 finishDate_visa = ''
                 startDate_visa = ''
-                visa_name=''
-                grade_name=''
+                visa_name = ''
+                grade_name = ''
                 if obj.grades.filter(isActive=True):
                     grade = obj.grades.filter(isActive=True).last()
                     if grade.expireDate:
@@ -1292,7 +1293,7 @@ def detailCoach(request):
                         finishDate_visa = visa.expireDate
                     if visa.startDate:
                         startDate_visa = visa.startDate
-                    visa_name=visa.definition.name
+                    visa_name = visa.definition.name
                 grade_info['finishDate'] = finishDate
                 grade_info['startDate'] = startDate
                 grade_info['name'] = grade_name
@@ -1303,15 +1304,14 @@ def detailCoach(request):
                 coachs['visa'] = visa_info
 
                 return JsonResponse({'status': 'Success',
-                                         'results': coachs,
-                                         })
+                                     'results': coachs,
+                                     })
             else:
                 return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
     except Coach.DoesNotExist:
         traceback.print_exc()
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
-
 
 
 @login_required
@@ -1341,7 +1341,8 @@ def coachreferenceUpdate(request, uuid):
                 mail = request.POST.get('email')
                 if mail != coach.email:
 
-                    if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(
+                            status=ReferenceCoach.DENIED).filter(
                             email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
                         email=mail):
                         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
@@ -1350,7 +1351,8 @@ def coachreferenceUpdate(request, uuid):
 
                 tc = request.POST.get('tc')
                 if tc != coach.tc:
-                    if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(
+                            status=ReferenceCoach.DENIED).filter(
                             tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
                         tc=tc):
                         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
@@ -1441,8 +1443,8 @@ def approvelReferenceCoach(request):
                     coach.save()
 
                     grade = HavaLevel(definition=referenceCoach.kademe_definition,
-                                  startDate=referenceCoach.kademe_startDate,
-                                  form=referenceCoach.kademe_belge)
+                                      startDate=referenceCoach.kademe_startDate,
+                                      form=referenceCoach.kademe_belge)
 
                     grade.levelType = EnumFields.LEVELTYPE.GRADE
                     grade.status = HavaLevel.APPROVED
@@ -1461,7 +1463,8 @@ def approvelReferenceCoach(request):
                     html_content = ''
                     subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
                     html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
-                    html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+                    html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(
+                        fdk.user.username) + '</strong></p>'
                     html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
                         fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(
                         fdk.uuid) + '</p></a>'
