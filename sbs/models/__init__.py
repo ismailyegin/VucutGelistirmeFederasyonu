@@ -32,8 +32,9 @@ from .tvfbf.HavaLevel import HavaLevel
 from .tvfbf.ReferenceCoach import ReferenceCoach
 from .tvfbf.ReferenceClub import ReferenceClub
 from .tvfbf.PreRegistration import PreRegistration
-# from .tvfbf.SportFacility import SportFacility
-# from .tvfbf.SportFacilityManager import SportFacilityManager
-# from .tvfbf.DocumentName import DocumentName
-# from .tvfbf.Announcement import Announcement
-# from .tvfbf.AnnouncementUser import AnnouncementUser
+from .tvfbf.SportFacility import SportFacility
+from .tvfbf.SportFacilityManager import SportFacilityManager
+from .tvfbf.DocumentName import DocumentName
+from .tvfbf.Announcement import Announcement
+from .tvfbf.AnnouncementUser import AnnouncementUser
+from .tvfbf.ReferenceSportFacility import ReferenceSportFacility

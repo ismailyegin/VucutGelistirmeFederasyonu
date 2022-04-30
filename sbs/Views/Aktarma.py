@@ -1261,3 +1261,89 @@
 #             judge.save()
 #
 #     return redirect('sbs:admin')
+import traceback
+
+import pandas
+import pandas as pd
+from django.contrib.auth.models import User, Group
+from django.db import transaction
+from django.shortcuts import redirect
+
+from sbs.models import City, Communication, CategoryItem, HavaLevel, Branch, Coach, ActiveGroup
+from sbs.models.tvfbf.SportFacility import SportFacility
+from sbs.models.ekabis.Person import Person
+
+
+def transmissionFacility(request):
+    try:
+        with transaction.atomic():
+
+            df = pandas.read_csv('spor_salon.csv')
+            for value in df.values:
+                city_name = City.objects.get(name=value[1])
+                name = value[2]
+                address = value[3]
+                phone = value[4]
+                if not SportFacility.objects.filter(name=name):
+                    facility = SportFacility(name=name)
+                    facility.save()
+                    communation = Communication(phoneNumber=phone, city=city_name, address=address)
+                    communation.save()
+                    facility.communication = communation
+                    facility.save()
+            print('spor salonları eklendi')
+            return redirect('sbs:view_admin')
+
+    except Exception as e:
+        traceback.print_exc()
+        return redirect('sbs:view_admin')
+
+
+import math
+
+
+def transmissionAntrenor(request):
+    try:
+        with transaction.atomic():
+
+            df = pandas.read_csv('coach.csv')
+            for value in df.values:
+
+                if not Person.objects.filter(user__first_name=value[3], user__last_name=value[4]).filter(
+                        user__email=value[1]):
+                    city_name = None
+                    branch = Branch.objects.get(title=value[2])
+
+                    grade = CategoryItem.objects.get(name=value[0])
+                    level = HavaLevel(branch=branch, definition=grade, city=city_name)
+                    level.save()
+
+                    user = User(username=value[1], email=value[1], first_name=value[3], last_name=value[4])
+                    user.save()
+                    group = Group.objects.get(name='Antrenör')
+                    user.groups.add(group)
+                    active = ActiveGroup(user=user, group=group)
+                    active.save()
+
+                    person = Person(user=user)
+                    person.save()
+
+                    phone = None
+                    town = None
+                    com = Communication(phoneNumber=phone, city=city_name, town=town)
+                    com.save()
+
+                    coach = Coach(person=person, communication=com)
+
+                    coach.save()
+                    coach.grades.add(level)
+                    coach.branch.add(branch)
+
+        print('antrenorler eklendi')
+        return redirect('sbs:view_admin')
+
+    except Exception as e:
+        traceback.print_exc()
+        return redirect('sbs:view_admin')
+
+

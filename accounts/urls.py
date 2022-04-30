@@ -16,5 +16,6 @@ urlpatterns = [
     path(r'referee/', views.referenceReferee, name='referee'),
     path(r'coach/', views.referenceCoach, name='coach'),
     path('pre-registration/', views.pre_registration, name='pre-registration'),
+    path('on-kayıt/spor-salonu', views.pre_registration_facility, name='pre_registration_facility'),
 
 ]

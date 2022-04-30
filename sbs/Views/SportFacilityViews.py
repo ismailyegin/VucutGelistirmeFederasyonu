@@ -20,7 +20,7 @@ from sbs.Forms.havaspor.RefereeSearchForm import RefereeSearchForm
 from sbs.Forms.havaspor.RefereeUserForm import RefereeUserForm
 from sbs.Forms.havaspor.SportFacilityManagerForm import SportFacilityManagerForm
 from sbs.Forms.havaspor.SportFacilityManagerPersonForm import SportFacilityManagerPersonForm
-from sbs.models import Communication, Person, Coach
+from sbs.models import Communication, Person, Coach, ReferenceSportFacility
 from sbs.models.ekabis.City import City
 from sbs.models.tvfbf.Branch import Branch
 from sbs.models.tvfbf.DocumentName import DocumentName
@@ -547,3 +547,54 @@ def delete_facility_document(request):
     except:
         traceback.print_exc()
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+
+@login_required
+def pre_facility(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    facilities = ReferenceSportFacility.objects.filter(isDeleted=False)
+    user_form = FacilitySearchForm()
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+    city = City.objects.all()
+    return render(request, 'TVGFBF/SportFacility/facility_application_list.html',
+                  {'facilities': facilities, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'cities': city})
+
+
+@login_required
+def pre_facility_approve(request,uuid):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    with transaction.atomic():
+        if request.method == 'POST':
+            pre_facility = ReferenceSportFacility.objects.get(uuid=uuid)
+            spor_facility = SportFacility.objects.get(derbis=pre_facility.derbis)
+            spor_facility.name = pre_facility
+            spor_facility.registrationNumber = pre_facility.registrationNumber
+            spor_facility.taxNumber = pre_facility.taxNumber
+            spor_facility.communication = pre_facility.coordinate
+            spor_facility.mersis = pre_facility.mersis
+
+            spor_facility.save()
+            pre_facility.isDeleted = True
+            pre_facility.save()
+
+            messages.success(request, 'Özel Spor Salonu Kayıt Edilmiştir.')
+
+            return redirect('sbs:return_facility')
+
+        else:
+            print('else2')
+            return redirect('sbs:return_facility')
+
+

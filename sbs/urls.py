@@ -1,7 +1,7 @@
 from django.urls import path
 
 from sbs.Views import ClubViews, RefereeViews, CoachViews, TransmissionViews, \
-    ClubTransmissionViews, DocumentViews, SportFacilityViews, AnnouncementViews
+    ClubTransmissionViews, DocumentViews, SportFacilityViews, AnnouncementViews, Aktarma
 from sbs.Views.ekabis import APIViews, AdminViews, \
     LogViews, CityViews, UserViews, \
     HelpViews, PermissionView, GroupView, \
@@ -298,5 +298,12 @@ urlpatterns = [
     path('duyuru/duyuru-duzenle/<uuid:uuid>', AnnouncementViews.updateAnnouncement, name='update_announcements'),
     path('duyuru/duyuru-sil/', AnnouncementViews.delete_announcement, name='delete_announcement'),
     path('duyuru/duyuru-getir/', AnnouncementViews.getAnnouncement, name='get_announcement'),
+
+    path('aktarma/spor-salonu', Aktarma.transmissionFacility, name='transmissionFacility'),
+    path('aktarma/antrenor-salonu', Aktarma.transmissionAntrenor, name='transmissionAntrenor'),
+
+    path('tesis/tesis-getir-api/', TransmissionViews.GetCurrentFacilityDetail, name='tesis-getir-api'),
+    path('tesis/tesis-onayla/<uuid:uuid>', SportFacilityViews.pre_facility_approve, name='pre_facility_approve'),
+    path('tesis/tesis-basvurulari',SportFacilityViews.pre_facility, name='pre_facility'),
 
 ]

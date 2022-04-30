@@ -7,6 +7,7 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
+from sbs.models import SportFacility
 from sbs.models.ekabis.City import City
 from sbs.models.ekabis.Country import Country
 from sbs.models.ekabis.Communication import Communication
@@ -132,6 +133,40 @@ def TransmissionClubDetail(request, derbisKutukNo):
                 result.append(club)
             return result
 
+
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:return_clubs')
+
+
+def GetCurrentFacilityDetail(request):
+    try:
+        with transaction.atomic():
+            if request.method=='POST':
+                name = request.POST['name']
+                club_info = SportFacility.objects.get(name__icontains=name)
+
+                info = {}
+                info['name'] = club_info.name
+                info['derbis'] = club_info.derbis
+
+                info['mersis'] = club_info.mersis
+                info['permitDate'] = club_info.permitDate
+                info['coordinate'] = club_info.coordinate
+                info['status']=club_info.status
+
+                registrationNumber='yok'
+                if club_info.registrationNumber:
+                    registrationNumber=club_info.registrationNumber
+                info['registrationNumber'] = registrationNumber
+                taxNumber='yok'
+                if club_info.taxNumber:
+                    taxNumber=club_info.taxNumber
+                info['taxNumber'] = taxNumber
+
+                return JsonResponse({'status': 'Success',
+                                     'result': info,
+                                     })
 
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
