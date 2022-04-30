@@ -62,9 +62,9 @@ def AddSportFacility(request):
                     sportFacility = facilityForm.save(commit=False)
                     sportFacility.communication = managerCommunication
                     sportFacility.save()
-                    documentNames=DocumentName.objects.all()
+                    documentNames = DocumentName.objects.all()
                     for name in documentNames:
-                        facilityDocument=FacilityDocument(name=name)
+                        facilityDocument = FacilityDocument(name=name)
                         facilityDocument.save()
                         sportFacility.document.add(facilityDocument)
 
@@ -82,7 +82,7 @@ def AddSportFacility(request):
                           {'urls': urls, 'current_url': current_url,
                            'url_name': url_name, 'manager_communication_form': manager_communication_form,
 
-                           'facilityForm': facilityForm,})
+                           'facilityForm': facilityForm, })
 
 
         except Exception as e:
@@ -130,15 +130,14 @@ def return_facility(request):
         else:
             print('else2')
 
-        #facility_dict={}
-        #facility_list=[]
+        # facility_dict={}
+        # facility_list=[]
         # for facility in facilities:
         #     is_ok=facility.document.filter(file__isnull=True)
         #     if not is_ok:
         #         facility_dict['document_is_ok']=True
         #     facility_dict['facility']=facility
         #     facility_list.append(facility_dict)
-
 
     return render(request, 'TVGFBF/SportFacility/facilities.html',
                   {'facilities': facilities, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
@@ -178,7 +177,8 @@ def update_sport_facility(request, uuid):
     facility = SportFacility.objects.get(uuid=uuid)
     facilityForm = SportFacilityForm(request.POST or None, request.FILES or None, instance=facility)
     communication = Communication.objects.get(pk=facility.communication.pk)
-    manager_communication_form = FacilityCommunicationForm(request.POST or None, request.FILES or None,instance=communication)
+    manager_communication_form = FacilityCommunicationForm(request.POST or None, request.FILES or None,
+                                                           instance=communication)
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
@@ -379,20 +379,23 @@ def AddSportFacilityManager(request, uuid):
                    'manager_person_form': manager_person_form,
                    'facilitymanagerForm': facilitymanagerForm, 'user_form': user_form, 'facility': facility})
 
+
 @login_required
-def updateSportFacilityManager(request, uuid,facility_uuid):
+def updateSportFacilityManager(request, uuid, facility_uuid):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    facility=SportFacility.objects.get(uuid=facility_uuid)
+    facility = SportFacility.objects.get(uuid=facility_uuid)
     manager = SportFacilityManager.objects.get(uuid=uuid)
-    manager_communication_form = FacilityCommunicationForm(request.POST or None, request.FILES or None,instance=manager.communication)
-    manager_person_form = SportFacilityManagerPersonForm(request.POST or None, request.FILES or None,instance=manager.person)
-    user=manager.person.user
-    user_form = RefereeUserForm(request.POST or None,instance=user)
-    facilitymanagerForm = SportFacilityManagerForm(request.POST or None, request.FILES or None,instance=manager)
+    manager_communication_form = FacilityCommunicationForm(request.POST or None, request.FILES or None,
+                                                           instance=manager.communication)
+    manager_person_form = SportFacilityManagerPersonForm(request.POST or None, request.FILES or None,
+                                                         instance=manager.person)
+    user = manager.person.user
+    user_form = RefereeUserForm(request.POST or None, instance=user)
+    facilitymanagerForm = SportFacilityManagerForm(request.POST or None, request.FILES or None, instance=manager)
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
@@ -402,8 +405,7 @@ def updateSportFacilityManager(request, uuid,facility_uuid):
             with transaction.atomic():
                 if user_form.is_valid() and manager_person_form.is_valid() and manager_communication_form.is_valid() and facilitymanagerForm.is_valid():
 
-
-                    managerUser =manager.person.user
+                    managerUser = manager.person.user
                     managerUser.username = user_form.cleaned_data['email']
                     managerUser.first_name = unicode_tr(user_form.cleaned_data['first_name']).upper()
                     managerUser.last_name = unicode_tr(user_form.cleaned_data['last_name']).upper()
@@ -489,7 +491,6 @@ def AddSportFacilityCoach(request, uuid):
                    'url_name': url_name, 'facility': facility, 'coachs': coaches})
 
 
-
 @login_required
 def return_facilityDocument(request, uuid):
     perm = general_methods.control_access(request)
@@ -507,9 +508,9 @@ def return_facilityDocument(request, uuid):
 
                 for file in request.FILES:
                     if facility.document.filter(name__name=file):
-                        document=facility.document.get(name__name=file)
-                        doc = request.FILES[''+str(document.name.name)+'']
-                        document.file=doc
+                        document = facility.document.get(name__name=file)
+                        doc = request.FILES['' + str(document.name.name) + '']
+                        document.file = doc
                         document.save()
 
                 messages.success(request, 'Belgeler Başarıyla Kayıt Edilmiştir.')
@@ -538,7 +539,7 @@ def delete_facility_document(request):
             if request.method == 'POST' and request.is_ajax():
                 uuid = request.POST['uuid']
                 obj = FacilityDocument.objects.get(uuid=uuid)
-                obj.file=None
+                obj.file = None
                 obj.save()
 
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
@@ -568,21 +569,21 @@ def pre_facility(request):
 
 
 @login_required
-def pre_facility_approve(request,uuid):
+def pre_facility_approve(request, uuid):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
 
-    with transaction.atomic():
-        if request.method == 'POST':
+    try:
+        with transaction.atomic():
             pre_facility = ReferenceSportFacility.objects.get(uuid=uuid)
             spor_facility = SportFacility.objects.get(derbis=pre_facility.derbis)
-            spor_facility.name = pre_facility
+            spor_facility.name = pre_facility.name
             spor_facility.registrationNumber = pre_facility.registrationNumber
             spor_facility.taxNumber = pre_facility.taxNumber
-            spor_facility.communication = pre_facility.coordinate
+            spor_facility.coordinate = pre_facility.coordinate
             spor_facility.mersis = pre_facility.mersis
 
             spor_facility.save()
@@ -591,10 +592,7 @@ def pre_facility_approve(request,uuid):
 
             messages.success(request, 'Özel Spor Salonu Kayıt Edilmiştir.')
 
-            return redirect('sbs:return_facility')
-
-        else:
-            print('else2')
-            return redirect('sbs:return_facility')
-
-
+        return redirect('sbs:return_facility')
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:return_facility')

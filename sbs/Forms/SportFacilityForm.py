@@ -19,12 +19,12 @@ class SportFacilityForm(ModelForm):
 
             'permitDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right datemask2013', 'id': 'datepicker', 'autocomplete': 'on',
-                       'required': 'required'}),
+                      }),
             'name': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
             'derbis': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
-            'mersis': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
-            'coordinate': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
-            'registrationNumber': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
+            'mersis': forms.TextInput(attrs={'class': 'form-control', }),
+            'coordinate': forms.TextInput(attrs={'class': 'form-control', }),
+            'registrationNumber': forms.TextInput(attrs={'class': 'form-control', }),
             'status': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                                    'style': 'width: 100%; '}),
         }

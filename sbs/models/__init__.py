@@ -34,6 +34,7 @@ from .tvfbf.ReferenceClub import ReferenceClub
 from .tvfbf.PreRegistration import PreRegistration
 from .tvfbf.SportFacility import SportFacility
 from .tvfbf.SportFacilityManager import SportFacilityManager
+from .tvfbf.FacilityDocument import FacilityDocument
 from .tvfbf.DocumentName import DocumentName
 from .tvfbf.Announcement import Announcement
 from .tvfbf.AnnouncementUser import AnnouncementUser
