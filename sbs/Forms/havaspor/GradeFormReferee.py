@@ -25,7 +25,10 @@ class GradeFormReferee(ModelForm):
         widgets = {
 
             'startDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right datemask2013', 'id': 'datepicker', 'autocomplete': 'on'}),
+                attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'on',
+                       'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
+                       "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
+
             'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%; '}),
 

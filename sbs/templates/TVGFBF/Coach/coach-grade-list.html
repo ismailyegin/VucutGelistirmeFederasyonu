@@ -362,83 +362,98 @@
 
     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
         <script>
-            function onay() {
-                var html = '';
-                $("#modal-delete").on("shown.bs.modal", function (e) {
-                    $("#btn-conf1").click(function () {
+           function onay() {
+
+                swal({
+                    title: "Tüm başvuruları Onaylıyor musunuz?",
+                    icon: "warning",
+                    buttons: [
+                        'Hayır!',
+                        'Evet'
+                    ],
+                }).then((result) => {
+                    if (result.dismiss !== 'Evet') {
                         $.ajax({
-                            url: "{% url "sbs:coach_grade-list-approval-all"%}".replace(),
+                           url: "{% url "sbs:coach_grade-list-approval-all"%}",
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
                                 isActive: 'False'
                             },
                             success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'İşlem başarılı !!',
 
-                                html = 'Başari ile onaylandı.';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                    })
 
+                                } else {
+                                    swal({
+                                        icon: 'error',
+                                        title: 'İşlem başarısız !!',
+
+                                    })
+                                }
                                         window.location.replace("{% url "sbs:coach_grade_list"%}");
 
-                                    });
-
-                                }).modal('show');
-
-
-                                console.log(result.status)
                             }
+
                         });
-                    });
-                }).modal('show');
-                $('#btn-close1').click(function () {
-                    $('#modal-delete').modal('hide');
-                });
+
+                    }
+
+                })
+
+
             }
+
 
 
         </script>
         <script>
 
-
-            function reddet() {
-
-                console.log("reddet çalisti");
-                var html = '';
-                $("#modal-delete").on("shown.bs.modal", function (e) {
-                    $("#btn-conf1").click(function () {
+function reddet() {
+                 swal({
+                    title: "Tüm başvuruları reddetmek istiyor musunuz?",
+                    icon: "warning",
+                    buttons: [
+                        'Hayır!',
+                        'Evet'
+                    ],
+                }).then((result) => {
+                    if (result.dismiss !== 'Evet') {
                         $.ajax({
-                            url: "{% url "sbs:coach_grade-list-reject-all"%}".replace(),
+                             url: "{% url "sbs:coach_grade-list-reject-all"%}".replace(),
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
                                 isActive: 'False'
                             },
                             success: function (result) {
+                                if (result.status === 'Success') {
+                                    swal({
+                                        icon: 'success',
+                                        title: 'İşlem başarılı !!',
 
-                                html = 'Başarı ile reddedildi.';
-                                debugger;
-                                $(".successModal").html(html);
-                                $('#modal-success').on("shown.bs.modal", function (e) {
-                                    $(".btn-ok").click(function () {
+                                    })
 
+                                } else {
+                                    swal({
+                                        icon: 'error',
+                                        title: 'İşlem başarısız !!',
+
+                                    })
+                                }
                                         window.location.replace("{% url "sbs:coach_grade_list"%}");
 
-                                    });
-
-                                }).modal('show');
-
-
-                                console.log(result.status)
                             }
                         });
-                    });
-                }).modal('show');
-                $('#btn-close1').click(function () {
-                    $('#modal-delete').modal('hide');
-                });
+
+                    }
+
+                })
+
 
             }
         </script>

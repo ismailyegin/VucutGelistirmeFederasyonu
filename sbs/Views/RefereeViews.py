@@ -70,8 +70,8 @@ def return_referees(request):
             branch = request.POST.get('branch')
             status = request.POST.get('status')
             city = request.POST.get('city')
-            firstName = unicode_tr(request.POST.get('first_name')).title()
-            lastName = unicode_tr(request.POST.get('last_name')).title()
+            firstName = unicode_tr(request.POST.get('first_name'))
+            lastName = unicode_tr(request.POST.get('last_name'))
 
             # print(firstName, lastName, email, branch, grade, visa)
             if not (firstName or lastName or city or branch or status):
@@ -79,9 +79,9 @@ def return_referees(request):
             else:
                 query = Q()
                 if lastName:
-                    query &= Q(person__user__last_name__icontains=lastName.title())
+                    query &= Q(person__user__last_name__icontains=lastName.upper())
                 if firstName:
-                    query &= Q(person__user__first_name__icontains=firstName.title())
+                    query &= Q(person__user__first_name__icontains=firstName.upper())
                 if city:
                     query &= Q(communication__city__name__icontains=city)
                 if branch:
@@ -783,33 +783,35 @@ def gradeListReject(request, uuid):
     messages.success(request, 'Kademe  Reddedilmiştir.')
     return redirect('sbs:grade_list')
 
-
+@login_required
 def gradeListApprovalAll(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    coa = []
-    for item in CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'):
-        coa.append(item.pk)
-    grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
+    try:
+        coa = []
+        for item in CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'):
+            coa.append(item.pk)
+        grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
 
-    for grade in grades:
-        referee = grade.Refereegrades.first()
-        try:
-            for item in referee.grades.all():
-                if item.branch == grade.branch:
-                    item.isActive = False
-                    item.save()
-            grade.status = HavaLevel.APPROVED
-            grade.isActive = True
-            grade.save()
-            messages.success(request, 'Beklemede olan Kademeler Onaylanmıştır')
-        except:
-            messages.warning(request, 'Lütfen yeniden deneyiniz.')
-
-    return redirect('sbs:grade_list')
+        for grade in grades:
+            referee = grade.Refereegrades.first()
+            if request.method == 'POST' and request.is_ajax():
+                    for item in referee.grades.all():
+                        if item.branch == grade.branch:
+                            item.isActive = False
+                            item.save()
+                    grade.status = HavaLevel.APPROVED
+                    grade.isActive = True
+                    grade.save()
+                    return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
+            else:
+                    return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
 @login_required
@@ -819,15 +821,23 @@ def gradeListRejectAll(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    coa = []
-    for item in CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'):
-        coa.append(item.pk)
-    grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
-    for grade in grades:
-        grade.status = HavaLevel.DENIED
-        grade.save()
-    messages.success(request, 'Beklemede olan kademeler   Onaylanmıştır')
-    return redirect('sbs:grade_list')
+    try:
+        if request.method == 'POST' and request.is_ajax():
+            coa = []
+            for item in CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'):
+                coa.append(item.pk)
+            grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
+            for grade in grades:
+                grade.status = HavaLevel.DENIED
+                grade.save()
+            return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
+
+        else:
+            return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
 
 
 @login_required

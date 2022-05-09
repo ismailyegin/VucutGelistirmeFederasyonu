@@ -302,12 +302,26 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
 
+        {% if aktif == 'Admin' %}
+            <a class="brand-link" href="{% url 'sbs:view_admin' %}">
 
-        <a class="brand-link">
+                <img class="brand-image img-circle elevation-3" src="{% static 'tvgfbf__.png' %}" alt="TVGFBF">
+                <span class="brand-text font-weight-light">BİLGİ SİSTEMİ</span>
+            </a>
+            {% elif aktif == 'Antrenör' %}
+            <a class="brand-link" href="{% url 'sbs:antrenor' %}">
 
-            <img class="brand-image img-circle elevation-3" src="{% static 'tvgfbf__.png' %}" alt="TVGFBF">
-            <span class="brand-text font-weight-light">BİLGİ SİSTEMİ</span>
-        </a>
+                <img class="brand-image img-circle elevation-3" src="{% static 'tvgfbf__.png' %}" alt="TVGFBF">
+                <span class="brand-text font-weight-light">BİLGİ SİSTEMİ</span>
+            </a>
+             {% elif aktif == 'Hakem' %}
+            <a class="brand-link" href="{% url 'sbs:hakem' %}">
+
+                <img class="brand-image img-circle elevation-3" src="{% static 'tvgfbf__.png' %}" alt="TVGFBF">
+                <span class="brand-text font-weight-light">BİLGİ SİSTEMİ</span>
+            </a>
+        {% endif %}
+
 
         <!-- Sidebar -->
         <div class="sidebar">

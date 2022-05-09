@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.contrib.admin.sites import AlreadyRegistered
 from django.contrib.auth.models import Group
 
+from sbs.models import ClubRole
 from sbs.models.ekabis.Country import Country
 from sbs.models.ekabis.City import City
 from sbs.models.tvfbf.Branch import Branch
@@ -26,5 +27,5 @@ admin.site.register(Branch)
 admin.site.register(City)
 admin.site.register(Country)
 admin.site.register(DocumentName)
-
+admin.site.register(ClubRole)
 

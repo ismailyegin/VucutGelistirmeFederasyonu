@@ -40,10 +40,9 @@ def return_users(request):
         url_name = Permission.objects.get(codename=current_url.url_name)
 
         filter = {
-                'is_active': True,
                 'is_superuser':False
         }
-        users = UserService(request, filter)[:10]
+        users = UserService(request, filter)
 
         return render(request, 'kullanici/kullanicilar.html',
                       {'users': users, 'user_form': user_form, 'current_url': current_url,
@@ -188,3 +187,34 @@ def change_group_function(request, pk):
         list = request.POST.getlist('test')
         # eklenme durumu -
 
+        for item in list:
+            if Group.objects.exclude(pk=item):
+                groupfilter = {
+                    'pk': item
+                }
+                group = GroupGetService(request, groupfilter)
+
+                user.groups.add(group)
+                user.save()
+
+
+        # silme durumu
+        for item in user_group:
+            is_active = True
+            for i in list:
+                if i == str(item.pk):
+                    is_active = False
+            if is_active:
+                user.groups.remove(item)
+                user.save()
+
+    userfilter = {
+        'user': user
+    }
+    user_group = GroupService(request, userfilter)
+    user_none_group = GroupExcludeService(request, userfilter)
+
+    return render(request, 'kullanici/kullniciGrupEkle.html',
+                  {"user_none_group": user_none_group,
+                   "user_group": user_group,
+                   'user': user, 'urls': urls, 'current_url': current_url, 'url_name': url_name})

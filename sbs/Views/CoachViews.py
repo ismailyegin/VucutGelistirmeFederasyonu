@@ -843,25 +843,31 @@ def gradeListApprovalAll(request):
         logout(request)
         return redirect('accounts:login')
     coa = []
-    for item in CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'):
-        coa.append(item.pk)
-    grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
+    try:
+        if request.method == 'POST' and request.is_ajax():
+            for item in CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'):
+                coa.append(item.pk)
+            grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE,
+                                              status="Beklemede")
 
-    for grade in grades:
-        coach = grade.CoachGrades.first()
-        try:
-            for item in coach.grades.all():
-                if item.branch == grade.branch:
-                    item.isActive = False
-                    item.save()
-            grade.status = HavaLevel.APPROVED
-            grade.isActive = True
-            grade.save()
-            messages.success(request, 'Beklemede olan Kademeler Onaylanmıştır')
-        except:
-            messages.warning(request, 'Lütfen yeniden deneyiniz.')
+            for grade in grades:
+                coach = grade.CoachGrades.first()
 
-    return redirect('sbs:coach_grade_list')
+                for item in coach.grades.all():
+                    if item.branch == grade.branch:
+                        item.isActive = False
+                        item.save()
+                    grade.status = HavaLevel.APPROVED
+                    grade.isActive = True
+                    grade.save()
+                return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
+
+        else:
+            return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
 @login_required
@@ -872,14 +878,23 @@ def gradeListRejectAll(request):
         logout(request)
         return redirect('accounts:login')
     coa = []
-    for item in CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'):
-        coa.append(item.pk)
-    grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
-    for grade in grades:
-        grade.status = HavaLevel.DENIED
-        grade.save()
-    messages.success(request, 'Beklemede olan kademeler   Reddedilmiştir.')
-    return redirect('sbs:coach_grade_list')
+    try:
+        if request.method == 'POST' and request.is_ajax():
+            for item in CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'):
+                coa.append(item.pk)
+            grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE,
+                                              status="Beklemede")
+            for grade in grades:
+                grade.status = HavaLevel.DENIED
+                grade.save()
+            messages.success(request, 'Beklemede olan kademeler   Reddedilmiştir.')
+            return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
+
+        else:
+            return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
 @login_required
@@ -1343,7 +1358,7 @@ def coachreferenceUpdate(request, uuid):
 
                     if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(
                             status=ReferenceCoach.DENIED).filter(
-                            email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                        email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
                         email=mail):
                         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
                         return render(request, 'TVGFBF/Coach/update-coach-application.html',
@@ -1353,7 +1368,7 @@ def coachreferenceUpdate(request, uuid):
                 if tc != coach.tc:
                     if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(
                             status=ReferenceCoach.DENIED).filter(
-                            tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                        tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
                         tc=tc):
                         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
                         return render(request, 'TVGFBF/Coach/update-coach-application.html',

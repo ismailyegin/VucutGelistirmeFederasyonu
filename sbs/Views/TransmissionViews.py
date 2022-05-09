@@ -217,7 +217,7 @@ def transmissionOffsetLimit(request):
                                          'result': result,
                                          })
                 else:
-                    return JsonResponse({'status': 'Fail', 'msg': 'Kulüp Bulunamadı',
+                    return JsonResponse({'status': 'Fail', 'msg': 'Bu derbis numarasına ait bir kulüp bulunamadı.',
                                          'result': result,
                                          })
     except Exception as e:

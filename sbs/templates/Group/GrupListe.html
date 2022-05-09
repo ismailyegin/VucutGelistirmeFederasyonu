@@ -147,13 +147,13 @@
                 <div class="card-body">
 
 
-                    <div class="card card-primary card-outline">
+                    <div class="card card-info card-outline">
                         <div class="card-header with-border">
                             <h3 class="card-title">Gruplar</h3>
                             {% if aktif == 'Admin' %}
 
                                 <a href="{% url "sbs:add_group" %}"
-                                   type="button" class="btn btn-outline-primary btn-sm" style="float: right"><i
+                                   type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
                                         class="fa fa-plus" title="Yeni Grup Ekle"></i>
                                 </a>
 
@@ -182,15 +182,11 @@
 
                                                 <div class="btn-group">
 
-                                                    <button type="button"
-                                                            class="btn btn-default dropdown-toggle dropdown-icon"
-                                                            data-toggle="dropdown"> İşlemler
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu">
+
                                                         {% for item in perm %}
                                                             {% if item == 'change_group' %}
-                                                               <a href="{% url "sbs:change_group" group.pk %}"
-                                                                   class="dropdown-item"> <i
+                                                               <a style="margin-right: 5px" href="{% url "sbs:change_group" group.pk %}"
+                                                                   class="btn btn-sm btn-outline-warning"> <i
                                                                         class="fa fa-edit" title="Düzenle"></i> Düzenle
                                                                 </a>
                                                             {% endif %}
@@ -198,13 +194,12 @@
                                                         {% if aktif == 'Yonetim' or aktif == 'Admin' %}
                                                             <!-- izin kontrolü yapılacak ! -->
                                                             <a href="{% url "sbs:change_groupPermission"  group.pk %}"
-                                                               class="dropdown-item"> <i
+                                                               class="btn btn-sm btn-outline-info"> <i
                                                                     class="fa fa-lock" title="İzinler"></i> İzinler
                                                             </a>
 
                                                         {% endif %}
 
-                                                    </div>
                                                 </div>
 
 

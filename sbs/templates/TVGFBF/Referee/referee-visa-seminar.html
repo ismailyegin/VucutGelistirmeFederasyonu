@@ -207,7 +207,7 @@
                         <h3 class="card-title">Vize Seminerleri</h3>
                         {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                             <a href="{% url 'sbs:add-visa-seminar-referee' %}" type="button"
-                               class="btn btn-outline-success" title="Yeni Seminer Ekle" style="float: right">
+                               class="btn btn-outline-info" title="Yeni Seminer Ekle" style="float: right">
                                 <i class="fa fa-plus"></i>
 
                             </a>

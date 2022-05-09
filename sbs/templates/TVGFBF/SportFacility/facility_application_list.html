@@ -207,14 +207,18 @@
                                             <td>
                                                 {% for item in perm %}
                                                     {% if item == 'pre_facility_approve' %}
+                                                        {% if facility.isDeleted %}
+                                                            Onaylandı
+                                                            {% else %}
                                                         <div class="btn-group">
                                                             <a href="{% url 'sbs:pre_facility_approve' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-warning"
+                                                               type="button" class="btn btn-outline-success"
                                                                title="Onayla"><i
-                                                                    class="fa fa-edit"></i>
+                                                                    class="fa fa-check"></i>
                                                             </a>
-                                                        </div>
 
+                                                        </div>
+{% endif %}
                                                     {% endif %}
 
 

@@ -557,7 +557,7 @@ def pre_facility(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    facilities = ReferenceSportFacility.objects.filter(isDeleted=False)
+    facilities = ReferenceSportFacility.objects.all()
     user_form = FacilitySearchForm()
     urls = last_urls(request)
     current_url = resolve(request.path_info)

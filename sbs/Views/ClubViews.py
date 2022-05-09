@@ -51,7 +51,7 @@ def return_clubs(request):
         logout(request)
         return redirect('accounts:login')
     user = request.user
-    clubs = Club.objects.filter(infoStatus=1).filter(isDeleted=False)
+    clubs = None
     ClupsSearchForm = ClubSearchForm(request.POST)
     clubUsers=SportClubUser.objects.filter(isDeleted=False).filter(person__user__is_active=True)
     cities=City.objects.all()
@@ -687,9 +687,55 @@ def approve_preRegistration(request,pk):
             else:
                 messages.warning(request, 'Mail adresi sistem de kayıtlıdır.')
         else:
+            user = User()
+            user.username = basvuru.email
+            user.first_name = basvuru.first_name
+            user.last_name = basvuru.last_name
+            user.email = basvuru.email
+            user.is_active = True
+            user.is_staff = basvuru.is_staff
+            group = Group.objects.get(name='Kulüp Yetkilisi')
+            password = User.objects.make_random_password()
+            user.set_password(password)
+            user.save()
+            user.groups.add(group)
+            user.save()
+
+            person = Person()
+            person.tc = basvuru.tc
+            person.birthplace = basvuru.birthplace
+            person.motherName = basvuru.motherName
+            person.fatherName = basvuru.fatherName
+            person.profileImage = basvuru.profileImage
+            person.birthDate = basvuru.birthDate
+            person.bloodType = basvuru.bloodType
+            if basvuru.gender == 'Erkek':
+                person.gender = Person.MALE
+            else:
+                person.gender = Person.FEMALE
+            person.user = user
+            person.save()
+
+            com = Communication()
+            com.phoneNumber = basvuru.phoneNumber
+            com.phoneNumber2 = basvuru.phoneNumber2
+            com.address = basvuru.address
+            com.city = basvuru.city
+            com.country = basvuru.country
+            com.save()
+
+            Sportclup = SportClubUser()
+            Sportclup.user = user
+            Sportclup.person = person
+            Sportclup.communication = com
+            Sportclup.role = basvuru.role
+            Sportclup.save()
+
             basvuru.status = ReferenceClub.APPROVED
             basvuru.save()
             club= Club.objects.get(derbis=basvuru.derbis)
+
+            club.clubUser.add(Sportclup)
             club.infoStatus=True
             club.save()
             messages.success(request, 'Basvuru sisteme kaydedilmistir.')

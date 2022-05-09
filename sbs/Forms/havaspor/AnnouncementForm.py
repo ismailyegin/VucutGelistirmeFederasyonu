@@ -9,11 +9,11 @@ class AnnouncementForm(ModelForm):
 
         fields = ('title', 'text', 'group', 'startDate', 'finishDate',)
 
-        labels = {'title': 'Duyuru Başlığı',
-                  'text': 'Duyuru İçeriği',
-                  'group': 'Duyurunun Gözükeceği Gruplar',
-                  'startDate': 'Duyuru Balangıç Tarihi',
-                  'finishDate': 'Duyuru Bitiş Tarihi',
+        labels = {'title': 'Başlık',
+                  'text': 'İçerik',
+                  'group': 'Geçerli Gruplar',
+                  'startDate': 'Başlangıç Tarihi',
+                  'finishDate': 'Bitiş Tarihi',
                   }
 
         widgets = {

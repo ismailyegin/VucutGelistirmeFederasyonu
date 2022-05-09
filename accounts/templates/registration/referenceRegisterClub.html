@@ -730,23 +730,34 @@
                         'csrfmiddlewaretoken': "{{  csrf_token  }}",
                         guid: id,
                     },
-                    success: function (result) {
-                        debugger;
-                        let info = result['result'][0]
-                        document.getElementById('id_name').value = info.KulupAdi
-                        document.getElementById('id_foundingDate').value = info.KurulusTarihi
-                        document.getElementById('id_clubMail').value = info.Eposta
-                        document.getElementById('id_derbis').value = info.DerbisKutukNo
-                        document.getElementById('id_clubphoneNumber').value = info.Telefon
-                        document.getElementById('id_clubcity').value = info.Il
-                        document.getElementById('id_clubaddress').value = info.Adres
-                        document.getElementById('id_clubTown').value = info.Ilce
-                        document.getElementById('id_clubFax').value = info.Faks
-                        document.getElementById('kulupBaskani').style.display = 'block'
-                        document.getElementById('formButton').style.display = 'block'
+                     success: function (result) {
+                            if (result.status === 'Success') {
+                                 debugger;
+                            let info = result['result'][0]
+                            document.getElementById('id_name').value = info.KulupAdi
+                            document.getElementById('id_foundingDate').value = info.KurulusTarihi
+                            document.getElementById('id_clubMail').value = info.Eposta
+                            document.getElementById('id_derbis').value = info.DerbisKutukNo
+                            document.getElementById('id_clubphoneNumber').value = info.Telefon
+                            document.getElementById('id_clubcity').value = info.Il
+                            document.getElementById('id_clubaddress').value = info.Adres
+                            document.getElementById('id_clubTown').value = info.Ilce
+                            document.getElementById('id_clubFax').value = info.Faks
+                            document.getElementById('kulupBaskani').style.display = 'block'
+                            document.getElementById('formButton').style.display = 'block'
 
 
-                    }
+                            } else {
+                                swal({
+                                    icon: 'error',
+                                    title:  result.msg,
+
+                                })
+                            }
+
+
+                        }
+
                 });
             }
 
