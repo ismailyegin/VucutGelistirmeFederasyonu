@@ -306,4 +306,6 @@ urlpatterns = [
     path('tesis/tesis-onayla/<uuid:uuid>', SportFacilityViews.pre_facility_approve, name='pre_facility_approve'),
     path('tesis/tesis-basvurulari',SportFacilityViews.pre_facility, name='pre_facility'),
 
+    path('izin/api-izin-listesi/', APIViews.GetPermission.as_view(), name='view_permission-api'),
+
 ]

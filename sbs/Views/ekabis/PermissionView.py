@@ -26,8 +26,8 @@ def view_permission(request):
         current_url = resolve(request.path_info)
         url_name = Permission.objects.get(codename=current_url.url_name)
 
-        permissions=Permission.objects.all()
-        return render(request, 'Permission/view_permission.html', {'permissions':permissions, 'urls': urls, 'current_url': current_url, 'url_name': url_name.name})
+
+        return render(request, 'Permission/view_permission.html', { 'urls': urls, 'current_url': current_url, 'url_name': url_name.name})
     except Exception as e:
         traceback.print_exc()
         messages.warning(request, 'Lütfen Tekrar Deneyiniz.')

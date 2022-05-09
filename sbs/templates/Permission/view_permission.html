@@ -140,62 +140,25 @@
                 <div class="card-body">
 
 
-                    <div class="card card-primary card-outline">
+                    <div class="card card-info card-outline">
                         <div class="card-header with-border">
-                            <h3 class="card-title">İzin  Listesi</h3>
+                            <h3 class="card-title">İzin Listesi</h3>
 
                         </div>
 
                         <div class="card-body">
-                            <table id="company" class="table table-bordered table-hover">
+                            <table id="permission" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>İsim </th>
-                                    <th>Kod İsmi </th>
+                                    <th>İsim</th>
+                                    <th>Kod İsmi</th>
                                     <th>Kod Url</th>
                                     <th>Menu Alanı</th>
                                     <th>İşlemler</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% if permissions %}
-                                    {% for item in permissions %}
-                                        <tr>
-                                            <td>{{ forloop.counter }} </td>
-                                            <td>{{ item.name }}</td>
-                                            <td>{{ item.codename }}</td>
-                                            <td> {{ item.codeurl }} </td>
-                                            <td>{{ item.group }}</td>
-
-                                            <td>
-                                                <div class="btn-group">
-
-                                                    <button type="button"
-                                                            class="btn btn-default dropdown-toggle dropdown-icon"
-                                                            data-toggle="dropdown"> İşlemler
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu">
-                                                        {% for p in perm %}
-                                                            {% if p == 'change_permission' %}
-                                                                <a href="{% url "sbs:change_permission" item.uuid %}"
-                                                                   class="dropdown-item"> <i
-                                                                        class="fa fa-edit" title="Düzenle"></i> Düzenle
-                                                                </a>
-                                                            {% endif %}
-
-
-                                                        {% endfor %}
-
-
-                                                    </div>
-                                                </div>
-                                            </td>
-
-                                        </tr>
-
-                                    {% endfor %}
-                                {% endif %}
 
 
                                 </tbody>
@@ -217,14 +180,19 @@
     {% load  static %}
     <script>
         $(function () {
-            $('#company').DataTable({
+            table = $('#permission').DataTable({
+
+                "processing": true,
+                "serverSide": true,
+                "paging": true,
+                "ordering": true,
+
+
+                "ajax": {
+                    "url": "{% url 'sbs:view_permission-api' %}",
+                    "type": "POST",
+                },
                 dom: 'Bfrtip',
-
-
-                lengthMenu: [
-                    [10, 25, 50, 100, -1],
-                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
-                ],
 
                 'buttons': [
 
@@ -242,42 +210,119 @@
                     },
                     {
                         extend: 'print',
+                        title: 'İzin Listesi',
                         text: '<i class="fa fa-print"></i>',
 
-                        titleAttr: 'Yazdır'
+                        titleAttr: 'Yazdır',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
                     },
                     {
                         extend: 'pdfHtml5',
                         download: 'open',
                         text: '<i class="fa fa-file-pdf"></i>',
 
-                        titleAttr: 'Pdf Kaydet'
+                        titleAttr: 'Pdf Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
                     },
 
                     {
                         extend: 'excelHtml5',
                         text: '<i class="fa fa-file-excel"></i>',
-                        titleAttr: 'Excel Kaydet'
+                        titleAttr: 'Excel Kaydet',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
                     },
 
 
                 ],
-                "search": {
-                    "caseInsensitive": true,
-                },
+
+
                 'language': {
                     "url": "{% static 'datatable_tr/datatable_tr.json' %}"
                 },
-                'paging': true,
-                'lengthChange': true,
-                'searching': true,
-                'ordering': true,
-                'info': true,
-                'autoWidth': true,
-                'responsive': true,
-            })
+                "columns": [
+                    {"data": "id"},
+                    {"data": "name"},
+                    {"data": "codename"},
+                    {"data": "codeurl"},
+                    {"data": "group"},
+                    {
+                        "data": null,
+                        render: function (full) {
+                            console.log(full.content);
+                            let html;
+                            debugger;
+                            let url = "{% url "sbs:change_permission" '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
+                            url = url.replace('7729c6ee-739d-4a89-8ffe-1357e691ca16', full.uuid);
+
+
+                            html = '<td><div class="btn-group"> '
+                            html += '<a style="margin-left:5px;" href="' + url + '" class="btn btn-outline-warning" title="Düzenle" type="button"><i class="fa fa-edit"></i>Düzenle</a>';
+                            html += '</div></td>';
+
+                            return html;
+                        }
+                    }
+
+                ],
+                "search": {
+                    "caseInsensitive": true
+                }
+
+
+            });
+            table.on('draw.dt', function () {
+                var info = table.page.info();
+                table.column(0, {
+                    search: 'applied',
+                    order: 'applied',
+                    page: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1 + info.start;
+                });
+            });
+
 
         })
+
+        function getCookie(name) {
+            var cookieValue = null;
+            var i = 0;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (i; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
     </script>
 
 {% endblock %}
