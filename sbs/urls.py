@@ -188,8 +188,8 @@ urlpatterns = [
     # Mahalle
     path('yeka/mahalle-getir/', CityViews.get_neighborhood, name='get_neighborhood'),
 
-    path('yeka/izin-listesi/', PermissionView.view_permission, name='view_permission'),
-    path('yeka/izin-guncelle/<uuid:uuid>', PermissionView.change_permission, name='change_permission'),
+    path('izin/izin-listesi/', PermissionView.view_permission, name='view_permission'),
+    path('izin/izin-guncelle/<uuid:uuid>', PermissionView.change_permission, name='change_permission'),
 
     path('bildirim/bildirim-getir/', NotificationViews.get_notification, name='bildirim-getir'),
     path('bildirim/bildirimler/', NotificationViews.view_notification, name='bildirimler'),
