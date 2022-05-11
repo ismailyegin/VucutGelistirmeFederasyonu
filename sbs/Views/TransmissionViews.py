@@ -67,8 +67,8 @@ def TransmissionClub(request, limit, offset):
                         if y['Data']:
                             clup_info = y['Data'][0]
                             country='TÜRKİYE CUMHURİYETİ'
-                            if Club.objects.filter(name__icontains=club['KulupAdi']):
-                                sport_club = Club.objects.get(name__icontains=club['KulupAdi'])
+                            if Club.objects.filter(guidId=club['KulupGuid']):
+                                sport_club = Club.objects.get(guidId=club['KulupGuid'])
                                 sport_club.isMatch = True
                                 sport_club.name = clup_info['KulupAdi']
                                 sport_club.guidId = clup_info['KulupGuid']
