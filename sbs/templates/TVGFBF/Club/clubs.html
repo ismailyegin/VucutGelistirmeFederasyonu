@@ -164,10 +164,10 @@
 
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <div class="form-group">
+
                                             <label for="city">Şehir</label>
                                             <select class="form-control select2 select2-hidden-accessible"
-                                                    style="width: 100%;" data-select2-id="1" tabindex="-1"
+                                                    style="width: 100%;" data-select2-id="3" tabindex="-1"
                                                     aria-hidden="true" id="city" name="city">
                                                 <option selected value="">----</option>
 
@@ -175,15 +175,14 @@
                                                     <option value="{{ city.pk }}">{{ city.name }}</option>
                                                 {% endfor %}
                                             </select>
-                                        </div>
+
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <div class="form-group">
                                             <label for="branch">Branş</label>
                                             <select class="form-control select2 select2-hidden-accessible"
-                                                    style="width: 100%;" data-select2-id="1" tabindex="-1"
+                                                    style="width: 100%;" data-select2-id="2" tabindex="-1"
                                                     aria-hidden="true" id="branch" name="branch">
                                                 <option selected value="">----</option>
 
@@ -191,7 +190,7 @@
                                                     <option value="{{ branch.pk }}">{{ branch.title }}</option>
                                                 {% endfor %}
                                             </select>
-                                        </div>
+
                                     </div>
                                 </div>
                                 {% if aktif == 'Admin' %}
