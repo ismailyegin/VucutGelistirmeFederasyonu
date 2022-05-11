@@ -300,10 +300,11 @@ def TransmissionCity(request):
             y = json.loads(response.text)
             if y['Data']:
                 for club_info in y['Data']:
-                    city=City()
-                    city.name=club_info['IlAdi']
-                    city.plateNo=club_info['IlId']
-                    city.save()
+                    if not City.objects.filter(plateNo=club_info['IlId']):
+                        city=City()
+                        city.name=club_info['IlAdi']
+                        city.plateNo=club_info['IlId']
+                        city.save()
 
             messages.success(request, 'İl aktarma işlemi yapıldı.')
             return redirect('sbs:view_admin')

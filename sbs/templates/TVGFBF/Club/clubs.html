@@ -201,10 +201,12 @@
                                             <select class="form-control select2 select2-hidden-accessible"
                                                     style="width: 100%;" data-select2-id="1" tabindex="-1"
                                                     aria-hidden="true" id="clubUser" name="clubUser">
-                                                <option selected value=""></option>
-                                                {% for clubUser in clubUsers %}
-                                                    <option value="{{ clubUser.pk }}">{{ clubUser.person.user.get_full_name }}</option>
-                                                {% endfor %}
+                                                {% if clubUsers %}
+                                                    <option selected value=""></option>
+                                                    {% for clubUser in clubUsers %}
+                                                        <option value="{{ clubUser.pk }}">{{ clubUser.person.user.get_full_name }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
                                             </select>
                                         </div>
                                     </div>
@@ -233,113 +235,114 @@
             </section>
         </div>
 
-{% if clubs %}
-        <div class="row">
-            <section class="col-lg-12 ">
+        {% if clubs %}
+            <div class="row">
+                <section class="col-lg-12 ">
 
 
-                <div class="card card-outline card-info">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Kulüp Listesi</h3>
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Kulüp Listesi</h3>
 
-                        {% for item in perm %}
-                            {% if item == 'add_club' %}
-                                {% if aktif == 'Admin' %}
-                                    <a href="{% url 'sbs:add_club' %}"
-                                       type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                            class="fa fa-plus" title="Yeni Kulüp Ekle"></i>
-                                    </a>
+                            {% for item in perm %}
+                                {% if item == 'add_club' %}
+                                    {% if aktif == 'Admin' %}
+                                        <a href="{% url 'sbs:add_club' %}"
+                                           type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
+                                                class="fa fa-plus" title="Yeni Kulüp Ekle"></i>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
-                        {% endfor %}
+                            {% endfor %}
 
-                    </div>
+                        </div>
 
-                    <div class="card-body">
-                        <table id="kulupler" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th> Adı</th>
-                                <th>Branş</th>
-                                <th>Kulüp Yetkilisi</th>
-                                <th>İl</th>
-                                {# <th>Sporcu sayisi</th>#}
-                                <th>Antrenör sayisi</th>
+                        <div class="card-body">
+                            <table id="kulupler" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> Adı</th>
+                                    <th>Branş</th>
+                                    <th>Kulüp Yetkilisi</th>
+                                    <th>İl</th>
+                                    {# <th>Sporcu sayisi</th>#}
+                                    <th>Antrenör sayisi</th>
 
-                                {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
-                                    <th>Düzenle/Sil</th>
-                                {% endif %}
-
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if clubs.all %}
-
-                                {% for club in clubs %}
-                                    <tr>
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ club.name }}</td>
-                                        <td>{% for branch in club.branch.all %}
-
-                                            <span class="badge badge-info"> {{ branch.title }}</span>
-
-                                        {% endfor %}</td>
-                                        <td>
-                                            {% for member in club.clubUser.all %}
-                                                {% if member.role.name == 'BAŞKAN' %}
-                                                    {{ member.user.get_full_name }}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </td>
-                                        <td>{{ club.communication.city }}</td>
-                                        <td>{{ club.coachs.count }}</td>
+                                    {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
+                                        <th>Düzenle/Sil</th>
+                                    {% endif %}
 
 
-                                        {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if clubs.all %}
+
+                                    {% for club in clubs %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ club.name }}</td>
+                                            <td>{% for branch in club.branch.all %}
+
+                                                <span class="badge badge-info"> {{ branch.title }}</span>
+
+                                            {% endfor %}</td>
                                             <td>
-
-
-                                                <div class="btn-group">
-                                                    <a href="{% url 'sbs:update_club' club.uuid %}"
-                                                       type="button" class="btn btn-outline-warning" title="Düzenle"> <i
-                                                            class="fa fa-edit" title="Düzenle"></i>
-                                                    </a>
-
-                                                </div>
-                                                <div class="btn-group">
-                                                    <a class="btn btn-outline-danger"
-                                                       data-toggle="modal" title="Sil"
-                                                       onclick=deleteClub('{{ club.uuid }}')><i
-                                                            class="fa fa-trash"></i></a>
-                                                </div>
-
-
+                                                {% for member in club.clubUser.all %}
+                                                    {% if member.role.name == 'BAŞKAN' %}
+                                                        {{ member.user.get_full_name }}
+                                                    {% endif %}
+                                                {% endfor %}
                                             </td>
-                                        {% endif %}
+                                            <td>{{ club.communication.city }}</td>
+                                            <td>{{ club.coachs.count }}</td>
 
 
-                                    </tr>
-
-                                {% endfor %}
-                            {% endif %}
+                                            {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
+                                                <td>
 
 
-                            </tbody>
-                        </table>
+                                                    <div class="btn-group">
+                                                        <a href="{% url 'sbs:update_club' club.uuid %}"
+                                                           type="button" class="btn btn-outline-warning"
+                                                           title="Düzenle"> <i
+                                                                class="fa fa-edit" title="Düzenle"></i>
+                                                        </a>
 
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <a class="btn btn-outline-danger"
+                                                           data-toggle="modal" title="Sil"
+                                                           onclick=deleteClub('{{ club.uuid }}')><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+
+
+                                                </td>
+                                            {% endif %}
+
+
+                                        </tr>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
                     </div>
-                </div>
-                <!-- /.box -->
+                    <!-- /.box -->
 
 
-            </section>
+                </section>
 
 
-        </div>
-        <!-- /.row (main row) -->
-{% endif %}
+            </div>
+            <!-- /.row (main row) -->
+        {% endif %}
     </section>
 
     {% load  static %}
