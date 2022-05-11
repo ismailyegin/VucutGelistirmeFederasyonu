@@ -32,7 +32,7 @@ def getLimitOffset(request):
             return render(request,'TVGFBF/Club/transmissionClub.html',{'current_limit':current_limit})
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
-        return redirect('sbs:kulupler')
+        return redirect('sbs:return_clubs')
 
 def TransmissionClub(request, limit, offset):
     try:
