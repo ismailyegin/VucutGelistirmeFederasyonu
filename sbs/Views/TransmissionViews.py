@@ -122,7 +122,7 @@ def TransmissionClub(request, limit, offset):
 
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
-        return redirect('sbs:kulupler')
+        return redirect('sbs:return_clubs')
 
 def TransmissionClubDetail(request, derbisKutukNo):
     try:
