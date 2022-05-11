@@ -53,69 +53,70 @@ def TransmissionClub(request, limit, offset):
             if x['Data']:
                 for club in x['Data']:
                     id = club['DerbisKutukNo']
-                    url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/KulupGetirDetayli?kulupGuid=00000000-0000-0000-0000-000000000000&derbisKutukNo=' + id + ''
+                    if id:
+                        url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/KulupGetirDetayli?kulupGuid=00000000-0000-0000-0000-000000000000&derbisKutukNo=' + id + ''
 
-                    payload = {}
-                    files = {}
-                    headers = {
-                        'Authorization': 'Basic dnVjdXRnZWxpc3Rpcm1lYWt0YXJpbTphMzE5YzczNC03ZjhlLTQ4NzQtYmExYy00YzU4MmU2NjExYTg='
-                    }
+                        payload = {}
+                        files = {}
+                        headers = {
+                            'Authorization': 'Basic dnVjdXRnZWxpc3Rpcm1lYWt0YXJpbTphMzE5YzczNC03ZjhlLTQ4NzQtYmExYy00YzU4MmU2NjExYTg='
+                        }
 
-                    response = requests.request("GET", url, headers=headers, data=payload, files=files)
-                    y = json.loads(response.text)
-                    if y['Data']:
-                        clup_info = y['Data'][0]
-                        country='TÜRKİYE CUMHURİYETİ'
-                        if Club.objects.filter(name__icontains=club['KulupAdi']):
-                            sport_club = Club.objects.get(name__icontains=club['KulupAdi'])
-                            sport_club.isMatch = True
-                            sport_club.name = clup_info['KulupAdi']
-                            sport_club.guidId = clup_info['KulupGuid']
+                        response = requests.request("GET", url, headers=headers, data=payload, files=files)
+                        y = json.loads(response.text)
+                        if y['Data']:
+                            clup_info = y['Data'][0]
+                            country='TÜRKİYE CUMHURİYETİ'
+                            if Club.objects.filter(name__icontains=club['KulupAdi']):
+                                sport_club = Club.objects.get(name__icontains=club['KulupAdi'])
+                                sport_club.isMatch = True
+                                sport_club.name = clup_info['KulupAdi']
+                                sport_club.guidId = clup_info['KulupGuid']
 
-                            foundingDate = datetime.strptime(clup_info['KurulusTarihi'].split('T')[0],
-                                                             '%Y-%m-%d')
-                            sport_club.foundingDate = datetime.strptime(str(foundingDate.date()), '%Y-%m-%d').strftime(
-                                "%d/%m/%Y")
-                            communication = Communication.objects.filter(
-                                city=City.objects.get(pk=int(clup_info['IlId'])),
-                                phoneNumber=clup_info['Telefon'],
-                                address=clup_info['Adres'],
-                                town=clup_info['IlceAdi'], country=Country.objects.get(name=country))
-                            if communication:
-
-                                communication = Communication.objects.get(
+                                foundingDate = datetime.strptime(clup_info['KurulusTarihi'].split('T')[0],
+                                                                 '%Y-%m-%d')
+                                sport_club.foundingDate = datetime.strptime(str(foundingDate.date()), '%Y-%m-%d').strftime(
+                                    "%d/%m/%Y")
+                                communication = Communication.objects.filter(
                                     city=City.objects.get(pk=int(clup_info['IlId'])),
-                                    phoneNumber=clup_info['Telefon'], country=Country.objects.get(name=country),
-                                    address=clup_info['Adres'], town=clup_info['IlceAdi'])
+                                    phoneNumber=clup_info['Telefon'],
+                                    address=clup_info['Adres'],
+                                    town=clup_info['IlceAdi'], country=Country.objects.get(name=country))
+                                if communication:
+
+                                    communication = Communication.objects.get(
+                                        city=City.objects.get(pk=int(clup_info['IlId'])),
+                                        phoneNumber=clup_info['Telefon'], country=Country.objects.get(name=country),
+                                        address=clup_info['Adres'], town=clup_info['IlceAdi'])
+                                else:
+                                    communication = Communication(
+                                        city=City.objects.get(pk=int(clup_info['IlId'])),
+                                        phoneNumber=clup_info['Telefon'], country=Country.objects.get(name=country),
+                                        address=clup_info['Adres'], town=clup_info['IlceAdi'])
+                                    communication.save()
+                                sport_club.communication = communication
+                                # sport_club.foundingDate = datetime.strptime(clup_info['KurulusTarihi'].replace('.', '-'),
+                                #                                             '%d-%m-%Y')
+                                sport_club.derbisKutukNo = clup_info['DerbisKutukNo']
+                                sport_club.save()
                             else:
-                                communication = Communication(
-                                    city=City.objects.get(pk=int(clup_info['IlId'])),
-                                    phoneNumber=clup_info['Telefon'], country=Country.objects.get(name=country),
-                                    address=clup_info['Adres'], town=clup_info['IlceAdi'])
+                                new_club = Club()
+                                communication = Communication(city=City.objects.get(pk=int(clup_info['IlId'])),
+                                                              phoneNumber=clup_info['Telefon'],
+                                                              address=clup_info['Adres'],
+                                                              town=clup_info['IlceAdi'],
+                                                              country=Country.objects.get(name=country))
                                 communication.save()
-                            sport_club.communication = communication
-                            # sport_club.foundingDate = datetime.strptime(clup_info['KurulusTarihi'].replace('.', '-'),
-                            #                                             '%d-%m-%Y')
-                            sport_club.derbisKutukNo = clup_info['DerbisKutukNo']
-                            sport_club.save()
-                        else:
-                            new_club = Club()
-                            communication = Communication(city=City.objects.get(pk=int(clup_info['IlId'])),
-                                                          phoneNumber=clup_info['Telefon'],
-                                                          address=clup_info['Adres'],
-                                                          town=clup_info['IlceAdi'],
-                                                          country=Country.objects.get(name=country))
-                            communication.save()
-                            new_club.name = clup_info['KulupAdi']
-                            new_club.communication = communication
-                            foundingDate = datetime.strptime(clup_info['KurulusTarihi'].split('T')[0],
-                                                             '%Y-%m-%d')
-                            new_club.foundingDate = datetime.strptime(str(foundingDate.date()),
-                                                                      '%Y-%m-%d').strftime("%d/%m/%Y")
-                            new_club.derbisKutukNo = clup_info['DerbisKutukNo']
-                            new_club.guidId = clup_info['KulupGuid']
+                                new_club.name = clup_info['KulupAdi']
+                                new_club.communication = communication
+                                foundingDate = datetime.strptime(clup_info['KurulusTarihi'].split('T')[0],
+                                                                 '%Y-%m-%d')
+                                new_club.foundingDate = datetime.strptime(str(foundingDate.date()),
+                                                                          '%Y-%m-%d').strftime("%d/%m/%Y")
+                                new_club.derbisKutukNo = clup_info['DerbisKutukNo']
+                                new_club.guidId = clup_info['KulupGuid']
 
-                            new_club.save()
+                                new_club.save()
                 return True
 
 
