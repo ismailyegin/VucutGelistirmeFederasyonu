@@ -3,6 +3,7 @@ from datetime import datetime
 
 import requests
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -15,6 +16,7 @@ from sbs.models.ekabis.District import District
 from sbs.models.tvfbf.Club import Club
 
 
+@login_required
 def getLimitOffset(request):
     try:
         with transaction.atomic():
