@@ -17,7 +17,7 @@ def ClubTransmission(request):
             payload = {}
             files = {}
             headers = {
-                'Authorization': 'Basic YmFkbWludG9uYWt0YXJpbTo4NTgzYTg1Zi1mYTU5LTRiMzUtYmQ1OC1mYTJlYzg1YmRhMDk='
+                'Authorization': 'Basic dnVjdXRnZWxpc3Rpcm1lYWt0YXJpbTphMzE5YzczNC03ZjhlLTQ4NzQtYmExYy00YzU4MmU2NjExYTg='
             }
 
             response = requests.request("GET", url, headers=headers, data=payload, files=files)

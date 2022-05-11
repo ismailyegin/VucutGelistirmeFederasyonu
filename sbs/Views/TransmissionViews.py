@@ -11,19 +11,39 @@ from sbs.models import SportFacility
 from sbs.models.ekabis.City import City
 from sbs.models.ekabis.Country import Country
 from sbs.models.ekabis.Communication import Communication
+from sbs.models.ekabis.District import District
 from sbs.models.tvfbf.Club import Club
 
+
+def getLimitOffset(request):
+    try:
+        with transaction.atomic():
+            current_limit=Club.objects.all().count()
+            if request.method == 'POST':
+                limit=request.POST['limit']
+                offset=request.POST['offset']
+                x=TransmissionClub(request,limit,offset)
+                if x:
+                    messages.success(request, 'Kulüpler Başarıyla Kayıt Edilmiştir.')
+                else:
+                    messages.warning(request, 'Kulüp aktarma işlemi yapılamadı.')
+                return redirect('sbs:getLimitOffset')
+
+            return render(request,'TVGFBF/Club/transmissionClub.html',{'current_limit':current_limit})
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:kulupler')
 
 def TransmissionClub(request, limit, offset):
     try:
         with transaction.atomic():
 
-            url = 'https://servis3.gsb.gov.tr/fedprotokoltest/api/FederasyonServisleri/KulupleriGetir?limit=' + limit + '&offset=' + offset + ''
+            url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/KulupleriGetir?limit=' + limit + '&offset=' + offset + ''
 
             payload = {}
             files = {}
             headers = {
-                'Authorization': 'Basic YmFkbWludG9uYWt0YXJpbToxMjM0NQ=='
+                'Authorization': 'Basic dnVjdXRnZWxpc3Rpcm1lYWt0YXJpbTphMzE5YzczNC03ZjhlLTQ4NzQtYmExYy00YzU4MmU2NjExYTg='
             }
 
             response = requests.request("GET", url, headers=headers, data=payload, files=files)
@@ -33,22 +53,25 @@ def TransmissionClub(request, limit, offset):
             if x['Data']:
                 for club in x['Data']:
                     id = club['DerbisKutukNo']
-                    url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/KulupGetirDetayli?derbisKutukNo=' + id + '&KulupGuid=00000000-0000-0000-0000-000000000000'
+                    url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/KulupGetirDetayli?kulupGuid=00000000-0000-0000-0000-000000000000&derbisKutukNo=' + id + ''
 
                     payload = {}
                     files = {}
                     headers = {
-                        'Authorization': 'Basic YmFkbWludG9uYWt0YXJpbTo4NTgzYTg1Zi1mYTU5LTRiMzUtYmQ1OC1mYTJlYzg1YmRhMDk='
+                        'Authorization': 'Basic dnVjdXRnZWxpc3Rpcm1lYWt0YXJpbTphMzE5YzczNC03ZjhlLTQ4NzQtYmExYy00YzU4MmU2NjExYTg='
                     }
 
                     response = requests.request("GET", url, headers=headers, data=payload, files=files)
                     y = json.loads(response.text)
                     if y['Data']:
                         clup_info = y['Data'][0]
+                        country='TÜRKİYE CUMHURİYETİ'
                         if Club.objects.filter(name__icontains=club['KulupAdi']):
                             sport_club = Club.objects.get(name__icontains=club['KulupAdi'])
                             sport_club.isMatch = True
                             sport_club.name = clup_info['KulupAdi']
+                            sport_club.guidId = clup_info['KulupGuid']
+
                             foundingDate = datetime.strptime(clup_info['KurulusTarihi'].split('T')[0],
                                                              '%Y-%m-%d')
                             sport_club.foundingDate = datetime.strptime(str(foundingDate.date()), '%Y-%m-%d').strftime(
@@ -57,16 +80,17 @@ def TransmissionClub(request, limit, offset):
                                 city=City.objects.get(pk=int(clup_info['IlId'])),
                                 phoneNumber=clup_info['Telefon'],
                                 address=clup_info['Adres'],
-                                town=clup_info['IlceAdi'], country=Country.objects.get(name='TÜRKİYE'))
+                                town=clup_info['IlceAdi'], country=Country.objects.get(name=country))
                             if communication:
+
                                 communication = Communication.objects.get(
                                     city=City.objects.get(pk=int(clup_info['IlId'])),
-                                    phoneNumber=clup_info['Telefon'], country=Country.objects.get(name='TÜRKİYE'),
+                                    phoneNumber=clup_info['Telefon'], country=Country.objects.get(name=country),
                                     address=clup_info['Adres'], town=clup_info['IlceAdi'])
                             else:
                                 communication = Communication(
                                     city=City.objects.get(pk=int(clup_info['IlId'])),
-                                    phoneNumber=clup_info['Telefon'], country=Country.objects.get(name='TÜRKİYE'),
+                                    phoneNumber=clup_info['Telefon'], country=Country.objects.get(name=country),
                                     address=clup_info['Adres'], town=clup_info['IlceAdi'])
                                 communication.save()
                             sport_club.communication = communication
@@ -80,7 +104,7 @@ def TransmissionClub(request, limit, offset):
                                                           phoneNumber=clup_info['Telefon'],
                                                           address=clup_info['Adres'],
                                                           town=clup_info['IlceAdi'],
-                                                          country=Country.objects.get(name='TÜRKİYE'))
+                                                          country=Country.objects.get(name=country))
                             communication.save()
                             new_club.name = clup_info['KulupAdi']
                             new_club.communication = communication
@@ -89,15 +113,15 @@ def TransmissionClub(request, limit, offset):
                             new_club.foundingDate = datetime.strptime(str(foundingDate.date()),
                                                                       '%Y-%m-%d').strftime("%d/%m/%Y")
                             new_club.derbisKutukNo = clup_info['DerbisKutukNo']
-                            new_club.save()
+                            new_club.guidId = clup_info['KulupGuid']
 
-                messages.success(request, 'Kulüp Başarıyla Kayıt Edilmiştir.')
+                            new_club.save()
+                return True
 
 
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:kulupler')
-
 
 def TransmissionClubDetail(request, derbisKutukNo):
     try:
@@ -108,7 +132,7 @@ def TransmissionClubDetail(request, derbisKutukNo):
             payload = {}
             files = {}
             headers = {
-                'Authorization': 'Basic YmFkbWludG9uYWt0YXJpbTo4NTgzYTg1Zi1mYTU5LTRiMzUtYmQ1OC1mYTJlYzg1YmRhMDk='
+                'Authorization': 'Basic dnVjdXRnZWxpc3Rpcm1lYWt0YXJpbTphMzE5YzczNC03ZjhlLTQ4NzQtYmExYy00YzU4MmU2NjExYTg='
             }
 
             response = requests.request("GET", url, headers=headers, data=payload, files=files)
@@ -137,7 +161,6 @@ def TransmissionClubDetail(request, derbisKutukNo):
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
-
 
 def GetCurrentFacilityDetail(request):
     try:
@@ -172,7 +195,6 @@ def GetCurrentFacilityDetail(request):
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
 
-
 def GetCurrentClubDetail(request):
     try:
         with transaction.atomic():
@@ -203,7 +225,6 @@ def GetCurrentClubDetail(request):
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
 
-
 def transmissionOffsetLimit(request):
     try:
         with transaction.atomic():
@@ -223,7 +244,6 @@ def transmissionOffsetLimit(request):
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
-
 
 def getClubForRegisterManager(request):
     try:
@@ -262,17 +282,90 @@ def getClubForRegisterManager(request):
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
 
-# from apscheduler.schedulers.background import BackgroundScheduler
-#
-#
-# def test():
-#     print('test')
-#
-# def test2():
-#     print('test2')
-#
-#
-# scheduler = BackgroundScheduler(timezone="Europe/Istanbul")
-# scheduler.add_job(test, 'cron', year='2022', month='1,3,5', day='21,22', hour='10,11', minute='8')
-# scheduler.add_job(test2, 'cron', year='*', month='*', day='*', hour='*', minute='41,45')
-# scheduler.start()
+def TransmissionCity(request):
+    try:
+        with transaction.atomic():
+            url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/IlListesiGetir'
+
+            payload = {}
+            files = {}
+            headers = {
+                'Authorization': 'Basic dnVjdXRnZWxpc3Rpcm1lYWt0YXJpbTphMzE5YzczNC03ZjhlLTQ4NzQtYmExYy00YzU4MmU2NjExYTg='
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload, files=files)
+            y = json.loads(response.text)
+            if y['Data']:
+                for club_info in y['Data']:
+                    city=City()
+                    city.name=club_info['IlAdi']
+                    city.plateNo=club_info['IlId']
+                    city.save()
+
+            messages.success(request, 'İl aktarma işlemi yapıldı.')
+            return redirect('sbs:view_admin')
+
+
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:view_admin')
+
+def TransmissionCountry(request):
+    try:
+        with transaction.atomic():
+            url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/UlkeListesiGetir'
+
+            payload = {}
+            files = {}
+            headers = {
+                'Authorization': 'Basic dnVjdXRnZWxpc3Rpcm1lYWt0YXJpbTphMzE5YzczNC03ZjhlLTQ4NzQtYmExYy00YzU4MmU2NjExYTg='
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload, files=files)
+            y = json.loads(response.text)
+            if y:
+                for club_info in y:
+                    if not Country.objects.filter(name=club_info['UlkeAdi']):
+                        country=Country()
+                        country.name=club_info['UlkeAdi']
+                        country.save()
+
+            messages.success(request, 'Ülke aktarma işlemi yapıldı.')
+            return redirect('sbs:view_admin')
+
+
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:view_admin')
+
+def TransmissionDistrict(request):
+    try:
+        with transaction.atomic():
+            for city in City.objects.all():
+                url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/IlceListesiGetir?ilId='+str(city.pk)+''
+
+                payload = {}
+                files = {}
+                headers = {
+                    'Authorization': 'Basic dnVjdXRnZWxpc3Rpcm1lYWt0YXJpbTphMzE5YzczNC03ZjhlLTQ4NzQtYmExYy00YzU4MmU2NjExYTg='
+                }
+
+                response = requests.request("GET", url, headers=headers, data=payload, files=files)
+                y = json.loads(response.text)
+                if y['Data']:
+                    for club_info in y['Data']:
+                        if not District.objects.filter(name=club_info['IlceAdi']).filter(city=city):
+                            district=District()
+                            district.name=club_info['IlceAdi']
+                            district.city=city
+                            district.save()
+
+            messages.success(request, 'İlçe aktarma işlemi yapıldı.')
+            return redirect('sbs:view_admin')
+
+
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:view_admin')
+
+

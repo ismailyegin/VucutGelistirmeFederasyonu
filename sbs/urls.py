@@ -120,9 +120,12 @@ urlpatterns = [
     path('kulupAktarimi/', ClubTransmissionViews.ClubTransmission, name='api-club-transmission'),
     path('kulup/kulup-yonetici-ekle-api/', TransmissionViews.getClubForRegisterManager,
          name='kulup-yönetici-ekle-api'),
+    path('kulupAktarimi/limit-offset/', TransmissionViews.getLimitOffset, name='getLimitOffset'),
+    path('il/il-aktarimi/', TransmissionViews.TransmissionCity, name='TransmissionCity'),
+    path('ulke/ulke-aktarimi/', TransmissionViews.TransmissionCountry, name='TransmissionCountry'),
+    path('ilce/ilce-aktarimi/', TransmissionViews.TransmissionDistrict, name='TransmissionDistrict'),
 
-
-# Yönetim
+    # Yönetim
     path('kurul/kurul-uyeleri/', DirectoryViews.return_directory_members, name='view_directoryMember'),
     path('kurul/kurul-uyesi-ekle/', DirectoryViews.add_directory_member, name='add_directorymember'),
     path('kurul/kurul-uyesi-duzenle/<uuid:uuid>/', DirectoryViews.update_directory_member,
