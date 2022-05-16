@@ -1261,6 +1261,7 @@
 #             judge.save()
 #
 #     return redirect('sbs:admin')
+import time
 import traceback
 
 import pandas
@@ -1338,6 +1339,7 @@ def transmissionAntrenor(request):
                         coach.save()
                         coach.grades.add(level)
                         coach.branch.add(branch)
+                        time.sleep(2)
             messages.success(request, 'Antrenör kaydı tamamlandı')
 
 
