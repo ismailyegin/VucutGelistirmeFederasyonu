@@ -1300,53 +1300,53 @@ def transmissionFacility(request):
         return redirect('sbs:view_admin')
 
 
-import math
 def transmissionAntrenor(request):
     try:
         with transaction.atomic():
 
             df = pandas.read_csv('antrenor_list.csv')
-            if df:
-                for value in df.values:
-                    if not User.objects.filter(username=value[1].lower()):
-                        email=value[1].lower()
-                        if not Person.objects.filter(user__first_name=value[3], user__last_name=value[4]).filter(
-                                user__email=email):
-                            city_name = None
-                            branch = Branch.objects.get(title=value[2])
 
-                            grade = CategoryItem.objects.get(name=value[0])
-                            level = HavaLevel(branch=branch, definition=grade, city=city_name)
-                            level.save()
+            for value in df.values:
+                if not User.objects.filter(username=value[1].lower()):
+                    email = value[1].lower()
+                    if not Person.objects.filter(user__first_name=value[3], user__last_name=value[4]).filter(
+                            user__email=email):
+                        city_name = None
+                        branch = Branch.objects.get(title=value[2])
 
-                            user = User(username=email, email=email, first_name=value[3], last_name=value[4])
-                            user.save()
-                            group = Group.objects.get(name='Antrenör')
-                            user.groups.add(group)
-                            active = ActiveGroup(user=user, group=group)
-                            active.save()
+                        grade = CategoryItem.objects.get(name=value[0])
+                        level = HavaLevel(branch=branch, definition=grade, city=city_name)
+                        level.save()
 
-                            person = Person(user=user)
-                            person.save()
+                        user = User(username=email, email=email, first_name=value[3], last_name=value[4])
+                        user.save()
+                        group = Group.objects.get(name='Antrenör')
+                        user.groups.add(group)
+                        active = ActiveGroup(user=user, group=group)
+                        active.save()
 
-                            phone = None
-                            town = None
-                            com = Communication(phoneNumber=phone, city=city_name, town=town)
-                            com.save()
+                        person = Person(user=user)
+                        person.save()
 
-                            coach = Coach(person=person, communication=com)
+                        phone = None
+                        town = None
+                        com = Communication(phoneNumber=phone, city=city_name, town=town)
+                        com.save()
 
-                            coach.save()
-                            coach.grades.add(level)
-                            coach.branch.add(branch)
-                messages.success(request, 'Antrenör kaydı tamamlandı')
+                        coach = Coach(person=person, communication=com)
 
-            messages.success(request, 'dosya bulunamadı')
+                        coach.save()
+                        coach.grades.add(level)
+                        coach.branch.add(branch)
+            messages.success(request, 'Antrenör kaydı tamamlandı')
+
+
 
         print('antrenorler eklendi')
         return redirect('sbs:view_admin')
 
     except Exception as e:
+        messages.warning(request, e)
         traceback.print_exc()
         return redirect('sbs:view_admin')
 
