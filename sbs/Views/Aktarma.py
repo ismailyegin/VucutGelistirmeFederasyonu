@@ -1306,36 +1306,37 @@ def transmissionAntrenor(request):
 
             df = pandas.read_csv('antrenor_list.csv')
             for value in df.values:
+                if not User.objects.filter(username=value[1].lower()):
+                    email=value[1].lower()
+                    if not Person.objects.filter(user__first_name=value[3], user__last_name=value[4]).filter(
+                            user__email=email):
+                        city_name = None
+                        branch = Branch.objects.get(title=value[2])
 
-                if not Person.objects.filter(user__first_name=value[3], user__last_name=value[4]).filter(
-                        user__email=value[1]):
-                    city_name = None
-                    branch = Branch.objects.get(title=value[2])
+                        grade = CategoryItem.objects.get(name=value[0])
+                        level = HavaLevel(branch=branch, definition=grade, city=city_name)
+                        level.save()
 
-                    grade = CategoryItem.objects.get(name=value[0])
-                    level = HavaLevel(branch=branch, definition=grade, city=city_name)
-                    level.save()
+                        user = User(username=email, email=email, first_name=value[3], last_name=value[4])
+                        user.save()
+                        group = Group.objects.get(name='Antrenör')
+                        user.groups.add(group)
+                        active = ActiveGroup(user=user, group=group)
+                        active.save()
 
-                    user = User(username=value[1], email=value[1], first_name=value[3], last_name=value[4])
-                    user.save()
-                    group = Group.objects.get(name='Antrenör')
-                    user.groups.add(group)
-                    active = ActiveGroup(user=user, group=group)
-                    active.save()
+                        person = Person(user=user)
+                        person.save()
 
-                    person = Person(user=user)
-                    person.save()
+                        phone = None
+                        town = None
+                        com = Communication(phoneNumber=phone, city=city_name, town=town)
+                        com.save()
 
-                    phone = None
-                    town = None
-                    com = Communication(phoneNumber=phone, city=city_name, town=town)
-                    com.save()
+                        coach = Coach(person=person, communication=com)
 
-                    coach = Coach(person=person, communication=com)
-
-                    coach.save()
-                    coach.grades.add(level)
-                    coach.branch.add(branch)
+                        coach.save()
+                        coach.grades.add(level)
+                        coach.branch.add(branch)
 
         print('antrenorler eklendi')
         return redirect('sbs:view_admin')
