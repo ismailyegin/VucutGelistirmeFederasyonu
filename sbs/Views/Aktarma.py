@@ -1300,13 +1300,11 @@ def transmissionFacility(request):
 
 
 import math
-
-
 def transmissionAntrenor(request):
     try:
         with transaction.atomic():
 
-            df = pandas.read_csv('coach.csv')
+            df = pandas.read_csv('antrenor_list.csv')
             for value in df.values:
 
                 if not Person.objects.filter(user__first_name=value[3], user__last_name=value[4]).filter(

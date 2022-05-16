@@ -303,7 +303,7 @@ urlpatterns = [
     path('duyuru/duyuru-getir/', AnnouncementViews.getAnnouncement, name='get_announcement'),
 
     path('aktarma/spor-salonu', Aktarma.transmissionFacility, name='transmissionFacility'),
-    path('aktarma/antrenor-salonu', Aktarma.transmissionAntrenor, name='transmissionAntrenor'),
+    path('aktarma/antrenor', Aktarma.transmissionAntrenor, name='transmissionAntrenor'),
 
     path('tesis/tesis-getir-api/', TransmissionViews.GetCurrentFacilityDetail, name='tesis-getir-api'),
     path('tesis/tesis-onayla/<uuid:uuid>', SportFacilityViews.pre_facility_approve, name='pre_facility_approve'),
