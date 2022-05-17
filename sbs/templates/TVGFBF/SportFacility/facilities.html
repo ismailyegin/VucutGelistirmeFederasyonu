@@ -232,7 +232,7 @@
                                 <th>İl/İlçe</th>
                             <th>Derbis No</th>
                                 <th>Tesis Durumu</th>
-                                {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
+                                {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenör' %}
                                     <th>Düzenle/Sil/Yetkililer/Çalıştırıcılar</th>
                                 {% endif %}
 
@@ -240,75 +240,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% if facilities.all %}
 
-                                {% for facility in facilities %}
-                                    <tr>
-
-                                        {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                                            <td>
-                                                {% for item in perm %}
-                                                    {% if item == 'update_referee' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:update_sport_facility' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-warning"
-                                                               title="Düzenle"><i
-                                                                    class="fa fa-edit"></i>
-                                                            </a>
-                                                        </div>
-
-                                                    {% elif item == 'delete_facility' %}
-                                                        <div class="btn-group">
-                                                            <a class="btn btn-outline-danger"
-                                                               data-toggle="modal" title="Sil"
-                                                               onclick="deleteFacility('{{ facility.uuid }}')"><i
-                                                                    class="fa fa-trash"></i></a>
-                                                        </div>
-                                                    {% elif item == 'return_facilityUser' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityUser' facility.uuid %}"type="button" class="btn btn-outline-info" title="Yetkili Listesi"><i class="fa fa-user"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% elif item == 'return_facilityUser' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityUser' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-info"
-                                                               title="Yetkili Listesi"><i
-                                                                    class="fa fa-user"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% elif item == 'return_facilityCoach' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityCoach' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-success"
-                                                               title="Çalıştırıcılar"><i
-                                                                    class="fa fa-user-friends"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% elif item == 'return_facilityDocument' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityDocument' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-secondary"
-                                                               title="Belgeler"><i
-                                                                    class="fa fa-file"></i>
-                                                            </a>
-                                                        </div>
-
-                                                    {% endif %}
-
-
-
-                                                {% endfor %}
-
-
-                                            </td>
-                                        {% endif %}
-
-
-                                    </tr>
-
-                                {% endfor %}
-                            {% endif %}
 
 
                             </tbody>
@@ -440,7 +372,7 @@
                             console.log(full.content);
                             let html;
                             debugger;
-                            {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenör' %}
                                 let url2 = "deleteFacility('" + full.uuid + "')"
 
                                 let url = "{% url "sbs:update_sport_facility" '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
