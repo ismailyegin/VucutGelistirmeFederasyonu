@@ -1282,17 +1282,19 @@ def transmissionFacility(request):
 
             df = pandas.read_csv('/var/www/vhosts/sbs.tvgfbf.gov.tr/httpdocs/djangoProject/VucutGelistirmeFederasyonu/tesis.csv')
             for value in df.values:
-                city_name = City.objects.get(name=value[1])
-                name = value[2]
-                address = value[3]
-                phone = value[4]
-                if not SportFacility.objects.filter(name=name):
-                    facility = SportFacility(name=name)
-                    facility.save()
-                    communation = Communication(phoneNumber=phone, city=city_name, address=address)
-                    communation.save()
-                    facility.communication = communation
-                    facility.save()
+                if value[1]:
+                    if City.objects.filter(name=value[1].upper()):
+                        city_name = City.objects.get(name=value[1])
+                        name = value[2]
+                        address = value[3]
+                        phone = value[4]
+                        if not SportFacility.objects.filter(name=name):
+                            facility = SportFacility(name=name)
+                            facility.save()
+                            communation = Communication(phoneNumber=phone, city=city_name, address=address)
+                            communation.save()
+                            facility.communication = communation
+                            facility.save()
             print('spor salonları eklendi')
             return redirect('sbs:view_admin')
 
