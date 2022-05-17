@@ -1286,7 +1286,7 @@ def transmissionFacility(request):
                 if value[1] and value[0]:
 
                     if City.objects.filter(name=str(value[0]).encode('utf8').upper()):
-                        city_name = City.objects.get(name=str(value[0]).encode('utf8')).upper()
+                        city_name = City.objects.get(name=str(value[0]).encode('utf8').upper())
                         name = str(value[1]).encode('utf8')
                         address = str(value[2]).encode('utf8')
                         phone = str(value[3]).encode('utf8')
