@@ -1285,11 +1285,11 @@ def transmissionFacility(request):
             for value in df.values.tolist():
                 if value[1] and value[0]:
 
-                    if City.objects.filter(name=str(value[0]).encode('utf-8', 'ignore').decode('utf-8').upper()):
-                        city_name = City.objects.get(name=str(value[0]).encode('utf-8', 'ignore').decode('utf-8').upper())
-                        name = str(value[1]).encode('utf-8', 'ignore').decode('utf-8')
-                        address = str(value[2]).encode('utf-8', 'ignore').decode('utf-8')
-                        phone = str(value[3]).encode('utf-8', 'ignore').decode('utf-8')
+                    if City.objects.filter(name=str(value[0]).encode('ascii', 'ignore').decode('ascii').upper()):
+                        city_name = City.objects.get(name=str(value[0]).encode('ascii', 'ignore').decode('ascii').upper())
+                        name = str(value[1]).encode('ascii', 'ignore').decode('ascii')
+                        address = str(value[2]).encode('ascii', 'ignore').decode('ascii')
+                        phone = str(value[3]).encode('ascii', 'ignore').decode('ascii')
                         if not SportFacility.objects.filter(name=name):
                             facility = SportFacility(name=name)
                             facility.save()
