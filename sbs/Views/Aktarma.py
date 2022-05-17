@@ -1283,8 +1283,9 @@ def transmissionFacility(request):
             df = pandas.read_csv('tesis.csv')
             for value in df.values:
                 if value[1]:
-                    if City.objects.filter(name=value[0].upper()):
-                        city_name = City.objects.get(name=value[0].upper())
+
+                    if City.objects.filter(name=str(value[0]).upper()):
+                        city_name = City.objects.get(name=str(value[0]).upper())
                         name = value[1]
                         address = value[2]
                         phone = value[3]
