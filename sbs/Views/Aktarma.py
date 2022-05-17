@@ -1288,7 +1288,7 @@ def transmissionFacility(request):
                         city_name = City.objects.get(name=str(value[0]).upper())
                         name = value[1]
                         address = value[2]
-                        phone = value[3].encode('ascii', 'ignore').decode('ascii')
+                        phone = str(value[3]).encode('ascii', 'ignore').decode('ascii')
                         if not SportFacility.objects.filter(name=name):
                             facility = SportFacility(name=name)
                             facility.save()
