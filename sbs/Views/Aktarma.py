@@ -1280,7 +1280,7 @@ def transmissionFacility(request):
     try:
         with transaction.atomic():
 
-            df = pandas.read_csv('tesis.csv')
+            df = pandas.read_csv('tesis.csv', encoding='utf8')
             x=''
             for value in df.values.tolist():
                 if value[1] and value[0]:
