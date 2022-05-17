@@ -340,10 +340,14 @@
                         "data": null,
                         render: function (full) {
                             let town=''
+                            let city=''
                             if (full.communication.town !== null)
                                 town='/'+full.communication.town
-
-                            return full.communication.city.name  + town;
+                            if(full.communication.city)
+                            {
+                                city=full.communication.city.name
+                            }
+                            return city+ town;
                         }
                     },
                 {
