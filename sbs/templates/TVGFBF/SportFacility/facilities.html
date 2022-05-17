@@ -230,7 +230,7 @@
                                 <th>#</th>
                                 <th>Adı</th>
                                 <th>İl/İlçe</th>
-                            <th>Derbis No</th>
+                                <th>Derbis No</th>
                                 <th>Tesis Durumu</th>
                                 {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenör' %}
                                     <th>Düzenle/Sil/Yetkililer/Çalıştırıcılar</th>
@@ -348,9 +348,16 @@
                 {
                         "data": null,
                         render: function (full) {
-                            let town=''
+                            let derbis=''
+                            if(full.derbis)
+                            {
+                                derbis=full.derbis
+                            }
+                            else{
+                                 derbis='---'
+                            }
 
-                            return full.derbis;
+                            return derbis;
                         }
                     },
                     {
