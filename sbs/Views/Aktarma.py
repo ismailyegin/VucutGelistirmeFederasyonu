@@ -1281,8 +1281,9 @@ def transmissionFacility(request):
         with transaction.atomic():
 
             df = pandas.read_csv('tesis.csv')
-            for value in df.values:
+            for value in df.values.tolist():
                 if value[1] and value[0]:
+
                     if City.objects.filter(name=str(value[0]).upper()):
                         city_name = City.objects.get(name=str(value[0]).upper())
                         name = value[1]
