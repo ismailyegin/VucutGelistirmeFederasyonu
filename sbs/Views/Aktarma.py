@@ -1281,9 +1281,10 @@ def transmissionFacility(request):
         with transaction.atomic():
 
             df = pandas.read_csv('tesis.csv')
+            x=''
             for value in df.values.tolist():
                 if value[1] and value[0]:
-
+                    x='il'+value[1]+' ad'+value[1]
                     if City.objects.filter(name=str(str(value[0]).encode('ascii', 'ignore').decode('ascii')).upper()):
                         city_name = City.objects.get(name=str(str(value[0]).encode('ascii', 'ignore').decode('ascii')).upper())
                         name = str(value[1]).encode('ascii', 'ignore').decode('ascii')
@@ -1302,7 +1303,7 @@ def transmissionFacility(request):
             return redirect('sbs:view_admin')
 
     except Exception as e:
-        messages.warning(request, e)
+        messages.warning(request, e+' ('+x+')')
         traceback.print_exc()
         return redirect('sbs:view_admin')
 
