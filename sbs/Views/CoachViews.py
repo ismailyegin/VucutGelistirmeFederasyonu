@@ -108,8 +108,8 @@ def return_coach_search(request):
                 for club in clubs:
                     clubsPk.append(club.pk)
                 coachs = Coach.objects.filter(sportsclub__in=clubsPk).filter(isDeleted=0).distinct()
-            elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-                return  redirect('sbs:return_coachs')
+            elif user.groups.filter(name='Admin'):
+                return redirect('sbs:return_coachs')
         else:
             query = Q()
             if lastName:
