@@ -1280,7 +1280,7 @@ def transmissionFacility(request):
     try:
         with transaction.atomic():
 
-            df = pandas.read_csv('/var/www/vhosts/sbs.tvgfbf.gov.tr/httpdocs/djangoProject/VucutGelistirmeFederasyonu/spor_salon.csv')
+            df = pandas.read_csv('/var/www/vhosts/sbs.tvgfbf.gov.tr/httpdocs/djangoProject/VucutGelistirmeFederasyonu/tesis.csv')
             for value in df.values:
                 city_name = City.objects.get(name=value[1])
                 name = value[2]
@@ -1297,6 +1297,7 @@ def transmissionFacility(request):
             return redirect('sbs:view_admin')
 
     except Exception as e:
+        messages.warning(request, e)
         traceback.print_exc()
         return redirect('sbs:view_admin')
 
