@@ -1284,7 +1284,7 @@ def transmissionFacility(request):
             x=''
             for value in df.values.tolist():
                 if value[1] and value[0]:
-                    x='il'+str(value[1])+' ad'+str(value[1])
+
                     if City.objects.filter(name=str(str(value[0]).encode('ascii', 'ignore').decode('ascii')).upper()):
                         city_name = City.objects.get(name=str(str(value[0]).encode('ascii', 'ignore').decode('ascii')).upper())
                         name = str(value[1]).encode('ascii', 'ignore').decode('ascii')
@@ -1303,7 +1303,7 @@ def transmissionFacility(request):
             return redirect('sbs:view_admin')
 
     except Exception as e:
-        messages.warning(request, e+' ('+x+')')
+        messages.warning(request, e)
         traceback.print_exc()
         return redirect('sbs:view_admin')
 
