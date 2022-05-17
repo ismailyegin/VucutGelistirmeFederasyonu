@@ -1286,10 +1286,12 @@ def transmissionFacility(request):
                 if value[1] and value[0]:
 
                     if City.objects.filter(name=str(value[0]).encode('ascii', 'ignore').decode('ascii').upper()):
-                        city_name = City.objects.get(name=str(value[0]).encode('ascii', 'ignore').decode('ascii').upper())
-                        name = str(value[1]).encode('ascii', 'ignore').decode('ascii')
-                        address = str(value[2]).encode('ascii', 'ignore').decode('ascii')
-                        phone = str(value[3]).encode('ascii', 'ignore').decode('ascii')
+                        disallowed_characters = "./:,"
+                        for character in disallowed_characters:
+                            city_name = City.objects.get(name=str(value[0]).encode('ascii', 'ignore').decode('ascii').upper())
+                            name = str(value[1]).encode('ascii', 'ignore').decode('ascii').replace(character, "")
+                            address = str(value[2]).encode('ascii', 'ignore').decode('ascii').replace(character, "")
+                            phone = str(value[3]).encode('ascii', 'ignore').decode('ascii').replace(character, "")
                         if not SportFacility.objects.filter(name=name):
                             facility = SportFacility(name=name)
                             facility.save()
