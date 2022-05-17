@@ -149,47 +149,55 @@
 
                 <div class="card card-info card-outline">
                     <div class="card-header with-border">
-                        <h3 class="card-title">Özel Spor Tesisi Filtrele</h3>
+                        <h3 class="card-title">Antrenör Filtrele</h3>
                     </div>
-                    <form method="POST" role="form" enctype="multipart/form-data" action="{% url 'sbs:return_facility_search' %}" >
+
+                    <form method="POST" role="form" enctype="multipart/form-data">
 
                         {% csrf_token %}
 
+
                         <div class="card-body">
                             <div class="row">
-                                {% for form in user_form %}
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label> {{ form.label }}</label>
-                                            {{ form }}
-                                        </div>
-                                    </div>
-                                {% endfor %}
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="city">İl</label>
-                                        <select class="form-control select2 select2-hidden-accessible"
-                                                style="width: 100%;"
-                                                data-select2-id="1" tabindex="-1" aria-hidden="true" id="city"
-                                                name="city">
-                                            <option value="">----</option>
-                                            {% for city in cities %}
+                                        <label> {{ user_form.first_name.label }}</label>
+                                        {{ user_form.first_name }}
+                                    </div>
+                                </div>
 
-                                                <option value="{{ city.name }}"> {{ city.name }}</option>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.last_name.label }}</label>
+                                        {{ user_form.last_name }}
+                                    </div>
+                                </div>
 
-                                            {% endfor %}
-                                        </select>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.email.label }}</label>
+                                        {{ user_form.email }}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ user_form.branch.label }}</label>
+                                        {{ user_form.branch }}
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+
                         <div class="card-footer">
                             <button class="btn btn-outline-info" type="submit" style="float:right"><i
-                                    class="fa fa-search"> </i> Ara
+                                    class="fa fa-search"></i> Ara
                             </button>
 
+
                         </div>
+
+
                     </form>
 
 
@@ -198,7 +206,6 @@
 
                 </div>
             </section>
-
         </div>
 
 
@@ -208,14 +215,14 @@
 
                 <div class="card card-outline card-info">
                     <div class="card-header with-border">
-                        <h3 class="card-title">Özel Spor Tesis Listesi</h3>
+                        <h3 class="card-title">Antrenör Listesi</h3>
 
                         {% for item in perm %}
-                            {% if item == 'AddSportFacility' %}
+                            {% if item == 'add_coach' %}
                                 {% if aktif == 'Admin' %}
-                                    <a href="{% url 'sbs:AddSportFacility' %}"
+                                    <a href="{% url 'sbs:add_coach' %}"
                                        type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                            class="fa fa-plus" title="Yeni Tesis Ekle"></i>
+                                            class="fa fa-plus" title="Antrenör Ekle"></i>
                                     </a>
                                 {% endif %}
                             {% endif %}
@@ -224,125 +231,100 @@
                     </div>
 
                     <div class="card-body">
-                        <table id="facility" class="table table-bordered table-hover">
+                        <table id="antrenorler" class="table table-bordered table-hover">
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Adı</th>
-                                <th>İl/İlçe</th>
-                            <th>Derbis No</th>
-                                <th>Tesis Durumu</th>
+                                <th> Ad Soyad</th>
+                                <th>E-Mail</th>
+                                <th>Branş</th>
+                                <th>Vize Durumu</th>
+                                {#                                <th>Kulüp</th>#}
                                 {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
-                                    <th>Düzenle/Sil/Yetkililer/Çalıştırıcılar</th>
+                                    <th>Düzenle/Sil</th>
                                 {% endif %}
-
-
                             </tr>
                             </thead>
                             <tbody>
-                            {% if facilities.all %}
+                            {% if coachs.all %}
 
-                                {% for facility in facilities %}
+                                {% for coach in coachs %}
                                     <tr>
-
+                                        <td>{{ forloop.counter }} </td>
+                                        <td>{{ coach.person.user.first_name }} {{ coach.person.user.last_name }} </td>
+                                        <td>{{ coach.person.user.email }} </td>
+                                        <td>
+                                            {% for grade in coach.grades.all %}
+                                                {% if grade.isActive and grade.startDate > current_date and grade.status == 'Onaylandı' %}
+                                                    {{ grade.branch.title }},
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for visa in coach.visa.all %}
+                                                {% if visa.isActive and visa.startDate > current_date and visa.status == 'Onaylandı' %}
+                                                    {{ visa.branch.title }},
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        {#                                        <td>#}
+                                        {#                                            {% for club in clubs %}#}
+                                        {#                                                {% for item in club.coachs.all %}#}
+                                        {#                                                    {% if item == coach %}#}
+                                        {#                                                        {{ club.name }}#}
+                                        {#                                                    {% endif %}#}
+                                        {#                                                {% endfor %}#}
+                                        {#                                            {% endfor %}#}
+                                        {#                                        </td>#}
                                         {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                             <td>
                                                 {% for item in perm %}
-                                                    {% if item == 'update_referee' %}
+                                                    {% if item == 'update_coach' %}
                                                         <div class="btn-group">
-                                                            <a href="{% url 'sbs:update_sport_facility' facility.uuid %}"
+                                                            <a href="{% url "sbs:update_coach" coach.uuid %}"
                                                                type="button" class="btn btn-outline-warning"
                                                                title="Düzenle"><i
                                                                     class="fa fa-edit"></i>
                                                             </a>
                                                         </div>
 
-                                                    {% elif item == 'delete_facility' %}
+                                                    {% elif item == 'delete-coach' %}
                                                         <div class="btn-group">
                                                             <a class="btn btn-outline-danger"
                                                                data-toggle="modal" title="Sil"
-                                                               onclick="deleteFacility('{{ facility.uuid }}')"><i
+                                                               onclick=deleteCoach('{{ coach.uuid }}')><i
                                                                     class="fa fa-trash"></i></a>
                                                         </div>
-                                                    {% elif item == 'return_facilityUser' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityUser' facility.uuid %}"type="button" class="btn btn-outline-info" title="Yetkili Listesi"><i class="fa fa-user"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% elif item == 'return_facilityUser' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityUser' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-info"
-                                                               title="Yetkili Listesi"><i
-                                                                    class="fa fa-user"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% elif item == 'return_facilityCoach' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityCoach' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-success"
-                                                               title="Çalıştırıcılar"><i
-                                                                    class="fa fa-user-friends"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% elif item == 'return_facilityDocument' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url 'sbs:return_facilityDocument' facility.uuid %}"
-                                                               type="button" class="btn btn-outline-secondary"
-                                                               title="Belgeler"><i
-                                                                    class="fa fa-file"></i>
-                                                            </a>
-                                                        </div>
-
                                                     {% endif %}
-
-
-
                                                 {% endfor %}
 
 
                                             </td>
                                         {% endif %}
-
-
                                     </tr>
-
                                 {% endfor %}
                             {% endif %}
-
-
                             </tbody>
                         </table>
-
                     </div>
                 </div>
                 <!-- /.box -->
-
-
             </section>
-
-
         </div>
         <!-- /.row (main row) -->
-
     </section>
 
     {% load  static %}
     <script>
         $(function () {
-            table = $('#facility').DataTable({
-
-                "processing": true,
-                "serverSide": true,
-                "paging": true,
-                "ordering": true,
-
-
-                "ajax": {
-                    "url": "{% url 'sbs:view_sport-facility-api' %}",
-                    "type": "POST",
-                },
+            $('#antrenorler').DataTable({
                 dom: 'Bfrtip',
+
+
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
+                ],
 
                 'buttons': [
 
@@ -360,7 +342,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'İzin Listesi',
+                        title: 'YEKA LİSTESİ',
                         text: '<i class="fa fa-print"></i>',
 
                         titleAttr: 'Yazdır',
@@ -390,146 +372,40 @@
 
 
                 ],
-
-
+                "search": {
+                    "caseInsensitive": true,
+                },
                 'language': {
                     "url": "{% static 'datatable_tr/datatable_tr.json' %}"
                 },
-                "columns": [
-                    {"data": "id"},
-                    {
-                        "data": null,
-                        render: function (full) {
-
-                            return full.name;
-                        }
-                    },
-                    {
-                        "data": null,
-                        render: function (full) {
-                            let town=''
-                            if (full.communication.town)
-                                town='/'+full.communication.town
-                            return full.communication.city.name  + town;
-                        }
-                    },
-                {
-                        "data": null,
-                        render: function (full) {
-                            let town=''
-
-                            return full.derbis;
-                        }
-                    },
-                    {
-                        "data": null,
-                        render: function (full) {
-                            let html=''
-                           if (full.status){
-                               html+='<td>Açık</td>'
-                           }
-                           else
-                                html+='<td>Kapalı</td>'
-                            return html;
-                        }
-                    },
-
-                    {
-                        "data": null,
-                        render: function (full) {
-                            console.log(full.content);
-                            let html;
-                            debugger;
-                            {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
-                                let url2 = "deleteFacility('" + full.uuid + "')"
-
-                                let url = "{% url "sbs:update_sport_facility" '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
-                                url = url.replace('7729c6ee-739d-4a89-8ffe-1357e691ca16', full.uuid);
-
-                                let url3 = "{% url 'sbs:return_facilityUser' '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
-                                url3 = url3.replace('7729c6ee-739d-4a89-8ffe-1357e691ca16', full.uuid);
-                                let url4 = "{% url 'sbs:return_facilityCoach' '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
-                                url4 = url4.replace('7729c6ee-739d-4a89-8ffe-1357e691ca16', full.uuid);
-
-                                 let url5 = "{% url 'sbs:return_facilityDocument' '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
-                                url5 = url5.replace('7729c6ee-739d-4a89-8ffe-1357e691ca16', full.uuid);
-
-                                html = '<td><div class="btn-group"> '
-                                html += '<a style="margin-left:5px;" href="' + url + '" class="btn btn-outline-warning" title="Düzenle" type="button"><i class="fa fa-edit"></i></a>';
-                                html += '<a style="margin-left:5px;" onclick="' + url2 + '" class="btn btn-outline-danger" title="Sil" type="button"><i class="fa fa-trash"></i></a>';
-                                html += '<a style="margin-left:5px;" href="'+url3+'"type="button" class="btn btn-outline-info" title="Yetkili Listesi"><i class="fa fa-user"></i>';
-                                html += '<a style="margin-left:5px;" onclick="' + url4 + '" class="btn btn-outline-success" title="Çalıştırıcılar" type="button"><i class="fa fa-user-friends"></i></a>';
-                                html += '<a style="margin-left:5px;" onclick="' + url4 + '" class="btn btn-outline-secondary" title="Belgeler" type="button"><i class="fa fa-file"></i></a>';
-
-                                html += '</div></td>';
-                            {% else %}
-                                html = '<td></td>'
-                            {% endif %}
-                            return html;
-                        }
-                    }
-
-                ],
-                "search": {
-                    "caseInsensitive": true
-                }
-
-
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'order': true,
+                'info': true,
+                'autoWidth': true,
+                'responsive': true,
             });
             table.on('draw.dt', function () {
-                var info = table.page.info();
+                debugger;
                 table.column(0, {
                     search: 'applied',
                     order: 'applied',
                     page: 'applied'
                 }).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1 + info.start;
+                    cell.innerHTML = i + 1;
                 });
             });
 
-
         })
-
-        function getCookie(name) {
-            var cookieValue = null;
-            var i = 0;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (i; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        var csrftoken = getCookie('csrftoken');
-
-        function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
-
-        $.ajaxSetup({
-            crossDomain: false, // obviates need for sameOrigin test
-            beforeSend: function (xhr, settings) {
-                if (!csrfSafeMethod(settings.type)) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }
-        });
-
     </script>
-
     <script>
-        function deleteFacility(id) {
+        function deleteCoach(uuid) {
+            debugger;
 
             swal({
                 title: "Silmek istediğinizden emin misiniz?",
+
                 icon: "warning",
                 buttons: [
                     'Hayır!',
@@ -539,24 +415,24 @@
                 if (result.dismiss !== 'Evet') {
 
                     $.ajax({
-                        url: "{% url 'sbs:delete_facility' %}",
+                        url: "{% url "sbs:delete-coach"%}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            uuid: id,
+                            uuid: uuid,
                         },
                         success: function (result) {
                             if (result.status === 'Success') {
                                 swal({
                                     icon: 'success',
-                                    title: 'Özel spor tesisi başarıyla silindi !!',
+                                    title: 'Antrenör başarıyla silindi !!',
 
                                 })
 
                             } else {
                                 swal({
                                     icon: 'error',
-                                    title: 'Özel spor tesisi silinemedi !!',
+                                    title: 'Antrenör silinemedi !!',
 
                                 })
                             }
@@ -570,9 +446,5 @@
 
 
         }
-
     </script>
-
-
 {% endblock %}
-

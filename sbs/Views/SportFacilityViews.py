@@ -108,6 +108,24 @@ def return_facility(request):
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
     city = City.objects.all()
+
+    return render(request, 'TVGFBF/SportFacility/facilities.html',
+                  {'facilities': facilities, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'cities': city})
+
+@login_required
+def return_facility_search(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    facilities = SportFacility.objects.all()
+    user_form = FacilitySearchForm()
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+    city = City.objects.all()
     with transaction.atomic():
         if request.method == 'POST':
             user_form = FacilitySearchForm(request.POST)
@@ -116,11 +134,11 @@ def return_facility(request):
             city = request.POST.get('city')
 
             if not (derbis or name or city):
-                facilities = SportFacility.objects.all().filter(isDeleted=0)
+               return redirect('sbs:return_facility')
             else:
                 query = Q()
                 if name:
-                    query &= Q(name__icontains=name.title())
+                    query &= Q(name__icontains=name)
                 if derbis:
                     query &= Q(derbis__icontains=derbis)
                 if city:
@@ -130,16 +148,9 @@ def return_facility(request):
         else:
             print('else2')
 
-        # facility_dict={}
-        # facility_list=[]
-        # for facility in facilities:
-        #     is_ok=facility.document.filter(file__isnull=True)
-        #     if not is_ok:
-        #         facility_dict['document_is_ok']=True
-        #     facility_dict['facility']=facility
-        #     facility_list.append(facility_dict)
 
-    return render(request, 'TVGFBF/SportFacility/facilities.html',
+
+    return render(request, 'TVGFBF/SportFacility/facility_search.html',
                   {'facilities': facilities, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, 'cities': city})
 

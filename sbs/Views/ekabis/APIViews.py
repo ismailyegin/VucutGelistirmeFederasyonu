@@ -1,11 +1,15 @@
+from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from sbs.models import Permission
+from sbs.models import Permission, Coach, Referee, SportFacility
 from sbs.models.ekabis.Logs import Logs
 from sbs.models.tvfbf.LogAPIObject import LogAPIObject
+from sbs.serializers.CoachSerializers import CoachResponseSerializer
 from sbs.serializers.LogSerializers import LogResponseSerializer
 from sbs.serializers.PermissionSerializers import PermissionResponseSerializer
+from sbs.serializers.RefereeSerializers import RefereeResponseSerializer
+from sbs.serializers.SportFacilitySerializers import SportFacilityResponseSerializer
 from sbs.services.services import LogsService
 
 
@@ -69,4 +73,91 @@ class GetPermission(APIView):
         return Response(serializer.data)
 
 
+class GetCoach(APIView):
 
+    def post(self, request, format=None):
+
+        draw = request.data['draw']
+        start = request.data['start']
+        length = request.data['length']
+        end = int(start) + int(length)
+
+        count = Coach.objects.filter(isDeleted=False).count()
+
+        all_objects = Coach.objects.filter(isDeleted=False).filter(
+            person__user__first_name__icontains=request.data['search[value]']).order_by('-creationDate')[
+                      int(start):end]
+
+        filteredTotal = Coach.objects.filter(isDeleted=False).filter(
+            person__user__first_name__icontains=request.data['search[value]']).count()
+
+        logApiObject = LogAPIObject()
+        logApiObject.data = all_objects
+        logApiObject.draw = int(request.POST['draw'])
+        logApiObject.recordsTotal = int(count)
+        logApiObject.recordsFiltered = int(filteredTotal)
+
+        serializer_context = {
+            'request': request,
+        }
+        serializer = CoachResponseSerializer(logApiObject, context=serializer_context)
+        return Response(serializer.data)
+class GetReferee(APIView):
+
+    def post(self, request, format=None):
+
+        draw = request.data['draw']
+        start = request.data['start']
+        length = request.data['length']
+        end = int(start) + int(length)
+
+        count = Referee.objects.filter(isDeleted=False).count()
+
+        all_objects = Referee.objects.filter(isDeleted=False).filter(
+            person__user__first_name__icontains=request.data['search[value]']).order_by('-creationDate')[
+                      int(start):end]
+
+        filteredTotal = Referee.objects.filter(isDeleted=False).filter(
+            person__user__first_name__icontains=request.data['search[value]']).count()
+
+        logApiObject = LogAPIObject()
+        logApiObject.data = all_objects
+        logApiObject.draw = int(request.POST['draw'])
+        logApiObject.recordsTotal = int(count)
+        logApiObject.recordsFiltered = int(filteredTotal)
+
+        serializer_context = {
+            'request': request,
+        }
+        serializer = RefereeResponseSerializer(logApiObject, context=serializer_context)
+        return Response(serializer.data)
+class GetFacility(APIView):
+
+    def post(self, request, format=None):
+
+        draw = request.data['draw']
+        start = request.data['start']
+        length = request.data['length']
+        end = int(start) + int(length)
+
+        count = SportFacility.objects.filter(isDeleted=False).count()
+
+        all_objects = SportFacility.objects.filter(isDeleted=False).filter(
+
+            Q(name__icontains=request.data['search[value]'])| Q(communication__city__name__icontains=request.data['search[value]']) | Q(derbis__icontains=request.data['search[value]']) ).order_by('-creationDate')[
+                      int(start):end]
+
+        filteredTotal = SportFacility.objects.filter(isDeleted=False).filter(
+            Q(name__icontains=request.data['search[value]'])| Q(communication__city__name__icontains=request.data['search[value]']) |  Q(derbis__icontains=request.data['search[value]']) ).count()
+
+        logApiObject = LogAPIObject()
+        logApiObject.data = all_objects
+        logApiObject.draw = int(request.POST['draw'])
+        logApiObject.recordsTotal = int(count)
+        logApiObject.recordsFiltered = int(filteredTotal)
+
+        serializer_context = {
+            'request': request,
+        }
+        serializer = SportFacilityResponseSerializer(logApiObject, context=serializer_context)
+        return Response(serializer.data)

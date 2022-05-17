@@ -57,6 +57,22 @@ def return_referees(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    user_form = RefereeSearchForm()
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+    current_date = datetime.date.today()
+    return render(request, 'TVGFBF/Referee/referees.html',
+                  {'user_form': user_form, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'current_date': current_date, })
+
+@login_required
+def return_referee_search(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     referees = Referee.objects.filter(infoStatus=1, isDeleted=0)
     user_form = RefereeSearchForm()
     urls = last_urls(request)
@@ -75,7 +91,7 @@ def return_referees(request):
 
             # print(firstName, lastName, email, branch, grade, visa)
             if not (firstName or lastName or city or branch or status):
-                referees = Referee.objects.all().filter(isDeleted=0)
+                return redirect('sbs:return_referees')
             else:
                 query = Q()
                 if lastName:
@@ -93,7 +109,7 @@ def return_referees(request):
         else:
             print('else2')
 
-    return render(request, 'TVGFBF/Referee/referees.html',
+    return render(request, 'TVGFBF/Referee/refereeSearch.html',
                   {'referees': referees, 'user_form': user_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, 'current_date': current_date, })
 

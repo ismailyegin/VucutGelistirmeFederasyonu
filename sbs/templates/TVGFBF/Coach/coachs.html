@@ -117,8 +117,6 @@
     </div>
 
 
-
-
     <section class="content-header">
 
 
@@ -152,7 +150,7 @@
                         <h3 class="card-title">Antrenör Filtrele</h3>
                     </div>
 
-                    <form method="POST" role="form" enctype="multipart/form-data">
+                    <form method="POST" role="form" enctype="multipart/form-data" action="{% url 'sbs:return_coach_search' %}">
 
                         {% csrf_token %}
 
@@ -237,8 +235,7 @@
                                 <th>#</th>
                                 <th> Ad Soyad</th>
                                 <th>E-Mail</th>
-                                <th>Branş</th>
-                                <th>Vize Durumu</th>
+
                                 {#                                <th>Kulüp</th>#}
                                 {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
                                     <th>Düzenle/Sil</th>
@@ -246,64 +243,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% if coachs.all %}
 
-                                {% for coach in coachs %}
-                                    <tr>
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ coach.person.user.first_name }} {{ coach.person.user.last_name }} </td>
-                                        <td>{{ coach.person.user.email }} </td>
-                                        <td>
-                                            {% for grade in coach.grades.all %}
-                                                {% if grade.isActive and grade.startDate > current_date and grade.status == 'Onaylandı' %}
-                                                    {{ grade.branch.title }},
-                                                {% endif %}
-                                            {% endfor %}
-                                        </td>
-                                        <td>
-                                            {% for visa in coach.visa.all %}
-                                                {% if visa.isActive and visa.startDate > current_date and visa.status == 'Onaylandı' %}
-                                                    {{ visa.branch.title }},
-                                                {% endif %}
-                                            {% endfor %}
-                                        </td>
-                                        {#                                        <td>#}
-                                        {#                                            {% for club in clubs %}#}
-                                        {#                                                {% for item in club.coachs.all %}#}
-                                        {#                                                    {% if item == coach %}#}
-                                        {#                                                        {{ club.name }}#}
-                                        {#                                                    {% endif %}#}
-                                        {#                                                {% endfor %}#}
-                                        {#                                            {% endfor %}#}
-                                        {#                                        </td>#}
-                                        {% if aktif == 'Admin' or aktif == 'Yonetim' %}
-                                            <td>
-                                                {% for item in perm %}
-                                                    {% if item == 'update_coach' %}
-                                                        <div class="btn-group">
-                                                            <a href="{% url "sbs:update_coach" coach.uuid %}"
-                                                               type="button" class="btn btn-outline-warning"
-                                                               title="Düzenle"><i
-                                                                    class="fa fa-edit"></i>
-                                                            </a>
-                                                        </div>
-
-                                                    {% elif item == 'delete-coach' %}
-                                                        <div class="btn-group">
-                                                            <a class="btn btn-outline-danger"
-                                                               data-toggle="modal" title="Sil"
-                                                               onclick=deleteCoach('{{ coach.uuid }}')><i
-                                                                    class="fa fa-trash"></i></a>
-                                                        </div>
-                                                    {% endif %}
-                                                {% endfor %}
-
-
-                                            </td>
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
-                            {% endif %}
                             </tbody>
                         </table>
                     </div>
@@ -317,14 +257,19 @@
     {% load  static %}
     <script>
         $(function () {
-            $('#antrenorler').DataTable({
+            table = $('#antrenorler').DataTable({
+
+                "processing": true,
+                "serverSide": true,
+                "paging": true,
+                "ordering": true,
+
+
+                "ajax": {
+                    "url": "{% url 'sbs:view_coach-api' %}",
+                    "type": "POST",
+                },
                 dom: 'Bfrtip',
-
-
-                lengthMenu: [
-                    [10, 25, 50, 100, -1],
-                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
-                ],
 
                 'buttons': [
 
@@ -342,7 +287,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'YEKA LİSTESİ',
+                        title: 'İzin Listesi',
                         text: '<i class="fa fa-print"></i>',
 
                         titleAttr: 'Yazdır',
@@ -372,32 +317,108 @@
 
 
                 ],
-                "search": {
-                    "caseInsensitive": true,
-                },
+
+
                 'language': {
                     "url": "{% static 'datatable_tr/datatable_tr.json' %}"
                 },
-                'paging': true,
-                'lengthChange': true,
-                'searching': true,
-                'order': true,
-                'info': true,
-                'autoWidth': true,
-                'responsive': true,
+                "columns": [
+                    {"data": "id"},
+                    {
+                        "data": null,
+                        render: function (full) {
+
+                            return full.person.user.first_name + ' ' + full.person.user.last_name;
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+
+                            return full.person.user.email;
+                        }
+                    },
+
+
+                    {
+                        "data": null,
+                        render: function (full) {
+                            console.log(full.content);
+                            let html;
+                            debugger;
+                            {% if aktif == 'Admin' %}
+                                let url2 = "deleteCoach('" + full.uuid + "')"
+
+                                let url = "{% url "sbs:update_coach" '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
+                                url = url.replace('7729c6ee-739d-4a89-8ffe-1357e691ca16', full.uuid);
+
+
+                                html = '<td><div class="btn-group"> '
+                                html += '<a style="margin-left:5px;" href="' + url + '" class="btn btn-outline-warning" title="Düzenle" type="button"><i class="fa fa-edit"></i>Düzenle</a>';
+                                html += '<a style="margin-left:5px;" onclick="' + url2 + '" class="btn btn-outline-danger" title="Sil" type="button"><i class="fa fa-edit"></i>Sil</a>';
+
+                                html += '</div></td>';
+                            {% else %}
+                                html = '<td></td>'
+                            {% endif %}
+                            return html;
+                        }
+                    }
+
+                ],
+                "search": {
+                    "caseInsensitive": true
+                }
+
+
             });
             table.on('draw.dt', function () {
-                debugger;
+                var info = table.page.info();
                 table.column(0, {
                     search: 'applied',
                     order: 'applied',
                     page: 'applied'
                 }).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1;
+                    cell.innerHTML = i + 1 + info.start;
                 });
             });
 
+
         })
+
+        function getCookie(name) {
+            var cookieValue = null;
+            var i = 0;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (i; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
     </script>
     <script>
         function deleteCoach(uuid) {

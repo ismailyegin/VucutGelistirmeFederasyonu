@@ -310,5 +310,11 @@ urlpatterns = [
     path('tesis/tesis-basvurulari',SportFacilityViews.pre_facility, name='pre_facility'),
 
     path('izin/api-izin-listesi/', APIViews.GetPermission.as_view(), name='view_permission-api'),
+    path('antrenor/api-antrenor-listesi/', APIViews.GetCoach.as_view(), name='view_coach-api'),
+    path('hakem/api-hakem-listesi/', APIViews.GetReferee.as_view(), name='view_referee-api'),
+    path('tesis/api-tesis-listesi/', APIViews.GetFacility.as_view(), name='view_sport-facility-api'),
+    path('hakem/filtrele/', RefereeViews.return_referee_search, name='return_referee_search'),
+    path('antrenor/filtrele/', CoachViews.return_coach_search, name='return_coach_search'),
+    path('tesis/filtrele/', SportFacilityViews.return_facility_search, name='return_facility_search'),
 
 ]

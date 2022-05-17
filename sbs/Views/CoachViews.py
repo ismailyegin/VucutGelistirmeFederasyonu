@@ -57,6 +57,27 @@ def return_coachs(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    user_form = CoachSearchForm()
+    searchClupForm = SearchClupForm()
+
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+    current_date = datetime.date.today()
+
+
+    return render(request, 'TVGFBF/Coach/coachs.html',
+                  { 'user_form': user_form, 'branch': searchClupForm,
+                   'current_date': current_date,'urls': urls, 'current_url': current_url,
+                   'url_name': url_name,})
+
+@login_required
+def return_coach_search(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
     coachs = Coach.objects.none()
@@ -88,13 +109,13 @@ def return_coachs(request):
                     clubsPk.append(club.pk)
                 coachs = Coach.objects.filter(sportsclub__in=clubsPk).filter(isDeleted=0).distinct()
             elif user.groups.filter(name__in=['Yonetim', 'Admin']):
-                coachs = Coach.objects.filter(isDeleted=0)
+                return  redirect('sbs:return_coachs')
         else:
             query = Q()
             if lastName:
-                query &= Q(person__user__last_name__icontains=lastName.title())
+                query &= Q(person__user__last_name__icontains=lastName)
             if firstName:
-                query &= Q(person__user__first_name__icontains=firstName.title())
+                query &= Q(person__user__first_name__icontains=firstName)
             if email:
                 query &= Q(person__user__email__icontains=email)
             if branch:
@@ -115,9 +136,10 @@ def return_coachs(request):
                 coachs = Coach.objects.filter(query).filter(isDeleted=0)
             # if visa == 'NONE':
             #     coachs = coachs.exclude(visa__startDate__year=timezone.now().year, visa__status='Onaylandı')
-    return render(request, 'TVGFBF/Coach/coachs.html',
+    return render(request, 'TVGFBF/Coach/coach_serach.html',
                   {'coachs': coachs, 'user_form': user_form, 'branch': searchClupForm, 'clubs': clubs,
-                   'current_date': current_date})
+                   'current_date': current_date,'urls': urls, 'current_url': current_url,
+                   'url_name': url_name,})
 
 
 @login_required
