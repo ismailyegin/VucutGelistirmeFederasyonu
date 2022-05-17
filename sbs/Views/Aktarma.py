@@ -1280,14 +1280,14 @@ def transmissionFacility(request):
     try:
         with transaction.atomic():
 
-            df = pandas.read_csv('/var/www/vhosts/sbs.tvgfbf.gov.tr/httpdocs/djangoProject/VucutGelistirmeFederasyonu/tesis.csv')
+            df = pandas.read_csv('tesis.csv')
             for value in df.values:
                 if value[1]:
-                    if City.objects.filter(name=value[1].upper()):
-                        city_name = City.objects.get(name=value[1])
-                        name = value[2]
-                        address = value[3]
-                        phone = value[4]
+                    if City.objects.filter(name=value[0].upper()):
+                        city_name = City.objects.get(name=value[0].upper())
+                        name = value[1]
+                        address = value[2]
+                        phone = value[3]
                         if not SportFacility.objects.filter(name=name):
                             facility = SportFacility(name=name)
                             facility.save()
