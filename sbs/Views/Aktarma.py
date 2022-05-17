@@ -1280,7 +1280,7 @@ def transmissionFacility(request):
     try:
         with transaction.atomic():
 
-            df = pandas.read_csv('spor_salon.csv')
+            df = pandas.read_csv('/var/www/vhosts/sbs.tvgfbf.gov.tr/httpdocs/djangoProject/VucutGelistirmeFederasyonu/spor_salon.csv')
             for value in df.values:
                 city_name = City.objects.get(name=value[1])
                 name = value[2]
@@ -1305,7 +1305,7 @@ def transmissionAntrenor(request):
     try:
         with transaction.atomic():
 
-            df = pandas.read_csv('antrenor_list.csv')
+            df = pandas.read_csv('/var/www/vhosts/sbs.tvgfbf.gov.tr/httpdocs/djangoProject/VucutGelistirmeFederasyonu/antrenor_list.csv')
 
             for value in df.values:
                 if not User.objects.filter(username=value[1].lower()):
