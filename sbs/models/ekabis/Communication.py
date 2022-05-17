@@ -8,7 +8,7 @@ from sbs.models.tvfbf.BaseModel import BaseModel
 class Communication(BaseModel):
     secretId = models.CharField(null=True, blank=True, max_length=20)
     postalCode = models.CharField(max_length=120, null=True, blank=True)
-    phoneNumber = models.CharField(max_length=120, null=True, blank=True)
+    phoneNumber = models.CharField(max_length=250, null=True, blank=True)
     phoneNumber2 = models.CharField(max_length=120, null=True, blank=True)
     phoneHome = models.CharField(max_length=120, null=True, blank=True)
     phoneJop = models.CharField(max_length=120, null=True, blank=True)
