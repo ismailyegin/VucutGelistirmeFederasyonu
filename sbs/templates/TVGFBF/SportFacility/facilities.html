@@ -340,8 +340,9 @@
                         "data": null,
                         render: function (full) {
                             let town=''
-                            if (full.communication.town)
+                            if (full.communication.town !== null)
                                 town='/'+full.communication.town
+
                             return full.communication.city.name  + town;
                         }
                     },
