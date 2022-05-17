@@ -1297,6 +1297,8 @@ def transmissionFacility(request):
                             facility.communication = communation
                             facility.save()
             print('spor salonları eklendi')
+            messages.success(request, 'Spor salonu kaydı tamamlandı')
+
             return redirect('sbs:view_admin')
 
     except Exception as e:
