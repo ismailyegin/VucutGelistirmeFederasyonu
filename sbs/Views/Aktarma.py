@@ -1285,10 +1285,10 @@ def transmissionFacility(request):
             for value in df.values.tolist():
                 if value[1] and value[0]:
 
-                    if City.objects.filter(name=str(value[0]).encode('ascii', 'ignore').decode('ascii').upper()):
+                    city_name = str(value[0]).encode('ascii', 'ignore').decode('ascii').upper()
+                    if City.objects.filter(name=city_name):
                         disallowed_characters = "./:,"
                         for character in disallowed_characters:
-                            city_name = City.objects.get(name=str(value[0]).encode('ascii', 'ignore').decode('ascii').upper())
                             name = str(value[1]).encode('ascii', 'ignore').decode('ascii').replace(character, "")
                             address = str(value[2]).encode('ascii', 'ignore').decode('ascii').replace(character, "")
                             phone = str(value[3]).encode('ascii', 'ignore').decode('ascii').replace(character, "")
