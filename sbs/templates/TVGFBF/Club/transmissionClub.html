@@ -84,17 +84,18 @@
 
                                     <div class="form-group col-lg-6">
                                         <label for="limit"> Limit</label>
-                                        <input type="number" placeholder="{{ current_limit }}" id="limit" name="limit" class="form-control">
-                                        <small style="color: red ">Mevcut Kulüp Sayısı : {{ current_limit }}
-                                            </small>
+                                        <input type="number"  id="limit" name="limit" class="form-control">
+
 
                                         <label for="" id="label_limit"></label>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <label for="offset">Offset</label>
 
-                                        <input type="number" id="offset" name="offset" class="form-control">
+                                        <input placeholder="{{ current_limit }}" type="number" id="offset" name="offset" class="form-control">
                                         <label for="" id="label_{{ item.name }}"></label>
+                                        <small style="color: red ">Mevcut Kulüp Sayısı : {{ current_limit }}
+                                            </small>
                                     </div>
 
 

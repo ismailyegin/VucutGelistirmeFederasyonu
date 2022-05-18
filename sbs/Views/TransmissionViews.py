@@ -1,4 +1,5 @@
 import json
+import time
 from datetime import datetime
 
 import requests
@@ -20,21 +21,22 @@ from sbs.models.tvfbf.Club import Club
 def getLimitOffset(request):
     try:
         with transaction.atomic():
-            current_limit=Club.objects.all().count()
+            current_limit = Club.objects.all().count()
             if request.method == 'POST':
-                limit=request.POST['limit']
-                offset=request.POST['offset']
-                x=TransmissionClub(request,limit,offset)
+                limit = request.POST['limit']
+                offset = request.POST['offset']
+                x = TransmissionClub(request, limit, offset)
                 if x:
                     messages.success(request, 'Kulüpler Başarıyla Kayıt Edilmiştir.')
                 else:
                     messages.warning(request, 'Kulüp aktarma işlemi yapılamadı.')
                 return redirect('sbs:getLimitOffset')
 
-            return render(request,'TVGFBF/Club/transmissionClub.html',{'current_limit':current_limit})
+            return render(request, 'TVGFBF/Club/transmissionClub.html', {'current_limit': current_limit})
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
+
 
 def TransmissionClub(request, limit, offset):
     try:
@@ -68,7 +70,7 @@ def TransmissionClub(request, limit, offset):
                         y = json.loads(response.text)
                         if y['Data']:
                             clup_info = y['Data'][0]
-                            country='TÜRKİYE CUMHURİYETİ'
+                            country = 'TÜRKİYE CUMHURİYETİ'
                             if Club.objects.filter(guidId=club['KulupGuid']):
                                 sport_club = Club.objects.get(guidId=club['KulupGuid'])
                                 sport_club.isMatch = True
@@ -77,7 +79,8 @@ def TransmissionClub(request, limit, offset):
 
                                 foundingDate = datetime.strptime(clup_info['KurulusTarihi'].split('T')[0],
                                                                  '%Y-%m-%d')
-                                sport_club.foundingDate = datetime.strptime(str(foundingDate.date()), '%Y-%m-%d').strftime(
+                                sport_club.foundingDate = datetime.strptime(str(foundingDate.date()),
+                                                                            '%Y-%m-%d').strftime(
                                     "%d/%m/%Y")
                                 communication = Communication.objects.filter(
                                     city=City.objects.get(pk=int(clup_info['IlId'])),
@@ -126,6 +129,7 @@ def TransmissionClub(request, limit, offset):
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
 
+
 def TransmissionClubDetail(request, derbisKutukNo):
     try:
         with transaction.atomic():
@@ -165,10 +169,11 @@ def TransmissionClubDetail(request, derbisKutukNo):
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
 
+
 def GetCurrentFacilityDetail(request):
     try:
         with transaction.atomic():
-            if request.method=='POST':
+            if request.method == 'POST':
                 name = request.POST['name']
                 club_info = SportFacility.objects.get(name__icontains=name)
 
@@ -179,15 +184,15 @@ def GetCurrentFacilityDetail(request):
                 info['mersis'] = club_info.mersis
                 info['permitDate'] = club_info.permitDate
                 info['coordinate'] = club_info.coordinate
-                info['status']=club_info.status
+                info['status'] = club_info.status
 
-                registrationNumber='yok'
+                registrationNumber = 'yok'
                 if club_info.registrationNumber:
-                    registrationNumber=club_info.registrationNumber
+                    registrationNumber = club_info.registrationNumber
                 info['registrationNumber'] = registrationNumber
-                taxNumber='yok'
+                taxNumber = 'yok'
                 if club_info.taxNumber:
-                    taxNumber=club_info.taxNumber
+                    taxNumber = club_info.taxNumber
                 info['taxNumber'] = taxNumber
 
                 return JsonResponse({'status': 'Success',
@@ -198,35 +203,36 @@ def GetCurrentFacilityDetail(request):
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
 
+
 def GetCurrentClubDetail(request):
     try:
         with transaction.atomic():
             id = request.POST['derbis']
-            club_info=Club.objects.get(derbis=id)
+            club_info = Club.objects.get(derbis=id)
 
             club = {}
             club['KulupAdi'] = club_info.name
             club['KurulusTarihi'] = club_info.foundingDate
-            city_name=''
+            city_name = ''
             if club_info.communication.city:
-                city_name=club_info.communication.city.name
+                city_name = club_info.communication.city.name
             club['Il'] = city_name
             club['Telefon'] = club_info.communication.phoneNumber
-            club['Adres'] =club_info.communication.address
+            club['Adres'] = club_info.communication.address
             club['Ilce'] = club_info.communication.town
             club['DerbisKutukNo'] = club_info.derbis
             club['Eposta'] = club_info.clubMail
-            club['Faks'] =  club_info.communication.fax
+            club['Faks'] = club_info.communication.fax
             club['Guid'] = club_info.guidId
 
-
             return JsonResponse({'status': 'Success',
-                                     'result': club,
-                                     })
+                                 'result': club,
+                                 })
 
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
+
 
 def transmissionOffsetLimit(request):
     try:
@@ -247,6 +253,7 @@ def transmissionOffsetLimit(request):
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
+
 
 def getClubForRegisterManager(request):
     try:
@@ -285,6 +292,7 @@ def getClubForRegisterManager(request):
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:return_clubs')
 
+
 def TransmissionCity(request):
     try:
         with transaction.atomic():
@@ -301,9 +309,9 @@ def TransmissionCity(request):
             if y['Data']:
                 for club_info in y['Data']:
                     if not City.objects.filter(plateNo=club_info['IlId']):
-                        city=City()
-                        city.name=club_info['IlAdi']
-                        city.plateNo=club_info['IlId']
+                        city = City()
+                        city.name = club_info['IlAdi']
+                        city.plateNo = club_info['IlId']
                         city.save()
 
             messages.success(request, 'İl aktarma işlemi yapıldı.')
@@ -313,6 +321,7 @@ def TransmissionCity(request):
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:view_admin')
+
 
 def TransmissionCountry(request):
     try:
@@ -330,8 +339,8 @@ def TransmissionCountry(request):
             if y:
                 for club_info in y:
                     if not Country.objects.filter(name=club_info['UlkeAdi']):
-                        country=Country()
-                        country.name=club_info['UlkeAdi']
+                        country = Country()
+                        country.name = club_info['UlkeAdi']
                         country.save()
 
             messages.success(request, 'Ülke aktarma işlemi yapıldı.')
@@ -342,11 +351,13 @@ def TransmissionCountry(request):
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('sbs:view_admin')
 
+
 def TransmissionDistrict(request):
     try:
         with transaction.atomic():
             for city in City.objects.all():
-                url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/IlceListesiGetir?ilId='+str(city.pk)+''
+                url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/IlceListesiGetir?ilId=' + str(
+                    city.pk) + ''
 
                 payload = {}
                 files = {}
@@ -359,9 +370,9 @@ def TransmissionDistrict(request):
                 if y['Data']:
                     for club_info in y['Data']:
                         if not District.objects.filter(name=club_info['IlceAdi']).filter(city=city):
-                            district=District()
-                            district.name=club_info['IlceAdi']
-                            district.city=city
+                            district = District()
+                            district.name = club_info['IlceAdi']
+                            district.city = city
                             district.save()
 
             messages.success(request, 'İlçe aktarma işlemi yapıldı.')
@@ -377,7 +388,8 @@ def DeleteClub(request):
     try:
         with transaction.atomic():
             for club in Club.objects.all():
-               club.delete()
+                club.delete()
+                time.sleep(2)
 
             messages.success(request, 'işlem yapıldı.')
             return redirect('sbs:view_admin')
