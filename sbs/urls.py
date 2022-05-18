@@ -317,4 +317,6 @@ urlpatterns = [
     path('antrenor/filtrele/', CoachViews.return_coach_search, name='return_coach_search'),
     path('tesis/filtrele/', SportFacilityViews.return_facility_search, name='return_facility_search'),
 
+    path('club/all-delete/', TransmissionViews.DeleteClub, name='all_DeleteClub'),
+
 ]

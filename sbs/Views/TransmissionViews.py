@@ -99,7 +99,7 @@ def TransmissionClub(request, limit, offset):
                                 sport_club.communication = communication
                                 # sport_club.foundingDate = datetime.strptime(clup_info['KurulusTarihi'].replace('.', '-'),
                                 #                                             '%d-%m-%Y')
-                                sport_club.derbisKutukNo = clup_info['DerbisKutukNo']
+                                sport_club.derbis = clup_info['DerbisKutukNo']
                                 sport_club.save()
                             else:
                                 new_club = Club()
@@ -115,7 +115,7 @@ def TransmissionClub(request, limit, offset):
                                                                  '%Y-%m-%d')
                                 new_club.foundingDate = datetime.strptime(str(foundingDate.date()),
                                                                           '%Y-%m-%d').strftime("%d/%m/%Y")
-                                new_club.derbisKutukNo = clup_info['DerbisKutukNo']
+                                new_club.derbis = clup_info['DerbisKutukNo']
                                 new_club.guidId = clup_info['KulupGuid']
 
                                 new_club.save()
@@ -373,3 +373,16 @@ def TransmissionDistrict(request):
         return redirect('sbs:view_admin')
 
 
+def DeleteClub(request):
+    try:
+        with transaction.atomic():
+            for club in Club.objects.all():
+               club.delete()
+
+            messages.success(request, 'işlem yapıldı.')
+            return redirect('sbs:view_admin')
+
+
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:view_admin')
