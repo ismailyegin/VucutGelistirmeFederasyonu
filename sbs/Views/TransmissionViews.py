@@ -6,10 +6,11 @@ import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
-from sbs.models import SportFacility
+from sbs.models import SportFacility, Coach, ReferenceCoach
 from sbs.models.ekabis.City import City
 from sbs.models.ekabis.Country import Country
 from sbs.models.ekabis.Communication import Communication
@@ -83,16 +84,20 @@ def TransmissionClub(request, limit, offset):
                                                                             '%Y-%m-%d').strftime(
                                     "%d/%m/%Y")
                                 communication = Communication.objects.filter(
-                                    city=City.objects.get(pk=int(clup_info['IlId'])),
-                                    phoneNumber=clup_info['Telefon'],
-                                    address=clup_info['Adres'],
-                                    town=clup_info['IlceAdi'], country=Country.objects.get(name=country))
+                                    Q(city=City.objects.get(pk=int(clup_info['IlId']))),
+                                    Q(phoneNumber=clup_info['Telefon']),
+                                    Q(address=clup_info['Adres']),
+                                    Q(town=clup_info['IlceAdi']), Q(country=Country.objects.get(name=country)))
+
                                 if communication:
 
                                     communication = Communication.objects.get(
-                                        city=City.objects.get(pk=int(clup_info['IlId'])),
-                                        phoneNumber=clup_info['Telefon'], country=Country.objects.get(name=country),
-                                        address=clup_info['Adres'], town=clup_info['IlceAdi'])
+                                        Q(city=City.objects.get(pk=int(clup_info['IlId']))),
+                                        Q(phoneNumber=clup_info['Telefon']),
+                                        Q(address=clup_info['Adres']),
+                                        Q(town=clup_info['IlceAdi']), Q(country=Country.objects.get(name=country)))
+
+
                                 else:
                                     communication = Communication(
                                         city=City.objects.get(pk=int(clup_info['IlId'])),
@@ -388,9 +393,10 @@ def TransmissionDistrict(request):
 def DeleteClub(request):
     try:
         with transaction.atomic():
-            for club in Club.objects.all():
-                club.delete()
-                time.sleep(2)
+            for club in Club.objects.all()[:100]:
+                if not ReferenceCoach.objects.filter(club=club):
+                    club.delete()
+                    time.sleep(2)
 
             messages.success(request, 'işlem yapıldı.')
             return redirect('sbs:view_admin')
