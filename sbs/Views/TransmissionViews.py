@@ -122,6 +122,7 @@ def TransmissionClub(request, limit, offset):
                                 new_club.guidId = clup_info['KulupGuid']
 
                                 new_club.save()
+                                time.sleep(2)
                 return True
 
 
