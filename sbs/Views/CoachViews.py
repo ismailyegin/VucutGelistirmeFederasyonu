@@ -658,7 +658,17 @@ def visa_approval(request):
                 approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
                 visa.approval_date = approvalDate
                 visa.save()
-                coach = Coach.objects.get(uuid=coach_uuid)
+                visa.isActive=True
+                coach = Coach.objects.filter(uuid=coach_uuid)
+                if coach:
+                    coach = Coach.objects.get(uuid=coach_uuid)
+
+                    for item in coach.visa.all():
+                        if item.branch == visa.branch:
+                            item.isActive = False
+                            item.save()
+                    visa.isActive = True
+                    visa.save()
                 log = str(coach.person.user.get_full_name()) + " vize onaylandi"
                 log = general_methods.logwrite(request, request.user, log)
 

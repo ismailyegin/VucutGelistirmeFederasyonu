@@ -41,38 +41,42 @@
                                     <th>Onaylanma Tarihi</th>
 
 
-
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% if coach %}
                                     {% for grade in coach.grades.all %}
                                         <tr>
-                                            <td>{{ forloop.counter }} </td>
-                                            <td>{{ grade.startDate }}  </td>
-                                            <td>{{ grade.branch }}  </td>
-                                            <td>{{ grade.definition }}  </td>
-                                            <td>{% if grade.dekont %}
-                                                <a href="{{ grade.dekont.url }}" target="_blank">Dekont </a> {% endif %}
-                                            </td>
-                                            <td>{% if grade.status == 'Onaylandı' %}
-                                                <center>
-                                                <i class="fa fa-check"></i></center>
+                                        {% if not grade.isDeleted %}
+
+                                                <td>{{ forloop.counter }} </td>
+                                                <td>{{ grade.startDate }}  </td>
+                                                <td>{{ grade.branch }}  </td>
+                                                <td>{{ grade.definition }}  </td>
+                                                <td>{% if grade.dekont %}
+                                                    <a href="{{ grade.dekont.url }}"
+                                                       target="_blank">Dekont </a> {% endif %}
+                                                </td>
+                                                <td>{% if grade.status == 'Onaylandı' %}
+                                                    <center>
+                                                        <i class="fa fa-check"></i></center>
                                                 {% elif grade.status == 'Reddedildi' %}
-                                                 <center>
-                                                <i class="fa fa-ban">{{ grade.status }}</i>
-                                                 </center>
+                                                    <center>
+                                                        <i class="fa fa-ban">{{ grade.status }}</i>
+                                                    </center>
                                                 {% else %}
-                                                {{ grade.status }}
+                                                    {{ grade.status }}
                                                 {% endif %}
-                                            </td>
+                                                </td>
 
-                                            <td>{% if grade.approval_date %}
-                                                {{ grade.approval_date }}</td>
-                                            {% else %}
-                                                <td></td>
-                                            {% endif %}
+                                                <td>{% if grade.approval_date %}
+                                                    {{ grade.approval_date }}</td>
+                                                {% else %}
+                                                    <td></td>
+                                                {% endif %}
 
+
+                                        {% endif %}
                                         </tr>
                                     {% endfor %}
                                 {% endif %}
@@ -112,21 +116,22 @@
 
                                     {% for grade in coach.visa.all %}
                                         <tr>
-
-                                            <td>{{ forloop.counter }} </td>
-                                            <td>{{ grade.startDate.year }}  </td>
-                                            <td>{{ grade.branch }}  </td>
-                                            <td><a href="{{ grade.dekont.url }}" target="_blank">Dekont </a>
-                                            <td>{{ grade.status }}  </td>
-                                            <td>{% if grade.approval_date %}
-                                                {{ grade.approval_date }}</td>
-                                            {% else %}
-                                                <td></td>
-                                            {% endif %}
+                                            {% if not grade.isDeleted %}
+                                                <td>{{ forloop.counter }} </td>
+                                                <td>{{ grade.startDate.year }}  </td>
+                                                <td>{{ grade.branch }}  </td>
+                                                <td><a href="{{ grade.dekont.url }}" target="_blank">Dekont </a>
+                                                <td>{{ grade.status }}  </td>
+                                                <td>{% if grade.approval_date %}
+                                                    {{ grade.approval_date }}</td>
+                                                {% else %}
+                                                    <td></td>
+                                                {% endif %}
 
 
 
                                         </tr>
+                                        {% endif %}
                                     {% endfor %}
                                 {% endif %}
 
