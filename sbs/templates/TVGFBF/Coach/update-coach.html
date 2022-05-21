@@ -22,6 +22,32 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfApproval"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Onaylanma Tarihi</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <input type="date" name="dateOfApprovalText" id="dateOfApprovalText" class="form-control datemask"
+                           required="required" autocomplete="off">
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline" id="btn-closereddet-approval">İptal</button>
+                    <button type="button" class="btn btn-outline btn-ok" id="btn-gonder-approval"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
     <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
@@ -186,7 +212,8 @@
 
                                     <div class="form-group">
                                         <label for="İban Adresi">iban</label>
-                                        <input id="iban" class="form-control" type="text" name="iban" value="{{ personCoach.iban }}"/>
+                                        <input id="iban" class="form-control" type="text" name="iban"
+                                               value="{{ personCoach.iban }}"/>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -206,11 +233,13 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="club">Kayıtlı Olduğu Kulüp</label>
-                                        <select id="club" name="club" class="form-control select2 select2-hidden-accessible"
+                                        <select id="club" name="club"
+                                                class="form-control select2 select2-hidden-accessible"
                                                 style="width: 100%;"
                                                 data-select2-id="1" tabindex="-1" aria-hidden="true">
                                             {% if coachclub %}
-                                                <option selected="selected" value="{{ coachclub.derbis }}">{{ coachclub.name }}</option>
+                                                <option selected="selected"
+                                                        value="{{ coachclub.derbis }}">{{ coachclub.name }}</option>
                                             {% endif %}
                                             <option value="noRegister">------</option>
                                             <option value="noClub">Kayıtlı Olunan Kulüp Seçeneklerde
@@ -320,6 +349,7 @@
                                     <th> Tanımı</th>
                                     <th>Dekont</th>
                                     <th> Onay Durumu</th>
+                                    <th> Onay Tarihi</th>
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>Onayla/Reddet/Düzenle/Sil</th>
                                     {% endif %}
@@ -338,14 +368,16 @@
                                             <td><img src="/media/{{ grade.dekont }}" class="user-image" alt="sbs"
                                                      style=" width: 30px;height: 30px;"></td>
                                             <td>{{ grade.status }}  </td>
+                                            <td>{{ grade.approval_date }}  </td>
                                             <td>
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                     {% for item in perm %}
                                                         {% if item == 'coach_grade_approval' %}
                                                             <div class="btn-group">
-                                                                <a href="{% url 'sbs:coach_grade_approval' grade_uuid=grade.uuid coach_uuid=coach.uuid %}"
-                                                                   type="button" class="btn btn-outline-success"
-                                                                   title="Onayla"><i
+                                                                <a class="btn btn-outline-success"
+                                                                   style="margin-left: 5px;"
+                                                                   data-toggle="modal" title="Onayla"
+                                                                   onclick="approvalCoachGrade('{{ grade.uuid }}', '{{ coach.uuid }}')"><i
                                                                         class="fa fa-check"></i>
                                                                 </a>
                                                             </div>
@@ -419,6 +451,7 @@
                                     <th> Branş</th>
                                     <th> Dekont</th>
                                     <th> Onay Durumu</th>
+                                    <th> Onay Tarihi</th>
                                     <th>Onayla/Reddet/Düzenle/Sil</th>
 
 
@@ -440,6 +473,7 @@
                                                      alt="KOBİLTEK"
                                                      style=" width: 30px;height: 30px;"></td>
                                             <td>{{ grade.status }}  </td>
+                                            <td>{{ grade.approval_date }}  </td>
 
                                             <td>
 
@@ -448,9 +482,10 @@
                                                     {% for item in perm %}
                                                         {% if item == 'coach_grade_approval' %}
                                                             <div class="btn-group">
-                                                                <a href="{% url 'sbs:coach_visa_approval' visa_uuid=grade.uuid coach_uuid=coach.uuid %}"
-                                                                   type="button" class="btn btn-outline-success"
-                                                                   title="Onayla"><i
+                                                                <a class="btn btn-outline-success"
+                                                                   style="margin-left: 5px;"
+                                                                   data-toggle="modal" title="Onayla"
+                                                                   onclick="approvalCoachVisa('{{ grade.uuid }}', '{{ coach.uuid }}')"><i
                                                                         class="fa fa-check"></i>
                                                                 </a>
                                                             </div>
@@ -596,6 +631,130 @@
 
         }
 
+    </script>
+
+    <script>
+        function approvalCoachVisa(visa_uuid, coach_uuid) {
+            debugger;
+            swal({
+                title: "Vizeyi onaylamak istediğinizden emin misiniz ?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+                    $("#dateOfApproval").on("shown.bs.modal", function (e) {
+
+                        $("#btn-gonder-approval").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:coach_visa_approval"%}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    visa_uuid: visa_uuid,
+                                    coach_uuid: coach_uuid,
+                                    dateOfApproval: $('#dateOfApprovalText').val(),
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Vize başarıyla onaylanmıştır.',
+
+                                        })
+
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'Vize onaylanamadı !',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-approval').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
+                    });
+                }
+
+            })
+
+
+        }
+    </script>
+
+    <script>
+        function approvalCoachGrade(grade_uuid, coach_uuid) {
+            debugger;
+            swal({
+                title: "Kademeyi onaylamak istediğinizden emin misiniz ?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+                    $("#dateOfApproval").on("shown.bs.modal", function (e) {
+
+                        $("#btn-gonder-approval").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:coach_grade_approval"%}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    grade_uuid: grade_uuid,
+                                    coach_uuid: coach_uuid,
+                                    dateOfApproval: $('#dateOfApprovalText').val(),
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Kademe başarıyla onaylanmıştır.',
+
+                                        })
+
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'Kademe onaylanamadı !',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-approval').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
+                    });
+                }
+
+            })
+
+
+        }
     </script>
 
 {% endblock %}

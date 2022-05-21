@@ -65,11 +65,11 @@ def return_coachs(request):
     url_name = Permission.objects.get(codename=current_url.url_name)
     current_date = datetime.date.today()
 
-
     return render(request, 'TVGFBF/Coach/coachs.html',
-                  { 'user_form': user_form, 'branch': searchClupForm,
-                   'current_date': current_date,'urls': urls, 'current_url': current_url,
-                   'url_name': url_name,})
+                  {'user_form': user_form, 'branch': searchClupForm,
+                   'current_date': current_date, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, })
+
 
 @login_required
 def return_coach_search(request):
@@ -138,8 +138,8 @@ def return_coach_search(request):
             #     coachs = coachs.exclude(visa__startDate__year=timezone.now().year, visa__status='Onaylandı')
     return render(request, 'TVGFBF/Coach/coach_serach.html',
                   {'coachs': coachs, 'user_form': user_form, 'branch': searchClupForm, 'clubs': clubs,
-                   'current_date': current_date,'urls': urls, 'current_url': current_url,
-                   'url_name': url_name,})
+                   'current_date': current_date, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, })
 
 
 @login_required
@@ -433,7 +433,8 @@ def add_coach_referee(request, uuid):
             grade = HavaLevel(definition=grade_form.cleaned_data['definition'],
                               startDate=grade_form.cleaned_data['startDate'],
                               dekont=grade_form.cleaned_data['dekont'],
-                              branch=grade_form.cleaned_data['branch'])
+                              branch=grade_form.cleaned_data['branch'],
+                              form=grade_form.cleaned_data['form'])
             grade.levelType = EnumFields.LEVELTYPE.GRADE
             grade.status = HavaLevel.WAITED
             grade.isActive = True
@@ -462,30 +463,40 @@ def add_coach_referee(request, uuid):
 
 
 @login_required
-def grade_approval(request, grade_uuid, coach_uuid):
+def grade_approval(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    grade = HavaLevel.objects.get(uuid=grade_uuid)
-    coach = Coach.objects.get(uuid=coach_uuid)
     try:
-        for item in coach.grades.all():
-            if item.branch == grade.branch:
-                item.isActive = False
-                item.save()
-        grade.status = HavaLevel.APPROVED
-        grade.isActive = True
-        grade.save()
+        with transaction.atomic():
+            if request.method == 'POST' and request.is_ajax():
+                grade_uuid = request.POST['grade_uuid']
+                coach_uuid = request.POST['coach_uuid']
+                grade = HavaLevel.objects.get(uuid=grade_uuid)
+                coach = Coach.objects.get(uuid=coach_uuid)
+                for item in coach.grades.all():
+                    if item.branch == grade.branch:
+                        item.isActive = False
+                        item.save()
+                grade.status = HavaLevel.APPROVED
+                grade.isActive = True
+                date = request.POST['dateOfApproval']
+                approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+                grade.approval_date = approvalDate
+                grade.save()
 
-        log = str(coach.person.user.get_full_name()) + " Kademe onaylandi"
-        log = general_methods.logwrite(request, request.user, log)
+                log = str(coach.person.user.get_full_name()) + " Kademe onaylandi"
+                log = general_methods.logwrite(request, request.user, log)
 
-        messages.success(request, 'Kademe   Onaylanmıştır')
+                return JsonResponse({'status': 'Success', 'messages': 'Kademe Onaylanmıştır.'})
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
     except:
-        messages.warning(request, 'Lütfen yeniden deneyiniz.')
-    return redirect('sbs:update_coach', uuid=coach_uuid)
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
 @login_required
@@ -630,21 +641,34 @@ def add_visa_coach(request, uuid):
 
 
 @login_required
-def visa_approval(request, visa_uuid, coach_uuid):
+def visa_approval(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    visa = HavaLevel.objects.get(uuid=visa_uuid)
-    visa.status = HavaLevel.APPROVED
-    visa.save()
-    coach = Coach.objects.get(uuid=coach_uuid)
-    log = str(coach.person.user.get_full_name()) + " vize onaylandi"
-    log = general_methods.logwrite(request, request.user, log)
+    try:
+        with transaction.atomic():
+            if request.method == 'POST' and request.is_ajax():
+                visa_uuid = request.POST['visa_uuid']
+                coach_uuid = request.POST['coach_uuid']
+                visa = HavaLevel.objects.get(uuid=visa_uuid)
+                visa.status = HavaLevel.APPROVED
+                date = request.POST['dateOfApproval']
+                approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+                visa.approval_date = approvalDate
+                visa.save()
+                coach = Coach.objects.get(uuid=coach_uuid)
+                log = str(coach.person.user.get_full_name()) + " vize onaylandi"
+                log = general_methods.logwrite(request, request.user, log)
 
-    messages.success(request, 'Vize onaylanmıştır.')
-    return redirect('sbs:update_coach', uuid=coach_uuid)
+                return JsonResponse({'status': 'Success', 'messages': 'Vize Onaylanmıştır.'})
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
 @login_required
@@ -821,27 +845,37 @@ def gradeList(request):
 
 
 @login_required
-def gradeListApproval(request, uuid):
+def gradeListApproval(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    grade = HavaLevel.objects.get(uuid=uuid)
-    coach = grade.CoachGrades.first()
     try:
-        for item in coach.grades.all():
-            if item.branch == grade.branch:
-                item.isActive = False
-                item.save()
-        grade.status = HavaLevel.APPROVED
-        grade.isActive = True
-        grade.save()
-        messages.success(request, 'Kademe   Onaylanmıştır')
-    except:
-        messages.warning(request, 'Lütfen yeniden deneyiniz.')
+        with transaction.atomic():
+            if request.method == 'POST' and request.is_ajax():
+                grade_uuid = request.POST['grade_uuid']
+                grade = HavaLevel.objects.get(uuid=grade_uuid)
+                date = request.POST['dateOfApproval']
+                approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+                grade.approval_date = approvalDate
+                if grade.CoachGrades.first():
+                    coach = grade.CoachGrades.first()
+                    for item in coach.grades.all():
+                        if item.branch == grade.branch:
+                            item.isActive = False
+                            item.save()
+                grade.status = HavaLevel.APPROVED
+                grade.isActive = True
+                grade.save()
 
-    return redirect('sbs:coach_grade_list')
+                return JsonResponse({'status': 'Success', 'messages': 'Kademe Onaylanmıştır.'})
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
 @login_required
@@ -935,27 +969,36 @@ def visaList(request):
 
 
 @login_required
-def visaListApproval(request, uuid):
+def visaListApproval(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     try:
-        perm = general_methods.control_access(request)
+        with transaction.atomic():
+            if request.method == 'POST' and request.is_ajax():
+                visa_uuid = request.POST['visa_uuid']
+                visa = HavaLevel.objects.get(uuid=visa_uuid)
+                date = request.POST['dateOfApproval']
+                approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+                visa.approval_date = approvalDate
+                visa.status = HavaLevel.APPROVED
+                if visa.CoachVisa.first():
+                    coach = visa.CoachVisa.first()
+                    for item in coach.visa.all():
+                        if item.branch == visa.branch:
+                            item.isActive = False
+                            item.save()
+                visa.isActive = True
+                visa.save()
+                return JsonResponse({'status': 'Success', 'messages': 'Vize Onaylanmıştır.'})
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
-        if not perm:
-            logout(request)
-            return redirect('accounts:login')
-        visa = HavaLevel.objects.get(uuid=uuid)
-        visa.status = HavaLevel.APPROVED
-        coach = visa.CoachVisa.first()
-        for item in coach.visa.all():
-            if item.branch == visa.branch:
-                item.isActive = False
-                item.save()
-        visa.isActive = True
-        visa.save()
-        messages.success(request, 'Vize Onaylanmıştır.')
     except:
-        messages.warning(request, 'Yeniden deneyiniz.')
-
-    return redirect('sbs:coach_visa_list')
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
 @login_required
@@ -1475,13 +1518,13 @@ def approvelReferenceCoach(request):
                     communication.country = referenceCoach.country
                     communication.save()
 
-                    coach = Coach(person=person, communication=communication,sgk=referenceCoach.sgk)
+                    coach = Coach(person=person, communication=communication, sgk=referenceCoach.sgk)
                     coach.iban = referenceCoach.iban
                     coach.save()
 
                     grade = HavaLevel(definition=referenceCoach.kademe_definition,
                                       startDate=referenceCoach.kademe_startDate,
-                                      form=referenceCoach.kademe_belge,dekont=referenceCoach.dekont)
+                                      form=referenceCoach.kademe_belge, dekont=referenceCoach.dekont)
 
                     grade.levelType = EnumFields.LEVELTYPE.GRADE
                     grade.status = HavaLevel.APPROVED

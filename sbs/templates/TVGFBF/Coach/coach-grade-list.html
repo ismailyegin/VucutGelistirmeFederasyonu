@@ -23,6 +23,32 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfApproval"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Onaylanma Tarihi</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <input type="date" name="dateOfApprovalText" id="dateOfApprovalText" class="form-control datemask"
+                           required="required" autocomplete="off">
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline" id="btn-closereddet-approval">İptal</button>
+                    <button type="button" class="btn btn-outline btn-ok" id="btn-gonder-approval"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
     <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
@@ -152,12 +178,14 @@
                         <h3 class="card-title">Kademe Listesi</h3>
                         {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
 
-                            <button onclick="onay()" type="button" class="btn btn-outline-success btn-sm" style="float: right">
+                            <button onclick="onay()" type="button" class="btn btn-outline-success btn-sm"
+                                    style="float: right">
                                 <i class="fa fa-check"></i>
                                 Hepsini Onayla
                             </button>
 
-                            <button onclick="reddet()" type="button" class="btn btn-outline-danger btn-sm" style="float: right;margin-right: 5px" >
+                            <button onclick="reddet()" type="button" class="btn btn-outline-danger btn-sm"
+                                    style="float: right;margin-right: 5px">
                                 <i class="fa fa-minus"></i>
                                 Hepsini Reddet
                             </button>
@@ -181,6 +209,7 @@
 
 
                                 <th> Onay Durumu</th>
+                                <th> Onay Tarihi</th>
                                 <th> Kademe</th>
                                 <th> Dekont</th>
 
@@ -207,6 +236,7 @@
 
 
                                         <td>{{ coachGrade.status }}  </td>
+                                        <td>{{ coachGrade.approval_date }}  </td>
                                         <td>{{ coachGrade.definition }}  </td>
 
                                         <td>
@@ -226,17 +256,19 @@
                                                 {% for item in perm %}
                                                     {% if item == 'coach_grade_list_approval' %}
                                                         <div class="btn-group">
-                                                            <a href="{% url "sbs:coach_grade_list_approval" uuid=coachGrade.uuid %}"
-                                                               type="button" class="btn btn-outline-success" title="Onayla"><i
+                                                            <a class="btn btn-outline-success" style="margin-left: 5px;"
+                                                               data-toggle="modal" title="Onayla"
+                                                               onclick="approvalGrade('{{ coachGrade.uuid }}')"><i
                                                                     class="fa fa-check"></i>
                                                             </a>
                                                         </div>
 
 
                                                     {% elif item == 'coach_grade_list_reject' %}
-                                                         <div class="btn-group">
+                                                        <div class="btn-group">
                                                             <a href="{% url "sbs:coach_grade_list_reject" uuid=coachGrade.uuid %}"
-                                                               type="button" class="btn btn-outline-danger" title="Reddet"><i
+                                                               type="button" class="btn btn-outline-danger"
+                                                               title="Reddet"><i
                                                                     class="fa fa-minus"></i>
                                                             </a>
                                                         </div>
@@ -244,7 +276,7 @@
 
 
 
-                                                  {% endfor %}
+                                                {% endfor %}
 
 
 
@@ -276,7 +308,7 @@
 
     {% load  static %}
     <script>
-       $(function () {
+        $(function () {
             $('#gradeList').DataTable({
                 dom: 'Bfrtip',
 
@@ -362,7 +394,7 @@
 
     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
         <script>
-           function onay() {
+            function onay() {
 
                 swal({
                     title: "Tüm başvuruları Onaylıyor musunuz?",
@@ -374,7 +406,7 @@
                 }).then((result) => {
                     if (result.dismiss !== 'Evet') {
                         $.ajax({
-                           url: "{% url "sbs:coach_grade-list-approval-all"%}",
+                            url: "{% url "sbs:coach_grade-list-approval-all"%}",
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -395,7 +427,7 @@
 
                                     })
                                 }
-                                        window.location.replace("{% url "sbs:coach_grade_list"%}");
+                                window.location.replace("{% url "sbs:coach_grade_list"%}");
 
                             }
 
@@ -409,12 +441,11 @@
             }
 
 
-
         </script>
         <script>
 
-function reddet() {
-                 swal({
+            function reddet() {
+                swal({
                     title: "Tüm başvuruları reddetmek istiyor musunuz?",
                     icon: "warning",
                     buttons: [
@@ -424,7 +455,7 @@ function reddet() {
                 }).then((result) => {
                     if (result.dismiss !== 'Evet') {
                         $.ajax({
-                             url: "{% url "sbs:coach_grade-list-reject-all"%}".replace(),
+                            url: "{% url "sbs:coach_grade-list-reject-all"%}".replace(),
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -445,7 +476,7 @@ function reddet() {
 
                                     })
                                 }
-                                        window.location.replace("{% url "sbs:coach_grade_list"%}");
+                                window.location.replace("{% url "sbs:coach_grade_list"%}");
 
                             }
                         });
@@ -458,6 +489,67 @@ function reddet() {
             }
         </script>
     {% endif %}
+
+    <script>
+        function approvalGrade(grade_uuid) {
+            debugger;
+            swal({
+                title: "Kademeyi onaylamak istediğinizden emin misiniz ?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+                    $("#dateOfApproval").on("shown.bs.modal", function (e) {
+
+                        $("#btn-gonder-approval").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:coach_grade_list_approval"%}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    grade_uuid: grade_uuid,
+                                    dateOfApproval: $('#dateOfApprovalText').val(),
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Kademe başarıyla onaylanmıştır.',
+
+                                        })
+
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'Kademe onaylanamadı !',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-approval').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
+                    });
+                }
+
+            })
+
+
+        }
+    </script>
 
 {% endblock %}
 

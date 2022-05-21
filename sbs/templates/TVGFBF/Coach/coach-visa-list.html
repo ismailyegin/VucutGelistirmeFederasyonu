@@ -23,6 +23,32 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfApproval"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Onaylanma Tarihi</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <input type="date" name="dateOfApprovalText" id="dateOfApprovalText" class="form-control datemask"
+                           required="required" autocomplete="off">
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline" id="btn-closereddet-approval">İptal</button>
+                    <button type="button" class="btn btn-outline btn-ok" id="btn-gonder-approval"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
     <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
@@ -125,7 +151,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-<h1>Antrenör Vize</h1>
+                    <h1>Antrenör Vize</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -164,6 +190,7 @@
 
 
                                 <th> Onay Durumu</th>
+                                <th> Onay Tarihi</th>
                                 <th> Dekont</th>
 
                                 <th> Onayla/Reddet</th>
@@ -189,6 +216,7 @@
 
 
                                         <td>{{ coachvisa.status }}  </td>
+                                        <td>{{ coachvisa.approval_date }}  </td>
                                         <td>
                                             {% if coachvisa.dekont %}
                                                 <a href="/media/{{ coachvisa.dekont }}" class="user-image" alt="sbs"
@@ -205,17 +233,19 @@
                                                 {% for item in perm %}
                                                     {% if item == 'coach_visa_list_approval' %}
                                                         <div class="btn-group">
-                                                            <a href="{% url "sbs:coach_visa_list_approval" uuid=coachvisa.uuid %}"
-                                                               type="button" class="btn btn-outline-success" title="Onayla"><i
+                                                            <a class="btn btn-outline-success" style="margin-left: 5px;"
+                                                               data-toggle="modal" title="Onayla"
+                                                               onclick="approvalVisa('{{ coachvisa.uuid }}')"><i
                                                                     class="fa fa-check"></i>
                                                             </a>
                                                         </div>
 
 
                                                     {% elif item == 'coach_visa_list_reject' %}
-                                                         <div class="btn-group">
+                                                        <div class="btn-group">
                                                             <a href="{% url "sbs:coach_visa_list_reject" uuid=coachvisa.uuid %}"
-                                                               type="button" class="btn btn-outline-danger" title="Reddet"><i
+                                                               type="button" class="btn btn-outline-danger"
+                                                               title="Reddet"><i
                                                                     class="fa fa-minus"></i>
                                                             </a>
                                                         </div>
@@ -223,7 +253,7 @@
 
 
 
-                                                  {% endfor %}
+                                                {% endfor %}
 
 
                                             {% endif %}
@@ -337,8 +367,68 @@
             });
 
 
-
         })
+    </script>
+
+    <script>
+        function approvalVisa(visa_uuid) {
+            debugger;
+            swal({
+                title: "Vizeyi onaylamak istediğinizden emin misiniz ?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+                    $("#dateOfApproval").on("shown.bs.modal", function (e) {
+
+                        $("#btn-gonder-approval").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:coach_visa_list_approval"%}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    visa_uuid: visa_uuid,
+                                    dateOfApproval: $('#dateOfApprovalText').val(),
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Vize başarıyla onaylanmıştır.',
+
+                                        })
+
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'Vize onaylanamadı !',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-approval').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
+                    });
+                }
+
+            })
+
+
+        }
     </script>
 
 {% endblock %}
