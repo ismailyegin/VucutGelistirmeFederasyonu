@@ -8,9 +8,9 @@ class VisaForm(ModelForm):
     class Meta:
         model = HavaLevel
 
-        fields = ('branch', 'startDate', 'dekont', 'form')
+        fields = ('branch', 'startDate', 'dekont', )
 
-        labels = {'branch': 'Branş', 'startDate': 'Geçerlilik Tarihi', 'dekont': 'Dekont', 'form': 'Vize Belgesi'}
+        labels = {'branch': 'Branş', 'startDate': 'Geçerlilik Tarihi', 'dekont': 'Dekont'}
 
         widgets = {
 
