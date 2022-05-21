@@ -21,14 +21,14 @@ class RefereeCoachForm(ModelForm):
         fields = (
             'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
             'country', 'iban', 'tc', 'profileImage', 'birthDate', 'gender', 'birthplace', 'motherName',
-        'fatherName','kademe_belge','kademe_startDate')
+        'fatherName','kademe_belge','kademe_startDate','sgk','dekont')
 
 
 
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
-                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet','kademe_belge':'Antrenörlük Belgesi Yükleyiniz:',
-                  'kademe_startDate':'Kademe Başlangıç Zamanı ',}
+                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet','kademe_belge':'Sözleşme Belgesi: ',
+                  'kademe_startDate':'Kademe Başlangıç Zamanı ','sgk':'SGK Belgesi: ','dekont':'Dekont'}
         widgets = {
 
             'tc': forms.TextInput(attrs={'class': 'form-control ',
@@ -49,9 +49,10 @@ class RefereeCoachForm(ModelForm):
             'iban': forms.TextInput(
                 attrs={'id':'iban','class': 'form-control  iban','onkeyup':'if(this.value.length > 34){this.value=this.value.substr(0, 34);}','value': '', 'required': 'required'}),
 
-            'birthDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
-                       'onkeydown': 'return true', 'required': 'required'}),
+             'birthDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
+                       'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
+                       "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
 
             'gender': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%; '}),
@@ -76,9 +77,10 @@ class RefereeCoachForm(ModelForm):
 
             'country': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                            'style': 'width: 100%;', 'required': 'required'}),
-            'kademe_startDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right', 'id': 'datepicker2', 'autocomplete': 'off',
-                       'onkeydown': 'return true'}),
+             'kademe_startDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
+                       'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
+                       "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
 
         }
 

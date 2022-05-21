@@ -218,3 +218,15 @@ def change_group_function(request, pk):
                   {"user_none_group": user_none_group,
                    "user_group": user_group,
                    'user': user, 'urls': urls, 'current_url': current_url, 'url_name': url_name})
+
+def coachUserCreatePassword(request):
+    try:
+        coaches=Coach.objects.filter(person__user__is_active=True).filter(person__isDeleted=False)
+        for coach in coaches:
+            user=coach.person.user
+            user.set_password('Fed2022')
+            user.save()
+        return redirect('sbs:view_admin')
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:view_admin')

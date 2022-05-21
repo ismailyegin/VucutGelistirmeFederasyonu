@@ -64,7 +64,7 @@ def return_coach_dashboard(request):
         athlete_count = athletes.count()
 
     return render(request, 'TVGFBF/Anasayfa/antrenor.html',
-                  {'athlete_count': athlete_count, })
+                  {'athlete_count': athlete_count,'coach':coach })
 
 
 @login_required

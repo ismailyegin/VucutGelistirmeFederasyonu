@@ -240,24 +240,26 @@
                             {{ user.first_name }} {{ user.last_name }}
 
 
-                            {% if aktif == 'Personel' %}
-                                <small> Personel</small>
-                            {% elif  aktif ==  "Admin" %}
-                                <small> Admin</small>
-
-                            {% elif aktif == "Yonetim" %}
-                                <small> Yönetim</small>
-                            {% endif %}
-
                         </p>
+                        <div class="col-md" style="float:right">
+                         <small>  <a><i class="fa fa-circle text-success"></i> {{ aktif }}</a></small>
+                        </div>
                     </li>
                     <!-- Menu Body -->
                     <li class="user-body">
                         <div class="row">
                             {% for gr in group %}
-                                <div class="col-md text-center">
-                                    <a href="{% url 'sbs:change_activegroup' gr.pk %}">{{ gr.name }}</a>
-                                </div>
+                                {% if group.count == 1 %}
+                                    <div class="col-md">
+                                        <a href="{% url 'sbs:change_activegroup' gr.pk %}">{{ gr.name }}</a>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md text-center">
+
+                                        <a href="{% url 'sbs:change_activegroup' gr.pk %}">{{ gr.name }}</a>
+                                    </div>
+                                {% endif %}
+
                             {% endfor %}
                         </div>
                         <!-- /.row -->
@@ -267,21 +269,21 @@
                         <div class="row">
                             <div class="col-md">
 
-                                {#                                {% if aktif == "Admin" %}#}
-                                {#                                    <a href="{% url "sbs:admin-profil-guncelle" %}"#}
-                                {#                                       class="btn btn-default btn-flat">Profil Bilgisi</a>#}
-                                {##}
-                                {#                                {% elif aktif == "Yonetim" %}#}
-                                {#                                    <a href=""#}
-                                {#                                       class="btn btn-default btn-flat">Profil Bilgisi</a>#}
-                                {##}
-                                {#                                {% elif aktif == "Personel" %}#}
-                                {#                                    <a href=""#}
-                                {#                                       class="btn btn-default btn-flat">Profil Bilgisi</a>#}
+                                {% if aktif == "Antrenör" %}
+                                    <a href="{% url "sbs:updateProfileCoach" %}"
+                                       class="btn btn-default btn-flat">Profil Bilgisi</a>
+
+                                {% elif aktif == "Hakem" %}
+                                    <a href="{% url 'sbs:updateProfileReferee' %}"
+                                       class="btn btn-default btn-flat">Profil Bilgisi</a>
+
+                                {% elif aktif == "Kulüp Yetkilisi" %}
+                                    <a href="{% url 'sbs:updateProfileClubUser' %}"
+                                       class="btn btn-default btn-flat">Profil Bilgisi</a>
 
 
-                                <a><i class="fa fa-circle text-success"></i> {{ aktif }}</a>
 
+                                {% endif %}
 
                             </div>
                             <div class="col-md text-right">
@@ -292,6 +294,7 @@
                     </li>
                 </ul>
             </li>
+
 
         </ul>
 

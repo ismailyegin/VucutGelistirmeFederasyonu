@@ -1475,13 +1475,13 @@ def approvelReferenceCoach(request):
                     communication.country = referenceCoach.country
                     communication.save()
 
-                    coach = Coach(person=person, communication=communication)
+                    coach = Coach(person=person, communication=communication,sgk=referenceCoach.sgk)
                     coach.iban = referenceCoach.iban
                     coach.save()
 
                     grade = HavaLevel(definition=referenceCoach.kademe_definition,
                                       startDate=referenceCoach.kademe_startDate,
-                                      form=referenceCoach.kademe_belge)
+                                      form=referenceCoach.kademe_belge,dekont=referenceCoach.dekont)
 
                     grade.levelType = EnumFields.LEVELTYPE.GRADE
                     grade.status = HavaLevel.APPROVED

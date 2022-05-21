@@ -1,0 +1,390 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+    <style>
+        td {
+            text-align: center;
+
+        }
+    </style>
+    <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+                <div class="modal-body successModal">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-outline btn-ok">Tamam</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header orange">
+                    <h4 class="modal-title">Uyarı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+                <div class="modal-body">
+                    <p>Silmek istediğinizden emin misiniz ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left btn-ok" id="btn-conf1"
+                            data-dismiss="modal">Evet
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-close1">Hayır</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+
+            <div id="toast-container" class="toasts-top-right">
+                {% if message.tags == 'warning' %}
+                    <div class="toast toast-error" aria-live="polite" style="" id="toast">
+                        <div class="toast-message">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+
+                {% if message.tags == 'success' %}
+                    <div class="toast toast-success" aria-live="polite" style="" id="toast">
+                        <div class="toast-message"> {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                {% endif %}
+            </div>
+        {% endfor %}
+
+
+    {% endif %}
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+
+            <div class="modal-content" style="height:fit-content">
+
+                <div class="modal-header" style="background-color:#3c8dbc ">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body bodys">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <section class="content-header">
+
+
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Bilgilerimi Güncelle</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="content">
+
+
+        <div class="row">
+
+            <section class="col-lg-12 ">
+
+
+                <div class="card card-primary card-outline card-outline-tabs">
+                    <div class="card-header p-0 border-bottom-0">
+                        <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill"
+                                   href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home"
+                                   aria-selected="false">Profil Bilgilerim</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill"
+                                   href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile"
+                                   aria-selected="false">Antrenör Bilgilerim</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-four-password-tab" data-toggle="pill"
+                                   href="#custom-tabs-four-password" role="tab"
+                                   aria-controls="custom-tabs-four-password" aria-selected="false">Şifre Bilgilerim</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="custom-tabs-four-tabContent">
+                            <div class="tab-pane fade show active" id="custom-tabs-four-home" role="tabpanel"
+                                 aria-labelledby="custom-tabs-four-home-tab">
+                                <form method="post" role="form" enctype="multipart/form-data" id="form-container">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="card card-outline card-info">
+                                                <div class="card-header with-border">
+                                                    <h3 class="card-title">Kişisel Bilgileri</h3>
+                                                </div>
+                                                <div class="card-body">
+
+                                                    <div class="row">
+                                                        {% for item in user_form %}
+                                                            <div class="form-group col-lg-6">
+                                                                <label> {{ item.label }}</label>
+                                                                {{ item }}
+                                                                <label for="" id="label_{{ item.name }}"></label>
+                                                            </div>
+                                                        {% endfor %}
+                                                        {% for item in person_form %}
+                                                            {% if not item.name == 'iban' %}
+                                                                <div class="form-group col-lg-6">
+                                                                    <label> {{ item.label }}</label>
+                                                                    {{ item }}
+                                                                    <label for="" id="label_{{ item.name }}"></label>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+
+                                                        <div class="form-group col-lg-6">
+                                                            <label for="iban">IBAN</label>
+                                                            <input value="{{ iban }}" id="iban"
+                                                                   data-inputmask="'mask': 'TR99-9999-9999-9999-9999-9999-99'"
+                                                                   class="form-control" type="text"
+                                                                   name="iban"/>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- /.card-body -->
+
+                                                </div>
+                                                <!-- /.card -->
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="card card-outline card-info">
+                                                <div class="card-header with-border">
+                                                    <h3 class="card-title">İletişim Bilgileri</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        {% for item in communication_form %}
+                                                            <div class="form-group col-lg-6">
+                                                                <label> {{ item.label }}</label>
+                                                                {{ item }}
+                                                                <label for="" id="label_{{ item.name }}"></label>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <!-- /.card-body -->
+
+                                                </div>
+                                                <!-- /.card -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-outline-info" type="submit"
+                                                style="float:right" id="save_button" name="save_button"
+                                                value="profile">
+                                            Kaydet
+                                        </button>
+                                        <small style="color: red ">(*) Olan Alanlar zorunludur.</small>
+                                    </div>
+
+
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel"
+                                 aria-labelledby="custom-tabs-four-profile-tab">
+                                <form method="post" role="form" enctype="multipart/form-data" id="form-container">
+                                    {% csrf_token %}
+                                      <div class="card-body">
+                                                <div class="row">
+                                        {% for item in coach_form %}
+                                            <div class="form-group col-lg-6">
+                                                <label> {{ item.label }}</label>
+                                                {{ item }}
+                                                <label for="" id="label_{{ item.name }}"></label>
+                                            </div>
+                                        {% endfor %}</div>
+
+                                        <button class="btn btn-outline-info" type="submit"
+                                                style="float:right" id="save_button" name="save_button"
+                                                value="coach">
+                                            Kaydet
+                                        </button>
+                                      </div>
+                                </form>
+                                <hr>
+
+                                <form method="post" role="form" enctype="multipart/form-data" id="form-container">
+                                    {% csrf_token %}
+                                    <div class="row">
+
+                                        <div class="card card-outline card-info">
+                                            <div class="card-header with-border">
+                                                <h3 class="card-title">Kademe Bilgileri</h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+
+                                                    {% for item in grade_form %}
+                                                        <div class="form-group col-lg-6">
+                                                            <label> {{ item.label }}</label>
+                                                            {{ item }}
+                                                            <label for="" id="label_{{ item.name }}"></label>
+                                                        </div>
+                                                    {% endfor %}
+
+                                                </div>
+
+                                                <!-- /.card-body -->
+
+                                            </div>
+
+
+                                            <!-- /.card -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="card card-outline card-info" style="width: 100%">
+                                            <div class="card-header with-border">
+                                                <h3 class="card-title">Vize Bilgileri</h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+
+                                                    {% for item in visa_form %}
+                                                        <div class="form-group col-lg-6">
+                                                            <label> {{ item.label }}</label>
+                                                            {{ item }}
+                                                            <label for=""
+                                                                   id="label_{{ item.name }}"></label>
+                                                        </div>
+                                                    {% endfor %}
+
+                                                </div>
+
+                                                <!-- /.card-body -->
+
+                                            </div>
+                                            <!-- /.card -->
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-outline-info" type="submit"
+                                                style="float:right" id="save_button" name="save_button"
+                                                value="coach">
+                                            Kaydet
+                                        </button>
+                                        <small style="color: red ">(*) Olan Alanlar zorunludur.</small>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="custom-tabs-four-password" role="tabpanel"
+                                 aria-labelledby="custom-tabs-four-password-tab">
+                                <form method="post" role="form" enctype="multipart/form-data" id="form-container">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="card card-outline card-info">
+                                                <div class="card-header with-border">
+                                                    <h3 class="card-title">Şifre Bilgileri</h3>
+                                                </div>
+                                                <div class="card-body">
+
+
+                                                    {{ password_form }}
+
+                                                    <!-- /.card-body -->
+
+                                                </div>
+                                                <div class="card-footer">
+                                                    <button class="btn btn-outline-info" type="submit"
+                                                            style="float:right" id="save_button" name="save_button"
+                                                            value="password">
+                                                        Kaydet
+                                                    </button>
+                                                    <small>Şifre güncelleme işlemi yapıldığında tekrar giriş
+                                                        yapılmalıdır.</small>
+                                                </div>
+                                                <!-- /.card -->
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+
+        </div>
+        <!-- /.row (main row) -->
+
+    </section>
+    {% load  static %}
+    <script>
+        $(function () {
+            debugger;
+            $('#iban').inputmask();
+
+        })
+    </script>
+
+
+
+{% endblock %}
+

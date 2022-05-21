@@ -10,7 +10,7 @@
 
             </h1>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Ana Sayfa</a></li>
+                <li><a href="{% url 'sbs:antrenor' %}"><i class="fa fa-dashboard"></i> Ana Sayfa</a></li>
 
             </ol>
         </section>
@@ -18,24 +18,125 @@
         <!-- Main content -->
         <section class="content">
             <!-- Info boxes -->
-            <div class="row">
-                <div class="col-lg-6 col-xs-6">
-                    <!-- small box -->
-                    <div class="small-box bg-aqua">
-                        <div class="inner">
-                            <h3>{{ athlete_count }}</h3>
 
-                            <p>Sporcu Sayisi </p>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Kademe Bilgileri</h3>
+
                         </div>
-                        <div class="icon">
-                            <i class="ion ion-ios-people-outline"></i>
+                        <div class="card-body">
+
+                            <table id="grade" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> Hak Kazanma Tarihi</th>
+                                    <th> Branş</th>
+                                    <th> Tanımı</th>
+                                    <th>Dekont</th>
+                                    <th> Onay Durumu</th>
+                                    <th>Onaylanma Tarihi</th>
+
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if coach %}
+                                    {% for grade in coach.grades.all %}
+                                        <tr>
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ grade.startDate }}  </td>
+                                            <td>{{ grade.branch }}  </td>
+                                            <td>{{ grade.definition }}  </td>
+                                            <td>{% if grade.dekont %}
+                                                <a href="{{ grade.dekont.url }}" target="_blank">Dekont </a> {% endif %}
+                                            </td>
+                                            <td>{% if grade.status == 'Onaylandı' %}
+                                                <center>
+                                                <i class="fa fa-check"></i></center>
+                                                {% elif grade.status == 'Reddedildi' %}
+                                                 <center>
+                                                <i class="fa fa-ban">{{ grade.status }}</i>
+                                                 </center>
+                                                {% else %}
+                                                {{ grade.status }}
+                                                {% endif %}
+                                            </td>
+
+                                            <td>{% if grade.approval_date %}
+                                                {{ grade.approval_date }}</td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+
                         </div>
-                        <a href="" class="small-box-footer">Daha Fazla <i
-                                class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
+                <div class="col-lg-12">
+                    <div class="card card-outline card-info">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Vize Bilgileri</h3>
 
+
+                        </div>
+                        <div class="card-body">
+
+                            <table id="visa" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> Hak Kazanma Yılı</th>
+                                    <th> Branş</th>
+                                    <th> Dekont</th>
+                                    <th> Onay Durumu</th>
+                                    <th>Onaylanma Tarihi</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if coach %}
+
+
+                                    {% for grade in coach.visa.all %}
+                                        <tr>
+
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ grade.startDate.year }}  </td>
+                                            <td>{{ grade.branch }}  </td>
+                                            <td><a href="{{ grade.dekont.url }}" target="_blank">Dekont </a>
+                                            <td>{{ grade.status }}  </td>
+                                            <td>{% if grade.approval_date %}
+                                                {{ grade.approval_date }}</td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+
+
+
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </section>
     </section>
 

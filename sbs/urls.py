@@ -1,12 +1,13 @@
 from django.urls import path
 
 from sbs.Views import ClubViews, RefereeViews, CoachViews, TransmissionViews, \
-    ClubTransmissionViews, DocumentViews, SportFacilityViews, AnnouncementViews, Aktarma
+    ClubTransmissionViews, DocumentViews, SportFacilityViews, AnnouncementViews, Aktarma, ProfileViews
 from sbs.Views.ekabis import APIViews, AdminViews, \
     LogViews, CityViews, UserViews, \
     HelpViews, PermissionView, GroupView, \
     HelpMenuViews, NotificationViews, DirectoryViews
 from sbs.Views import DashboardViews
+
 app_name = 'sbs'
 
 urlpatterns = [
@@ -273,7 +274,7 @@ urlpatterns = [
 
     path('hakem/basvuru-reddet', RefereeViews.refencedeleteReferee,
          name='refencedeleteReferee'),
-    #Özel Spor Tesisi
+    # Özel Spor Tesisi
 
     path('tesis/tesis-ekle', SportFacilityViews.AddSportFacility, name='AddSportFacility'),
     path('tesis/tesis-listesi', SportFacilityViews.return_facility, name='return_facility'),
@@ -281,13 +282,17 @@ urlpatterns = [
     path('tesis/tesis-duzenle/<uuid:uuid>', SportFacilityViews.update_sport_facility, name='update_sport_facility'),
     path('tesis/tesis-yetkilisi-sil', SportFacilityViews.delete_facility_manager, name='delete_facility_manager'),
     path('tesis/tesis-yetkili-listesi/<uuid:uuid>', SportFacilityViews.return_facilityUser, name='return_facilityUser'),
-    path('tesis/tesis-yetkili-ekle/<uuid:uuid>', SportFacilityViews.AddSportFacilityManager, name='AddSportFacilityManager'),
+    path('tesis/tesis-yetkili-ekle/<uuid:uuid>', SportFacilityViews.AddSportFacilityManager,
+         name='AddSportFacilityManager'),
     path('tesis/tesis-calistirici-sil', SportFacilityViews.delete_facility_coach, name='delete_facility_coach'),
-    path('tesis/tesis-calistirici-listesi/<uuid:uuid>', SportFacilityViews.return_facilityCoach, name='return_facilityCoach'),
+    path('tesis/tesis-calistirici-listesi/<uuid:uuid>', SportFacilityViews.return_facilityCoach,
+         name='return_facilityCoach'),
     path('tesis/tesis-calistirici-ekle/<uuid:uuid>', SportFacilityViews.AddSportFacilityCoach,
          name='AddSportFacilityCoach'),
-    path('tesis/tesis-yetkili-duzenle/<uuid:uuid>/<uuid:facility_uuid>', SportFacilityViews.updateSportFacilityManager,name='updateSportFacilityManager'),
-    path('tesis/tesis-belge-listesi/<uuid:uuid>', SportFacilityViews.return_facilityDocument, name='return_facilityDocument'),
+    path('tesis/tesis-yetkili-duzenle/<uuid:uuid>/<uuid:facility_uuid>', SportFacilityViews.updateSportFacilityManager,
+         name='updateSportFacilityManager'),
+    path('tesis/tesis-belge-listesi/<uuid:uuid>', SportFacilityViews.return_facilityDocument,
+         name='return_facilityDocument'),
     path('tesis/tesis-belge-sil', SportFacilityViews.delete_facility_document, name='delete_facility_document'),
 
     # DOCUMENTS
@@ -307,7 +312,7 @@ urlpatterns = [
 
     path('tesis/tesis-getir-api/', TransmissionViews.GetCurrentFacilityDetail, name='tesis-getir-api'),
     path('tesis/tesis-onayla/<uuid:uuid>', SportFacilityViews.pre_facility_approve, name='pre_facility_approve'),
-    path('tesis/tesis-basvurulari',SportFacilityViews.pre_facility, name='pre_facility'),
+    path('tesis/tesis-basvurulari', SportFacilityViews.pre_facility, name='pre_facility'),
 
     path('izin/api-izin-listesi/', APIViews.GetPermission.as_view(), name='view_permission-api'),
     path('antrenor/api-antrenor-listesi/', APIViews.GetCoach.as_view(), name='view_coach-api'),
@@ -318,5 +323,11 @@ urlpatterns = [
     path('tesis/filtrele/', SportFacilityViews.return_facility_search, name='return_facility_search'),
 
     path('club/all-delete/', TransmissionViews.DeleteClub, name='all_DeleteClub'),
+
+    # PROFİL
+    path('profil/antrenor-bilgilerim', ProfileViews.updateProfileCoach, name='updateProfileCoach'),
+    path('profil/hakem-bilgilerim', ProfileViews.updateProfileReferee, name='updateProfileReferee'),
+    path('profil/kulup-yetkilisi-bilgilerim', ProfileViews.updateProfileClubUser, name='updateProfileClubUser'),
+    path('kullanici/sifre-belirle', UserViews.coachUserCreatePassword, name='coachUserCreatePassword'),
 
 ]

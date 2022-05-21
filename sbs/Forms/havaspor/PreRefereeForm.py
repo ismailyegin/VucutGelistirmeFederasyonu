@@ -48,13 +48,14 @@ class PreRefereeForm(ModelForm):
             'fatherName': forms.TextInput(
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
 
-            'kademe_startDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right', 'id': 'datepicker2', 'autocomplete': 'off',
-                       'onkeydown': 'return true', 'required': 'required'}),
-
-            'birthDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right', 'id': 'datepicker', 'autocomplete': 'off',
-                       'onkeydown': 'return true', 'required': 'required'}),
+             'kademe_startDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
+                       'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
+                       "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
+             'birthDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
+                       'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
+                       "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
 
             'iban': forms.TextInput(attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
 

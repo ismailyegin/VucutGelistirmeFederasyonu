@@ -487,6 +487,10 @@
     $(function () {
 
         $('.select2').select2();
+        $('#datemask').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+
+        $('[data-mask]').inputmask();
+
 
         $('#datepicker').datepicker({
             autoclose: true,
@@ -501,6 +505,13 @@
             format: 'dd/mm/yyyy',
 
         });
+
+        $('.datepicker6').datepicker({
+            autoclose: true,
+            language: 'tr',
+            format: 'dd/mm/yyyy',
+        })
+
     })
 </script>
 </body>

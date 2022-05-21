@@ -18,6 +18,7 @@ class Coach(BaseModel):
     antrenorBelgesi = models.FileField(null=True, blank=True, verbose_name='Antrenör Belgesi')
     infoLevel = models.BooleanField(default=True, null=True, blank=True)
     infoStatus = models.BooleanField(default=True, null=True, blank=True)
+    sgk=models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')
 
     grades = models.ManyToManyField(HavaLevel, related_name='CoachGrades')
     visa = models.ManyToManyField(HavaLevel, related_name='CoachVisa')

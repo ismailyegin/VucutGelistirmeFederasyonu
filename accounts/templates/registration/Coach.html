@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-   <meta charset="utf-8">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <meta name="description" content="Türkiye Vücut Geliştirme Fitness ve Bilek Güreşi Federasyonu"/>
@@ -98,8 +98,8 @@
 <div class="wrapper">
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-        < <img class="animation" src="{% static 'tvgfbf__.png' %}"  alt="THSF"
-             style="display: block;width: 200px;height: 200px">
+        < <img class="animation" src="{% static 'tvgfbf__.png' %}" alt="THSF"
+               style="display: block;width: 200px;height: 200px">
     </div>
 
 </div>
@@ -277,11 +277,13 @@
 
                                     <div class="form-group">
                                         <label for="club">Kayıtlı Olduğunuz Kulüp</label>
-                                        <select id="club" name="club" class="form-control select2 select2-hidden-accessible"
+                                        <select id="club" name="club"
+                                                class="form-control select2 select2-hidden-accessible"
                                                 style="width: 100%;"
                                                 data-select2-id="1" tabindex="-1" aria-hidden="true">
                                             <option value="noRegister">------</option>
-                                            <option value="noClub">Kayıtlı Olduğum Kulüp Seçeneklerde Bulunmamaktadır.</option>
+                                            <option value="noClub">Kayıtlı Olduğum Kulüp Seçeneklerde Bulunmamaktadır.
+                                            </option>
                                             {% for club in clubs %}
                                                 <option value="{{ club.derbis }}">{{ club.name }}</option>
 
@@ -370,11 +372,30 @@
                                         {{ preRegistrationform.kademe_definition }}
                                     </div>
 
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.kademe_belge.label }}</label>
-                                        {{ preRegistrationform.kademe_belge }}
-                                    </div>
 
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.kademe_belge.label }}</label>
+                                                {{ preRegistrationform.kademe_belge }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.sgk.label }}</label>
+                                                {{ preRegistrationform.sgk }}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.dekont.label }}</label>
+                                                {{ preRegistrationform.dekont }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -498,6 +519,10 @@
     $(function () {
 
         $('.select2').select2();
+        $('#datemask').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+
+        $('[data-mask]').inputmask();
+
 
         $('#datepicker').datepicker({
             autoclose: true,
@@ -512,6 +537,12 @@
             format: 'dd/mm/yyyy',
 
         });
+
+        $('.datepicker6').datepicker({
+            autoclose: true,
+            language: 'tr',
+            format: 'dd/mm/yyyy',
+        })
 
 
     })

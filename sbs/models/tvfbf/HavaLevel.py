@@ -37,6 +37,7 @@ class HavaLevel(BaseModel):
     city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl', null=True, blank=True)
     form = models.FileField(upload_to='form/', null=False, blank=False, verbose_name='Form ')
     secretId = models.CharField(null=True, blank=True, max_length=255)
+    approval_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return '%s ' % self.branch
