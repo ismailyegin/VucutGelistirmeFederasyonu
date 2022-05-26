@@ -580,7 +580,7 @@ def last_urls(request):
                 # if hostname == 'kobiltek.com':
                 #     url = urlpath.split('/yekabis/yekabis/')[1]
                 # else:
-                url = urlpath.split('/havasporlari/')[1]
+                url = urlpath.split('/tvgfbf/')[1]
                 for urlpattern in urlpatterns:
 
                     if str("/".join(str(urlpattern.pattern).split("/", 2)[:1])) == str("/".join(str(url).split("/", 2)[:1])):

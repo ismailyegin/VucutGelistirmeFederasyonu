@@ -4,67 +4,88 @@
     <section class="content">
 
         <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
-                Anasayfa
+       <section class="content-header">
 
-            </h1>
-            <ol class="breadcrumb float-sm-right">
-                {% for url in urls %}
-                    <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
-                    </li>
-                    <li class="breadcrumb-item active">{{ url_name.name }}</li>
-                {% endfor %}
-            </ol>
-        </section>
+
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Anasayfa</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </section>
 
         <!-- Main content -->
         <section class="content">
             <!-- Info boxes -->
             <div class="row">
-                <div class="col-md-12">
+                 <div class="col-lg-12">
 
-                    <div class="card card-primary card-outline">
+                    <div class="card card-info card-outline">
                         <div class="card-body box-profile">
-                            <div class="text-center">
-                                {% if person %}
-                                    {% if person.profileImage %}
-                                        <img class="profile-user-img img-fluid img-circle"
-                                             src="{{ person.profileImage.url }}" alt="User profile picture">
-
-                                    {% endif %}
-                                {% else %}
-                                    <img class="profile-user-img img-fluid img-circle"
-                                         src="/media/profile/user_IudVgaQ.png" alt="User profile picture">
+                            <div class="row">
+                                {% if user.groups.all.count > 1 %}
+                                    <div class="col-lg-6">
+                                        <div class="text-center">
+                                            <img class="profile-user-img img-fluid img-circle"
+                                                 src="/media/profile/user_IudVgaQ.png" alt="User profile picture">
+                                        </div>
+                                        <h3 class="profile-username text-center">{{ user.get_full_name }}</h3>
+                                        <p class="text-muted text-center">{{ aktif }}</p>
+                                    </div>
+                                    {% else %}
+                                    <div class="col-lg-12">
+                                        <div class="text-center">
+                                            <img class="profile-user-img img-fluid img-circle"
+                                                 src="/media/profile/user_IudVgaQ.png" alt="User profile picture">
+                                        </div>
+                                        <h3 class="profile-username text-center">{{ user.get_full_name }}</h3>
+                                        <p class="text-muted text-center">{{ aktif }}</p>
+                                    </div>
                                 {% endif %}
+                                {% if user.groups.all.count > 1 %}
+                                    <div class="col-lg-6">
+                                        <ul class="list-group list-group-unbordered">
+
+                                            {% for group in user.groups.all %}
+                                                {% if not group.name == aktif %}
+                                                    <li class="list-group-item">
+                                                        <b>{{ group.name }}</b>
+                                                        <a href="{% url 'sbs:change_activegroup' group.pk %}"
+                                                           class="float-right"><span class="badge badge-info"> Grup Değiştir
+                                                        <i style="margin-left: 5px"
+                                                           class="fa fa-arrow-right"> </i></span> </a>
+                                                    </li>
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </ul>
+                                    </div>{% endif %}
                             </div>
-                            <h3 class="profile-username text-center">{{ user.get_full_name }}</h3>
-                            <p class="text-muted text-center">{{ aktif }}</p>
-                            {% if user.groups.all.count > 1 %}
-                                <ul class="list-group list-group-unbordered mb-3">
-
-                                    {% for group in user.groups.all %}
-                                        <li class="list-group-item">
-                                            <b>{{ group.name }}</b><br>
-                                            <a href="{% url 'sbs:change_activegroup' group.pk %}"
-                                               class="float-right">Grup Değiştir <i class="fa fa-arrow-right"> </i> </a>
-                                        </li>
-
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                            {% if active == "Antrenör" %}
+                            <hr>
+                            {% if aktif == "Antrenör" %}
                                 <a href="{% url "sbs:updateProfileCoach" %}" class="btn btn-outline-info btn-block"><b>Profil
                                     Bilgisi</b></a>
 
 
-                            {% elif active == "Hakem" %}
+                            {% elif aktif == "Hakem" %}
                                 <a href="{% url 'sbs:updateProfileReferee' %}"
                                    class="btn btn-outline-info btn-block"><b>Profil
                                     Bilgisi</b></a>
 
 
-                            {% elif active == "Kulüp Yetkilisi" %}
+                            {% elif aktif == "Kulüp Yetkilisi" %}
                                 <a href="{% url 'sbs:updateProfileClubUser' %}"
                                    class="btn btn-outline-info btn-block"><b>Profil
                                     Bilgisi</b></a>
@@ -74,8 +95,34 @@
                         </div>
 
                     </div>
+                    {% if club %}
+                        <div class="card card-info card-outline">
+                            <div class="card-header">
+                                <h3 class="card-title">Kulüp Bilgileri</h3>
+                            </div>
 
+                            <div class="card-body">
+                                <strong><i class="fas fa-book mr-1"></i> Kulüp </strong>
+                                <p class="text-muted">
+                                    {{ club.name }}
+                                </p>
+                                <hr>
+                                <strong><i class="fas fa-map-marker-alt mr-1"></i> Adres</strong>
+                                <p class="text-muted">{{ club.communication.address }}</p>
+                                <hr>
+                                <strong><i class="fas fa-pencil-alt mr-1"></i>Branş</strong>
+                                <p class="text-muted">
+                                    {% for branch in club.branch.all %}
 
+                                        <span class="tag tag-success">{{ branch.title }} - </span>
+
+                                    {% endfor %}
+                                </p>
+
+                            </div>
+
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="row">

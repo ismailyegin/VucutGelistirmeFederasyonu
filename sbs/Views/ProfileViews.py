@@ -3,6 +3,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
 from django.shortcuts import redirect, render
+from django.urls import resolve
 
 from sbs.Forms.havaspor.CoachForm import CoachForm
 from sbs.Forms.havaspor.GradeFormCoach import GradeFormCoach
@@ -11,8 +12,9 @@ from sbs.Forms.havaspor.PersonForm import PersonForm
 from sbs.Forms.havaspor.ProfileCommunicationForm import ProfileCommunicationForm
 from sbs.Forms.havaspor.RefereeForm import RefereeForm
 from sbs.Forms.havaspor.VisaForm import VisaForm
-from sbs.models import Coach, Person, Communication, Referee, SportClubUser
+from sbs.models import Coach, Person, Communication, Referee, SportClubUser, Permission
 from sbs.services import general_methods
+from sbs.services.services import last_urls
 
 
 @login_required
@@ -22,7 +24,9 @@ def updateProfileCoach(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     user = request.user
     coach = Coach.objects.get(person__user=user)
     person = Person.objects.get(pk=coach.person.pk)
@@ -138,7 +142,8 @@ def updateProfileCoach(request):
     return render(request, 'TVGFBF/Profile/CoachProfile.html',
                   {'user_form': user_form, 'communication_form': communication_form, 'iban': iban,
                    'person_form': person_form, 'password_form': password_form, 'coach_form': coach_form,
-                   'grade_form': grade_form, 'visa_form': visa_form})
+                   'grade_form': grade_form, 'visa_form': visa_form,'urls': urls, 'current_url': current_url,
+                   'url_name': url_name})
 
 
 @login_required
@@ -148,7 +153,9 @@ def updateProfileReferee(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     user = request.user
     referee = Referee.objects.get(person__user=user)
     person = Person.objects.get(pk=referee.person.pk)
@@ -206,7 +213,8 @@ def updateProfileReferee(request):
                 messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Profile/RefereeProfile.html',
-                  {'user_form': user_form, 'communication_form': communication_form, 'iban': iban,
+                  {'user_form': user_form, 'communication_form': communication_form, 'iban': iban,'urls': urls, 'current_url': current_url,
+                   'url_name': url_name,
                    'person_form': person_form, 'password_form': password_form, 'refere_form': refere_form})
 
 
@@ -217,7 +225,9 @@ def updateProfileClubUser(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     user = request.user
     clubUser = SportClubUser.objects.get(person__user=user)
     person = Person.objects.get(pk=clubUser.person.pk)
@@ -263,4 +273,5 @@ def updateProfileClubUser(request):
 
     return render(request, 'TVGFBF/Profile/ClubUserProfile.html',
                   {'user_form': user_form, 'communication_form': communication_form, 'iban': iban,
-                   'person_form': person_form, 'password_form': password_form, })
+                   'person_form': person_form, 'password_form': password_form,'urls': urls, 'current_url': current_url,
+                   'url_name': url_name })
