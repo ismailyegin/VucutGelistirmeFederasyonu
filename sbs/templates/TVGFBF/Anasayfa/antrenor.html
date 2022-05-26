@@ -9,9 +9,12 @@
                 Anasayfa
 
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="{% url 'sbs:antrenor' %}"><i class="fa fa-dashboard"></i> Ana Sayfa</a></li>
-
+            <ol class="breadcrumb float-sm-right">
+                {% for url in urls %}
+                    <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                    </li>
+                    <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                {% endfor %}
             </ol>
         </section>
 

@@ -47,14 +47,22 @@ def return_personel_dashboard(request):
 
 @login_required
 def return_coach_dashboard(request):
-    perm = general_methods.control_access_klup(request)
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
-    person=None
+    person = None
     if Person.objects.filter(user=user):
-        person=Person.objects.get(user=user)
+        person = Person.objects.get(user=user)
     coach = None
     athlete_count = 0
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+
     if Coach.objects.filter(person__user=user):
         coach = Coach.objects.get(person__user=user)
         clup = Club.objects.filter(coachs=coach)
@@ -67,7 +75,8 @@ def return_coach_dashboard(request):
         athlete_count = athletes.count()
 
     return render(request, 'TVGFBF/Anasayfa/antrenor.html',
-                  {'athlete_count': athlete_count,'coach':coach ,'person':person})
+                  {'athlete_count': athlete_count, 'coach': coach, 'person': person, 'urls': urls,
+                   'current_url': current_url, 'url_name': url_name})
 
 
 @login_required
