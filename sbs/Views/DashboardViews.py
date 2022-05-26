@@ -50,6 +50,9 @@ def return_coach_dashboard(request):
     perm = general_methods.control_access_klup(request)
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
+    person=None
+    if Person.objects.filter(user=user):
+        person=Person.objects.get(user=user)
     coach = None
     athlete_count = 0
     if Coach.objects.filter(person__user=user):
@@ -64,7 +67,7 @@ def return_coach_dashboard(request):
         athlete_count = athletes.count()
 
     return render(request, 'TVGFBF/Anasayfa/antrenor.html',
-                  {'athlete_count': athlete_count,'coach':coach })
+                  {'athlete_count': athlete_count,'coach':coach ,'person':person})
 
 
 @login_required

@@ -18,8 +18,63 @@
         <!-- Main content -->
         <section class="content">
             <!-- Info boxes -->
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="card card-primary card-outline">
+                        <div class="card-body box-profile">
+                            <div class="text-center">
+                                {% if person %}
+                                    {% if person.profileImage %}
+                                        <img class="profile-user-img img-fluid img-circle"
+                                             src="{{ person.profileImage.url }}" alt="User profile picture">
+
+                                    {% endif %}
+                                {% else %}
+                                    <img class="profile-user-img img-fluid img-circle"
+                                         src="/media/profile/user_IudVgaQ.png" alt="User profile picture">
+                                {% endif %}
+                            </div>
+                            <h3 class="profile-username text-center">{{ user.get_full_name }}</h3>
+                            <p class="text-muted text-center">{{ aktif }}</p>
+                            {% if user.groups.all.count > 1 %}
+                                <ul class="list-group list-group-unbordered mb-3">
+
+                                    {% for group in user.groups.all %}
+                                        <li class="list-group-item">
+                                            <b>{{ group.name }}</b><br>
+                                            <a href="{% url 'sbs:change_activegroup' group.pk %}"
+                                               class="float-right">Grup Değiştir <i class="fa fa-arrow-right"> </i> </a>
+                                        </li>
+
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% if active == "Antrenör" %}
+                                <a href="{% url "sbs:updateProfileCoach" %}" class="btn btn-outline-info btn-block"><b>Profil
+                                    Bilgisi</b></a>
 
 
+                            {% elif active == "Hakem" %}
+                                <a href="{% url 'sbs:updateProfileReferee' %}"
+                                   class="btn btn-outline-info btn-block"><b>Profil
+                                    Bilgisi</b></a>
+
+
+                            {% elif active == "Kulüp Yetkilisi" %}
+                                <a href="{% url 'sbs:updateProfileClubUser' %}"
+                                   class="btn btn-outline-info btn-block"><b>Profil
+                                    Bilgisi</b></a>
+
+
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card card-outline card-info">
@@ -47,7 +102,7 @@
                                 {% if coach %}
                                     {% for grade in coach.grades.all %}
                                         <tr>
-                                        {% if not grade.isDeleted %}
+                                            {% if not grade.isDeleted %}
 
                                                 <td>{{ forloop.counter }} </td>
                                                 <td>{{ grade.startDate }}  </td>
@@ -76,7 +131,7 @@
                                                 {% endif %}
 
 
-                                        {% endif %}
+                                            {% endif %}
                                         </tr>
                                     {% endfor %}
                                 {% endif %}
@@ -130,8 +185,8 @@
 
 
 
-                                        </tr>
-                                        {% endif %}
+                                                </tr>
+                                            {% endif %}
                                     {% endfor %}
                                 {% endif %}
 
