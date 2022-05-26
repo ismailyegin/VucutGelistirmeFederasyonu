@@ -583,8 +583,9 @@ def last_urls(request):
                 url = urlpath.split('/tvgfbf/')[1]
                 for urlpattern in urlpatterns:
 
-                    if str("/".join(str(urlpattern.pattern).split("/", 2)[:1])) == str("/".join(str(url).split("/", 2)[:1])):
+                    if str("/".join(str(urlpattern.pattern).split("/", 2))) == str("/".join(str(url).split("/", 2))):
                             last_url_name = urlpattern.name
+                            break
 
                 url = {
                     'last': request.META.get('HTTP_REFERER'),
