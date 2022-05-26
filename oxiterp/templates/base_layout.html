@@ -242,7 +242,7 @@
 
                         </p>
                         <div class="col-md" style="float:right">
-                         <small>  <a><i class="fa fa-circle text-success"></i> {{ aktif }}</a></small>
+                            <small> <a><i class="fa fa-circle text-success"></i> {{ aktif }}</a></small>
                         </div>
                     </li>
                     <!-- Menu Body -->
@@ -311,13 +311,13 @@
                 <img class="brand-image img-circle elevation-3" src="{% static 'tvgfbf__.png' %}" alt="TVGFBF">
                 <span class="brand-text font-weight-light">BİLGİ SİSTEMİ</span>
             </a>
-            {% elif aktif == 'Antrenör' %}
+        {% elif aktif == 'Antrenör' %}
             <a class="brand-link" href="{% url 'sbs:antrenor' %}">
 
                 <img class="brand-image img-circle elevation-3" src="{% static 'tvgfbf__.png' %}" alt="TVGFBF">
                 <span class="brand-text font-weight-light">BİLGİ SİSTEMİ</span>
             </a>
-             {% elif aktif == 'Hakem' %}
+        {% elif aktif == 'Hakem' %}
             <a class="brand-link" href="{% url 'sbs:hakem' %}">
 
                 <img class="brand-image img-circle elevation-3" src="{% static 'tvgfbf__.png' %}" alt="TVGFBF">
@@ -330,7 +330,12 @@
         <div class="sidebar">
             <!-- Sidebar user panel (optional) -->
 
-
+            {% if not aktif == 'Admin' %}
+                <div class="user-panel">
+                    <div class="info">
+                        <a style="margin-left:10px" class="d-block">{{ user.get_ful_name }}</a>
+                    </div>
+                </div>{% endif %}
             <!-- Sidebar Menu -->
             <nav class="mt-2" style="font-size: 16px;">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
