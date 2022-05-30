@@ -178,23 +178,23 @@ def SetPasswordAllUsers(request):
 
     password = User.objects.make_random_password()
     coaches = User.objects.filter(groups__name='Antrenör')
-    csv_file = open("coaches.csv", "w")
+    csv_file = open("coaches.csv", "w", encoding='utf-8')
     csv_file.write('Name Surname, Email, Password\n')
     for coach in coaches:
         coach.password = password
         coach.save()
         if coach.first_name:
-            csv_file.write(coach.first_name + ' ')
+            csv_file.write(str(coach.first_name) + ' ')
         if coach.last_name:
-            csv_file.write(coach.last_name + ', ')
+            csv_file.write(str(coach.last_name) + ', ')
         else:
             csv_file.write(', ')
         if coach.email:
-            csv_file.write(coach.email + ', ')
+            csv_file.write(str(coach.email) + ', ')
         else:
             csv_file.write(', ')
         if coach.password:
-            csv_file.write(coach.password)
+            csv_file.write(str(coach.password))
         else:
             csv_file.write(' ')
         csv_file.write('\n')
