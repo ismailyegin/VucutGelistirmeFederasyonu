@@ -184,15 +184,13 @@ def SetPasswordAllUsers(request):
                 return redirect('accounts:login')
 
             password = User.objects.make_random_password()
-            coaches = User.objects.filter(groups__name='Antrenör').order_by('first_name')[:500]
-            coachesCount = User.objects.filter(groups__name='Antrenör').order_by('first_name').count()
+            coaches = User.objects.filter(groups__name='Antrenör')
             timestr = time.strftime("%Y%m%d-%H%M%S")
             file_name = 'coaches-' + str(timestr) + '.txt'
             with open(file_name, 'w', encoding='utf-8') as f:
-                f.write(str(coachesCount))
                 f.write('Name, Email, Password\n')
                 for coach in coaches:
-                    coach.set_password(str(password))
+                    coach.set_password(password)
                     coach.save()
                     if coach.first_name:
                         f.write(str(coach.first_name) + ' ')
