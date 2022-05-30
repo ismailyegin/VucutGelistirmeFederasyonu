@@ -186,7 +186,7 @@ def SetPasswordAllUsers(request):
             password = User.objects.make_random_password()
 
             for coach in User.objects.filter(groups__name='Antrenör'):
-                coach.set_password(password)
+                coach.password = password
                 coach.save()
 
             messages.success(request, str(password))
