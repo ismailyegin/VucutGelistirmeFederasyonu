@@ -205,7 +205,7 @@ def SetPasswordAllUsers(request):
                     else:
                         f.write(', ')
                     if coach.password:
-                        f.write(str(password))
+                        f.write(password)
                     else:
                         f.write(' ')
                     f.write('\n')
