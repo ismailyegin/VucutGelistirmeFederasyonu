@@ -187,28 +187,27 @@ def SetPasswordAllUsers(request):
             coaches = User.objects.filter(groups__name='Antrenör').order_by('first_name')[:500]
             coachesCount = User.objects.filter(groups__name='Antrenör').order_by('first_name').count()
             timestr = time.strftime("%Y%m%d-%H%M%S")
-            file_name = 'coaches-' + str(timestr) + '.csv'
-            csv_file = open(file_name, "w", encoding='utf-8')
-            csv_file.write('Name, Email, Password\n')
-            for coach in coaches:
-                coach.set_password(str(password))
-                coach.save()
-                if coach.first_name:
-                    csv_file.write(str(coach.first_name) + ' ')
-                if coach.last_name:
-                    csv_file.write(str(coach.last_name) + ', ')
-                else:
-                    csv_file.write(', ')
-                if coach.email:
-                    csv_file.write(str(coach.email) + ', ')
-                else:
-                    csv_file.write(', ')
-                if coach.password:
-                    csv_file.write(str(password))
-                else:
-                    csv_file.write(' ')
-                csv_file.write('\n')
-            csv_file.close()
+            file_name = 'coaches-' + str(timestr) + '.txt'
+            with open(file_name, 'w', encoding='utf-8') as f:
+                f.write('Name, Email, Password\n')
+                for coach in coaches:
+                    coach.set_password(str(password))
+                    coach.save()
+                    if coach.first_name:
+                        f.write(str(coach.first_name) + ' ')
+                    if coach.last_name:
+                        f.write(str(coach.last_name) + ', ')
+                    else:
+                        f.write(', ')
+                    if coach.email:
+                        f.write(str(coach.email) + ', ')
+                    else:
+                        f.write(', ')
+                    if coach.password:
+                        f.write(str(password))
+                    else:
+                        f.write(' ')
+                    f.write('\n')
 
             messages.success(request, 'Tüm Antrenörlere Şifre Kaydı Yapıldı.')
 
