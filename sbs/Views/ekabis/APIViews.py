@@ -188,26 +188,26 @@ def SetPasswordAllUsers(request):
             timestr = time.strftime("%Y%m%d-%H%M%S")
             file_name = 'coaches-' + str(timestr) + '.csv'
             csv_file = open(file_name, "w", encoding='utf-8')
-            csv_file.write('Name Surname, Email, Password\n')
+            csv_file.write('Password :' + str(password))
             for coach in coaches:
                 coach.password = password
                 coach.save()
-                if coach.first_name:
-                    csv_file.write(str(coach.first_name) + ' ')
-                if coach.last_name:
-                    csv_file.write(str(coach.last_name) + ', ')
-                else:
-                    csv_file.write(', ')
-                if coach.email:
-                    csv_file.write(str(coach.email) + ', ')
-                else:
-                    csv_file.write(', ')
-                if coach.password:
-                    csv_file.write(str(coach.password))
-                else:
-                    csv_file.write(' ')
-                csv_file.write('\n')
-                time.sleep(1)
+                # if coach.first_name:
+                #     csv_file.write(str(coach.first_name) + ' ')
+                # if coach.last_name:
+                #     csv_file.write(str(coach.last_name) + ', ')
+                # else:
+                #     csv_file.write(', ')
+                # if coach.email:
+                #     csv_file.write(str(coach.email) + ', ')
+                # else:
+                #     csv_file.write(', ')
+                # if coach.password:
+                #     csv_file.write(str(coach.password))
+                # else:
+                #     csv_file.write(' ')
+                # csv_file.write('\n')
+                # time.sleep(1)
 
             messages.success(request, 'Tüm Antrenörlere Şifre Kaydı Yapıldı.')
 
