@@ -176,45 +176,43 @@ class GetFacility(APIView):
 @login_required
 def SetPasswordAllUsers(request):
     try:
-        with transaction.atomic():
-            perm = general_methods.control_access(request)
+        perm = general_methods.control_access(request)
 
-            if not perm:
-                logout(request)
-                return redirect('accounts:login')
+        if not perm:
+            logout(request)
+            return redirect('accounts:login')
 
-            password = User.objects.make_random_password()
-            coaches = User.objects.filter(groups__name='Antrenör')
-            timestr = time.strftime("%Y%m%d-%H%M%S")
-            file_name = 'coaches-' + str(timestr) + '.csv'
-            csv_file = open(file_name, "w", encoding='utf-8')
-            csv_file.write('Password :' + str(password))
-            for coach in coaches:
-                coach.set_password(str(password))
-                coach.save()
-                # if coach.first_name:
-                #     csv_file.write(str(coach.first_name) + ' ')
-                # if coach.last_name:
-                #     csv_file.write(str(coach.last_name) + ', ')
-                # else:
-                #     csv_file.write(', ')
-                # if coach.email:
-                #     csv_file.write(str(coach.email) + ', ')
-                # else:
-                #     csv_file.write(', ')
-                # if coach.password:
-                #     csv_file.write(str(coach.password))
-                # else:
-                #     csv_file.write(' ')
-                # csv_file.write('\n')
-                time.sleep(2)
-            csv_file.close()
+        password = User.objects.make_random_password()
+        coaches = User.objects.filter(groups__name='Antrenör')
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        file_name = 'coaches-' + str(timestr) + '.csv'
+        csv_file = open(file_name, "w", encoding='utf-8')
+        csv_file.write('Name, Email, Password\n')
+        for coach in coaches:
+            coach.set_password(str(password))
+            coach.save()
+            if coach.first_name:
+                csv_file.write(str(coach.first_name) + ' ')
+            if coach.last_name:
+                csv_file.write(str(coach.last_name) + ', ')
+            else:
+                csv_file.write(', ')
+            if coach.email:
+                csv_file.write(str(coach.email) + ', ')
+            else:
+                csv_file.write(', ')
+            if coach.password:
+                csv_file.write(str(coach.password))
+            else:
+                csv_file.write(' ')
+            csv_file.write('\n')
+            time.sleep(2)
+        csv_file.close()
 
-            messages.success(request, 'Tüm Antrenörlere Şifre Kaydı Yapıldı.')
+        messages.success(request, 'Tüm Antrenörlere Şifre Kaydı Yapıldı.')
 
-            return redirect('sbs:view_admin')
+        return redirect('sbs:view_admin')
+    except:
+        messages.success(request, 'Hata Oluştu.')
 
-    except Exception as e:
-        messages.warning(request, e)
-        traceback.print_exc()
         return redirect('sbs:view_admin')
