@@ -192,22 +192,22 @@ def SetPasswordAllUsers(request):
             for coach in coaches:
                 coach.set_password(str(password))
                 coach.save()
-                if coach.first_name:
-                    csv_file.write(str(coach.first_name) + ' ')
-                if coach.last_name:
-                    csv_file.write(str(coach.last_name) + ', ')
-                else:
-                    csv_file.write(', ')
-                if coach.email:
-                    csv_file.write(str(coach.email) + ', ')
-                else:
-                    csv_file.write(', ')
-                if coach.password:
-                    csv_file.write(str(coach.password))
-                else:
-                    csv_file.write(' ')
-                csv_file.write('\n')
-                time.sleep(1)
+                # if coach.first_name:
+                #     csv_file.write(str(coach.first_name) + ' ')
+                # if coach.last_name:
+                #     csv_file.write(str(coach.last_name) + ', ')
+                # else:
+                #     csv_file.write(', ')
+                # if coach.email:
+                #     csv_file.write(str(coach.email) + ', ')
+                # else:
+                #     csv_file.write(', ')
+                # if coach.password:
+                #     csv_file.write(str(coach.password))
+                # else:
+                #     csv_file.write(' ')
+                # csv_file.write('\n')
+                # time.sleep(1)
             csv_file.close()
 
             messages.success(request, 'Tüm Antrenörlere Şifre Kaydı Yapıldı.')
