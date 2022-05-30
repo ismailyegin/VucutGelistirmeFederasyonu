@@ -184,32 +184,16 @@ def SetPasswordAllUsers(request):
                 return redirect('accounts:login')
 
             password = User.objects.make_random_password()
-            coaches = User.objects.filter(groups__name='Antrenör').order_by('first_name')[:100]
+            coaches = User.objects.filter(groups__name='Antrenör')
             timestr = time.strftime("%Y%m%d-%H%M%S")
             file_name = 'coaches-' + str(timestr) + '.txt'
-            with open(file_name, 'w', encoding='utf-8') as f:
-                f.write('Name, Email, Password\n')
-                f.close()
+
             for coach in coaches:
-                with open(file_name, 'w', encoding='utf-8') as f:
-                    coach.set_password(password)
-                    coach.save()
-                    if coach.first_name:
-                        f.write(str(coach.first_name) + ' ')
-                    if coach.last_name:
-                        f.write(str(coach.last_name) + ', ')
-                    else:
-                        f.write(', ')
-                    if coach.email:
-                        f.write(str(coach.email) + ', ')
-                    else:
-                        f.write(', ')
-                    if coach.password:
-                        f.write(password)
-                    else:
-                        f.write(' ')
-                    f.write('\n')
-                    f.close()
+                coach.set_password(password)
+                coach.save()
+
+            with open(file_name, 'w', encoding='utf-8') as f:
+                f.write('Password: ' + password)
 
             messages.success(request, 'Tüm Antrenörlere Şifre Kaydı Yapıldı.')
 
