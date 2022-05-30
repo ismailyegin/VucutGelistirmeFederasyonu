@@ -185,17 +185,12 @@ def SetPasswordAllUsers(request):
 
             password = User.objects.make_random_password()
             coaches = User.objects.filter(groups__name='Antrenör')
-            timestr = time.strftime("%Y%m%d-%H%M%S")
-            file_name = 'coaches-' + str(timestr) + '.txt'
 
             for coach in coaches:
                 coach.set_password(password)
                 coach.save()
 
-            with open(file_name, 'w', encoding='utf-8') as f:
-                f.write('Password: ' + password)
-
-            messages.success(request, 'Tüm Antrenörlere Şifre Kaydı Yapıldı.')
+            messages.success(request, str(password))
 
             return redirect('sbs:view_admin')
 
