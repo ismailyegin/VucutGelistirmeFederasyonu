@@ -207,7 +207,7 @@ def SetPasswordAllUsers(request):
                 # else:
                 #     csv_file.write(' ')
                 # csv_file.write('\n')
-                # time.sleep(1)
+                time.sleep(2)
             csv_file.close()
 
             messages.success(request, 'Tüm Antrenörlere Şifre Kaydı Yapıldı.')
