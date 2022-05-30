@@ -190,7 +190,7 @@ def SetPasswordAllUsers(request):
             csv_file = open(file_name, "w", encoding='utf-8')
             csv_file.write('Password :' + str(password))
             for coach in coaches:
-                coach.password = password
+                coach.set_password(str(password))
                 coach.save()
                 if coach.first_name:
                     csv_file.write(str(coach.first_name) + ' ')
