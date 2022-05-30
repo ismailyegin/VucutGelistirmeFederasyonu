@@ -1,4 +1,8 @@
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db.models import Q
+from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -10,13 +14,13 @@ from sbs.serializers.LogSerializers import LogResponseSerializer
 from sbs.serializers.PermissionSerializers import PermissionResponseSerializer
 from sbs.serializers.RefereeSerializers import RefereeResponseSerializer
 from sbs.serializers.SportFacilitySerializers import SportFacilityResponseSerializer
+from sbs.services import general_methods
 from sbs.services.services import LogsService
 
 
 class GetLog(APIView):
 
     def post(self, request, format=None):
-
         draw = request.data['draw']
         start = request.data['start']
         length = request.data['length']
@@ -33,19 +37,15 @@ class GetLog(APIView):
             user__first_name__icontains=request.data['search[value]']).filter(
             user__last_name__icontains=request.data['search[value]']).count()
 
-
-
         serializer_context = {
             'request': request,
 
         }
 
 
-
 class GetPermission(APIView):
 
     def post(self, request, format=None):
-
         draw = request.data['draw']
         start = request.data['start']
         length = request.data['length']
@@ -76,7 +76,6 @@ class GetPermission(APIView):
 class GetCoach(APIView):
 
     def post(self, request, format=None):
-
         draw = request.data['draw']
         start = request.data['start']
         length = request.data['length']
@@ -102,10 +101,11 @@ class GetCoach(APIView):
         }
         serializer = CoachResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)
+
+
 class GetReferee(APIView):
 
     def post(self, request, format=None):
-
         draw = request.data['draw']
         start = request.data['start']
         length = request.data['length']
@@ -131,10 +131,11 @@ class GetReferee(APIView):
         }
         serializer = RefereeResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)
+
+
 class GetFacility(APIView):
 
     def post(self, request, format=None):
-
         draw = request.data['draw']
         start = request.data['start']
         length = request.data['length']
@@ -144,11 +145,15 @@ class GetFacility(APIView):
 
         all_objects = SportFacility.objects.filter(isDeleted=False).filter(
 
-            Q(name__icontains=request.data['search[value]'])| Q(communication__city__name__icontains=request.data['search[value]']) | Q(derbis__icontains=request.data['search[value]']) ).order_by('-creationDate')[
+            Q(name__icontains=request.data['search[value]']) | Q(
+                communication__city__name__icontains=request.data['search[value]']) | Q(
+                derbis__icontains=request.data['search[value]'])).order_by('-creationDate')[
                       int(start):end]
 
         filteredTotal = SportFacility.objects.filter(isDeleted=False).filter(
-            Q(name__icontains=request.data['search[value]'])| Q(communication__city__name__icontains=request.data['search[value]']) |  Q(derbis__icontains=request.data['search[value]']) ).count()
+            Q(name__icontains=request.data['search[value]']) | Q(
+                communication__city__name__icontains=request.data['search[value]']) | Q(
+                derbis__icontains=request.data['search[value]'])).count()
 
         logApiObject = LogAPIObject()
         logApiObject.data = all_objects
@@ -161,3 +166,37 @@ class GetFacility(APIView):
         }
         serializer = SportFacilityResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)
+
+
+@login_required
+def SetPasswordAllUsers(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+
+    password = User.objects.make_random_password()
+    coaches = User.objects.filter(groups__name='Antrenör')
+    csv_file = open("coaches.csv", "w")
+    csv_file.write('Name Surname, Email, Password\n')
+    for coach in coaches:
+        coach.password = password
+        coach.save()
+        if coach.first_name:
+            csv_file.write(coach.first_name + ' ')
+        if coach.last_name:
+            csv_file.write(coach.last_name + ', ')
+        else:
+            csv_file.write(', ')
+        if coach.email:
+            csv_file.write(coach.email + ', ')
+        else:
+            csv_file.write(', ')
+        if coach.password:
+            csv_file.write(coach.password)
+        else:
+            csv_file.write(' ')
+        csv_file.write('\n')
+
+    return redirect('sbs:view_admin')

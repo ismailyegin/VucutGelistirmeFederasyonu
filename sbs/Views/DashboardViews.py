@@ -58,6 +58,7 @@ def return_coach_dashboard(request):
     if Person.objects.filter(user=user):
         person = Person.objects.get(user=user)
     coach = None
+    clup = None
     athlete_count = 0
     urls = last_urls(request)
     current_url = resolve(request.path_info)
@@ -76,7 +77,7 @@ def return_coach_dashboard(request):
 
     return render(request, 'TVGFBF/Anasayfa/antrenor.html',
                   {'athlete_count': athlete_count, 'coach': coach, 'person': person, 'urls': urls,
-                   'current_url': current_url, 'url_name': url_name})
+                   'current_url': current_url, 'url_name': url_name, 'club': clup, })
 
 
 @login_required
