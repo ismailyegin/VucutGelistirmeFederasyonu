@@ -189,6 +189,7 @@ def SetPasswordAllUsers(request):
             timestr = time.strftime("%Y%m%d-%H%M%S")
             file_name = 'coaches-' + str(timestr) + '.txt'
             with open(file_name, 'w', encoding='utf-8') as f:
+                f.write(str(coachesCount))
                 f.write('Name, Email, Password\n')
                 for coach in coaches:
                     coach.set_password(str(password))
