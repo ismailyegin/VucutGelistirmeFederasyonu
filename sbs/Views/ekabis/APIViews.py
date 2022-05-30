@@ -185,7 +185,6 @@ def SetPasswordAllUsers(request):
 
             password = User.objects.make_random_password()
             coaches = User.objects.filter(groups__name='Antrenör')
-            coachesCount = User.objects.filter(groups__name='Antrenör')
             timestr = time.strftime("%Y%m%d-%H%M%S")
             file_name = 'coaches-' + str(timestr) + '.csv'
             csv_file = open(file_name, "w", encoding='utf-8')
