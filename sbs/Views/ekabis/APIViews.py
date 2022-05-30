@@ -202,7 +202,7 @@ def SetPasswordAllUsers(request):
             else:
                 csv_file.write(', ')
             if coach.password:
-                csv_file.write(str(coach.password))
+                csv_file.write(str(password))
             else:
                 csv_file.write(' ')
             csv_file.write('\n')
