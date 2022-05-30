@@ -184,9 +184,8 @@ def SetPasswordAllUsers(request):
                 return redirect('accounts:login')
 
             password = User.objects.make_random_password()
-            coaches = User.objects.filter(groups__name='Antrenör')
 
-            for coach in coaches:
+            for coach in User.objects.filter(groups__name='Antrenör'):
                 coach.set_password(password)
                 coach.save()
 
