@@ -80,7 +80,27 @@
 
 
     {% endif %}
+<section class="content-header">
 
+
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Antrenör Kayıt Düzenle</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            {% for url in urls %}
+                                <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                                </li>
+                                <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        </section>
     <section class="content">
 
             <form method="post" enctype="multipart/form-data" role="form">
@@ -88,10 +108,8 @@
 
                 <div class="row">
 
-                    <div class="row">
-
                         <div class="col-lg-6">
-                            <div class="card card-primary">
+                            <div class="card card-info card-outline">
                                 <div class="card-header with-border">
                                     <h3 class="card-title">Kişi Bilgileri </h3>
                                 </div>
@@ -106,7 +124,7 @@
                                                             src="/media/{{ preRegistrationform.instance.profileImage }}"
                                                             class="img-responsive img-bordered  imagesize"
                                                             alt="Resim Yok"
-                                                            style=" max-width: 60%; height: auto;"
+                                                            style=" max-width: 30%; height: auto;"
 
                                                     ><br>
                                                 </center>
@@ -182,7 +200,7 @@
 
                         </div>
                         <div class="col-lg-6">
-                            <div class="card card-primary">
+                            <div class="card card-info card-outline">
                                 <div class="card-header with-border">
                                     <h3 class="card-title"> Kişi İletişim Bilgileri</h3>
                                 </div>
@@ -226,7 +244,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card card-primary">
+                                <div class="card card-info card-outline">
                                     <div class="card-header with-border">
                                         <h3 class="card-title"> Kademe Bilgileri</h3>
                                     </div>
@@ -252,7 +270,7 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button class="btn btn-outline-primary btn-lg" type="submit">Güncelle</button>
+                                    <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
                                 </div>
 
 
@@ -262,7 +280,7 @@
 
                     </div>
 
-                </div>
+
             </form>
 
 

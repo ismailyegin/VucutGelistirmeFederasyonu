@@ -314,8 +314,9 @@ def referenceCoach(request):
             veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
 
             clubDersbis = request.POST.get('club', None)
-            coachClub = Club.objects.get(derbis=clubDersbis)
-            veri.club = coachClub
+            if clubDersbis:
+                coachClub = Club.objects.get(derbis=clubDersbis)
+                veri.club = coachClub
 
             veri.save()
 
