@@ -154,9 +154,6 @@
                                 <i class="fa fa-plus"></i>
                             </a>
                         </div>
-                        <div class="card-header with-border">
-
-                        </div>
                         <div class="card-body">
                             <table id="basvuru" class="table table-bordered table-hover">
                                 <thead>
@@ -180,28 +177,34 @@
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ coach.first_name }} {{ coach.last_name }} </td>
                                             <td>{{ coach.email }} </td>
-                                            <td>{{ coach.status }} </td>
                                             <td>
                                                 {% if coach.status == coach.WAITED %}
-                                                    <div class="btn-group">
-                                                        <a onclick="approvalCoach('{{ coach.uuid }}')"
-                                                           type="button" class="btn btn-outline-success">
-                                                            <i class="fa fa-check"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="btn-group">
-                                                        <a href="{% url "sbs:update-coach-reference" coach.uuid %}"
-                                                           type="button" class="btn btn-outline-warning">
-                                                            <i class="fa fa-edit" title="Düzenle"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-outline-danger"
-                                                           data-toggle="modal" onclick=deleteReferee('{{ coach.uuid }}')>
-                                                            <i class="fa fa-trash" title="Reddet"></i>
-                                                        </a>
-                                                    </div>
+                                                    <span class="badge badge-warning">{{ coach.status }}</span>
+                                                {% elif coach.status == coach.APPROVED %}
+                                                    <span class="badge badge-success">{{ coach.status }}</span>
+                                                {% else %}
+                                                    <span class="badge badge-info">{{ coach.status }}</span>
                                                 {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a onclick="approvalCoach('{{ coach.uuid }}')"
+                                                       type="button" class="btn btn-outline-success">
+                                                        <i class="fa fa-check"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <a href="{% url "sbs:update-coach-reference" coach.uuid %}"
+                                                       type="button" class="btn btn-outline-warning">
+                                                        <i class="fa fa-edit" title="Düzenle"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-outline-danger"
+                                                       data-toggle="modal" onclick=deleteReferee('{{ coach.uuid }}')>
+                                                        <i class="fa fa-trash" title="Reddet"></i>
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     {% endfor %}
