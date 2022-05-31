@@ -1550,6 +1550,9 @@ def approvelReferenceCoach(request):
                     fdk = Forgot(user=user, status=False)
                     fdk.save()
 
+                    referenceCoach.club.coachs.add(coach)
+
+
                     # html_content = ''
                     # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
                     # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
