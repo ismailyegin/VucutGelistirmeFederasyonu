@@ -1492,6 +1492,9 @@ def approvelReferenceCoach(request):
             if request.method == 'POST' and request.is_ajax():
                 uuid = request.POST['uuid']
                 referenceCoach = ReferenceCoach.objects.get(uuid=uuid)
+                date=request.POST['dateOfApproval']
+                approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+                referenceCoach.status_date = approvalDate
 
                 if referenceCoach.status == ReferenceCoach.WAITED:
                     user = User()
@@ -1600,6 +1603,12 @@ def refencedeleteCoach(request):
         try:
             obj = ReferenceCoach.objects.get(uuid=request.POST['uuid'])
             obj.status = ReferenceCoach.DENIED
+            date = request.POST['dateOfReject']
+            text = request.POST['textOfReject']
+
+            statusDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+            obj.status_date = statusDate
+            obj.definition=text
             obj.save()
 
             log = str(obj.first_name) + " " + str(obj.last_name) + "     Antrenör basvurusu reddedildi"

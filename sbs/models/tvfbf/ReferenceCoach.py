@@ -83,14 +83,14 @@ class ReferenceCoach(BaseModel):
                                     help_text=('Designates whether this user should be treated as active. '))
 
     kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
-    kademe_startDate = models.DateField(null=True,blank=True,verbose_name='Başlangıç Tarihi ')
+    kademe_startDate = models.DateField(null=True, blank=True, verbose_name='Başlangıç Tarihi ')
     kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')
-    sgk=models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')
-    dekont=models.FileField(null=True, blank=True, verbose_name='Dekont')
+    sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')
+    dekont = models.FileField(null=True, blank=True, verbose_name='Dekont')
 
-    club = models.ForeignKey(Club, on_delete=models.CASCADE,null=True,blank=True)
-
-
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
+    definition = models.TextField(null=True, blank=True, verbose_name='Reddedilme Sebebi')
+    status_date=models.DateField(null=True, blank=True, verbose_name='Onaylanma Tarihi')
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)

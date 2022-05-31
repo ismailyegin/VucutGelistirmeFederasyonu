@@ -41,6 +41,64 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfApproval"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Onaylanma Tarihi</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <input type="date" name="dateOfApprovalText" id="dateOfApprovalText" class="form-control datemask"
+                           required="required" autocomplete="off">
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" id="btn-closereddet-approval">İptal</button>
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-gonder-approval"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfReject"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Reddedilme Açıklaması</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <label for="dateOfRejectDate">Tarih</label>
+                    <input type="date" name="dateOfRejectDate" id="dateOfRejectDate" class="form-control datemask"
+                           required="required" autocomplete="off">
+                    <label for="dateOfRejectText">Açıklama</label>
+                    <input type="text" name="dateOfRejectText" id="dateOfRejectText" class="form-control"
+                           required="required" placeholder="Reddedilme Sebebi">
+
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" id="btn-closereddet-reject">İptal</button>
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-gonder-reject"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     <div class="modal modal-danger fade in deneme223" tabindex="-1" role="dialog" id="modal-delete"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
@@ -164,6 +222,8 @@
                                     <th>Onay Durumu</th>
 
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <th>Onay/Red Tarihi</th>
+                                        <th>Açıklama</th>
                                         <th>İncele/Sil</th>
                                     {% endif %}
 
@@ -177,17 +237,25 @@
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ coach.first_name }} {{ coach.last_name }} </td>
                                             <td>{{ coach.email }} </td>
-                                            <td>
-                                                {% if coach.status == coach.WAITED %}
-                                                    <span class="badge badge-warning">{{ coach.status }}</span>
-                                                {% elif coach.status == coach.APPROVED %}
-                                                    <span class="badge badge-success">{{ coach.status }}</span>
-                                                {% elif coach.status == coach.DENIED %}
-                                                    <span class="badge badge-danger">{{ coach.status }}</span>
-                                                {% else %}
-                                                    <span class="badge badge-info">{{ coach.status }}</span>
-                                                {% endif %}
-                                            </td>
+
+                                            {% if coach.status == coach.WAITED %}
+                                                <td><span class="badge badge-warning">{{ coach.status }}</span></td>
+                                                <td></td>
+                                                <td></td>
+                                            {% elif coach.status == coach.APPROVED %}
+                                                <td><span class="badge badge-success">{{ coach.status }}</span></td>
+                                                <td>{{ coach.status_date|date }}</td>
+                                                <td></td>
+                                            {% elif coach.status == coach.DENIED %}
+                                                <td><span class="badge badge-danger">{{ coach.status }}</span></td>
+                                                <td>{{ coach.status_date|date }}</td>
+                                                <td>{{ coach.definition }}</td>
+                                            {% else %}
+                                                <td><span class="badge badge-info">{{ coach.status }}</span></td>
+                                                <td></td>
+                                                <td></td>
+                                            {% endif %}
+
                                             <td>
                                                 <div class="btn-group">
                                                     <a onclick="approvalCoach('{{ coach.uuid }}')"
@@ -320,37 +388,55 @@
                     'Evet'
                 ],
             }).then((result) => {
+
+
                 if (result.dismiss !== 'Evet') {
+                    $("#dateOfReject").on("shown.bs.modal", function (e) {
 
-                    $.ajax({
-                        url: "{% url "sbs:refencedeleteCoach" %}",
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            isActive: 'False',
-                            uuid: id
-                        },
-                        success: function (result) {
-                            if (result.status === 'Success') {
-                                swal({
-                                    icon: 'success',
-                                    title: 'Antrenör Başvurusu Reddedildi !!',
+                        $("#btn-gonder-reject").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:refencedeleteCoach" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    uuid: id,
+                                    dateOfReject: $('#dateOfRejectDate').val(),
+                                    textOfReject: $('#dateOfRejectText').val(),
 
-                                })
 
-                            } else {
-                                swal({
-                                    icon: 'error',
-                                    title: 'işlem başarısız oldu.',
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Antrenör Başvurusu Reddedildi !!',
 
-                                })
-                            }
-                            location.reload();
+                                        })
 
-                        }
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-reject').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
                     });
                 }
-
             })
 
 
@@ -371,42 +457,59 @@
                     'Evet'
                 ],
             }).then((result) => {
+
+
                 if (result.dismiss !== 'Evet') {
+                    $("#dateOfApproval").on("shown.bs.modal", function (e) {
 
-                    $.ajax({
-                        url: "{% url "sbs:approvel-coach-application" %}",
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            isActive: 'False',
-                            uuid: id
-                        },
-                        success: function (result) {
+                        $("#btn-gonder-approval").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:approvel-coach-application" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    uuid: id,
+                                    dateOfApproval: $('#dateOfApprovalText').val(),
+                                },
+                                success: function (result) {
 
-                            if (result.status === 'Success') {
+                                    if (result.status === 'Success') {
 
-                                swal({
-                                    icon: 'success',
-                                    title: 'Antrenör başarıyla onaylandı !!',
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Antrenör başarıyla onaylandı !!',
 
-                                })
+                                        })
 
 
-                            } else {
+                                    } else {
 
-                                swal({
-                                    icon: 'error',
-                                    title: 'işlem başarısız oldu.',
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
 
-                                })
+                                        })
 
-                            }
+                                    }
 
-                            location.reload();
+                                    location.reload();
 
-                        }
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-approval').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+                        $('#loading').hide()
                     });
                 }
+                $('#loading').hide()
 
             })
 
