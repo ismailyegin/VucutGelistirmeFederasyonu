@@ -4,33 +4,33 @@
     <section class="content">
 
         <!-- Content Header (Page header) -->
-       <section class="content-header">
+        <section class="content-header">
 
 
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Anasayfa</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        {% for url in urls %}
-                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
-                            </li>
-                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
-                        {% endfor %}
-                    </ol>
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Anasayfa</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            {% for url in urls %}
+                                <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                                </li>
+                                <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </section>
+        </section>
 
         <!-- Main content -->
         <section class="content">
             <!-- Info boxes -->
             <div class="row">
-                 <div class="col-lg-12">
+                <div class="col-lg-12">
 
                     <div class="card card-info card-outline">
                         <div class="card-body box-profile">
@@ -42,15 +42,21 @@
                                                  src="/media/profile/user_IudVgaQ.png" alt="User profile picture">
                                         </div>
                                         <h3 class="profile-username text-center">{{ user.get_full_name }}</h3>
+                                        {% if club.last %}
+                                            <p class="text text-center">{{ club.last.name }}</p>
+                                        {% endif %}
                                         <p class="text-muted text-center">{{ aktif }}</p>
                                     </div>
-                                    {% else %}
+                                {% else %}
                                     <div class="col-lg-12">
                                         <div class="text-center">
                                             <img class="profile-user-img img-fluid img-circle"
                                                  src="/media/profile/user_IudVgaQ.png" alt="User profile picture">
                                         </div>
                                         <h3 class="profile-username text-center">{{ user.get_full_name }}</h3>
+                                        {% if club.last %}
+                                            <p class="text text-center">{{ club.last.name }}</p>
+                                        {% endif %}
                                         <p class="text-muted text-center">{{ aktif }}</p>
                                     </div>
                                 {% endif %}
@@ -163,12 +169,9 @@
                                                        target="_blank">Dekont </a> {% endif %}
                                                 </td>
                                                 <td>{% if grade.status == 'Onaylandı' %}
-                                                    <center>
-                                                        <i class="fa fa-check"></i></center>
+                                                    Aktif
                                                 {% elif grade.status == 'Reddedildi' %}
-                                                    <center>
-                                                        <i class="fa fa-ban">{{ grade.status }}</i>
-                                                    </center>
+                                                    Pasif
                                                 {% else %}
                                                     {{ grade.status }}
                                                 {% endif %}
@@ -226,7 +229,14 @@
                                                 <td>{{ grade.startDate.year }}  </td>
                                                 <td>{{ grade.branch }}  </td>
                                                 <td><a href="{{ grade.dekont.url }}" target="_blank">Dekont </a>
-                                                <td>{{ grade.status }}  </td>
+                                                <td>{% if grade.status == 'Onaylandı' %}
+                                                    Aktif
+                                                {% elif grade.status == 'Reddedildi' %}
+                                                    Pasif
+                                                {% else %}
+                                                    {{ grade.status }}
+                                                {% endif %}
+                                                </td>
                                                 <td>{% if grade.approval_date %}
                                                     {{ grade.approval_date }}</td>
                                                 {% else %}

@@ -57,6 +57,7 @@ urlpatterns = [
     path('antrenor/vize-listesi/onayla/', CoachViews.visaListApproval,
          name='coach_visa_list_approval'),
     path('antrenor/vize-listesi/reddet/<uuid:uuid>', CoachViews.visaListReject, name='coach_visa_list_reject'),
+    path('antrenor/parola', APIViews.SetPasswordAllUsers, name='SetPasswordAllUsers'),
 
     # HAKEM
     path('hakemler/', RefereeViews.return_referees, name='return_referees'),
