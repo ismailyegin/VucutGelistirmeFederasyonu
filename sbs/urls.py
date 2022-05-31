@@ -257,7 +257,7 @@ urlpatterns = [
 
     path(r'reference/antrenor/basvuru', CoachViews.antrenor, name='coach-application'),
 
-    path(r'antrenor/antrenor-kayit-düzenle/<uuid:uuid>', CoachViews.coachreferenceUpdate,
+    path(r'antrenor/antrenor-kayit-duzenle/<uuid:uuid>', CoachViews.coachreferenceUpdate,
          name='update-coach-reference'),
 
     path(r'antrenor/basvuru-onayla', CoachViews.approvelReferenceCoach,
