@@ -362,9 +362,14 @@ def coachUpdate(request, uuid):
             person = person_form.save(commit=False)
             iban = request.POST.get("iban")
             clubDersbis = request.POST.get('club', None)
-            coachClub = Club.objects.get(derbis=clubDersbis)
-            coachClub.coachs.add(coach)
-            coachClub.save()
+            if not clubDersbis == 'noRegister':
+                coachClub = Club.objects.get(derbis=clubDersbis)
+                coachClub.coachs.add(coach)
+            else:
+               club_coach=Club.objects.filter(coachs=coach).last()
+               club_coach.coachs.remove(coach)
+
+
             person.iban = iban
             person.save()
             communication_form.save()
