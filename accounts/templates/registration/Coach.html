@@ -94,7 +94,27 @@
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" id="main-body">
+  <style>
+        #loading {
+            position: fixed;
+            display: block;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            text-align: center;
+            opacity: 0.7;
+            background-color: #fff;
+            z-index: 100;
+        }
 
+        #loading-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 100;
+        }
+    </style>
 <div class="wrapper">
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
@@ -215,6 +235,9 @@
 </section>
 {% load static %}
 <section class="content">
+  <div id="loading" style="display: none">
+            <img id="loading-image" src="{% static 'loader/ring.gif' %}" alt="Loading..."/>
+        </div>
 
     <form method="post" enctype="multipart/form-data" role="form"> <!-- tc kimlik kontrolü ekle -->
         {% csrf_token %}
@@ -275,13 +298,13 @@
                                         {{ preRegistrationform.gender }}
                                     </div>
 
-                                    <div class="form-group">
+                                     <div class="form-group">
                                         <label for="club">Kayıtlı Olduğunuz Kulüp</label>
                                         <select id="club" name="club"
                                                 class="form-control select2 select2-hidden-accessible"
-                                                style="width: 100%;"
+                                                style="width: 100%;" required="required"
                                                 data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                            <option value="noRegister">------</option>
+                                            <option value="">------</option>
                                             <option value="noClub">Kayıtlı Olduğum Kulüp Seçeneklerde Bulunmamaktadır.
                                             </option>
                                             {% for club in clubs %}
@@ -290,7 +313,6 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-
                                 </div>
 
 
@@ -515,6 +537,55 @@
 <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
 <script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
 <script src="{% static 'plugins/summernote/summernote-bs4.min.js' %}"></script>
+<script>
+    $("#club").change(function () {
+        if ($("#club").val() === 'noClub') {
+
+            swal({
+                icon: 'error',
+                title: 'Kulüp Bilgisi olmadan kayıt işlemine devam edilemez. Lütfen kulüp bilgisi için sistem yetkilisine başvurun  !!',
+
+            }).then(okay => {
+                if (okay) {
+                    window.location.href = "URL";
+                }
+                 $('#loading').show()
+                location.reload();
+
+
+            });
+        }
+    });
+            $(function () {
+
+                $('.select2').select2();
+
+                $('#datepicker').datepicker({
+                    autoclose: true,
+                    language: 'tr',
+                    format: 'dd/mm/yyyy',
+
+                });
+
+                $('#datepicker2').datepicker({
+                    autoclose: true,
+                    language: 'tr',
+                    format: 'dd/mm/yyyy',
+
+                });
+
+                $('.datepicker6').datepicker({
+                    autoclose: true,
+                    language: 'tr',
+                    format: 'dd/mm/yyyy',
+                })
+
+                $('#datemask').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+
+                $('[data-mask]').inputmask();
+
+            })
+</script>
 <script>
     $(function () {
 
