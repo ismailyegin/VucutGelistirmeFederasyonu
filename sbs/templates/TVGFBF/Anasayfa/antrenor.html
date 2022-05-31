@@ -110,15 +110,15 @@
                             <div class="card-body">
                                 <strong><i class="fas fa-book mr-1"></i> Kulüp </strong>
                                 <p class="text-muted">
-                                    {{ club.name }}
+                                    {{ club.last.name }}
                                 </p>
                                 <hr>
                                 <strong><i class="fas fa-map-marker-alt mr-1"></i> Adres</strong>
-                                <p class="text-muted">{{ club.communication.address }}</p>
+                                <p class="text-muted">{{ club.last.communication.address }}</p>
                                 <hr>
                                 <strong><i class="fas fa-pencil-alt mr-1"></i>Branş</strong>
                                 <p class="text-muted">
-                                    {% for branch in club.branch.all %}
+                                    {% for branch in club.last.branch.all %}
 
                                         <span class="tag tag-success">{{ branch.title }} - </span>
 
