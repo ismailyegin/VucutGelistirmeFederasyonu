@@ -1433,26 +1433,26 @@ def coachreferenceUpdate(request, uuid):
                                           initial={'kademe_definition': coach.kademe_definition})
             if request.method == 'POST':
 
-                mail = request.POST.get('email')
-                if mail != coach.email:
+                # mail = request.POST.get('email')
+                # if mail != coach.email:
+                #
+                #     if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(
+                #             status=ReferenceCoach.DENIED).filter(
+                #         email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                #         email=mail):
+                #         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                #         return render(request, 'TVGFBF/Coach/update-coach-application.html',
+                #                       {'preRegistrationform': coach_form})
 
-                    if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(
-                            status=ReferenceCoach.DENIED).filter(
-                        email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                        email=mail):
-                        messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-                        return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                                      {'preRegistrationform': coach_form})
-
-                tc = request.POST.get('tc')
-                if tc != coach.tc:
-                    if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(
-                            status=ReferenceCoach.DENIED).filter(
-                        tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                        tc=tc):
-                        messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-                        return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                                      {'preRegistrationform': coach_form})
+                # tc = request.POST.get('tc')
+                # if tc != coach.tc:
+                #     if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(
+                #             status=ReferenceCoach.DENIED).filter(
+                #         tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                #         tc=tc):
+                #         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+                #         return render(request, 'TVGFBF/Coach/update-coach-application.html',
+                #                       {'preRegistrationform': coach_form})
 
                 name = request.POST.get('first_name')
                 surname = request.POST.get('last_name')
