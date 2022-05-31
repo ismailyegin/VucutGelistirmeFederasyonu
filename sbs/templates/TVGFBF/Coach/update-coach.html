@@ -239,12 +239,9 @@
                                                 data-select2-id="1" tabindex="-1" aria-hidden="true">
                                             {% if coachclub %}
                                                 <option selected="selected"
-                                                        value="{{ coachclub.derbis }}">{{ coachclub.name }}</option>
+                                                        value="{{ coachclub.last.derbis }}">{{ coachclub.last.name }}</option>
                                             {% endif %}
                                             <option value="noRegister">------</option>
-                                            <option value="noClub">Kayıtlı Olunan Kulüp Seçeneklerde
-                                                Bulunmamaktadır.
-                                            </option>
                                             {% for club in clubs %}
                                                 <option value="{{ club.derbis }}">{{ club.name }}</option>
                                             {% endfor %}

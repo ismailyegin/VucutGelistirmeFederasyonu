@@ -281,7 +281,7 @@ def coachUpdate(request, uuid):
     coach = Coach.objects.get(uuid=uuid)
     coachclub = None
     if Club.objects.filter(coachs=coach):
-        coachclub = Club.objects.get(coachs=coach)
+        coachclub = Club.objects.filter(coachs=coach)
         clubs = Club.objects.exclude(coachs=coach).exclude(derbis__isnull=True)
     else:
         clubs = Club.objects.all().exclude(derbis__isnull=True)
