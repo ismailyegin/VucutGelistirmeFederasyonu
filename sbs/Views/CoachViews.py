@@ -1555,7 +1555,8 @@ def approvelReferenceCoach(request):
                     fdk = Forgot(user=user, status=False)
                     fdk.save()
 
-                    referenceCoach.club.coachs.add(coach)
+                    if referenceCoach.club:
+                        referenceCoach.club.coachs.add(coach)
 
 
                     # html_content = ''
