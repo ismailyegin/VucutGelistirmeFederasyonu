@@ -182,6 +182,8 @@
                                                     <span class="badge badge-warning">{{ coach.status }}</span>
                                                 {% elif coach.status == coach.APPROVED %}
                                                     <span class="badge badge-success">{{ coach.status }}</span>
+                                                {% elif coach.status == coach.DENIED %}
+                                                    <span class="badge badge-danger">{{ coach.status }}</span>
                                                 {% else %}
                                                     <span class="badge badge-info">{{ coach.status }}</span>
                                                 {% endif %}
