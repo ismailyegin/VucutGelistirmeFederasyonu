@@ -280,7 +280,7 @@ def referenceCoach(request):
     coach_form.fields['sgk'].required=True
     coach_form.fields['dekont'].required=True
     coach_form.fields['kademe_belge'].required=True
-    x = finders.find('images/taahhüt.pdf')
+    x = finders.find('images/taahhut.pdf')
     clubs = Club.objects.all().exclude(derbis__isnull=True)
     if request.method == 'POST':
         coach_form = RefereeCoachForm(request.POST, request.FILES)
