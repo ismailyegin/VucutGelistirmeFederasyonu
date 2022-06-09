@@ -1,5 +1,7 @@
 import datetime
 import traceback
+
+from django.contrib.staticfiles import finders
 from zeep import Client
 from django.contrib import auth, messages
 from django.contrib.auth import logout
@@ -278,7 +280,7 @@ def referenceCoach(request):
     coach_form.fields['sgk'].required=True
     coach_form.fields['dekont'].required=True
     coach_form.fields['kademe_belge'].required=True
-
+    x = finders.find('images/taahhüt.pdf')
     clubs = Club.objects.all().exclude(derbis__isnull=True)
     if request.method == 'POST':
         coach_form = RefereeCoachForm(request.POST, request.FILES)
@@ -327,12 +329,13 @@ def referenceCoach(request):
         else:
             messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
     return render(request, 'registration/Coach.html',
-                  {'preRegistrationform': coach_form, 'clubs': clubs})
+                  {'preRegistrationform': coach_form, 'clubs': clubs,'taahhut':x})
 
 
 def pre_registration(request):
     preRegistrationform = PreRegistrationForm()
     clubs = Club.objects.all()
+
     if request.method == 'POST':
         preRegistrationform = PreRegistrationForm(request.POST or None, request.FILES or None)
 
