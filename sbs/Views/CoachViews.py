@@ -1427,7 +1427,15 @@ def coachreferenceUpdate(request, uuid):
         return redirect('accounts:login')
     try:
         with transaction.atomic():
+
             coach = ReferenceCoach.objects.get(uuid=uuid)
+            club=coach.club
+            if club:
+                pk=coach.club.pk
+                clubs = Club.objects.all().exclude(derbis__isnull=True).exclude(id=pk)
+            else:
+                clubs = Club.objects.all().exclude(derbis__isnull=True)
+
             coach_form = RefereeCoachForm(request.POST or None, request.FILES or None, instance=coach,
                                           initial={'kademe_definition': coach.kademe_definition})
             if request.method == 'POST':
@@ -1465,18 +1473,30 @@ def coachreferenceUpdate(request, uuid):
                 #                   {'preRegistrationform': coach_form})
 
                 if coach_form.is_valid():
-                    coach_form.save()
+                    veri = coach_form.save(commit=False)
+                    veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+
+                    clubDersbis = request.POST.get('club', None)
+                    if clubDersbis:
+                        coachClub = Club.objects.get(derbis=clubDersbis)
+                        veri.club = coachClub
+                    else:
+                       if coach.club:
+                           veri.club =None
+
+                    veri.save()
 
                     messages.success(request, 'Antrenör Başvurusu Güncellendi')
+                    return redirect("sbs:update-coach-reference" ,coach.uuid)
                 else:
                     messages.warning(request, 'Alanları Kontrol Ediniz')
 
             return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                          {'preRegistrationform': coach_form})
+                          {'preRegistrationform': coach_form,'clubs':clubs,'current_club':club})
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                      {'preRegistrationform': coach_form})
+                      {'preRegistrationform': coach_form,'clubs':clubs,'current_club':club})
 
 
 @login_required

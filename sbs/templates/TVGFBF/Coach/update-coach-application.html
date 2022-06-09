@@ -190,6 +190,23 @@
                                             <label> {{ preRegistrationform.belge.label }}</label>
                                             {{ preRegistrationform.belge }}
                                         </div>
+                                        <div class="form-group">
+                                            <label for="club">Kayıtlı Olduğunuz Kulüp</label>
+                                            <select id="club" name="club"
+                                                    class="form-control select2 select2-hidden-accessible"
+                                                    style="width: 100%;"
+                                                    data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                                <option  value="">Kulüpte çalışmıyorum</option>
+                                                {% if current_club %}
+                                                    <option selected
+                                                            value="{{ current_club.derbis }}">{{ current_club.name }}</option>
+                                                {% endif %}
+                                                {% for club in clubs %}
+                                                    <option value="{{ club.derbis }}">{{ club.name }}</option>
+
+                                                {% endfor %}
+                                            </select>
+                                        </div>
 
                                     </div>
 
