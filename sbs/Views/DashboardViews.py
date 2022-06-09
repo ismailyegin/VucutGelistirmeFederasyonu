@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import resolve
 
+from sbs.models import SportFacility
 from sbs.models.ekabis.Permission import Permission
 from sbs.models.ekabis.Person import Person
 from sbs.models.tvfbf.AnnouncementUser import AnnouncementUser
@@ -54,11 +55,12 @@ def return_coach_dashboard(request):
         return redirect('accounts:login')
     login_user = request.user
     user = User.objects.get(pk=login_user.pk)
-    person = None
+    person = Person.objects.none()
     if Person.objects.filter(user=user):
         person = Person.objects.get(user=user)
-    coach = None
-    clup = None
+    coach = Coach.objects.none()
+    clup = Club.objects.none()
+    sportFacility = SportFacility.objects.none()
     athlete_count = 0
     urls = last_urls(request)
     current_url = resolve(request.path_info)
@@ -67,6 +69,7 @@ def return_coach_dashboard(request):
     if Coach.objects.filter(person__user=user):
         coach = Coach.objects.get(person__user=user)
         clup = Club.objects.filter(coachs=coach)
+        sportFacility = SportFacility.objects.filter(coach=coach)
         clupsPk = []
         for item in clup:
             clupsPk.append(item.pk)
@@ -77,7 +80,7 @@ def return_coach_dashboard(request):
 
     return render(request, 'TVGFBF/Anasayfa/antrenor.html',
                   {'athlete_count': athlete_count, 'coach': coach, 'person': person, 'urls': urls,
-                   'current_url': current_url, 'url_name': url_name, 'club': clup, })
+                   'current_url': current_url, 'url_name': url_name, 'club': clup, 'sportFacility': sportFacility, })
 
 
 @login_required

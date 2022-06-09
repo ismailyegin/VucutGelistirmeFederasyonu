@@ -101,34 +101,59 @@
                         </div>
 
                     </div>
-                    {% if club %}
-                        <div class="card card-info card-outline">
-                            <div class="card-header">
-                                <h3 class="card-title">Kulüp Bilgileri</h3>
+                    <div class="card card-info card-outline">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card-header">
+                                    <h3 class="card-title">Kulüp Bilgileri</h3>
+                                </div>
+
+                                <div class="card-body">
+                                    <strong><i class="fas fa-book mr-1"></i> Kulüp </strong>
+                                    <p class="text-muted">
+                                        {% if club %}
+                                            {{ club.last.name }}
+                                        {% else %}
+                                            Kulüp bilginiz bulunmamaktadır.
+                                        {% endif %}
+                                    </p>
+                                    <hr>
+                                    <strong><i class="fas fa-map-marker-alt mr-1"></i> Adres</strong>
+                                    <p class="text-muted">{{ club.last.communication.address }}</p>
+                                    <hr>
+                                    <strong><i class="fas fa-pencil-alt mr-1"></i>Branş</strong>
+                                    <p class="text-muted">
+                                        {% for branch in club.last.branch.all %}
+
+                                            <span class="tag tag-success">{{ branch.title }} - </span>
+
+                                        {% endfor %}
+                                    </p>
+
+                                </div>
                             </div>
+                            <div class="col-lg-6">
+                                <div class="card-header">
+                                    <h3 class="card-title">Spor Tesisi Bilgileri</h3>
+                                </div>
 
-                            <div class="card-body">
-                                <strong><i class="fas fa-book mr-1"></i> Kulüp </strong>
-                                <p class="text-muted">
-                                    {{ club.last.name }}
-                                </p>
-                                <hr>
-                                <strong><i class="fas fa-map-marker-alt mr-1"></i> Adres</strong>
-                                <p class="text-muted">{{ club.last.communication.address }}</p>
-                                <hr>
-                                <strong><i class="fas fa-pencil-alt mr-1"></i>Branş</strong>
-                                <p class="text-muted">
-                                    {% for branch in club.last.branch.all %}
-
-                                        <span class="tag tag-success">{{ branch.title }} - </span>
-
-                                    {% endfor %}
-                                </p>
-
+                                <div class="card-body">
+                                    <strong><i class="fas fa-book mr-1"></i> Spor Tesisi </strong>
+                                    <p class="text-muted">
+                                        {% if sportFacility %}
+                                            {{ sportFacility.last.name }}
+                                        {% else %}
+                                            Spor tesisi bilginiz bulunmamaktadır.
+                                        {% endif %}
+                                    </p>
+                                    <hr>
+                                    <strong><i class="fas fa-map-marker-alt mr-1"></i> Adres</strong>
+                                    <p class="text-muted">{{ sportFacility.last.communication.address }}</p>
+                                    <hr>
+                                </div>
                             </div>
-
                         </div>
-                    {% endif %}
+                    </div>
                 </div>
             </div>
             <div class="row">
