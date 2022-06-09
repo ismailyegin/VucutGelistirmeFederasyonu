@@ -172,6 +172,9 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 #     }
 # }
 
+SESSION_COOKIE_AGE = 600
+SESSION_SAVE_EVERY_REQUEST = True
+
 LDAP_URL = 'https://api.enerji.gov.tr/apigateway/merkezi-ldap-api'
 LDAP_USERNAME = 'yekabis_user'
 LDAP_PASSWORD = 'YeC@38c47c15!!'
