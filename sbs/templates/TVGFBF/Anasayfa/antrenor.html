@@ -172,10 +172,7 @@
                                     <th> Hak Kazanma Tarihi</th>
                                     <th> Branş</th>
                                     <th> Tanımı</th>
-                                    <th>Dekont</th>
-                                    <th> Onay Durumu</th>
-                                    <th>Onaylanma Tarihi</th>
-
+                                    <th> Belge / Aktif-Pasif</th>
 
                                 </tr>
                                 </thead>
@@ -189,10 +186,6 @@
                                                 <td>{{ grade.startDate }}  </td>
                                                 <td>{{ grade.branch }}  </td>
                                                 <td>{{ grade.definition }}  </td>
-                                                <td>{% if grade.dekont %}
-                                                    <a href="{{ grade.dekont.url }}"
-                                                       target="_blank">Dekont </a> {% endif %}
-                                                </td>
                                                 <td>{% if grade.status == 'Onaylandı' %}
                                                     Aktif
                                                 {% elif grade.status == 'Reddedildi' %}
@@ -201,13 +194,6 @@
                                                     {{ grade.status }}
                                                 {% endif %}
                                                 </td>
-
-                                                <td>{% if grade.approval_date %}
-                                                    {{ grade.approval_date }}</td>
-                                                {% else %}
-                                                    <td></td>
-                                                {% endif %}
-
 
                                             {% endif %}
                                         </tr>
@@ -234,11 +220,10 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th> Hak Kazanma Yılı</th>
                                     <th> Branş</th>
                                     <th> Dekont</th>
-                                    <th> Onay Durumu</th>
-                                    <th>Onaylanma Tarihi</th>
+                                    <th> Vize Geçerlilik Tarihi</th>
+                                    <th> Vize Onaylanma Tarihi</th>
 
 
                                 </tr>
@@ -251,25 +236,14 @@
                                         <tr>
                                             {% if not grade.isDeleted %}
                                                 <td>{{ forloop.counter }} </td>
-                                                <td>{{ grade.startDate.year }}  </td>
                                                 <td>{{ grade.branch }}  </td>
                                                 <td><a href="{{ grade.dekont.url }}" target="_blank">Dekont </a>
-                                                <td>{% if grade.status == 'Onaylandı' %}
-                                                    Aktif
-                                                {% elif grade.status == 'Reddedildi' %}
-                                                    Pasif
-                                                {% else %}
-                                                    {{ grade.status }}
-                                                {% endif %}
-                                                </td>
+                                                <td> {{ date }} </td>
                                                 <td>{% if grade.approval_date %}
                                                     {{ grade.approval_date }}</td>
                                                 {% else %}
                                                     <td></td>
                                                 {% endif %}
-
-
-
                                                 </tr>
                                             {% endif %}
                                     {% endfor %}

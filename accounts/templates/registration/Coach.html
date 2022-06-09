@@ -313,7 +313,12 @@
                                         </select>
                                     </div>
                                 </div>
-
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="Antrenör Belgesi">Antrenör Belgesi</label>
+                                        <input id="belge" class="form-control" type="file" name="belge"/>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
@@ -381,13 +386,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.kademe_startDate.label }}</label>
-                                        {{ preRegistrationform.kademe_startDate }}
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-12">
                                     <div class="form-group">
                                         <label> {{ preRegistrationform.kademe_definition.label }}</label>
                                         {{ preRegistrationform.kademe_definition }}

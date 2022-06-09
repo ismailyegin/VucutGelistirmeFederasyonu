@@ -616,7 +616,6 @@ def add_visa_coach(request, uuid):
             if visa_form.is_valid():
 
                 visa = HavaLevel(dekont=visa_form.cleaned_data['dekont'], branch=visa_form.cleaned_data['branch'])
-                visa.startDate = visa_form.cleaned_data['startDate']
 
                 visa.definition = CategoryItem.objects.get(forWhichClazz='VISA_COACH')
                 visa.levelType = EnumFields.LEVELTYPE.VISA

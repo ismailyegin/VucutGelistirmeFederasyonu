@@ -62,6 +62,9 @@ def return_coach_dashboard(request):
     clup = Club.objects.none()
     sportFacility = SportFacility.objects.none()
     athlete_count = 0
+    year = datetime.date.today().year
+    date = datetime.date(year,12,31)
+
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
@@ -69,7 +72,6 @@ def return_coach_dashboard(request):
     if Coach.objects.filter(person__user=user):
         coach = Coach.objects.get(person__user=user)
         clup = Club.objects.filter(coachs=coach)
-        sportFacility = SportFacility.objects.filter(coach=coach)
         clupsPk = []
         for item in clup:
             clupsPk.append(item.pk)
@@ -80,7 +82,8 @@ def return_coach_dashboard(request):
 
     return render(request, 'TVGFBF/Anasayfa/antrenor.html',
                   {'athlete_count': athlete_count, 'coach': coach, 'person': person, 'urls': urls,
-                   'current_url': current_url, 'url_name': url_name, 'club': clup, 'sportFacility': sportFacility, })
+                   'current_url': current_url, 'url_name': url_name, 'club': clup, 'sportFacility': sportFacility,'date':date })
+
 
 
 @login_required

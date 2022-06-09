@@ -21,14 +21,14 @@ class RefereeCoachForm(ModelForm):
         fields = (
             'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
             'country', 'iban', 'tc', 'profileImage', 'birthDate', 'gender', 'birthplace', 'motherName',
-        'fatherName','kademe_belge','kademe_startDate','sgk','dekont')
+        'fatherName','kademe_belge','kademe_startDate','sgk','dekont','belge')
 
 
 
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
                   'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet','kademe_belge':'Sözleşme Belgesi: ',
-                  'kademe_startDate':'Kademe Başlangıç Zamanı ','sgk':'SGK Belgesi: ','dekont':'Dekont'}
+                  'kademe_startDate':'Kademe Başlangıç Zamanı ','sgk':'SGK Belgesi: ','dekont':'Dekont','belge':'Antrenör Belgesi'}
         widgets = {
 
             'tc': forms.TextInput(attrs={'class': 'form-control ',
@@ -79,7 +79,7 @@ class RefereeCoachForm(ModelForm):
                                            'style': 'width: 100%;', 'required': 'required'}),
              'kademe_startDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
-                       'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
+                       'onkeydown': 'return true',"data-inputmask-alias": "datetime",
                        "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
 
         }

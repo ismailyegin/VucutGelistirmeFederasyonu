@@ -87,6 +87,7 @@ class ReferenceCoach(BaseModel):
     kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')
     sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')
     dekont = models.FileField(null=True, blank=True, verbose_name='Dekont')
+    belge = models.FileField(null=True, blank=True, verbose_name='Belge')
 
     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
     definition = models.TextField(null=True, blank=True, verbose_name='Reddedilme Sebebi')
