@@ -399,7 +399,8 @@
                                         <div class="col-lg-4">
                                             <div class="form-group">
                                                 <label> {{ preRegistrationform.kademe_belge.label }}</label>
-                                                {{ preRegistrationform.kademe_belge }}
+                                                {{ preRegistrationform.kademe_belge }} <br>
+                                                <small><i class="fa fa-link"></i>  Sözleşmeniz yoksa sözleşme formunu  <a href="{%  static "images/taahhüt.pdf" %}" download="">buradan</a> indirerek gönderebilirsiniz.</small>
                                             </div>
                                         </div>
 
@@ -547,42 +548,42 @@
                 if (okay) {
                     window.location.href = "URL";
                 }
-                 $('#loading').show()
+                $('#loading').show()
                 location.reload();
 
 
             });
         }
     });
-            $(function () {
+    $(function () {
 
-                $('.select2').select2();
+        $('.select2').select2();
 
-                $('#datepicker').datepicker({
-                    autoclose: true,
-                    language: 'tr',
-                    format: 'dd/mm/yyyy',
+        $('#datepicker').datepicker({
+            autoclose: true,
+            language: 'tr',
+            format: 'dd/mm/yyyy',
 
-                });
+        });
 
-                $('#datepicker2').datepicker({
-                    autoclose: true,
-                    language: 'tr',
-                    format: 'dd/mm/yyyy',
+        $('#datepicker2').datepicker({
+            autoclose: true,
+            language: 'tr',
+            format: 'dd/mm/yyyy',
 
-                });
+        });
 
-                $('.datepicker6').datepicker({
-                    autoclose: true,
-                    language: 'tr',
-                    format: 'dd/mm/yyyy',
-                })
+        $('.datepicker6').datepicker({
+            autoclose: true,
+            language: 'tr',
+            format: 'dd/mm/yyyy',
+        })
 
-                $('#datemask').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+        $('#datemask').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
 
-                $('[data-mask]').inputmask();
+        $('[data-mask]').inputmask();
 
-            })
+    })
 </script>
 <script>
     $(function () {

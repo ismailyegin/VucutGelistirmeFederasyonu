@@ -12,3 +12,5 @@ python-dateutil
 pycryptodome
 cryptography
 zeep
+pymysql
+pandas
