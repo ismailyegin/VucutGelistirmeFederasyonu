@@ -1,8 +1,7 @@
 from django.urls import path
 
 from sbs.Views import ClubViews, RefereeViews, CoachViews, TransmissionViews, \
-    ClubTransmissionViews, DocumentViews, SportFacilityViews, AnnouncementViews, Aktarma, ProfileViews, \
-    AthleteTransmissionViews
+    ClubTransmissionViews, DocumentViews, SportFacilityViews, AnnouncementViews, Aktarma, ProfileViews
 from sbs.Views.ekabis import APIViews, AdminViews, \
     LogViews, CityViews, UserViews, \
     HelpViews, PermissionView, GroupView, \
