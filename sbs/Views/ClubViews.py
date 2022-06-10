@@ -90,7 +90,7 @@ def return_clubs(request):
                 if city:
                     query &= Q(communication__city__name__icontains=city)
                 if name:
-                    query &= Q(name__icontains=name.title())
+                    query &= Q(name__icontains=name)
                 if clubMail:
                     query &= Q(clubMail__icontains=clubMail)
                 if shortName:

@@ -140,7 +140,7 @@
                 <div class="col-lg-12">
 
 
-                    <div class="card card-info">
+                    <div class="card card-info card-outline">
                         <div class="card-header with-border">
                             <h3 class="card-title">Kulüp Ekle</h3>
                         </div>
@@ -178,7 +178,7 @@
                     <div class="col-lg-6">
 
 
-                        <div class="card card-info">
+                        <div class="card card-info card-outline">
                             <div class="card-header with-border">
                                 <h3 class="card-title">Kulüp Bilgileri</h3>
                             </div>
@@ -223,7 +223,7 @@
                     <div class="col-lg-6">
 
 
-                        <div class="card card-info">
+                        <div class="card card-info card-outline">
                             <div class="card-header with-border">
                                 <h3 class="card-title">Kulüp İletişim Bilgileri</h3>
                             </div>
@@ -304,7 +304,7 @@
                         <div class="col-lg-12">
 
 
-                            <div class="card card-info">
+                            <div class="card card-outline card-info">
                                 <div class="card-header with-border">
                                     <h3 class="card-title">Kişisel Bilgiler</h3>
                                 </div>
@@ -434,6 +434,38 @@
                 );
 
             })
+          function getCookie(name) {
+            var cookieValue = null;
+            var i = 0;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (i; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
         </script>
         <script>
             function GetClub() {
@@ -444,10 +476,10 @@
                 console.log(id);
                 if (id) {
                     $.ajax({
-                        url: "/tvgfbf/kulup/kulup-yonetici-ekle-api/",
+                        url: "{% url 'sbs:kulup-yonetici-ekle-api' %}",
                         type: "POST",
                         data: {
-                            'csrfmiddlewaretoken': "BE4Zpz7OWfSuN8mw7GN0Kk6gy29yD8z4stoCz0vYejqimTWZn12uXoHGjv8I4w35",
+                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
                             guid: id,
                         },
                         success: function (result) {

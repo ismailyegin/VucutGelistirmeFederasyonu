@@ -1,7 +1,8 @@
 from django.urls import path
 
 from sbs.Views import ClubViews, RefereeViews, CoachViews, TransmissionViews, \
-    ClubTransmissionViews, DocumentViews, SportFacilityViews, AnnouncementViews, Aktarma, ProfileViews
+    ClubTransmissionViews, DocumentViews, SportFacilityViews, AnnouncementViews, Aktarma, ProfileViews, \
+    AthleteTransmissionViews
 from sbs.Views.ekabis import APIViews, AdminViews, \
     LogViews, CityViews, UserViews, \
     HelpViews, PermissionView, GroupView, \
@@ -121,7 +122,7 @@ urlpatterns = [
 
     path('kulupAktarimi/', ClubTransmissionViews.ClubTransmission, name='api-club-transmission'),
     path('kulup/kulup-yonetici-ekle-api/', TransmissionViews.getClubForRegisterManager,
-         name='kulup-yönetici-ekle-api'),
+         name='kulup-yonetici-ekle-api'),
     path('kulupAktarimi/limit-offset/', TransmissionViews.getLimitOffset, name='getLimitOffset'),
     path('il/il-aktarimi/', TransmissionViews.TransmissionCity, name='TransmissionCity'),
     path('ulke/ulke-aktarimi/', TransmissionViews.TransmissionCountry, name='TransmissionCountry'),
