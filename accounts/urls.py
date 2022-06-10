@@ -1,5 +1,4 @@
 # import patterns as patterns
-from django.conf.urls import url
 from django.urls import path, include
 from . import views
 
@@ -17,5 +16,6 @@ urlpatterns = [
     path(r'coach/', views.referenceCoach, name='coach'),
     path('pre-registration/', views.pre_registration, name='pre-registration'),
     path('on-kayit/spor-salonu/', views.pre_registration_facility, name='pre_registration_facility'),
+    path('on-kayit/sporcu/', views.pre_registration_athelete, name='pre_registration_athelete'),
 
 ]

@@ -10,12 +10,13 @@ from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from accounts.models import Forgot
 from sbs.Forms.SportFacilityForm import SportFacilityForm
+from sbs.Forms.havaspor.ReferenceAthleteForm import ReferenceAthleteForm
 from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
 from sbs.Forms.havaspor.PreRefereeForm import PreRefereeForm
 from sbs.Forms.havaspor.PreRegidtrationForm import PreRegistrationForm
 from sbs.Forms.havaspor.RefereeForm import RefereeForm
 from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
-from sbs.models import SportFacility, ReferenceSportFacility
+from sbs.models import SportFacility, ReferenceSportFacility, ReferenceAthlete
 from sbs.models.tvfbf.Club import Club
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Permission import Permission
@@ -406,4 +407,25 @@ def pre_registration_facility(request):
             messages.warning(request, "Alanlari kontrol ediniz")
 
     return render(request, 'TVGFBF/SportFacility/referenceFacility.html',
+                  {'preRegistrationform': preRegistrationform,})
+
+
+
+def pre_registration_athelete(request):
+    preRegistrationform = ReferenceAthleteForm()
+    if request.method == 'POST':
+        preRegistrationform = ReferenceAthleteForm(request.POST or None, request.FILES or None)
+
+        if preRegistrationform.is_valid():
+            veri = preRegistrationform.save(commit=False)
+            veri.save()
+            messages.success(request,
+                             "Başarili bir şekilde kayıt başvurunuz alındı.")
+            return redirect('accounts:login')
+
+
+        else:
+            messages.warning(request, "Alanlari kontrol ediniz")
+
+    return render(request, 'registration/Athlete.html',
                   {'preRegistrationform': preRegistrationform,})
