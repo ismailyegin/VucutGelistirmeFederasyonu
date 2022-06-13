@@ -39,3 +39,4 @@ from .tvfbf.DocumentName import DocumentName
 from .tvfbf.Announcement import Announcement
 from .tvfbf.AnnouncementUser import AnnouncementUser
 from .tvfbf.ReferenceSportFacility import ReferenceSportFacility
+from .tvfbf.ReferenceAthlete import ReferenceAthlete

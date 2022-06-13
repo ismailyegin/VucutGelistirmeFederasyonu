@@ -28,7 +28,7 @@ class RefereeCoachForm(ModelForm):
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
                   'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet','kademe_belge':'Sözleşme Belgesi: ',
-                  'kademe_startDate':'Kademe Başlangıç Zamanı ','sgk':'SGK Belgesi: ','dekont':'Dekont','belge':'Antrenör Belgesi'}
+                  'kademe_startDate':'Kademe Başlangıç Zamanı ','sgk':'SGK Belgesi: ','dekont':'Vize Dekont','belge':'Antrenör Belgesi'}
         widgets = {
 
             'tc': forms.TextInput(attrs={'class': 'form-control ',
