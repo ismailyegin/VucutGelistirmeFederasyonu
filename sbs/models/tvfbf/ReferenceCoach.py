@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 
 from sbs.models.tvfbf.Club import Club
@@ -91,7 +93,7 @@ class ReferenceCoach(BaseModel):
 
     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
     definition = models.TextField(null=True, blank=True, verbose_name='Reddedilme Sebebi')
-    status_date=models.DateField(null=True, blank=True, verbose_name='Onaylanma Tarihi')
+    status_date = models.DateField(null=True, blank=True, verbose_name='Onaylanma Tarihi')
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)
