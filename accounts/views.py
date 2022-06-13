@@ -277,9 +277,9 @@ def referenceReferee(request):
 def referenceCoach(request):
     logout(request)
     coach_form = RefereeCoachForm()
-    coach_form.fields['sgk'].required=True
-    coach_form.fields['dekont'].required=True
-    coach_form.fields['kademe_belge'].required=True
+    coach_form.fields['sgk'].required = True
+    coach_form.fields['dekont'].required = True
+    coach_form.fields['kademe_belge'].required = True
     x = finders.find('images/taahhut.pdf')
     clubs = Club.objects.all().exclude(derbis__isnull=True)
     if request.method == 'POST':
@@ -313,6 +313,7 @@ def referenceCoach(request):
         if coach_form.is_valid():
 
             veri = coach_form.save(commit=False)
+            veri.profileImage.name = coach_form.cleaned_data['profileImage'].name.encode('utf-8', 'ignore').decode('utf-8')
             veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
 
             clubDersbis = request.POST.get('club', None)
@@ -329,7 +330,65 @@ def referenceCoach(request):
         else:
             messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
     return render(request, 'registration/Coach.html',
-                  {'preRegistrationform': coach_form, 'clubs': clubs,'taahhut':x})
+                  {'preRegistrationform': coach_form, 'clubs': clubs, 'taahhut': x})
+
+
+# def referenceCoachFromApi(request):
+#     logout(request)
+#     coach_form = RefereeCoachForm()
+#     coach_form.fields['sgk'].required = True
+#     coach_form.fields['dekont'].required = True
+#     coach_form.fields['kademe_belge'].required = True
+#     x = finders.find('images/taahhut.pdf')
+#     clubs = Club.objects.all().exclude(derbis__isnull=True)
+#     if request.method == 'POST':
+#         coach_form = RefereeCoachForm(request.POST, request.FILES)
+#         mail = request.POST.get('email')
+#
+#         # if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+#         #         email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+#         #     email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+#         #     email=mail):
+#         #     messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
+#         #     return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form, 'clubs': clubs})
+#
+#         tc = request.POST.get('tc')
+#         # if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+#         #         tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+#         #     tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+#         #     messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
+#         #     return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form, 'clubs': clubs})
+#
+#         name = request.POST.get('first_name')
+#         surname = request.POST.get('last_name')
+#         year = request.POST.get('birthDate')
+#         year = year.split('/')
+#
+#         # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+#         # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+#         #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+#         #     return render(request, 'registration/Coach.html', {'preRegistrationform': coach_form, 'clubs': clubs})
+#
+#         if coach_form.is_valid():
+#
+#             veri = coach_form.save(commit=False)
+#             veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+#
+#             clubDersbis = request.POST.get('club', None)
+#             if clubDersbis:
+#                 coachClub = Club.objects.get(derbis=clubDersbis)
+#                 veri.club = coachClub
+#
+#             veri.save()
+#
+#             messages.success(request,
+#                              'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
+#             return redirect("accounts:login")
+#
+#         else:
+#             messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
+#     return render(request, 'registration/coachFromApi.html',
+#                   {'preRegistrationform': coach_form, 'clubs': clubs, 'taahhut': x})
 
 
 def pre_registration(request):
@@ -384,18 +443,20 @@ def pre_registration(request):
     return render(request, 'registration/referenceRegisterClub.html',
                   {'preRegistrationform': preRegistrationform, 'clubs': clubs})
 
+
 def pre_registration_facility(request):
     preRegistrationform = SportFacilityForm()
     if request.method == 'POST':
         preRegistrationform = SportFacilityForm(request.POST or None, request.FILES or None)
 
         if preRegistrationform.is_valid():
-            pre_facility=ReferenceSportFacility(name=preRegistrationform.cleaned_data['name'],
-                                                derbis=preRegistrationform.cleaned_data['derbis'],
-                                                mersis=preRegistrationform.cleaned_data['mersis'],
-                                                registrationNumber=preRegistrationform.cleaned_data['registrationNumber'],
-                                                permitDate=preRegistrationform.cleaned_data['permitDate'],
-                                                coordinate=preRegistrationform.cleaned_data['coordinate'])
+            pre_facility = ReferenceSportFacility(name=preRegistrationform.cleaned_data['name'],
+                                                  derbis=preRegistrationform.cleaned_data['derbis'],
+                                                  mersis=preRegistrationform.cleaned_data['mersis'],
+                                                  registrationNumber=preRegistrationform.cleaned_data[
+                                                      'registrationNumber'],
+                                                  permitDate=preRegistrationform.cleaned_data['permitDate'],
+                                                  coordinate=preRegistrationform.cleaned_data['coordinate'])
             pre_facility.save()
             messages.success(request,
                              "Başarili bir şekilde kayıt başvurunuz alındı.")
@@ -406,4 +467,4 @@ def pre_registration_facility(request):
             messages.warning(request, "Alanlari kontrol ediniz")
 
     return render(request, 'TVGFBF/SportFacility/referenceFacility.html',
-                  {'preRegistrationform': preRegistrationform,})
+                  {'preRegistrationform': preRegistrationform, })
