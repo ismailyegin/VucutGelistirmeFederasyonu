@@ -1,3 +1,4 @@
+import unidecode
 from django.db import models
 
 from sbs.models.ekabis.Communication import Communication
@@ -28,3 +29,12 @@ class Referee(BaseModel):
 
     def __str__(self):
         return '%s %s' % (self.person.user.first_name, self.person.user.last_name)
+
+    def save(self, *args, **kwargs):
+        self.nufusCuzdani.name = unidecode.unidecode(self.nufusCuzdani.name)
+        self.diploma.name = unidecode.unidecode(self.diploma.name)
+        self.sabikaKaydi.name = unidecode.unidecode(self.sabikaKaydi.name)
+        self.cezaYazisi.name = unidecode.unidecode(self.cezaYazisi.name)
+        self.saglikBeyanFormu.name = unidecode.unidecode(self.saglikBeyanFormu.name)
+        self.hakemBilgiFormu.name = unidecode.unidecode(self.hakemBilgiFormu.name)
+        super(Referee, self).save(*args, **kwargs)

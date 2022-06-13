@@ -1,5 +1,6 @@
 import enum
 
+import unidecode
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -44,3 +45,8 @@ class HavaLevel(BaseModel):
 
     class Meta:
         default_permissions = ()
+
+    def save(self, *args, **kwargs):
+        self.dekont.name = unidecode.unidecode(self.dekont.name)
+        self.form.name = unidecode.unidecode(self.form.name)
+        super(HavaLevel, self).save(*args, **kwargs)

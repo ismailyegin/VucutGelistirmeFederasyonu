@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import unidecode
 from django.db import models
 
 from sbs.models.tvfbf.Club import Club
@@ -98,5 +98,10 @@ class ReferenceCoach(BaseModel):
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)
 
-    def __unicode__(self):
-        return u'%s' % (self.profileImage)
+    def save(self, *args, **kwargs):
+        self.profileImage.name = unidecode.unidecode(self.profileImage.name)
+        self.kademe_belge.name = unidecode.unidecode(self.kademe_belge.name)
+        self.sgk.name = unidecode.unidecode(self.sgk.name)
+        self.dekont.name = unidecode.unidecode(self.dekont.name)
+        self.belge.name = unidecode.unidecode(self.belge.name)
+        super(ReferenceCoach, self).save(*args, **kwargs)
