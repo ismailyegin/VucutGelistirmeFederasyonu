@@ -1,3 +1,4 @@
+import unidecode
 from django.db import models
 from sbs.models.ekabis.BaseModel import BaseModel
 from sbs.models.tvfbf.DocumentName import DocumentName
@@ -9,3 +10,8 @@ class FacilityDocument(BaseModel):
 
     def __str__(self):
         return '%s' % self.name
+
+    def save(self, *args, **kwargs):
+        if self.file:
+            self.file.name = unidecode.unidecode(self.file.name)
+        super(FacilityDocument, self).save(*args, **kwargs)

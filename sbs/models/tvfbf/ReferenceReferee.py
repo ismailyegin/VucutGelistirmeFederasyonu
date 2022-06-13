@@ -1,3 +1,4 @@
+import unidecode
 from django.db import models
 
 from sbs.models.ekabis.City import City
@@ -51,7 +52,6 @@ class ReferenceReferee(BaseModel):
         (WAITED, 'Beklemede'),
     )
 
-
     status = models.CharField(max_length=128, verbose_name='Onay Durumu', choices=STATUS_CHOICES, default=WAITED)
     iban = models.CharField(max_length=120, null=False, blank=False, verbose_name='İban Adresi')
 
@@ -62,7 +62,7 @@ class ReferenceReferee(BaseModel):
     birthplace = models.CharField(max_length=120, null=True, blank=True, verbose_name='Doğum Yeri')
     motherName = models.CharField(max_length=120, null=True, blank=True, verbose_name='Anne Adı')
     fatherName = models.CharField(max_length=120, null=True, blank=True, verbose_name='Baba Adı')
-    profileImage = models.ImageField(upload_to='profile/', null=False, blank=False,verbose_name='Profil Resmi')
+    profileImage = models.ImageField(upload_to='profile/', null=False, blank=False, verbose_name='Profil Resmi')
     birthDate = models.DateField(null=True, blank=True, verbose_name='Doğum Tarihi')
     bloodType = models.CharField(max_length=128, verbose_name='Kan Grubu', choices=BLOODTYPE, null=True, blank=True)
     gender = models.CharField(max_length=128, verbose_name='Cinsiyeti', choices=GENDER_CHOICES, default=MALE)
@@ -74,15 +74,8 @@ class ReferenceReferee(BaseModel):
     city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='İl')
     country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Ülke')
 
-
-
     kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
-    kademe_startDate= models.DateField(verbose_name="Kademe başlangıç Tarihi")
-
-
-
-
-
+    kademe_startDate = models.DateField(verbose_name="Kademe başlangıç Tarihi")
 
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
@@ -92,12 +85,15 @@ class ReferenceReferee(BaseModel):
     is_active = models.BooleanField(default=False,
                                     help_text=('Designates whether this user should be treated as active. '))
 
-
-
-
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)
+
     #
     class Meta:
         default_permissions = ()
         # managed = False
+
+    def save(self, *args, **kwargs):
+        if self.profileImage:
+            self.profileImage.name = unidecode.unidecode(self.profileImage.name)
+        super(ReferenceReferee, self).save(*args, **kwargs)

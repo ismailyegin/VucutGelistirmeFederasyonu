@@ -1,3 +1,4 @@
+import unidecode
 from django.db import models
 
 from sbs.models.ekabis.Communication import Communication
@@ -37,6 +38,13 @@ class Club(BaseModel):
 
     def __str__(self):
         return '%s' % (self.name)
+
+    def save(self, *args, **kwargs):
+        if self.logo:
+            self.logo.name = unidecode.unidecode(self.logo.name)
+        if self.petition:
+            self.petition.name = unidecode.unidecode(self.petition.name)
+        super(Club, self).save(*args, **kwargs)
 
     # class Meta:
     #     default_permissions = ()

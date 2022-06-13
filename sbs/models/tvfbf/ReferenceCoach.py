@@ -99,9 +99,14 @@ class ReferenceCoach(BaseModel):
         return '%s %s' % (self.first_name, self.last_name)
 
     def save(self, *args, **kwargs):
-        self.profileImage.name = unidecode.unidecode(self.profileImage.name)
-        self.kademe_belge.name = unidecode.unidecode(self.kademe_belge.name)
-        self.sgk.name = unidecode.unidecode(self.sgk.name)
-        self.dekont.name = unidecode.unidecode(self.dekont.name)
-        self.belge.name = unidecode.unidecode(self.belge.name)
+        if self.profileImage:
+            self.profileImage.name = unidecode.unidecode(self.profileImage.name)
+        if self.kademe_belge:
+            self.kademe_belge.name = unidecode.unidecode(self.kademe_belge.name)
+        if self.sgk:
+            self.sgk.name = unidecode.unidecode(self.sgk.name)
+        if self.dekont:
+            self.dekont.name = unidecode.unidecode(self.dekont.name)
+        if self.belge:
+            self.belge.name = unidecode.unidecode(self.belge.name)
         super(ReferenceCoach, self).save(*args, **kwargs)

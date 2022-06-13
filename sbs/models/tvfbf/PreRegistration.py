@@ -1,3 +1,4 @@
+import unidecode
 from django.db import models
 
 from sbs.models.ekabis.Country import Country
@@ -120,6 +121,19 @@ class PreRegistration(models.Model):
 
     class Meta:
         default_permissions = ()
+
+    def save(self, *args, **kwargs):
+        if self.profileImage:
+            self.profileImage.name = unidecode.unidecode(self.profileImage.name)
+        if self.logo:
+            self.logo.name = unidecode.unidecode(self.logo.name)
+        if self.dekont:
+            self.dekont.name = unidecode.unidecode(self.dekont.name)
+        if self.petition:
+            self.petition.name = unidecode.unidecode(self.petition.name)
+        if self.kademe_belge:
+            self.kademe_belge.name = unidecode.unidecode(self.kademe_belge.name)
+        super(PreRegistration, self).save(*args, **kwargs)
 
     # def save(self, force_insert=False, force_update=False):
     #     self.birthplace = self.birthplace.upper()

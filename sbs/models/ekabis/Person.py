@@ -61,7 +61,8 @@ class Person(BaseModel):
         default_permissions = ()
 
     def save(self, *args, **kwargs):
-        self.profileImage.name = unidecode.unidecode(self.profileImage.name)
+        if self.profileImage:
+            self.profileImage.name = unidecode.unidecode(self.profileImage.name)
         super(Person, self).save(*args, **kwargs)
 
     # def __str__(self):

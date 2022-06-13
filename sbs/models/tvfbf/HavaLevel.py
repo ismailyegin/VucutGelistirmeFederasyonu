@@ -47,6 +47,8 @@ class HavaLevel(BaseModel):
         default_permissions = ()
 
     def save(self, *args, **kwargs):
-        self.dekont.name = unidecode.unidecode(self.dekont.name)
-        self.form.name = unidecode.unidecode(self.form.name)
+        if self.dekont:
+            self.dekont.name = unidecode.unidecode(self.dekont.name)
+        if self.form:
+            self.form.name = unidecode.unidecode(self.form.name)
         super(HavaLevel, self).save(*args, **kwargs)

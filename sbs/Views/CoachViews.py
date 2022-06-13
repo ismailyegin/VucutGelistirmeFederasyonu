@@ -1584,6 +1584,7 @@ def approvelReferenceCoach(request):
                     # html_content = ''
                     # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
                     # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                    # html_content = html_content + '<p>Başvurunuz Onaylanmıştır.</p>'
                     # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(
                     #     fdk.user.username) + '</strong></p>'
                     # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(

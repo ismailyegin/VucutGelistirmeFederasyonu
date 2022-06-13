@@ -1,3 +1,4 @@
+import unidecode
 from django.db import models
 
 from sbs.models.tvfbf.BaseModel import BaseModel
@@ -26,3 +27,8 @@ class RefereeApplication(BaseModel):
 
     class Meta:
         default_permissions = ()
+
+    def save(self, *args, **kwargs):
+        if self.dekont:
+            self.dekont.name = unidecode.unidecode(self.dekont.name)
+        super(RefereeApplication, self).save(*args, **kwargs)

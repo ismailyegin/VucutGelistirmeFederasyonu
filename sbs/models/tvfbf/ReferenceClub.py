@@ -1,3 +1,4 @@
+import unidecode
 from django.db import models
 
 from sbs.models.ekabis.Country import Country
@@ -109,6 +110,18 @@ class ReferenceClub(models.Model):
     kademe_startDate = models.DateField(null=True, blank=True, verbose_name='Başlangıç Tarihi ')
     kademe_belge = models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Belge')
     iban = models.CharField(max_length=120, null=True, blank=True, verbose_name='İban Adresi')
+
+
+    def save(self, *args, **kwargs):
+        if self.profileImage:
+            self.profileImage.name = unidecode.unidecode(self.profileImage.name)
+        if self.logo:
+            self.logo.name = unidecode.unidecode(self.logo.name)
+        if self.dekont:
+            self.dekont.name = unidecode.unidecode(self.dekont.name)
+        if self.kademe_belge:
+            self.kademe_belge.name = unidecode.unidecode(self.kademe_belge.name)
+        super(ReferenceClub, self).save(*args, **kwargs)
 
 
 

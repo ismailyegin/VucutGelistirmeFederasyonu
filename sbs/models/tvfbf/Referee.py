@@ -31,10 +31,16 @@ class Referee(BaseModel):
         return '%s %s' % (self.person.user.first_name, self.person.user.last_name)
 
     def save(self, *args, **kwargs):
-        self.nufusCuzdani.name = unidecode.unidecode(self.nufusCuzdani.name)
-        self.diploma.name = unidecode.unidecode(self.diploma.name)
-        self.sabikaKaydi.name = unidecode.unidecode(self.sabikaKaydi.name)
-        self.cezaYazisi.name = unidecode.unidecode(self.cezaYazisi.name)
-        self.saglikBeyanFormu.name = unidecode.unidecode(self.saglikBeyanFormu.name)
-        self.hakemBilgiFormu.name = unidecode.unidecode(self.hakemBilgiFormu.name)
+        if self.nufusCuzdani:
+            self.nufusCuzdani.name = unidecode.unidecode(self.nufusCuzdani.name)
+        if self.diploma:
+            self.diploma.name = unidecode.unidecode(self.diploma.name)
+        if self.sabikaKaydi:
+            self.sabikaKaydi.name = unidecode.unidecode(self.sabikaKaydi.name)
+        if self.cezaYazisi:
+            self.cezaYazisi.name = unidecode.unidecode(self.cezaYazisi.name)
+        if self.saglikBeyanFormu:
+            self.saglikBeyanFormu.name = unidecode.unidecode(self.saglikBeyanFormu.name)
+        if self.hakemBilgiFormu:
+            self.hakemBilgiFormu.name = unidecode.unidecode(self.hakemBilgiFormu.name)
         super(Referee, self).save(*args, **kwargs)

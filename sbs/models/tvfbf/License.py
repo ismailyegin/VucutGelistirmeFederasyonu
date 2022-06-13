@@ -1,3 +1,4 @@
+import unidecode
 from django.db import models
 
 from sbs.models.tvfbf.BaseModel import BaseModel
@@ -36,6 +37,11 @@ class License(BaseModel):
 
     def __str__(self):
         return '%s ' % self.licenseName
+
+    def save(self, *args, **kwargs):
+        if self.lisansPhoto:
+            self.lisansPhoto.name = unidecode.unidecode(self.lisansPhoto.name)
+        super(License, self).save(*args, **kwargs)
 
     # def save(self, force_insert=False, force_update=False):
     #     if self.branch:
