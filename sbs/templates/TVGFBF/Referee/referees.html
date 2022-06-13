@@ -355,8 +355,18 @@
 {
                         "data": null,
                         render: function (full) {
+                            if (full.communication){
+                                if (full.communication.city.name){
+                                    return full.communication.city.name;
+                                }
+                                else {
+                                    return '';
+                                }
+                            }
+                            else {
+                                return '';
+                            }
 
-                            return full.communication.city.name;
                         }
                     },
 
