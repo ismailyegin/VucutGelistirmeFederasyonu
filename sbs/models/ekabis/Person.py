@@ -1,3 +1,4 @@
+import unidecode
 from django.contrib.auth.models import User
 from django.db import models
 from sbs.models.ekabis.BaseModel import BaseModel
@@ -60,7 +61,7 @@ class Person(BaseModel):
         default_permissions = ()
 
     def save(self, *args, **kwargs):
-        self.profileImage.name = str(self.profileImage.name.encode('utf-8'))
+        self.profileImage.name = unidecode.unidecode(self.profileImage.name)
         super(Person, self).save(*args, **kwargs)
 
     # def __str__(self):

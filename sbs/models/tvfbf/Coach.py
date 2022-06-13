@@ -1,3 +1,4 @@
+import unidecode
 from django.db import models
 from sbs.models.ekabis.Communication import Communication
 from sbs.models.ekabis.Person import Person
@@ -26,6 +27,15 @@ class Coach(BaseModel):
 
     def __str__(self):
         return '%s %s' % (self.person.user.first_name, self.person.user.last_name)
+
+    def save(self, *args, **kwargs):
+        self.nufusCuzdani.name = unidecode.unidecode(self.nufusCuzdani.name)
+        self.diploma.name = unidecode.unidecode(self.diploma.name)
+        self.sabikaKaydi.name = unidecode.unidecode(self.sabikaKaydi.name)
+        self.cezaYazisi.name = unidecode.unidecode(self.cezaYazisi.name)
+        self.saglikBeyanFormu.name = unidecode.unidecode(self.saglikBeyanFormu.name)
+        self.antrenorBelgesi.name = unidecode.unidecode(self.antrenorBelgesi.name)
+        super(Coach, self).save(*args, **kwargs)
 
     # class Meta:
     #     ordering = ['pk']
