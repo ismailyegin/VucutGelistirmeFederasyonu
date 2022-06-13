@@ -317,8 +317,6 @@ def referenceCoach(request):
         if coach_form.is_valid():
 
             veri = coach_form.save(commit=False)
-
-            veri.profileImage.name = str(coach_form.cleaned_data['profileImage'].name.encode('utf-8'))
             veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
 
             clubDersbis = request.POST.get('club', None)
