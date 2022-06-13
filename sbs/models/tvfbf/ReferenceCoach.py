@@ -95,3 +95,11 @@ class ReferenceCoach(BaseModel):
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)
+
+    def save(self, *args, **kwargs):
+        self.profileImage.name = str(self.profileImage.name.encode('utf-8'))
+        self.kademe_belge.name = str(self.kademe_belge.name.encode('utf-8'))
+        self.sgk.name = str(self.sgk.name.encode('utf-8'))
+        self.dekont.name = str(self.dekont.name.encode('utf-8'))
+        self.belge.name = str(self.belge.name.encode('utf-8'))
+        super(ReferenceCoach, self).save(*args, **kwargs)
