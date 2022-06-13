@@ -278,9 +278,9 @@ def referenceReferee(request):
 def referenceCoach(request):
     logout(request)
     coach_form = RefereeCoachForm()
-    coach_form.fields['sgk'].required=True
-    coach_form.fields['dekont'].required=True
-    coach_form.fields['kademe_belge'].required=True
+    coach_form.fields['sgk'].required = True
+    coach_form.fields['dekont'].required = True
+    coach_form.fields['kademe_belge'].required = True
     x = finders.find('images/taahhut.pdf')
     clubs = Club.objects.all().exclude(derbis__isnull=True)
     if request.method == 'POST':
@@ -330,7 +330,7 @@ def referenceCoach(request):
         else:
             messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
     return render(request, 'registration/Coach.html',
-                  {'preRegistrationform': coach_form, 'clubs': clubs,'taahhut':x})
+                  {'preRegistrationform': coach_form, 'clubs': clubs, 'taahhut': x})
 
 
 def pre_registration(request):
@@ -385,6 +385,7 @@ def pre_registration(request):
     return render(request, 'registration/referenceRegisterClub.html',
                   {'preRegistrationform': preRegistrationform, 'clubs': clubs})
 
+
 def pre_registration_facility(request):
     preRegistrationform = SportFacilityForm()
     if request.method == 'POST':
@@ -408,8 +409,7 @@ def pre_registration_facility(request):
             messages.warning(request, "Alanlari kontrol ediniz")
 
     return render(request, 'TVGFBF/SportFacility/referenceFacility.html',
-                  {'preRegistrationform': preRegistrationform,})
-
+                  {'preRegistrationform': preRegistrationform, })
 
 
 def pre_registration_athelete(request):
@@ -429,5 +429,4 @@ def pre_registration_athelete(request):
             messages.warning(request, "Alanlari kontrol ediniz")
 
     return render(request, 'registration/Athlete.html',
-                  {'preRegistrationform': preRegistrationform,})
                   {'preRegistrationform': preRegistrationform, })
