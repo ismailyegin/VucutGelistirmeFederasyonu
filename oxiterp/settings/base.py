@@ -14,10 +14,6 @@ import os
 
 from django.conf.locale.tr import formats as tr_formats
 
-import sys
-
-sys.setdefaultencoding('UTF8')
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
 
