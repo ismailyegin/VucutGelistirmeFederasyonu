@@ -4,6 +4,7 @@ import datetime
 import traceback
 
 from django.contrib.staticfiles import finders
+from numpy import unicode
 from zeep import Client
 from django.contrib import auth, messages
 from django.contrib.auth import logout
@@ -316,7 +317,8 @@ def referenceCoach(request):
         if coach_form.is_valid():
 
             veri = coach_form.save(commit=False)
-            veri.profileImage.name = coach_form.cleaned_data['profileImage'].name
+
+            veri.profileImage.name = str(coach_form.cleaned_data['profileImage'].name.encode('utf-8'))
             veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
 
             clubDersbis = request.POST.get('club', None)
