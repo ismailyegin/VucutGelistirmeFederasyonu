@@ -28,3 +28,12 @@ class Referee(BaseModel):
 
     def __str__(self):
         return '%s %s' % (self.person.user.first_name, self.person.user.last_name)
+
+    def save(self, *args, **kwargs):
+        self.nufusCuzdani.name = str(self.nufusCuzdani.name.encode('utf-8'))
+        self.diploma.name = str(self.diploma.name.encode('utf-8'))
+        self.sabikaKaydi.name = str(self.sabikaKaydi.name.encode('utf-8'))
+        self.cezaYazisi.name = str(self.cezaYazisi.name.encode('utf-8'))
+        self.saglikBeyanFormu.name = str(self.saglikBeyanFormu.name.encode('utf-8'))
+        self.hakemBilgiFormu.name = str(self.hakemBilgiFormu.name.encode('utf-8'))
+        super(Referee, self).save(*args, **kwargs)
