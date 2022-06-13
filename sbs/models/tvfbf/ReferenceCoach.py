@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-
 from django.db import models
+from django.utils.encoding import smart_str
 
 from sbs.models.tvfbf.Club import Club
 from sbs.models.ekabis.Country import Country
@@ -93,12 +92,13 @@ class ReferenceCoach(BaseModel):
 
     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
     definition = models.TextField(null=True, blank=True, verbose_name='Reddedilme Sebebi')
-    status_date = models.DateField(null=True, blank=True, verbose_name='Onaylanma Tarihi')
+    status_date=models.DateField(null=True, blank=True, verbose_name='Onaylanma Tarihi')
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)
 
     def save(self, *args, **kwargs):
+        self.profileImage.name = smart_str(self.profileImage.name.encode('utf-8'))
         self.kademe_belge.name = str(self.kademe_belge.name.encode('utf-8'))
         self.sgk.name = str(self.sgk.name.encode('utf-8'))
         self.dekont.name = str(self.dekont.name.encode('utf-8'))
