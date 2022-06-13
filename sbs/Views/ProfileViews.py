@@ -32,6 +32,9 @@ def updateProfileCoach(request):
     person = Person.objects.get(pk=coach.person.pk)
     communication = Communication.objects.get(pk=coach.communication.pk)
     user_form = HavaUserForm(request.POST or None, instance=user)
+    user_form.fields['email'].disabled = True
+    user_form.fields['first_name'].disabled = True
+    user_form.fields['last_name'].disabled = True
     person_form = PersonForm(request.POST or None, instance=person)
     communication_form = ProfileCommunicationForm(request.POST or None, instance=communication)
     coach_form = CoachForm(request.POST or None, request.FILES or None, instance=coach)
@@ -161,6 +164,9 @@ def updateProfileReferee(request):
     person = Person.objects.get(pk=referee.person.pk)
     communication = Communication.objects.get(pk=referee.communication.pk)
     user_form = HavaUserForm(request.POST or None, instance=user)
+    user_form.fields['email'].disabled = True
+    user_form.fields['first_name'].disabled = True
+    user_form.fields['last_name'].disabled = True
     person_form = PersonForm(request.POST or None, instance=person)
     communication_form = ProfileCommunicationForm(request.POST or None, instance=communication)
     refere_form = RefereeForm(request.POST or None, request.FILES or None, instance=referee)
@@ -233,6 +239,9 @@ def updateProfileClubUser(request):
     person = Person.objects.get(pk=clubUser.person.pk)
     communication = Communication.objects.get(pk=clubUser.communication.pk)
     user_form = HavaUserForm(request.POST or None, instance=user)
+    user_form.fields['email'].disabled = True
+    user_form.fields['first_name'].disabled = True
+    user_form.fields['last_name'].disabled = True
     person_form = PersonForm(request.POST or None, instance=person)
     communication_form = ProfileCommunicationForm(request.POST or None, instance=communication)
     password_form = SetPasswordForm(request.user, request.POST)
