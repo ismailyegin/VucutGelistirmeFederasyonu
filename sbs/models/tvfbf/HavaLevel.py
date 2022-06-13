@@ -44,8 +44,3 @@ class HavaLevel(BaseModel):
 
     class Meta:
         default_permissions = ()
-
-    def save(self, *args, **kwargs):
-        self.dekont.name = str(self.dekont.name.encode('utf-8'))
-        self.form.name = str(self.form.name.encode('utf-8'))
-        super(HavaLevel, self).save(*args, **kwargs)
