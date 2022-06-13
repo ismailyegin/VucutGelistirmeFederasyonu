@@ -15,7 +15,7 @@ class HavaUserForm(ModelForm):
 
         }
         widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control', 'required': 'required','readonly':'readonly'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control', 'required': 'required','readonly':'readonly'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'required': 'required','readonly':'readonly'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'required': 'required'}),
         }
