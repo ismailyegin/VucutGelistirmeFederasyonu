@@ -127,12 +127,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'tr'
 
-LANG = 'tr.UTF-8'
-
-LC_ALL = 'tr.UTF-8'
-
-LC_CTYPE = 'tr.UTF-8'
-
 TIME_ZONE = 'Europe/Istanbul'
 
 USE_I18N = True
