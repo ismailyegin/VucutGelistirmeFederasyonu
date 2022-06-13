@@ -4,6 +4,7 @@ import datetime
 import traceback
 
 from django.contrib.staticfiles import finders
+from django.utils.encoding import smart_str
 from numpy import unicode
 from zeep import Client
 from django.contrib import auth, messages
@@ -318,7 +319,7 @@ def referenceCoach(request):
 
             veri = coach_form.save(commit=False)
 
-            veri.profileImage.name = str(coach_form.cleaned_data['profileImage'].name.encode('utf-8'))
+            veri.profileImage.name = smart_str(coach_form.cleaned_data['profileImage'].name.encode('utf-8'))
             veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
 
             clubDersbis = request.POST.get('club', None)
