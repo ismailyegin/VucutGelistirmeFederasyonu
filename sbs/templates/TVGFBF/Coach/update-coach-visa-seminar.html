@@ -544,7 +544,7 @@
                     if (result.dismiss !== 'Evet') {
 
                         $.ajax({
-                             url: "{% url "sbs:delete-coach-visa-seminar" %}".replace(),
+                             url: "{% url "sbs:coachDeleteVisaSeminar" %}".replace(),
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",

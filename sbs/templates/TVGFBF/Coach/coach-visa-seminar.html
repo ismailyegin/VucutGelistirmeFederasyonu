@@ -413,7 +413,7 @@
             }).then((result) => {
                 if (result.dismiss !== 'Evet') {
                     $.ajax({
-                        url: "{% url "sbs:coachDeleteVisaSeminar" %}",
+                        url: "{% url "sbs:delete-coach-visa-seminar" %}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",

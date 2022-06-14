@@ -1219,9 +1219,11 @@ def deleteCoachVisaSeminar(request):
         with transaction.atomic():
             if request.method == 'POST' and request.is_ajax():
 
-                competition_uuid = request.POST['uuid']
+                coach_uuid = request.POST['coach_uuid']
+                competition_uuid = request.POST['competition_uuid']
                 visa = VisaSeminar.objects.get(uuid=competition_uuid)
-                visa.delete()
+                visa.coach.remove(Coach.objects.get(uuid=coach_uuid))
+                visa.save()
                 return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
             else:
                 return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

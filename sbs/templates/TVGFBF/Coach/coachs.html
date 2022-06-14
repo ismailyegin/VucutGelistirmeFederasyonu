@@ -150,7 +150,8 @@
                         <h3 class="card-title">Antrenör Filtrele</h3>
                     </div>
 
-                    <form method="POST" role="form" enctype="multipart/form-data" action="{% url 'sbs:return_coach_search' %}">
+                    <form method="POST" role="form" enctype="multipart/form-data"
+                          action="{% url 'sbs:return_coach_search' %}">
 
                         {% csrf_token %}
 
@@ -373,6 +374,18 @@
 
             });
             table.on('draw.dt', function () {
+                $('#city').on('change', function () {
+                    var select = document.getElementById('city');
+                    var value = select.options[select.selectedIndex].value;
+                    table.columns(4).search(value).draw();
+                });
+
+                $('#branch').on('change', function () {
+                    var select = document.getElementById('branch');
+                    var value = select.options[select.selectedIndex].value;
+                    table.columns(5).search(value).draw();
+                });
+
                 var info = table.page.info();
                 table.column(0, {
                     search: 'applied',
