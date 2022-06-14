@@ -301,16 +301,14 @@
                                             </div>
                                             <div class="card-body">
                                                 <div class="row">
-
-                                                    {% for item in visa_form %}
-                                                        <div class="form-group col-lg-6">
-                                                            <label> {{ item.label }}</label>
-                                                            {{ item }}
-                                                            <label for=""
-                                                                   id="label_{{ item.name }}"></label>
-                                                        </div>
-                                                    {% endfor %}
-
+                                                    <div class="form-group col-lg-6">
+                                                        <label> {{ visa_form.branch.label }}</label>
+                                                        {{ visa_form.branch }}
+                                                    </div>
+                                                    <div class="form-group col-lg-6">
+                                                        <label> {{ visa_form.dekont.label }}</label>
+                                                        {{ visa_form.dekont }}
+                                                    </div>
                                                 </div>
 
                                                 <!-- /.card-body -->
