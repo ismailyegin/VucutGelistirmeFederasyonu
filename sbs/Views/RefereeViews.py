@@ -244,6 +244,7 @@ def update_referee(request, uuid):
     communication = Communication.objects.get(pk=referee.communication.pk)
     user_form = HavaUserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
+    person_form.fields['profileImage'].required=True
     communication_form = CommunicationForm(request.POST or None, instance=communication)
 
     grade_form = referee.grades.filter(isDeleted=0)

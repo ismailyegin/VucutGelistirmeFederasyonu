@@ -212,7 +212,32 @@
     </div>
 </section>
 {% load static %}
+<style>
+    #loading {
+        position: fixed;
+        display: block;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        text-align: center;
+        opacity: 0.7;
+        background-color: #fff;
+        z-index: 100;
+    }
+
+    #loading-image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 100;
+    }
+</style>
 <section class="content">
+    <div id="loading" style="display: none">
+
+        <img id="loading-image" src="{% static 'loader/ring.gif' %}" alt="Loading..."/>
+    </div>
     <section class="col-lg-12">
         <div class="row">
             <div class="col-lg-12">
@@ -454,13 +479,15 @@
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <small><i class="fa fa-link"></i> Sözleşmeniz yoksa sözleşme formunu <a
-                                                    href="\static\images\taahhut.pdf" download="">buradan</a>
+                                            <small id="sozlesme"><i class="fa fa-link"></i> Sözleşmeniz yoksa sözleşme
+                                                formunu <a
+                                                        href="\static\images\taahhut.pdf" download="">buradan</a>
                                                 indirerek gönderebilirsiniz.</small>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <input type="hidden" name="grade_count" id="grade_count">
                             <div class="card-footer">
                                 <button class="btn btn-outline-info" type="submit" style="float: right">Onaya
                                     gönder
@@ -539,174 +566,204 @@
         function GetCurrentCoach() {
             let tc = document.getElementById('tc').value;
             if (tc) {
+                $('#loading').show();
                 document.getElementById('getApi').style.display = 'block';
                 $.ajax({
-                    url: "{% url "sbs:coach_grade_api" %}",
+                    url: "{% url "sbs:transmissionGetCoachTc" %}",
                     type: "POST",
                     data: {
                         'csrfmiddlewaretoken': "{{  csrf_token  }}",
                         tc: tc,
                     },
                     success: function (result) {
-                        debugger;
-                        var info = result['result']
-                        if (info.length !== 0) {
-                            for (let i = 0; i < info.length; i++) {
 
-                                document.getElementById('id_tc').value = info[i].tc;
-                                document.getElementById('id_tc').setAttribute("disabled", "disabled");
-                                document.getElementById('grades').style.display = 'block';
-                                document.getElementById('communicationSubmit').style.display = 'none';
+                        if (result.status === 'Success') {
+                            var info = result['result']
+                            if (info.length !== 0) {
+                                document.getElementById('grade_count').value = info.length - 1;
+                                var date =new Date(info[0].BelgeDuzenlenmeTarihi) ;
+                                var x = ''
 
+                                for (let i = 0; i < info.length; i++) {
+                                    debugger;
+                                    if (date <= new Date(info[i].BelgeDuzenlenmeTarihi)) {
+                                        date = new Date(info[i].BelgeDuzenlenmeTarihi)
+                                        x = i
+                                    }
+                                    document.getElementById('id_tc').value = info[i].Tc;
+                                    document.getElementById('id_tc').setAttribute("readonly", "readonly");
+                                    document.getElementById('grades').style.display = 'block';
+                                    document.getElementById('communicationSubmit').style.display = 'none';
+
+                                    var row = document.getElementById('gradeRow');
+
+                                    var col1 = document.createElement("div");
+                                    col1.classList = "col-lg-4";
+                                    var formGrop1 = document.createElement("div");
+                                    formGrop1.classList = "form-group";
+                                    var label1 = document.createElement("label");
+                                    label1.innerHTML = "Kademe: ";
+
+                                    formGrop1.appendChild(label1);
+                                    var text = document.createElement("input");
+                                    text.classList = "form-control";
+                                    text.setAttribute("type", "text");
+                                    text.setAttribute("name", "kademeDerece" + i.toString());
+                                    text.setAttribute("id", "kademeDerece" + i.toString());
+                                    text.setAttribute("readonly", "readonly");
+
+                                    text.value = info[i].Kademe;
+                                    formGrop1.appendChild(text)
+                                    col1.appendChild(formGrop1);
+                                    row.appendChild(col1);
+
+                                    var col2 = document.createElement("div");
+                                    col2.classList = "col-lg-4";
+                                    var formGrop2 = document.createElement("div");
+                                    formGrop2.classList = "form-group";
+                                    var label2 = document.createElement("label");
+                                    label2.innerHTML = "Branş: ";
+                                    formGrop2.appendChild(label2);
+                                    var text2 = document.createElement("input");
+                                    text2.classList = "form-control";
+                                    text2.setAttribute("type", "text");
+                                    text2.setAttribute("name", "bransBilgi" + i.toString());
+                                    text2.setAttribute("id", "bransBilgi" + i.toString());
+                                    text2.setAttribute("readonly", "readonly");
+                                    text2.value = info[i].Brans;
+                                    formGrop2.appendChild(text2)
+                                    col2.appendChild(formGrop2);
+                                    row.appendChild(col2);
+
+
+                                    var col6 = document.createElement("div");
+                                    col6.classList = "col-lg-4";
+                                    var formGrop6 = document.createElement("div");
+                                    formGrop6.classList = "form-group";
+                                    var label6 = document.createElement("label");
+                                    label6.innerHTML = "Vize Durumu: ";
+                                    formGrop6.appendChild(label6);
+                                    var input6 = document.createElement("input");
+                                    input6.classList = "form-control";
+                                    input6.setAttribute("type", "text");
+                                    input6.setAttribute("name", "vize" + i.toString());
+                                    input6.setAttribute("id", "vize" + i.toString());
+                                    input6.setAttribute("readonly", "readonly");
+                                    if (info[i].VizeliMi) {
+                                        input6.value = 'Aktif';
+
+                                    } else {
+                                        input6.value = 'Pasif';
+                                    }
+
+                                    formGrop6.appendChild(input6);
+                                    col6.appendChild(formGrop6);
+                                    row.appendChild(col6);
+
+                                    var col7 = document.createElement("div");
+                                    col7.classList = "col-lg-4";
+                                    var formGrop7 = document.createElement("div");
+                                    formGrop7.classList = "form-group";
+                                    var label7 = document.createElement("label");
+                                    label7.innerHTML = "Vize Durumu: ";
+                                    formGrop7.appendChild(label7);
+                                    var input7 = document.createElement("input");
+                                    input7.classList = "form-control";
+                                    input7.setAttribute("type", "text");
+                                    input7.setAttribute("name", "duzenlenmeTarihi" + i.toString());
+                                    input7.setAttribute("id", "duzenlenmeTarihi" + i.toString());
+                                    input7.value =  info[i].BelgeDuzenlenmeTarihi.split('T')[0];
+                                    formGrop7.appendChild(input7);
+                                    col7.appendChild(formGrop7);
+                                    col7.style.display = 'none'
+                                    row.appendChild(col7);
+
+                                }
+                                debugger;
+                                if (x !== '') {
+                                    var col3 = document.createElement("div");
+                                    col3.classList = "col-lg-4";
+                                    var formGrop3 = document.createElement("div");
+                                    formGrop3.classList = "form-group";
+
+                                    var input1 = document.createElement("input");
+                                    input1.classList = "form-control";
+                                    input1.setAttribute("type", "file");
+                                    input1.setAttribute("name", "kademeBelge" + x.toString());
+                                    input1.setAttribute("id", "kademeBelge" + x.toString());
+                                    var label3 = document.createElement("label");
+                                    label3.innerHTML = "Sözleşme Belgesi: ";
+                                    formGrop3.appendChild(label3);
+                                    input1.setAttribute("required", "required");
+                                    formGrop3.appendChild(input1);
+                                    col3.appendChild(formGrop3);
+                                    row.appendChild(col3);
+
+                                    var col4 = document.createElement("div");
+                                    col4.classList = "col-lg-4";
+                                    var formGrop4 = document.createElement("div");
+                                    formGrop4.classList = "form-group";
+
+                                    var input2 = document.createElement("input");
+                                    input2.classList = "form-control";
+                                    input2.setAttribute("type", "file");
+                                    input2.setAttribute("name", "sgkBelge" + x.toString());
+                                    input2.setAttribute("id", "sgkBelge" + x.toString());
+                                    var label4 = document.createElement("label");
+                                    label4.innerHTML = "SGK Belgesi: ";
+                                    formGrop4.appendChild(label4);
+                                    input2.setAttribute("required", "required");
+                                    formGrop4.appendChild(input2);
+                                    col4.appendChild(formGrop4);
+                                    row.appendChild(col4);
+
+
+                                    var col5 = document.createElement("div");
+                                    col5.classList = "col-lg-4";
+                                    var input3 = document.createElement("input");
+                                    input3.classList = "form-control";
+                                    input3.setAttribute("type", "file");
+                                    input3.setAttribute("name", "dekont" + x.toString());
+                                    input3.setAttribute("id", "dekont" + x.toString());
+                                    var formGrop5 = document.createElement("div");
+                                    formGrop5.classList = "form-group";
+                                    var label5 = document.createElement("label");
+                                    label5.innerHTML = "Dekont: ";
+                                    formGrop5.appendChild(label5);
+                                    input3.setAttribute("required", "required");
+                                    formGrop5.appendChild(input3);
+                                    col5.appendChild(formGrop5);
+                                    row.appendChild(col5);
+
+                                }
+                                $('#loading').hide();
+
+
+                            } else {
+                                document.getElementById('grades').style.display = "none";
+                                document.getElementById('communicationSubmit').style.display = 'block';
+                                document.getElementById('id_tc').removeAttribute("disabled");
+                                document.getElementById('id_tc').value = "";
                                 let row = document.getElementById('gradeRow');
 
-                                var col1 = document.createElement("div");
-                                col1.classList = "col-lg-6";
-                                var formGrop1 = document.createElement("div");
-                                formGrop1.classList = "form-group";
-                                var label1 = document.createElement("label");
-                                label1.innerHTML = "Kademe: ";
-                                formGrop1.appendChild(label1);
-                                var text = document.createElement("input");
-                                text.classList = "form-control";
-                                text.setAttribute("type", "text");
-                                text.setAttribute("name", "kademeDerece" + i.toString());
-                                text.setAttribute("id", "kademeDerece" + i.toString());
-                                text.setAttribute("disabled", "disabled");
-                                text.value = info[i].kademe;
-                                formGrop1.appendChild(text)
-                                col1.appendChild(formGrop1);
-                                row.appendChild(col1);
-
-                                var col2 = document.createElement("div");
-                                col2.classList = "col-lg-6";
-                                var formGrop2 = document.createElement("div");
-                                formGrop2.classList = "form-group";
-                                var label2 = document.createElement("label");
-                                label2.innerHTML = "Branş: ";
-                                formGrop2.appendChild(label2);
-                                var text2 = document.createElement("input");
-                                text2.classList = "form-control";
-                                text2.setAttribute("type", "text");
-                                text2.setAttribute("name", "bransBilgi" + i.toString());
-                                text2.setAttribute("id", "bransBilgi" + i.toString());
-                                text2.setAttribute("disabled", "disabled");
-                                text2.value = info[i].brans;
-                                formGrop2.appendChild(text2)
-                                col2.appendChild(formGrop2);
-                                row.appendChild(col2);
-
-                                var col3 = document.createElement("div");
-                                col3.classList = "col-lg-4";
-                                var formGrop3 = document.createElement("div");
-                                formGrop3.classList = "form-group";
-                                var label3 = document.createElement("label");
-                                label3.innerHTML = "Sözleşme Belgesi: ";
-                                formGrop3.appendChild(label3);
-                                var input1 = document.createElement("input");
-                                input1.classList = "form-control";
-                                input1.setAttribute("type", "file");
-                                input1.setAttribute("name", "kademeBelge" + i.toString());
-                                input1.setAttribute("id", "kademeBelge" + i.toString());
-                                if (info[i].vizeliMi === true) {
-                                    input1.setAttribute("required", "required");
+                                while (row.firstChild) {
+                                    row.removeChild(row.lastChild);
                                 }
-                                formGrop3.appendChild(input1);
-                                col3.appendChild(formGrop3);
-                                row.appendChild(col3);
 
-                                var col4 = document.createElement("div");
-                                col4.classList = "col-lg-4";
-                                var formGrop4 = document.createElement("div");
-                                formGrop4.classList = "form-group";
-                                var label4 = document.createElement("label");
-                                label4.innerHTML = "SGK Belgesi: ";
-                                formGrop4.appendChild(label4);
-                                var input2 = document.createElement("input");
-                                input2.classList = "form-control";
-                                input2.setAttribute("type", "file");
-                                input2.setAttribute("name", "sgkBelge" + i.toString());
-                                input2.setAttribute("id", "sgkBelge" + i.toString());
-                                if (info[i].vizeliMi === true) {
-                                    input2.setAttribute("required", "required");
-                                }
-                                formGrop4.appendChild(input2);
-                                col4.appendChild(formGrop4);
-                                row.appendChild(col4);
+                                swal({
+                                    icon: 'error',
+                                    title: 'Sistemde Kademe Kaydınız Bulunmamaktadır !',
 
-                                var col5 = document.createElement("div");
-                                col5.classList = "col-lg-4";
-                                var formGrop5 = document.createElement("div");
-                                formGrop5.classList = "form-group";
-                                var label5 = document.createElement("label");
-                                label5.innerHTML = "Dekont: ";
-                                formGrop5.appendChild(label5);
-                                var input3 = document.createElement("input");
-                                input3.classList = "form-control";
-                                input3.setAttribute("type", "file");
-                                input3.setAttribute("name", "dekont" + i.toString());
-                                input3.setAttribute("id", "dekont" + i.toString());
-                                if (info[i].vizeliMi === true) {
-                                    input3.setAttribute("required", "required");
-                                }
-                                formGrop5.appendChild(input3);
-                                col5.appendChild(formGrop5);
-                                row.appendChild(col5);
-
-                                var col6 = document.createElement("div");
-                                col6.classList = "col-lg-4";
-                                var formGrop6 = document.createElement("div");
-                                formGrop6.classList = "form-group";
-                                var label6 = document.createElement("label");
-                                label6.innerHTML = "Vize Durumu: ";
-                                formGrop6.appendChild(label6);
-                                var input6 = document.createElement("input");
-                                input6.classList = "form-control";
-                                input6.setAttribute("type", "text");
-                                input6.setAttribute("name", "vize" + i.toString());
-                                input6.setAttribute("id", "vize" + i.toString());
-                                input6.value = info[i].vizeliMi;
-                                formGrop6.appendChild(input6);
-                                col6.appendChild(formGrop6);
-                                col6.style.display = "none";
-                                row.appendChild(col6);
-
-                                var col7 = document.createElement("div");
-                                col7.classList = "col-lg-4";
-                                var formGrop7 = document.createElement("div");
-                                formGrop7.classList = "form-group";
-                                var label7 = document.createElement("label");
-                                label7.innerHTML = "Vize Durumu: ";
-                                formGrop7.appendChild(label7);
-                                var input7 = document.createElement("input");
-                                input7.classList = "form-control";
-                                input7.setAttribute("type", "text");
-                                input7.setAttribute("name", "duzenlenmeTarihi" + i.toString());
-                                input7.setAttribute("id", "duzenlenmeTarihi" + i.toString());
-                                input7.value = info[i].belgeDuzenlenmeTarihi;
-                                formGrop7.appendChild(input7);
-                                col7.appendChild(formGrop7);
-                                col7.style.display = "none";
-                                row.appendChild(col7);
-
+                                })
                             }
-
                         } else {
-                            document.getElementById('grades').style.display = "none";
-                            document.getElementById('communicationSubmit').style.display = 'block';
-                            document.getElementById('id_tc').removeAttribute("disabled");
-                            document.getElementById('id_tc').value = "";
-                            let row = document.getElementById('gradeRow');
-
-                            while (row.firstChild) {
-                                row.removeChild(row.lastChild);
-                            }
-
+                            $('#loading').hide();
                             swal({
                                 icon: 'error',
-                                title: 'Sistemde Kademe Kaydınız Bulunmamaktadır !',
+                                title: result.msg,
 
                             })
+
                         }
                     }
                 });

@@ -1,12 +1,15 @@
+import json
 import time
 import traceback
 
+import requests
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -274,3 +277,46 @@ def SetPasswordAllUsers(request):
         messages.warning(request, e)
         traceback.print_exc()
         return redirect('sbs:view_admin')
+
+
+def transmissionCoachTc(request):
+    try:
+        with transaction.atomic():
+            if request.method == 'POST':
+                tc = str(request.POST['tc'])
+                result = TransmissionCoachDetail(request, tc)
+                if result:
+                    return JsonResponse({'status': 'Success',
+                                         'result': result,
+                                         })
+                else:
+                    return JsonResponse({'status': 'Fail', 'msg': 'Bu Tc kimlik  numarasına ait bir sporcu bulunamadı.',
+                                         'result': result,
+                                         })
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('accounts:pre_registration_athelete')
+
+
+def TransmissionCoachDetail(request, tc):
+    try:
+        with transaction.atomic():
+            id = tc
+            url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/FederasyonaGoreAntrenorBelgeDetayGetir?tc='+id+''
+
+            payload = {}
+            files = {}
+            headers = {
+                'Authorization': 'Basic dnVjdXRnZWxpc3Rpcm1lYWt0YXJpbTphMzE5YzczNC03ZjhlLTQ4NzQtYmExYy00YzU4MmU2NjExYTg='
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload, files=files)
+            y = json.loads(response.text)
+            result = []
+            if y['Data']:
+              return  y['Data']
+
+
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:return_clubs')

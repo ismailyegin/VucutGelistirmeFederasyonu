@@ -246,7 +246,7 @@
 
                 <div class="card card-info card-outline">
                     <div class="card-header with-border">
-                        <h3 class="card-title">Sporcu Bilgilerini</h3>
+                        <h3 class="card-title">Sporcu Bilgileri</h3>
 
 
                     </div>
@@ -462,7 +462,7 @@
 
         function GetAthlete(id) {
 
-            debugger;
+
             if (id) {
                 $('#loading').show();
                 $.ajax({
@@ -475,7 +475,7 @@
                     success: function (result) {
                         if (result.status === 'Success') {
                             document.getElementById('show_athlete_info').style.display = 'block'
-                            debugger;
+
                             let info = result['result']
                             if (info.KisiAdi) {
                                 $("#id_first_name").attr('required', '');
@@ -490,6 +490,7 @@
                             document.getElementById('id_motherName').value = info.AnneAdi
                             document.getElementById('id_fatherName').value = info.BabaAdi
                             var html = ''
+                            debugger;
                             if (info.SporcuLisanslari.length > 0) {
 
                                 for (var i = 0; i < info.SporcuLisanslari.length; i++) {

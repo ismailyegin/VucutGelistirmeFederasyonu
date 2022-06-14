@@ -332,6 +332,10 @@ urlpatterns = [
     path('profil/kulup-yetkilisi-bilgilerim', ProfileViews.updateProfileClubUser, name='updateProfileClubUser'),
     path('kullanici/sifre-belirle', UserViews.coachUserCreatePassword, name='coachUserCreatePassword'),
 
+    #API
     path('sporcu/sporcu-getir-api/', AthleteTransmissionViews.transmissionAthleteTc, name='transmissionGetAthleteTc'),
     path('sporcu/sporcu-detay-api/', AthleteTransmissionViews.TransmissionAthleteDetail, name='transmissionGetAthleteDetail'),
+    path('sporcu/antrenor-getir-api/', APIViews.transmissionCoachTc, name='transmissionGetCoachTc'),
+    path('sporcu/antrenor-detay-api/', APIViews.TransmissionCoachDetail,
+         name='transmissionGetCoachDetail'),
 ]

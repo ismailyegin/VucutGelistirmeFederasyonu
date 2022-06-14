@@ -2,6 +2,7 @@
 import unidecode
 from django.db import models
 
+from sbs.models import Branch
 from sbs.models.tvfbf.Club import Club
 from sbs.models.ekabis.Country import Country
 from sbs.models.ekabis.CategoryItem import CategoryItem
@@ -90,6 +91,7 @@ class ReferenceCoach(BaseModel):
     sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')
     dekont = models.FileField(null=True, blank=True, verbose_name='Dekont')
     belge = models.FileField(null=True, blank=True, verbose_name='Belge')
+    kademe_brans=models.ForeignKey(Branch,on_delete=models.CASCADE,null=True,blank=True)
 
     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
     definition = models.TextField(null=True, blank=True, verbose_name='Reddedilme Sebebi')

@@ -17,5 +17,6 @@ urlpatterns = [
     path('pre-registration/', views.pre_registration, name='pre-registration'),
     path('on-kayit/spor-salonu/', views.pre_registration_facility, name='pre_registration_facility'),
     path('on-kayit/sporcu/', views.pre_registration_athelete, name='pre_registration_athelete'),
+    path('on-kayit/antrenor/', views.pre_registration_coach_api, name='pre_registration_coach_api'),
 
 ]

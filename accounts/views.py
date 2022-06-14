@@ -13,13 +13,14 @@ from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from accounts.models import Forgot
 from sbs.Forms.SportFacilityForm import SportFacilityForm
+from sbs.Forms.havaspor.ReferenCoachApiForm import RefereeCoachApiForm
 from sbs.Forms.havaspor.ReferenceAthleteForm import ReferenceAthleteForm
 from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
 from sbs.Forms.havaspor.PreRefereeForm import PreRefereeForm
 from sbs.Forms.havaspor.PreRegidtrationForm import PreRegistrationForm
 from sbs.Forms.havaspor.RefereeForm import RefereeForm
 from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
-from sbs.models import SportFacility, ReferenceSportFacility, ReferenceAthlete
+from sbs.models import SportFacility, ReferenceSportFacility, ReferenceAthlete, Branch
 from sbs.models.tvfbf.Club import Club
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Permission import Permission
@@ -433,3 +434,51 @@ def pre_registration_athelete(request):
 
     return render(request, 'registration/Athlete.html',
                   {'preRegistrationform': preRegistrationform, })
+
+
+def pre_registration_coach_api(request):
+    preRegistrationform = RefereeCoachApiForm()
+    clubs = Club.objects.all()
+    if request.method == 'POST':
+        preRegistrationform = RefereeCoachApiForm(request.POST or None, request.FILES or None)
+
+        if preRegistrationform.is_valid():
+            veri = preRegistrationform.save(commit=False)
+
+            clubDersbis = request.POST.get('club', None)
+            if clubDersbis:
+                coachClub = Club.objects.get(derbis=clubDersbis)
+                veri.club = coachClub
+
+            grade_count = request.POST['grade_count']
+            kademe_derece = request.POST['kademeDerece' + grade_count]
+            kademe_brans = request.POST['bransBilgi' + grade_count]
+            kademe_durum = request.POST['vize' + grade_count]
+            kademe_tarih = request.POST['duzenlenmeTarihi' + grade_count]
+            dekont=request.FILES['dekont' + grade_count]
+            sgkBelge=request.FILES['sgkBelge' + grade_count]
+            kademeBelge=request.FILES['kademeBelge' + grade_count]
+
+            veri.kademe_definition = CategoryItem.objects.get(name=kademe_derece)
+            veri.kademe_branch = Branch.objects.get(title=kademe_brans)
+            veri.kademe_startDate = datetime.datetime.strptime(kademe_tarih, '%Y-%m-%d')
+
+            veri.sgk = sgkBelge
+            veri.dekont = dekont
+            veri.kademe_belge = kademeBelge
+
+
+
+            veri.save()
+            messages.success(request,
+                             "Başarili bir şekilde kayıt başvurunuz alındı.")
+            return redirect('accounts:login')
+
+
+        else:
+            messages.warning(request, "Alanlari kontrol ediniz")
+            return redirect('accounts:pre_registration_coach_api')
+
+
+    return render(request, 'registration/coachFromApi.html',
+                  {'preRegistrationform': preRegistrationform, 'clubs': clubs})
