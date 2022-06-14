@@ -33,20 +33,14 @@ def return_users(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    user_form = UserSearchForm()
     try:
-        # urls = last_urls(request)
+        urls = last_urls(request)
         current_url = resolve(request.path_info)
         url_name = Permission.objects.get(codename=current_url.url_name)
-
-        filter = {
-                'is_superuser':False
-        }
-        users = UserService(request, filter)
+        groups = Group.objects.all()
 
         return render(request, 'kullanici/kullanicilar.html',
-                      {'users': users, 'user_form': user_form, 'current_url': current_url,
-                           'url_name': url_name})
+                      {'urls': urls, 'current_url': current_url, 'url_name': url_name, 'groups': groups, })
     except Exception as e:
         traceback.print_exc()
         messages.warning(request, 'Lütfen Tekrar Deneyiniz.')

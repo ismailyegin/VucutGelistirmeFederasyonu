@@ -106,7 +106,6 @@ urlpatterns = [
          name='update_club'),
     path('kulup/kulup-ekle-api/', TransmissionViews.transmissionOffsetLimit, name='kulup-ekle-api'),
     path('kulup/kulup-getir-api/', TransmissionViews.GetCurrentClubDetail, name='kulup-getir-api'),
-
     path('kulup/kulup-sil/', ClubViews.club_delete, name='club-delete'),
     path('kulup/kulup-uye-sil/', ClubViews.deleteClubUserFromClub, name='deleteClubUserFromClub'),
     path('kulup/kulup-antrenor-sil/', ClubViews.deleteCoachFromClub, name='deleteCoachFromClub'),
@@ -153,6 +152,7 @@ urlpatterns = [
     path('kullanici/kullanicilar/aktifet<int:pk>/', UserViews.active_user, name='view_status'),
     path('kullanici/kullanici-mail-gonder/<int:pk>/', UserViews.send_information, name='view_email'),
     path('kullanici/kullanici-group-guncelle/<int:pk>/', UserViews.change_group_function, name='change_user_group'),
+    path('kullanici/api-kullanici-listesi/', APIViews.GetUser.as_view(), name='view_user_api'),
 
     # profil güncelle
     # path('admin/admin-profil-guncelle/', AdminViews.updateProfile,

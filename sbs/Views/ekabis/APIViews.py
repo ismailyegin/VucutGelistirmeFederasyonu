@@ -19,8 +19,9 @@ from sbs.serializers.LogSerializers import LogResponseSerializer
 from sbs.serializers.PermissionSerializers import PermissionResponseSerializer
 from sbs.serializers.RefereeSerializers import RefereeResponseSerializer
 from sbs.serializers.SportFacilitySerializers import SportFacilityResponseSerializer
+from sbs.serializers.UserSerializers import UserResponseSerializer
 from sbs.services import general_methods
-from sbs.services.services import LogsService
+from sbs.services.services import LogsService, UserService
 
 
 class GetLog(APIView):
@@ -46,6 +47,62 @@ class GetLog(APIView):
             'request': request,
 
         }
+class GetUser(APIView):
+
+    def post(self, request, format=None):
+        draw = request.data['draw']
+        start = request.data['start']
+        length = request.data['length']
+        end = int(start) + int(length)
+
+        globalSearch = request.data['search[value]']
+        first_name = request.data['columns[1][search][value]']
+        last_name = request.data['columns[2][search][value]']
+        email = request.data['columns[3][search][value]']
+        group = request.data['columns[4][search][value]']
+        is_active = bool(request.data['columns[5][search][value]'])
+
+        filter = {
+
+            'is_superuser': False,
+        }
+        users = UserService(request, filter).exclude(email='')
+        count = users.count()
+
+        if not (first_name or last_name or email or group or is_active or globalSearch):
+            all_objects = users.order_by('first_name')[int(start):end]
+            filteredTotal = users.count()
+        else:
+            query = Q()
+            if globalSearch:
+                query &= Q(first_name__icontains=globalSearch) | Q(
+                    last_name__icontains=globalSearch) | Q(
+                    email__icontains=globalSearch) | Q(
+                    groups__name__icontains=globalSearch)
+            if first_name:
+                query &= Q(first_name__icontains=first_name)
+            if last_name:
+                query &= Q(last_name__icontains=last_name)
+            if email:
+                query &= Q(email__icontains=email)
+            if group:
+                query &= Q(groups__pk=group)
+
+            all_objects = users.filter(query).order_by('first_name')[int(start):end]
+            filteredTotal = users.filter(query).count()
+
+        logApiObject = LogAPIObject()
+        logApiObject.data = all_objects
+        logApiObject.draw = int(request.POST['draw'])
+        logApiObject.recordsTotal = int(count)
+        logApiObject.recordsFiltered = int(filteredTotal)
+
+        serializer_context = {
+            'request': request,
+
+        }
+        serializer = UserResponseSerializer(logApiObject, context=serializer_context)
+        return Response(serializer.data)
 
 
 class GetPermission(APIView):
