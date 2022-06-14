@@ -145,73 +145,6 @@
             <section class="col-lg-12 ">
 
 
-                <div class="card card-info card-outline">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Antrenör Filtrele</h3>
-                    </div>
-
-                    <form method="POST" role="form" enctype="multipart/form-data"
-                          action="{% url 'sbs:return_coach_search' %}">
-
-                        {% csrf_token %}
-
-
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.first_name.label }}</label>
-                                        {{ user_form.first_name }}
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.last_name.label }}</label>
-                                        {{ user_form.last_name }}
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.email.label }}</label>
-                                        {{ user_form.email }}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.branch.label }}</label>
-                                        {{ user_form.branch }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="card-footer">
-                            <button class="btn btn-outline-info" type="submit" style="float:right"><i
-                                    class="fa fa-search"></i> Ara
-                            </button>
-
-
-                        </div>
-
-
-                    </form>
-
-
-                    <!-- /.box -->
-
-
-                </div>
-            </section>
-        </div>
-
-
-        <div class="row">
-            <section class="col-lg-12 ">
-
-
                 <div class="card card-outline card-info">
                     <div class="card-header with-border">
                         <h3 class="card-title">Antrenör Listesi</h3>
@@ -234,17 +167,45 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th> Ad Soyad</th>
-                                <th>E-Mail</th>
-
-                                {#                                <th>Kulüp</th>#}
-                                {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
+                                <th>Ad</th>
+                                <th>Soyad</th>
+                                <th>Email</th>
+                                <th>İl</th>
+                                <th>Branş</th>
+                                {% if aktif == 'Admin' %}
                                     <th>Düzenle/Sil</th>
                                 {% endif %}
                             </tr>
+                            <tr class="filters" role="row">
+                                <th></th>
+                                <th><input class="form-control" type="text" placeholder="Ad"
+                                           title="test"></th>
+                                <th><input class="form-control" type="text" placeholder="Soyad"
+                                           title="test"></th>
+                                <th><input class="form-control" type="text" placeholder="Email"
+                                           title="tes"></th>
+                                <th><select style="width: 100%" id="city" name="city"
+                                            class="form-control select2 select2-hidden-accessible"
+                                            tabindex="-1" aria-hidden="true">
+                                    <option value="">İl Seçiniz</option>
+                                    {% for city in cities %}
+                                        <option value="{{ city.pk }}">{{ city.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                </th>
+                                <th><select style="width: 100%" id="branch" name="branch"
+                                            class="form-control select2 select2-hidden-accessible"
+                                            tabindex="-1" aria-hidden="true">
+                                    <option value="">Branş Seçiniz</option>
+                                    {% for branch in branches %}
+                                        <option value="{{ branch.pk }}">{{ branch.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                </th>
+                                <th></th>
+                            </tr>
                             </thead>
                             <tbody>
-
                             </tbody>
                         </table>
                     </div>
@@ -259,6 +220,51 @@
     <script>
         $(function () {
             table = $('#antrenorler').DataTable({
+
+                orderCellsTop: true,
+                fixedHeader: false,
+                initComplete: function () {
+                    var api = this.api();
+
+                    // For each column
+                    api
+                        .columns()
+                        .eq(0)
+                        .each(function (colIdx) {
+                            // Set the header cell to contain the input element
+                            var cell = $('.filters th').eq(
+                                $(api.column(colIdx).header()).index()
+                            );
+
+
+                            // On every keypress in this input
+                            $(
+                                'input',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                                .off('keyup change')
+                                .on('keyup change', function (e) {
+                                    e.stopPropagation();
+
+                                    // Get the search value
+                                    $(this).attr('title', $(this).val());
+                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                    var cursorPosition = this.selectionStart;
+                                    // Search the column for that value
+                                    api
+                                        .column(colIdx)
+                                        .search(
+                                            this.value
+                                        )
+                                        .draw();
+
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                });
+                        });
+                },
 
                 "processing": true,
                 "serverSide": true,
@@ -328,19 +334,66 @@
                     {
                         "data": null,
                         render: function (full) {
-
-                            return full.person.user.first_name + ' ' + full.person.user.last_name;
+                            if (full.person) {
+                                return full.person.user.first_name;
+                            } else {
+                                return '';
+                            }
                         }
                     },
                     {
                         "data": null,
                         render: function (full) {
-
-                            return full.person.user.email;
+                            if (full.person) {
+                                return full.person.user.last_name;
+                            } else {
+                                return '';
+                            }
                         }
                     },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.person) {
+                                return full.person.user.email;
+                            } else {
+                                return ''
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.communication) {
+                                if (full.communication.city) {
+                                    return full.communication.city.name;
+                                } else {
+                                    return ''
+                                }
+                            } else {
+                                return ''
+                            }
 
 
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.branch.length > 0) {
+                                var grades = full.branch
+                                let html1 = ''
+                                for (let i = 0; i < grades.length; i++) {
+                                    if (grades[i]) {
+                                        html1 += '<span class="badge badge-info">' + grades[i].title + '</span>' + ' '
+                                    }
+                                }
+                                return html1;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
                     {
                         "data": null,
                         render: function (full) {

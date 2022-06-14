@@ -1050,6 +1050,34 @@ def addRefereeVisaSeminar(request, uuid):
 
 
 @login_required
+def addRefereeVisaSeminarApi(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    try:
+        with transaction.atomic():
+
+            if request.method == 'POST' and request.is_ajax():
+                list = request.POST.getlist('referee_list[]')
+                visa = VisaSeminar.objects.get(uuid=request.POST['uuid'])
+                for item in list:
+                    if not visa.referee.filter(person__user_id__in=item):
+                        visa.referee.add(item)
+                        visa.save()
+
+                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+
+@login_required
 def deleteRefereeVisaSeminar(request):
     perm = general_methods.control_access(request)
 
