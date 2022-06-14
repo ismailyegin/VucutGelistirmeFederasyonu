@@ -31,6 +31,7 @@ from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
 from sbs.Forms.havaspor.SearchClupForm import SearchClupForm
 from sbs.Forms.havaspor.VisaForm import VisaForm
 from sbs.Forms.havaspor.VisaSeminarForm import VisaSeminarForm
+from sbs.models import Branch, City
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.tvfbf.CoachApplication import CoachApplication
 from sbs.models.tvfbf.HavaLevel import HavaLevel
@@ -57,18 +58,17 @@ def return_coachs(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    user_form = CoachSearchForm()
-    searchClupForm = SearchClupForm()
 
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
     current_date = datetime.date.today()
+    branches = Branch.objects.all()
+    cities = City.objects.all()
 
     return render(request, 'TVGFBF/Coach/coachs.html',
-                  {'user_form': user_form, 'branch': searchClupForm,
-                   'current_date': current_date, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name, })
+                  {'current_date': current_date, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'branches': branches, 'cities': cities, })
 
 
 @login_required
@@ -366,9 +366,8 @@ def coachUpdate(request, uuid):
                 coachClub = Club.objects.get(derbis=clubDersbis)
                 coachClub.coachs.add(coach)
             else:
-               club_coach=Club.objects.filter(coachs=coach).last()
-               club_coach.coachs.remove(coach)
-
+                club_coach = Club.objects.filter(coachs=coach).last()
+                club_coach.coachs.remove(coach)
 
             person.iban = iban
             person.save()
@@ -662,7 +661,7 @@ def visa_approval(request):
                 approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
                 visa.approval_date = approvalDate
                 visa.save()
-                visa.isActive=True
+                visa.isActive = True
                 coach = Coach.objects.filter(uuid=coach_uuid)
                 if coach:
                     coach = Coach.objects.get(uuid=coach_uuid)
@@ -1192,20 +1191,36 @@ def addCoachVisaSeminar(request, uuid):
         return redirect('accounts:login')
     user = request.user
     visa = VisaSeminar.objects.get(uuid=uuid)
-    coa = []
-    for item in visa.coach.all():
-        coa.append(item.person.user.pk)
-    coach = Coach.objects.exclude(person__user__id__in=coa)
 
-    if request.method == 'POST':
-        athletes1 = request.POST.getlist('selected_options')
-        if athletes1:
-            for x in athletes1:
-                if not visa.coach.filter(person__user_id__in=x):
-                    visa.coach.add(x)
-                    visa.save()
-        return redirect('sbs:update-coach-visa-seminar', uuid=uuid)
-    return render(request, 'TVGFBF/Coach/add-coach-visa-seminar.html', {'coachs': coach})
+    return render(request, 'TVGFBF/Coach/add-coach-visa-seminar.html', {'uuid': uuid, })
+
+
+@login_required
+def addCaochVisaSeminarApi(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    try:
+        with transaction.atomic():
+
+            if request.method == 'POST' and request.is_ajax():
+                list = request.POST.getlist('coach_list[]')
+                visa = VisaSeminar.objects.get(uuid=request.POST['uuid'])
+                for item in list:
+                    if not visa.coach.filter(person__user_id__in=item):
+                        visa.coach.add(item)
+                        visa.save()
+
+                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+
+            else:
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+    except:
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
 @login_required
@@ -1431,9 +1446,9 @@ def coachreferenceUpdate(request, uuid):
         with transaction.atomic():
 
             coach = ReferenceCoach.objects.get(uuid=uuid)
-            club=coach.club
+            club = coach.club
             if club:
-                pk=coach.club.pk
+                pk = coach.club.pk
                 clubs = Club.objects.all().exclude(derbis__isnull=True).exclude(id=pk)
             else:
                 clubs = Club.objects.all().exclude(derbis__isnull=True)
@@ -1483,22 +1498,22 @@ def coachreferenceUpdate(request, uuid):
                         coachClub = Club.objects.get(derbis=clubDersbis)
                         veri.club = coachClub
                     else:
-                       if coach.club:
-                           veri.club =None
+                        if coach.club:
+                            veri.club = None
 
                     veri.save()
 
                     messages.success(request, 'Antrenör Başvurusu Güncellendi')
-                    return redirect("sbs:update-coach-reference" ,coach.uuid)
+                    return redirect("sbs:update-coach-reference", coach.uuid)
                 else:
                     messages.warning(request, 'Alanları Kontrol Ediniz')
 
             return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                          {'preRegistrationform': coach_form,'clubs':clubs,'current_club':club})
+                          {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club})
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                      {'preRegistrationform': coach_form,'clubs':clubs,'current_club':club})
+                      {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club})
 
 
 @login_required
@@ -1513,7 +1528,7 @@ def approvelReferenceCoach(request):
             if request.method == 'POST' and request.is_ajax():
                 uuid = request.POST['uuid']
                 referenceCoach = ReferenceCoach.objects.get(uuid=uuid)
-                date=request.POST['dateOfApproval']
+                date = request.POST['dateOfApproval']
                 approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
                 referenceCoach.status_date = approvalDate
 
@@ -1582,7 +1597,6 @@ def approvelReferenceCoach(request):
                     if referenceCoach.club:
                         referenceCoach.club.coachs.add(coach)
 
-
                     # html_content = ''
                     # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
                     # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
@@ -1630,7 +1644,7 @@ def refencedeleteCoach(request):
 
             statusDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
             obj.status_date = statusDate
-            obj.definition=text
+            obj.definition = text
             obj.save()
 
             log = str(obj.first_name) + " " + str(obj.last_name) + "     Antrenör basvurusu reddedildi"

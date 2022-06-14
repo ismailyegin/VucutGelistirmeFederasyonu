@@ -223,6 +223,8 @@ urlpatterns = [
          name='referee-visa-seminar-approval'),
     path('hakem/visa-seminar/hakem-sec/<uuid:uuid>', RefereeViews.addRefereeVisaSeminar,
          name='add-referee-visa-seminar'),
+    path('hakem/visa-seminar/hakem-sec-api/', RefereeViews.addRefereeVisaSeminarApi,
+         name='add-referee-visa-seminar-api'),
     path('hakem/visa-seminar/hakem-kaldir/', RefereeViews.deleteRefereeVisaSeminar,
          name='delete-referee-visa-seminar'),
     path('hakem/visa-Seminar/seminer-sil/', RefereeViews.deleteVisaSeminar, name='delete-visa-seminar'),
@@ -247,6 +249,8 @@ urlpatterns = [
          name='coach-visa-seminar-approval'),
     path('antrenor/visa-seminar/antrenor-sec/<uuid:uuid>', CoachViews.addCoachVisaSeminar,
          name='add-coach-visa-seminar'),
+    path('antrenor/visa-seminar/antrenor-sec-api/', CoachViews.addCaochVisaSeminarApi,
+         name='add-coach-visa-seminar-api'),
     path('antrenor/visa-seminar/antrenor-kaldir/', CoachViews.deleteCoachVisaSeminar,
          name='coachDeleteVisaSeminar'),
     path('antrenor/visa-Seminar/antrenor-basvuru-reddet/',
@@ -318,7 +322,11 @@ urlpatterns = [
 
     path('izin/api-izin-listesi/', APIViews.GetPermission.as_view(), name='view_permission-api'),
     path('antrenor/api-antrenor-listesi/', APIViews.GetCoach.as_view(), name='view_coach-api'),
+    path('vize-seminar/api-antrenor-listesi/', APIViews.GetCoachForVisaSeminar.as_view(),
+         name='view_coach-visa-seminar-api'),
     path('hakem/api-hakem-listesi/', APIViews.GetReferee.as_view(), name='view_referee-api'),
+    path('vize-seminar/api-hakem-listesi/', APIViews.GetRefereeForVisaSeminar.as_view(),
+         name='view_referee-visa-seminar-api'),
     path('tesis/api-tesis-listesi/', APIViews.GetFacility.as_view(), name='view_sport-facility-api'),
     path('hakem/filtrele/', RefereeViews.return_referee_search, name='return_referee_search'),
     path('antrenor/filtrele/', CoachViews.return_coach_search, name='return_coach_search'),
@@ -333,5 +341,6 @@ urlpatterns = [
     path('kullanici/sifre-belirle', UserViews.coachUserCreatePassword, name='coachUserCreatePassword'),
 
     path('sporcu/sporcu-getir-api/', AthleteTransmissionViews.transmissionAthleteTc, name='transmissionGetAthleteTc'),
-    path('sporcu/sporcu-detay-api/', AthleteTransmissionViews.TransmissionAthleteDetail, name='transmissionGetAthleteDetail'),
+    path('sporcu/sporcu-detay-api/', AthleteTransmissionViews.TransmissionAthleteDetail,
+         name='transmissionGetAthleteDetail'),
 ]

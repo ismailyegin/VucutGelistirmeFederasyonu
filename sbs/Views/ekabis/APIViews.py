@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from sbs.models import Permission, Coach, Referee, SportFacility
 from sbs.models.ekabis.Logs import Logs
 from sbs.models.tvfbf.LogAPIObject import LogAPIObject
+from sbs.models.tvfbf.VisaSeminar import VisaSeminar
 from sbs.serializers.CoachSerializers import CoachResponseSerializer
 from sbs.serializers.LogSerializers import LogResponseSerializer
 from sbs.serializers.PermissionSerializers import PermissionResponseSerializer
@@ -143,14 +144,41 @@ class GetCoach(APIView):
         length = request.data['length']
         end = int(start) + int(length)
 
-        count = Coach.objects.filter(isDeleted=False).count()
+        globalSearch = request.data['search[value]']
+        first_name = request.data['columns[1][search][value]']
+        last_name = request.data['columns[2][search][value]']
+        email = request.data['columns[3][search][value]']
+        city = request.data['columns[4][search][value]']
+        branch = request.data['columns[5][search][value]']
 
-        all_objects = Coach.objects.filter(isDeleted=False).filter(
-            person__user__first_name__icontains=request.data['search[value]']).order_by('-creationDate')[
-                      int(start):end]
+        coaches = Coach.objects.none()
 
-        filteredTotal = Coach.objects.filter(isDeleted=False).filter(
-            person__user__first_name__icontains=request.data['search[value]']).count()
+        coaches = Coach.objects.filter(isDeleted=False).order_by('-creationDate')
+        count = coaches.count()
+
+        if not (first_name or last_name or email or city or branch or globalSearch):
+            all_objects = coaches.order_by('-creationDate')[int(start):end]
+            filteredTotal = coaches.count()
+        else:
+            query = Q()
+            if globalSearch:
+                query &= Q(person__user__first_name__icontains=globalSearch) | Q(
+                    person__user__last_name__icontains=globalSearch) | Q(
+                    communication__city__name__icontains=globalSearch) | Q(
+                    branch__title__icontains=globalSearch)
+            if first_name:
+                query &= Q(person__user__first_name__icontains=first_name)
+            if last_name:
+                query &= Q(person__user__last_name__icontains=last_name)
+            if email:
+                query &= Q(person__user__email__icontains=email)
+            if city:
+                query &= Q(communication__city__pk=city)
+            if branch:
+                query &= Q(branch__pk=branch)
+
+            all_objects = coaches.filter(query).order_by('-creationDate')[int(start):end]
+            filteredTotal = coaches.filter(query).count()
 
         logApiObject = LogAPIObject()
         logApiObject.data = all_objects
@@ -162,6 +190,122 @@ class GetCoach(APIView):
             'request': request,
         }
         serializer = CoachResponseSerializer(logApiObject, context=serializer_context)
+        return Response(serializer.data)
+
+
+class GetCoachForVisaSeminar(APIView):
+
+    def post(self, request, format=None):
+        draw = request.data['draw']
+        start = request.data['start']
+        length = request.data['length']
+        end = int(start) + int(length)
+        uuid = request.POST['uuid']
+
+        globalSearch = request.data['search[value]']
+        first_name = request.data['columns[2][search][value]']
+        last_name = request.data['columns[3][search][value]']
+        tc = request.data['columns[4][search][value]']
+        email = request.data['columns[5][search][value]']
+
+        visa = VisaSeminar.objects.get(uuid=uuid)
+        coa = []
+        for item in visa.coach.all():
+            coa.append(item.person.user.pk)
+        coaches = Coach.objects.exclude(person__user__id__in=coa).filter(isDeleted=False).order_by(
+            'person__user__first_name')
+        count = coaches.count()
+
+        if not (first_name or last_name or email or tc or globalSearch):
+            all_objects = coaches.order_by('person__user__first_name')[int(start):end]
+            filteredTotal = coaches.count()
+        else:
+            query = Q()
+            if globalSearch:
+                query &= Q(person__user__first_name__icontains=globalSearch) | Q(
+                    person__user__last_name__icontains=globalSearch) | Q(
+                    person__tc__icontains=globalSearch) | Q(
+                    person__user__email__icontains=globalSearch)
+            if first_name:
+                query &= Q(person__user__first_name__icontains=first_name)
+            if last_name:
+                query &= Q(person__user__last_name__icontains=last_name)
+            if email:
+                query &= Q(person__user__email__icontains=email)
+            if tc:
+                query &= Q(person__tc__icontains=tc)
+
+            all_objects = coaches.filter(query).order_by('person__user__first_name')[int(start):end]
+            filteredTotal = coaches.filter(query).count()
+
+        logApiObject = LogAPIObject()
+        logApiObject.data = all_objects
+        logApiObject.draw = int(request.POST['draw'])
+        logApiObject.recordsTotal = int(count)
+        logApiObject.recordsFiltered = int(filteredTotal)
+
+        serializer_context = {
+            'request': request,
+        }
+        serializer = CoachResponseSerializer(logApiObject, context=serializer_context)
+        return Response(serializer.data)
+
+
+class GetRefereeForVisaSeminar(APIView):
+
+    def post(self, request, format=None):
+        draw = request.data['draw']
+        start = request.data['start']
+        length = request.data['length']
+        end = int(start) + int(length)
+        uuid = request.POST['uuid']
+
+        globalSearch = request.data['search[value]']
+        first_name = request.data['columns[2][search][value]']
+        last_name = request.data['columns[3][search][value]']
+        tc = request.data['columns[4][search][value]']
+        email = request.data['columns[5][search][value]']
+
+        visa = VisaSeminar.objects.get(uuid=uuid)
+        coa = []
+        for item in visa.referee.all():
+            coa.append(item.person.user.pk)
+        referees = Referee.objects.exclude(person__user__id__in=coa).filter(isDeleted=False).order_by(
+            'person__user__first_name')
+        count = referees.count()
+
+        if not (first_name or last_name or email or tc or globalSearch):
+            all_objects = referees.order_by('person__user__first_name')[int(start):end]
+            filteredTotal = referees.count()
+        else:
+            query = Q()
+            if globalSearch:
+                query &= Q(person__user__first_name__icontains=globalSearch) | Q(
+                    person__user__last_name__icontains=globalSearch) | Q(
+                    person__tc__icontains=globalSearch) | Q(
+                    person__user__email__icontains=globalSearch)
+            if first_name:
+                query &= Q(person__user__first_name__icontains=first_name)
+            if last_name:
+                query &= Q(person__user__last_name__icontains=last_name)
+            if email:
+                query &= Q(person__user__email__icontains=email)
+            if tc:
+                query &= Q(person__tc__icontains=tc)
+
+            all_objects = referees.filter(query).order_by('person__user__first_name')[int(start):end]
+            filteredTotal = referees.filter(query).count()
+
+        logApiObject = LogAPIObject()
+        logApiObject.data = all_objects
+        logApiObject.draw = int(request.POST['draw'])
+        logApiObject.recordsTotal = int(count)
+        logApiObject.recordsFiltered = int(filteredTotal)
+
+        serializer_context = {
+            'request': request,
+        }
+        serializer = RefereeResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)
 
 

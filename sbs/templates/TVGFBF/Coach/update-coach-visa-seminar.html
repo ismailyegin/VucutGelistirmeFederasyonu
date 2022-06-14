@@ -2,6 +2,91 @@
 
 {% block content %}
 
+    <div class="modal modal-success-food fade in" id="modal-xl" style="display: none;width: 100%">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">İşlem Başarılı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <section class="col-lg-12 ">
+                            <div class="card card-outline">
+                                <div class="card-header with-border">
+                                    <h3 class="card-title">Antrenör Ekle</h3>
+                                    <button class="btn btn-outline-info" type="submit"
+                                            style="float:right" onclick="submitFunc()">
+                                        Seçilenleri Ekle
+                                    </button>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12">
+                                        <table id="antrenorListesi" class="table table-bordered table-hover"
+                                               style="width: 100%">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Seç</th>
+                                                <th>Ad</th>
+                                                <th>Soyad</th>
+                                                <th>T.C.</th>
+                                                <th>Mail</th>
+                                                <th>Telefon</th>
+
+                                            </tr>
+                                            <tr class="filters" role="row">
+                                                <th></th>
+                                                <th></th>
+                                                <th><input class="form-control" type="text" placeholder="Ad"
+                                                           title="test"></th>
+                                                <th><input class="form-control" type="text" placeholder="Soyad"
+                                                           title="test"></th>
+                                                <th><input class="form-control" type="text" placeholder="TC"
+                                                           title="test"></th>
+                                                <th><input class="form-control" type="text" placeholder="Email"
+                                                           title="test"></th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- /.box -->
+
+
+                            </div>
+
+                        </section>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button style="display: none"></button>
+
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-closebtn"
+                            data-dismiss="modal">Kapat
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -165,12 +250,12 @@
                     </div>
                 </div>
                 <form method="post" enctype="multipart/form-data" role="form">
-                <div class="card card-info card-outline">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Genel Bilgiler</h3>
-                    </div>
+                    <div class="card card-info card-outline">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Genel Bilgiler</h3>
+                        </div>
 
-                    <div class="card-body">
+                        <div class="card-body">
                             {% csrf_token %}
                             <div class="row">
 
@@ -221,23 +306,23 @@
                                 </div>
 
                             </div>
-                    </div>
-                    <div class="card-footer">
-                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                        </div>
+                        <div class="card-footer">
+                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
 
-                            <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
-                        {% endif %}
+                                <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
+                            {% endif %}
 
+                        </div>
                     </div>
-                </div>
                 </form>
                 <div class="card card-info card-outline">
                     <div class="card-header with-border">
                         <h3 class="card-title"> Seçili Antrenörler</h3>
 
 
-                        <a href="{% url "sbs:add-coach-visa-seminar" competition.uuid %}"
-                           type="button" class="btn btn-outline-info" style="float:right;" title="Antrenör Ekle"><i
+                        <a onclick="clickFunc()" style="float: right;"
+                           type="button" class="btn btn-outline-info" title="Antrenör Ekle"><i
                                 class="fa fa-plus"></i>
                         </a>
 
@@ -544,7 +629,7 @@
                     if (result.dismiss !== 'Evet') {
 
                         $.ajax({
-                             url: "{% url "sbs:coachDeleteVisaSeminar" %}".replace(),
+                            url: "{% url "sbs:coachDeleteVisaSeminar" %}".replace(),
                             type: "POST",
                             data: {
                                 'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -682,6 +767,306 @@
 
         </script>
     {% endif %}
+
+    <script>
+
+        var uuid = '{{competition.uuid}}';
+        var list = [];
+
+        function checkedList(id) {
+            debugger;
+
+            if (document.getElementById('coach-' + id).checked) {
+                list.push(document.getElementById('coach-' + id).value)
+            } else {
+                list.pop(document.getElementById('coach-' + id).value)
+            }
+
+        }
+
+        function submitFunc() {
+
+            $('#loading').show()
+            $.ajax({
+                url: "{% url "sbs:add-coach-visa-seminar-api" %}",
+                type: "POST",
+                data: {
+                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    coach_list: list,
+                    uuid: uuid,
+                },
+                success: function (result) {
+                    if (result.status === 'Success') {
+                        swal({
+                            icon: 'success',
+                            title: 'Antrenörler başarıyla kayıt edildi !!',
+
+                        })
+
+                    } else {
+                        swal({
+                            icon: 'error',
+                            title: 'İşlem Başarısız !!',
+
+                        })
+                    }
+                    $('#loading').hide();
+                    location.reload();
+
+                }
+            });
+        }
+
+
+        function clickFunc() {
+
+            $("#modal-xl").on("shown.bs.modal", function (e) {
+                debugger;
+
+                table = $('#antrenorListesi').DataTable({
+
+                    orderCellsTop: true,
+                    fixedHeader: false,
+                    initComplete: function () {
+                        var api = this.api();
+
+                        // For each column
+                        api
+                            .columns()
+                            .eq(0)
+                            .each(function (colIdx) {
+                                // Set the header cell to contain the input element
+                                var cell = $('.filters th').eq(
+                                    $(api.column(colIdx).header()).index()
+                                );
+
+
+                                // On every keypress in this input
+                                $(
+                                    'input',
+                                    $('.filters th').eq($(api.column(colIdx).header()).index())
+                                )
+                                    .off('keyup change')
+                                    .on('keyup change', function (e) {
+                                        e.stopPropagation();
+
+                                        // Get the search value
+                                        $(this).attr('title', $(this).val());
+                                        var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                        var cursorPosition = this.selectionStart;
+                                        // Search the column for that value
+                                        api
+                                            .column(colIdx)
+                                            .search(
+                                                this.value
+                                            )
+                                            .draw();
+
+                                        $(this)
+                                            .focus()[0]
+                                            .setSelectionRange(cursorPosition, cursorPosition);
+                                    });
+                            });
+                    },
+
+                    "processing": true,
+                    "serverSide": true,
+                    "paging": true,
+                    "ordering": true,
+
+
+                    "ajax": {
+                        "url": "{% url 'sbs:view_coach-visa-seminar-api' %}",
+                        "type": "POST",
+                        'data': {
+                            uuid: uuid,
+                        },
+                    },
+                    dom: 'Bfrtip',
+
+                    'buttons': [
+
+
+                        {
+                            extend: "pageLength",
+                        },
+
+
+                        {
+                            extend: 'colvis',
+                            titleAttr: 'Ekle Çıkar'
+
+
+                        },
+                        {
+                            extend: 'print',
+                            title: 'İzin Listesi',
+                            text: '<i class="fa fa-print"></i>',
+
+                            titleAttr: 'Yazdır',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            download: 'open',
+                            text: '<i class="fa fa-file-pdf"></i>',
+
+                            titleAttr: 'Pdf Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel"></i>',
+                            titleAttr: 'Excel Kaydet',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+
+
+                    ],
+
+
+                    'language': {
+                        "url": "{% static 'datatable_tr/datatable_tr.json' %}"
+                    },
+                    "columns": [
+                        {"data": "id"},
+                        {
+                            "data": null,
+                            render: function (full) {
+                                let html = ' ';
+                                html += '<td><input onclick="checkedList(' + full.id + ')" class="cb" id="coach-' + full.id + '" type="checkbox" value="' + full.id + '"></td>';
+                                return html;
+                            }
+                        },
+                        {
+                            "data": null,
+                            render: function (full) {
+                                if (full.person) {
+                                    return full.person.user.first_name;
+                                } else {
+                                    return '';
+                                }
+                            }
+                        },
+                        {
+                            "data": null,
+                            render: function (full) {
+                                if (full.person) {
+                                    return full.person.user.last_name;
+                                } else {
+                                    return '';
+                                }
+                            }
+                        },
+                        {
+                            "data": null,
+                            render: function (full) {
+                                if (full.person) {
+                                    return full.person.tc;
+                                } else {
+                                    return ''
+                                }
+                            }
+                        },
+                        {
+                            "data": null,
+                            render: function (full) {
+                                if (full.person) {
+                                    return full.person.user.email;
+                                } else {
+                                    return ''
+                                }
+                            }
+                        },
+                        {
+                            "data": null,
+                            render: function (full) {
+                                if (full.communication) {
+                                    if (full.communication.phoneNumber) {
+                                        return full.communication.phoneNumber;
+                                    } else {
+                                        return ''
+                                    }
+                                } else {
+                                    return ''
+                                }
+
+
+                            }
+                        },
+
+                    ],
+                    "search": {
+                        "caseInsensitive": true
+                    }
+
+
+                });
+                table.on('draw.dt', function () {
+                    var info = table.page.info();
+                    table.column(0, {
+                        search: 'applied',
+                        order: 'applied',
+                        page: 'applied'
+                    }).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1 + info.start;
+                    });
+                });
+
+            }).modal('show');
+
+            $('#btn-closebtn').click(function () {
+
+                $('.modal').modal('hide');
+
+
+            });
+
+
+        }
+
+        function getCookie(name) {
+            var cookieValue = null;
+            var i = 0;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (i; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+    </script>
 
 {% endblock %}
 
