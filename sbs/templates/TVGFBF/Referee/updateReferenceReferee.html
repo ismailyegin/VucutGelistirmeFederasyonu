@@ -41,196 +41,192 @@
 
 
     <section class="content">
+        <div class="card">
+            <form method="post" enctype="multipart/form-data" role="form">
+                {% csrf_token %}
 
-        <form method="post" enctype="multipart/form-data" role="form">
-            {% csrf_token %}
-
-            <div class="row">
-
-
-                <div class="col-lg-6">
-                    <div class="card card-info card-outline">
-                        <div class="card-header with-border">
-                            <h3 class="box-title">Kişi Bilgileri </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-
-                                <div class="col-lg-12 text-center ">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.profileImage.label }}</label>
-
-                                        <center>
-                                            <img
-                                                    src="/media/{{ preRegistrationform.instance.profileImage }}"
-                                                    class="img-responsive img-bordered imagesize"
-                                                    alt="Resim Yok"
-                                                    style=" max-width: 60%; height: auto;"
-                                            ><br>
-                                        </center>
-
-                                        {{ preRegistrationform.profileImage }}
-                                    </div>
-
-                                </div>
-
-
-                                <div class="col-lg-6">
-
-
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.first_name.label }}</label>
-                                        {{ preRegistrationform.first_name }}
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.last_name.label }}</label>
-                                        {{ preRegistrationform.last_name }}
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.birthplace.label }}</label>
-                                        {{ preRegistrationform.birthplace }}
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label style="padding-top: 16px"> {{ preRegistrationform.bloodType.label }}</label>
-                                        {{ preRegistrationform.bloodType }}
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.tc.label }}</label>
-                                        {{ preRegistrationform.tc }}
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.motherName.label }}</label>
-                                        {{ preRegistrationform.motherName }}
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.fatherName.label }}</label>
-                                        {{ preRegistrationform.fatherName }}
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.birthDate.label }}</label>
-                                        {{ preRegistrationform.birthDate }}
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.gender.label }}</label>
-                                        {{ preRegistrationform.gender }}
-                                    </div>
-
-                                </div>
-                                <div class="col-lg-12">
-
-                                    <div class="form-group">
-
-                                        <label> {{ preRegistrationform.iban.label }}</label>
-                                        {{ preRegistrationform.iban }}
-                                    </div>
-
-
-                                </div>
-
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-info card-outline">
+                            <div class="card-header with-border">
+                                <h3 class="box-title">Kişi Bilgileri </h3>
                             </div>
-                        </div>
+                            <div class="card-body">
+                                <div class="row">
 
+                                    <div class="col-lg-12 text-center ">
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.profileImage.label }}</label>
+
+                                            <center>
+                                                <img
+                                                        src="/media/{{ preRegistrationform.instance.profileImage }}"
+                                                        class="img-responsive img-bordered imagesize"
+                                                        alt="Resim Yok"
+                                                        style=" max-width: 60%; height: auto;"
+                                                ><br>
+                                            </center>
+
+                                            {{ preRegistrationform.profileImage }}
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-lg-6">
+
+
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.first_name.label }}</label>
+                                            {{ preRegistrationform.first_name }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.last_name.label }}</label>
+                                            {{ preRegistrationform.last_name }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.birthplace.label }}</label>
+                                            {{ preRegistrationform.birthplace }}
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label style="padding-top: 16px"> {{ preRegistrationform.bloodType.label }}</label>
+                                            {{ preRegistrationform.bloodType }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.tc.label }}</label>
+                                            {{ preRegistrationform.tc }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.motherName.label }}</label>
+                                            {{ preRegistrationform.motherName }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.fatherName.label }}</label>
+                                            {{ preRegistrationform.fatherName }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.birthDate.label }}</label>
+                                            {{ preRegistrationform.birthDate }}
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.gender.label }}</label>
+                                            {{ preRegistrationform.gender }}
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-12">
+
+                                        <div class="form-group">
+
+                                            <label> {{ preRegistrationform.iban.label }}</label>
+                                            {{ preRegistrationform.iban }}
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
 
                     </div>
-
-                </div>
-                <div class="col-lg-6">
-                    <div class="card card-info card-outline">
-                        <div class="card-header with-border">
-                            <h3 class="card-title"> Kişi İletişim Bilgileri</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.email.label }}</label>
-                                        {{ preRegistrationform.email }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.phoneNumber.label }}</label>
-                                        {{ preRegistrationform.phoneNumber }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.phoneNumber2.label }}</label>
-                                        {{ preRegistrationform.phoneNumber2 }}
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.country.label }}</label>
-                                        {{ preRegistrationform.country }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.city.label }}</label>
-                                        {{ preRegistrationform.city }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.postalCode.label }}</label>
-                                        {{ preRegistrationform.postalCode }}
-                                    </div>
-                                </div>
+                    <div class="col-lg-6">
+                        <div class="card card-info card-outline">
+                            <div class="card-header with-border">
+                                <h3 class="card-title"> Kişi İletişim Bilgileri</h3>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.address.label }}</label>
-                                        {{ preRegistrationform.address }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="card card-outline card-info">
-                                        <div class="card-header with-border">
-                                            <h3 class="card-title"> Kademe Bilgileri</h3>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.email.label }}</label>
+                                            {{ preRegistrationform.email }}
                                         </div>
-                                        <div class="card-body">
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label> {{ preRegistrationform.kademe_startDate.label }}</label>
-                                                    {{ preRegistrationform.kademe_startDate }}
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label> {{ preRegistrationform.kademe_definition.label }}</label>
-                                                    {{ preRegistrationform.kademe_definition }}
-                                                </div>
-                                            </div>
-
-
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.phoneNumber.label }}</label>
+                                            {{ preRegistrationform.phoneNumber }}
+                                        </div>
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.phoneNumber2.label }}</label>
+                                            {{ preRegistrationform.phoneNumber2 }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.country.label }}</label>
+                                            {{ preRegistrationform.country }}
+                                        </div>
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.city.label }}</label>
+                                            {{ preRegistrationform.city }}
+                                        </div>
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.postalCode.label }}</label>
+                                            {{ preRegistrationform.postalCode }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.address.label }}</label>
+                                            {{ preRegistrationform.address }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
-                        </div>
 
+                        <div class="card card-outline card-info">
+                                <div class="card-header with-border">
+                                    <h3 class="card-title"> Kademe Bilgileri</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.kademe_startDate.label }}</label>
+                                            {{ preRegistrationform.kademe_startDate }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label> {{ preRegistrationform.kademe_definition.label }}</label>
+                                            {{ preRegistrationform.kademe_definition }}
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
                     </div>
 
                 </div>
 
-
-            </div>
+        </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
+        </div>
         </form>
+        </div>
     </section>
 
 

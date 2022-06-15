@@ -66,6 +66,7 @@ def return_referees(request):
                   {'user_form': user_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, 'current_date': current_date, })
 
+
 @login_required
 def return_referee_search(request):
     perm = general_methods.control_access(request)
@@ -244,7 +245,7 @@ def update_referee(request, uuid):
     communication = Communication.objects.get(pk=referee.communication.pk)
     user_form = HavaUserForm(request.POST or None, instance=user)
     person_form = PersonForm(request.POST or None, request.FILES or None, instance=person)
-    person_form.fields['profileImage'].required=True
+    person_form.fields['profileImage'].required = True
     communication_form = CommunicationForm(request.POST or None, instance=communication)
 
     grade_form = referee.grades.filter(isDeleted=0)
@@ -800,6 +801,7 @@ def gradeListReject(request, uuid):
     messages.success(request, 'Kademe  Reddedilmiştir.')
     return redirect('sbs:grade_list')
 
+
 @login_required
 def gradeListApprovalAll(request):
     perm = general_methods.control_access(request)
@@ -811,21 +813,22 @@ def gradeListApprovalAll(request):
         coa = []
         for item in CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'):
             coa.append(item.pk)
-        grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
+        grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE,
+                                          status="Beklemede")
 
         for grade in grades:
             referee = grade.Refereegrades.first()
             if request.method == 'POST' and request.is_ajax():
-                    for item in referee.grades.all():
-                        if item.branch == grade.branch:
-                            item.isActive = False
-                            item.save()
-                    grade.status = HavaLevel.APPROVED
-                    grade.isActive = True
-                    grade.save()
-                    return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
+                for item in referee.grades.all():
+                    if item.branch == grade.branch:
+                        item.isActive = False
+                        item.save()
+                grade.status = HavaLevel.APPROVED
+                grade.isActive = True
+                grade.save()
+                return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
             else:
-                    return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+                return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
     except:
         traceback.print_exc()
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
@@ -843,7 +846,8 @@ def gradeListRejectAll(request):
             coa = []
             for item in CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'):
                 coa.append(item.pk)
-            grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE, status="Beklemede")
+            grades = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.LEVELTYPE.GRADE,
+                                              status="Beklemede")
             for grade in grades:
                 grade.status = HavaLevel.DENIED
                 grade.save()
@@ -854,7 +858,6 @@ def gradeListRejectAll(request):
     except:
         traceback.print_exc()
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
-
 
 
 @login_required
@@ -1272,90 +1275,93 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
     with transaction.atomic():
         if request.method == 'POST' and request.is_ajax():
             try:
-              with transaction.atomic():
+                with transaction.atomic():
 
-                if reference.status == ReferenceReferee.WAITED:
-                    user = User()
-                    user.username = reference.email
-                    user.first_name = reference.first_name
-                    user.last_name = reference.last_name
-                    user.email = reference.email
-                    user.is_active = True
-                    user.save()
-                    group = Group.objects.get(name='Hakem')
-                    user.groups.add(group)
+                    if reference.status == ReferenceReferee.WAITED:
+                        user = User()
+                        user.username = reference.email
+                        user.first_name = reference.first_name
+                        user.last_name = reference.last_name
+                        user.email = reference.email
+                        password = User.objects.make_random_password()
+                        user.set_password(password)
+                        user.is_active = True
+                        user.save()
+                        group = Group.objects.get(name='Hakem')
+                        user.groups.add(group)
 
-                    user.save()
+                        user.save()
 
-                    person = Person()
-                    person.tc = reference.tc
-                    person.motherName = reference.motherName
-                    person.fatherName = reference.fatherName
-                    person.profileImage = reference.profileImage
-                    person.birthDate = reference.birthDate
-                    person.bloodType = reference.bloodType
-                    person.birthplace = reference.birthplace
-                    if reference.gender == 'Erkek':
-                        person.gender = Person.MALE
+                        person = Person()
+                        person.tc = reference.tc
+                        person.motherName = reference.motherName
+                        person.fatherName = reference.fatherName
+                        person.profileImage = reference.profileImage
+                        person.birthDate = reference.birthDate
+                        person.bloodType = reference.bloodType
+                        person.birthplace = reference.birthplace
+                        if reference.gender == 'Erkek':
+                            person.gender = Person.MALE
+                        else:
+                            person.gender = Person.FEMALE
+                        person.save()
+                        person.user = user
+                        person.save()
+                        communication = Communication()
+                        communication.postalCode = reference.postalCode
+                        communication.phoneNumber = reference.phoneNumber
+                        communication.phoneNumber2 = reference.phoneNumber2
+                        communication.address = reference.address
+                        communication.city = reference.city
+                        communication.country = reference.country
+                        communication.save()
+
+                        judge = Referee(person=person, communication=communication)
+                        # judge.iban = reference.iban
+                        judge.save()
+
+                        grade = HavaLevel(definition=reference.kademe_definition,
+                                          startDate=reference.kademe_startDate,
+                                          )
+                        grade.levelType = EnumFields.LEVELTYPE.GRADE
+                        grade.status = HavaLevel.APPROVED
+                        grade.isActive = True
+                        grade.save()
+
+                        judge.grades.add(grade)
+                        judge.save()
+
+                        reference.status = ReferenceReferee.APPROVED
+                        reference.save()
+
+                        messages.success(request, 'Hakem Başarıyla Eklenmiştir')
+
+                        fdk = Forgot(user=user, status=False)
+                        fdk.save()
+                        print(fdk)
+
+                        # html_content = ''
+                        # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'kayit@tvgfbf.gov.tr', user.email
+                        # html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                        # html_content = html_content + '<p>Başvurunuz Onaylanmıştır.</p>'
+                        # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(
+                        #     fdk.user.username) + '</strong></p>'
+                        # html_content = html_content + '<p><strong>Şifreniz :' + str(password) + '</strong></p>'
+                        # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/">https://sbs.tvgfbf.gov.tr/</p></a>'
+                        # msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                        # msg.attach_alternative(html_content, "text/html")
+                        # msg.send()
+
+                        log = str(user.get_full_name()) + " Hakem basvurusu onaylandi"
+                        log = general_methods.logwrite(request, request.user, log)
+
+
                     else:
-                        person.gender = Person.FEMALE
-                    person.save()
-                    person.user=user
-                    person.save()
-                    communication = Communication()
-                    communication.postalCode = reference.postalCode
-                    communication.phoneNumber = reference.phoneNumber
-                    communication.phoneNumber2 = reference.phoneNumber2
-                    communication.address = reference.address
-                    communication.city = reference.city
-                    communication.country = reference.country
-                    communication.save()
+                        reference.status = reference.APPROVED
+                        reference.save()
+                        messages.success(request, 'Hakem daha önce onaylanmıştır.')
 
-                    judge = Referee(person=person, communication=communication)
-                    # judge.iban = reference.iban
-                    judge.save()
-
-                    grade = HavaLevel(definition=reference.kademe_definition,
-                                      startDate=reference.kademe_startDate,
-                                      )
-                    grade.levelType = EnumFields.LEVELTYPE.GRADE
-                    grade.status = HavaLevel.APPROVED
-                    grade.isActive = True
-                    grade.save()
-
-                    judge.grades.add(grade)
-                    judge.save()
-
-                    reference.status = ReferenceReferee.APPROVED
-                    reference.save()
-
-                    messages.success(request, 'Hakem Başarıyla Eklenmiştir')
-
-                    fdk = Forgot(user=user, status=False)
-                    fdk.save()
-                    print(fdk)
-
-                    # html_content = ''
-                    # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
-                    # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
-                    # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-                    # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
-                    #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(
-                    #     fdk.uuid) + '</p></a>'
-                    # msg = EmailMultiAlternatives(subject, '', from_email, [to])
-                    # msg.attach_alternative(html_content, "text/html")
-                    # msg.send()
-
-                    log = str(user.get_full_name()) + " Hakem basvurusu onaylandi"
-                    log = general_methods.logwrite(request, request.user, log)
-
-
-                else:
-                    reference.status = reference.APPROVED
-                    reference.save()
-                    messages.success(request, 'Hakem daha önce onaylanmıştır.')
-
-                return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+                    return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
             except Referee.DoesNotExist:
                 return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
@@ -1373,10 +1379,10 @@ def referenceUpdateReferee(request, uuid):
 
     refere = ReferenceReferee.objects.get(uuid=uuid)
     refere_form = PreRefereeForm(request.POST or None, request.FILES or None, instance=refere,
-                              initial={'kademe_definition': refere.kademe_definition})
+                                 initial={'kademe_definition': refere.kademe_definition})
 
     try:
-         with transaction.atomic():
+        with transaction.atomic():
             if request.method == 'POST':
                 # mail = request.POST.get('email')
                 # if mail != refere.email:
@@ -1416,10 +1422,10 @@ def referenceUpdateReferee(request, uuid):
                     return redirect('sbs:referencedListReferee')
                 else:
                     messages.warning(request, 'Alanları Kontrol Ediniz')
-         return render(request, 'TVGFBF/Referee/updateReferenceReferee.html', {'preRegistrationform': refere_form })
+        return render(request, 'TVGFBF/Referee/updateReferenceReferee.html', {'preRegistrationform': refere_form})
     except ReferenceReferee.DoesNotExist:
-            traceback.print_exc()
-            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+        traceback.print_exc()
+        return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
 
 
 @login_required
@@ -1435,6 +1441,14 @@ def refencedeleteReferee(request):
                 obj = ReferenceReferee.objects.get(uuid=request.POST['uuid'])
                 obj.status = ReferenceReferee.DENIED
                 obj.save()
+
+                # html_content = ''
+                # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'kayit@tvgfbf.gov.tr', obj.email
+                # html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                # html_content = html_content + '<p>Başvurunuz Reddedilmiştir.</p>'
+                # msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                # msg.attach_alternative(html_content, "text/html")
+                # msg.send()
 
                 log = str(obj.first_name) + " " + str(obj.last_name) + "     Hakem basvurusu reddedildi"
                 log = general_methods.logwrite(request, request.user, log)

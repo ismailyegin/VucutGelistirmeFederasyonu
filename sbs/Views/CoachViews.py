@@ -1538,6 +1538,8 @@ def approvelReferenceCoach(request):
                     user.first_name = referenceCoach.first_name
                     user.last_name = referenceCoach.last_name
                     user.email = referenceCoach.email
+                    password = User.objects.make_random_password()
+                    user.set_password(password)
                     user.is_active = True
                     group = Group.objects.get(name='Antrenör')
 
@@ -1598,14 +1600,13 @@ def approvelReferenceCoach(request):
                         referenceCoach.club.coachs.add(coach)
 
                     # html_content = ''
-                    # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'no-reply@halter.gov.tr', user.email
-                    # html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                    # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'kayit@tvgfbf.gov.tr', user.email
+                    # html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
                     # html_content = html_content + '<p>Başvurunuz Onaylanmıştır.</p>'
                     # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(
                     #     fdk.user.username) + '</strong></p>'
-                    # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.halter.gov.tr:9443/newpassword?query=' + str(
-                    #     fdk.uuid) + '">https://sbs.halter.gov.tr:9443/sbs/profil-guncelle/?query=' + str(
-                    #     fdk.uuid) + '</p></a>'
+                    # html_content = html_content + '<p><strong>Şifreniz :' + str(password) + '</strong></p>'
+                    # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/">https://sbs.tvgfbf.gov.tr/</p></a>'
                     # msg = EmailMultiAlternatives(subject, '', from_email, [to])
                     # msg.attach_alternative(html_content, "text/html")
                     # msg.send()
@@ -1646,6 +1647,14 @@ def refencedeleteCoach(request):
             obj.status_date = statusDate
             obj.definition = text
             obj.save()
+
+            # html_content = ''
+            # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'kayit@tvgfbf.gov.tr', obj.email
+            # html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            # html_content = html_content + '<p>Başvurunuz Reddedilmiştir.</p>'
+            # msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            # msg.attach_alternative(html_content, "text/html")
+            # msg.send()
 
             log = str(obj.first_name) + " " + str(obj.last_name) + "     Antrenör basvurusu reddedildi"
             log = general_methods.logwrite(request, request.user, log)
