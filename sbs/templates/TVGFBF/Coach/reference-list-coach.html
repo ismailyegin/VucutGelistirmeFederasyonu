@@ -262,15 +262,11 @@
                                                        type="button" class="btn btn-outline-success">
                                                         <i class="fa fa-check"></i>
                                                     </a>
-                                                </div>
-                                                <div class="btn-group">
-                                                    <a href="{% url "sbs:update-coach-reference" coach.uuid %}"
+                                                    <a style="margin-left: 5px;" href="{% url "sbs:update-coach-reference" coach.uuid %}"
                                                        type="button" class="btn btn-outline-warning">
                                                         <i class="fa fa-edit" title="Düzenle"></i>
                                                     </a>
-                                                </div>
-                                                <div class="btn-group">
-                                                    <a class="btn btn-outline-danger"
+                                                    <a style="margin-left: 5px;" class="btn btn-outline-danger"
                                                        data-toggle="modal" onclick=deleteReferee('{{ coach.uuid }}')>
                                                         <i class="fa fa-trash" title="Reddet"></i>
                                                     </a>

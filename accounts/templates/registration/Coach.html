@@ -123,6 +123,45 @@
     </div>
 
 </div>
+
+<div class="modal modal-success-food fade in" id="modal-xl" style="display: none; width: 100%">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Belge</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <section class="col-lg-12">
+                        {% include "taahhutbelgesi.html" %}
+                        <center>
+                            <label>
+                                <input id="modalCheckApproval" type="checkbox" onclick="onClickModal()"/> <small>Okudum,
+                                onaylıyorum.</small>
+                            </label>
+                        </center>
+                    </section>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button style="display: none"></button>
+
+                <button type="button" class="btn btn-outline-success btn-ok" id="btn-closebtn"
+                        data-dismiss="modal">Kapat
+                </button>
+            </div>
+        </div>
+
+
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -238,7 +277,8 @@
         <img id="loading-image" src="{% static 'loader/ring.gif' %}" alt="Loading..."/>
     </div>
 
-    <form method="post" enctype="multipart/form-data" role="form"> <!-- tc kimlik kontrolü ekle -->
+    <form id="referenceCoachForm" method="post" enctype="multipart/form-data" role="form">
+        <!-- tc kimlik kontrolü ekle -->
         {% csrf_token %}
 
         <div class="col-lg-12">
@@ -400,9 +440,17 @@
                                             <div class="form-group">
                                                 <label> {{ preRegistrationform.kademe_belge.label }}</label>
                                                 {{ preRegistrationform.kademe_belge }} <br>
-                                                <small><i class="fa fa-link"></i> Sözleşmeniz yoksa sözleşme formunu <a
+                                                <small>
+                                                    <i class="fa fa-link"></i> Sözleşmeniz yoksa sözleşme formunu <a
                                                         href="\static\images\taahhut.pdf" download="">buradan</a>
-                                                    indirerek gönderebilirsiniz.</small>
+                                                    indirerek gönderebilirsiniz.
+                                                </small>
+                                                <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis Sahipleri  Taahhut Formunu <a
+                                                        href="\static\images\taahhut_isletme.pdf" download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
                                             </div>
                                         </div>
 
@@ -410,19 +458,23 @@
                                             <div class="form-group">
                                                 <label> {{ preRegistrationform.sgk.label }}</label>
                                                 {{ preRegistrationform.sgk }} <br>
-                                                <small><i class="fa fa-tags"></i>  e-Devlet üzerinden alınan Bağ-Kur ya da 4A işe giriş çıkış bildirgesi</small>
+                                                <small><i class="fa fa-tags"></i> e-Devlet üzerinden alınan 4A işe giriş
+                                                    çıkış bildirgesi</small>
                                             </div>
                                         </div>
                                         <div class="col-lg-">
                                             <div class="form-group">
                                                 <label> {{ preRegistrationform.dekont.label }}</label>
                                                 {{ preRegistrationform.dekont }} <br>
-                                                <small style="color: #bd2828"><i class="fa fa-file"></i>  Aşağıdaki belgelerden herhangi birini yükleyiniz.</small>
+                                                <small style="color: #bd2828"><i class="fa fa-file"></i> Aşağıdaki
+                                                    belgelerden herhangi birini yükleyiniz.</small>
                                                 <ul>
-                                                    <small><li>Banka Dekontu</li>
-                                                    <li>Kredi Kartı Ekstra Ekran Görüntüsü</li>
-                                                    <li>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</li>
-                                                    <li>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</li></small>
+                                                    <small>
+                                                        <li>Banka Dekontu</li>
+                                                        <li>Kredi Kartı Ekstre Ekran Görüntüsü</li>
+                                                        <li>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</li>
+                                                        <li>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</li>
+                                                    </small>
                                                 </ul>
                                             </div>
                                         </div>
@@ -432,9 +484,19 @@
 
                         </div>
                         <div class="card-footer">
-                            <button class="btn btn-outline-info" type="submit" style="float: right">Onaya
+
+                            <button class="btn btn-outline-info" type="button" style="float: right;" disabled="disabled"
+                                    title="Bilgilerin doğruluğunu onaylamalısınız." id="approvalButton"
+                                    onclick="approvalSend(this)">Onaya
                                 gönder
                             </button>
+
+                            <label style="float: right; margin-right: 20px;">
+                                <input id="checkApproval" type="checkbox" onclick="onChangeHandler()"/> <small>Checkbox'a
+                                yazı yazılacak</small>
+                            </label>
+
+
                         </div>
 
 
@@ -626,6 +688,89 @@
 
 
     })
+</script>
+<script>
+
+    function onChangeHandler() {
+
+        $("#modal-xl").on("shown.bs.modal", function (e) {
+
+        }).modal('show');
+
+        document.getElementById('checkApproval').checked = false;
+
+        if (document.getElementById('modalCheckApproval').checked === true) {
+            document.getElementById('checkApproval').checked = true;
+        } else {
+            document.getElementById('checkApproval').checked = false;
+        }
+
+    }
+
+    function onClickModal() {
+        debugger;
+
+        if (document.getElementById('modalCheckApproval').checked === true) {
+            document.getElementById('checkApproval').checked = true;
+            document.getElementById('approvalButton').disabled = false;
+            document.getElementById('approvalButton').title = ' ';
+        } else {
+            document.getElementById('checkApproval').checked = false;
+            document.getElementById('approvalButton').disabled = true;
+            document.getElementById('approvalButton').title = 'Bilgilerin doğruluğunu onaylamalısınız.';
+        }
+
+    }
+
+</script>
+<script>
+    function approvalSend() {
+        debugger;
+
+        swal({
+            title: "Onaya göndermek istediğinizden emin misiniz?",
+            icon: "warning",
+            buttons: [
+                'Hayır!',
+                'Evet'
+            ],
+        }).then((result) => {
+            if (result.dismiss !== 'Evet') {
+                debugger;
+                var form = $('#referenceCoachForm')[0];
+                var sonuc = true;
+                for (var i = 0; i < form.elements.length; i++) {
+                    if (form.elements[i].value === '' && form.elements[i].hasAttribute('required')) {
+                        if (form.elements[i].type === 'file') {
+                            form.elements[i].style.border = "1px solid red"
+                        }
+                        form.elements[i].style.borderColor = "red";
+                        sonuc = false;
+
+                    } else {
+                        form.elements[i].style.removeProperty('border-color');
+                        form.elements[i].style.removeProperty('border');
+                    }
+                }
+                if (sonuc === true) {
+                    form.submit();
+                } else {
+                    swal({
+                        title: "Zorunlu alanları doldurunuz !.",
+                        icon: "warning",
+                        showCloseButton: true,
+                        closeButtonText: 'Tamam',
+                    })
+                }
+
+
+            }
+
+        })
+
+
+    }
+
 </script>
 </body>
 </html>
