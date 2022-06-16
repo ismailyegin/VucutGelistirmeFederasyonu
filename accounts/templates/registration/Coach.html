@@ -447,8 +447,10 @@
                                                 </small>
                                                 <br>
                                                 <small>
-                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis Sahipleri  Taahhut Formunu <a
-                                                        href="\static\images\taahhut_isletme.pdf" download="">buradan</a>
+                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis
+                                                    Sahipleri Taahhut Formunu <a
+                                                        href="\static\images\taahhut_isletme.pdf"
+                                                        download="">buradan</a>
                                                     İmzalayıp Gönderebilirsiniz.
                                                 </small>
                                             </div>
@@ -492,8 +494,7 @@
                             </button>
 
                             <label style="float: right; margin-right: 20px;">
-                                <input id="checkApproval" type="checkbox" onclick="onChangeHandler()"/> <small>Checkbox'a
-                                yazı yazılacak</small>
+                                <input id="checkApproval" type="checkbox" onclick="onChangeHandler()"/> <small>Taahhütnameyi okudum onaylıyorum.</small>
                             </label>
 
 
@@ -743,6 +744,8 @@
                     if (form.elements[i].value === '' && form.elements[i].hasAttribute('required')) {
                         if (form.elements[i].type === 'file') {
                             form.elements[i].style.border = "1px solid red"
+                        } else if (form.elements[i].tagName.toLowerCase() === 'select') {
+                            form.elements[i].parentElement.style.border = "1px solid red";
                         }
                         form.elements[i].style.borderColor = "red";
                         sonuc = false;
