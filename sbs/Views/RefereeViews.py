@@ -618,6 +618,9 @@ def visa_update(request, visa_uuid, referee_uuid):
     visa = HavaLevel.objects.get(uuid=visa_uuid)
     referee = Referee.objects.get(uuid=referee_uuid)
     visa_form = VisaForm(request.POST or None, request.FILES or None, instance=visa)
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     with transaction.atomic():
         if request.method == 'POST':
             if visa_form.is_valid():
@@ -635,7 +638,7 @@ def visa_update(request, visa_uuid, referee_uuid):
                 messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/update-visa-referee.html',
-                  {'visa_form': visa_form})
+                  {'visa_form': visa_form,'urls':urls,'current_url':current_url,'url_name':url_name})
 
 
 @login_required
@@ -681,6 +684,9 @@ def return_level(request):
         logout(request)
         return redirect('accounts:login')
     category_item_form = CategoryItemForm()
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     with transaction.atomic():
         if request.method == 'POST':
 
@@ -699,7 +705,8 @@ def return_level(request):
                 messages.warning(request, 'Alanları Kontrol Ediniz')
     categoryitem = CategoryItem.objects.filter(forWhichClazz="REFEREE_GRADE", isDeleted=0)
     return render(request, 'TVGFBF/Referee/levels.html',
-                  {'category_item_form': category_item_form, 'categoryitem': categoryitem})
+                  {'category_item_form': category_item_form, 'categoryitem': categoryitem,
+                   'urls':urls,'current_url':current_url,'url_name':url_name})
 
 
 @login_required
@@ -711,6 +718,9 @@ def levelUpdate(request, uuid):
         return redirect('accounts:login')
     categoryItem = CategoryItem.objects.get(uuid=uuid)
     category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     with transaction.atomic():
         if request.method == 'POST':
             if category_item_form.is_valid():
@@ -722,7 +732,8 @@ def levelUpdate(request, uuid):
                 messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/update-level.html',
-                  {'category_item_form': category_item_form})
+                  {'category_item_form': category_item_form,
+                   'urls':urls,'current_url':current_url,'url_name':url_name})
 
 
 def levelDelete(request):
@@ -754,6 +765,9 @@ def gradeList(request):
         logout(request)
         return redirect('accounts:login')
 
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     coa = []
     for item in CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE'):
         coa.append(item.pk)
@@ -761,7 +775,7 @@ def gradeList(request):
                                      isDeleted=0).distinct()
 
     return render(request, 'TVGFBF/Referee/referee-grade-list.html',
-                  {'refereeGrades': grade})
+                  {'refereeGrades': grade,'urls':urls,'current_url':current_url,'url_name':url_name})
 
 
 @login_required
@@ -867,12 +881,15 @@ def visaList(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     coa = []
     for item in CategoryItem.objects.filter(forWhichClazz='VISA_REFEREE'):
         coa.append(item.pk)
     visa = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.VISA).distinct()
     return render(request, 'TVGFBF/Referee/referee-visa-list.html',
-                  {'refereevisas': visa})
+                  {'refereevisas': visa,'urls':urls,'current_url':current_url,'url_name':url_name})
 
 
 @login_required
@@ -921,8 +938,10 @@ def returnVisaSeminar(request):
         logout(request)
         return redirect('accounts:login')
 
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     user = request.user
-
     seminar = VisaSeminar.objects.filter(forWhichClazz='REFEREE', isDeleted=0)
     with transaction.atomic():
         if request.method == 'POST':
@@ -944,7 +963,8 @@ def returnVisaSeminar(request):
                 except:
                     messages.warning(request, 'Lütfen yeniden deneyiniz')
 
-    return render(request, 'TVGFBF/Referee/referee-visa-seminar.html', {'competitions': seminar})
+    return render(request, 'TVGFBF/Referee/referee-visa-seminar.html', {'competitions': seminar,
+                                                                        'urls':urls,'current_url':current_url,'url_name':url_name})
 
 
 @login_required
@@ -954,6 +974,9 @@ def addVisaSeminar(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     visaSeminar = VisaSeminarForm()
     with transaction.atomic():
         if request.method == 'POST':
@@ -971,7 +994,7 @@ def addVisaSeminar(request):
                 messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/add-visa-seminar-referee.html',
-                  {'competition_form': visaSeminar})
+                  {'competition_form': visaSeminar,'urls':urls,'current_url':current_url,'url_name':url_name})
 
 
 @login_required
@@ -1260,8 +1283,11 @@ def referencedListReferee(request):  # Hakem başvuruları
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     referee = ReferenceReferee.objects.all().order_by('status')
-    return render(request, 'TVGFBF/Referee/referenceListReferee.html', {'referees': referee})
+    return render(request, 'TVGFBF/Referee/referenceListReferee.html', {'referees': referee,'urls':urls,'current_url':current_url,'url_name':url_name})
 
 
 @login_required

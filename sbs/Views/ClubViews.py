@@ -517,10 +517,13 @@ def return_preRegistration(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     prepegidtration = ReferenceClub.objects.all().order_by('-creationDate')
     return render(request, 'TVGFBF/Club/referenceClubList.html',
-                  {'prepegidtration': prepegidtration })
+                  {'prepegidtration': prepegidtration, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name })
 
 
 

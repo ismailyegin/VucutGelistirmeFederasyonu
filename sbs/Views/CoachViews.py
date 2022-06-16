@@ -709,6 +709,9 @@ def visa_update(request, visa_uuid, coach_uuid):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     visa = HavaLevel.objects.get(uuid=visa_uuid)
     coach = Coach.objects.get(uuid=coach_uuid)
     visa_form = VisaForm(request.POST or None, request.FILES or None, instance=visa)
@@ -729,7 +732,9 @@ def visa_update(request, visa_uuid, coach_uuid):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Coach/update-visa-coach.html',
-                  {'visa_form': visa_form})
+                  {'visa_form': visa_form, 'urls': urls,
+                   'current_url': current_url,
+                   'url_name': url_name})
 
 
 @login_required
@@ -774,6 +779,9 @@ def return_grade(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     category_item_form = CategoryItemForm()
 
     if request.method == 'POST':
@@ -793,7 +801,9 @@ def return_grade(request):
             messages.warning(request, 'Alanları Kontrol Ediniz')
     categoryitem = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0)
     return render(request, 'TVGFBF/Coach/grades.html',
-                  {'category_item_form': category_item_form, 'categoryitem': categoryitem})
+                  {'category_item_form': category_item_form, 'categoryitem': categoryitem, 'urls': urls,
+                   'current_url': current_url,
+                   'url_name': url_name})
 
 
 @login_required
@@ -803,6 +813,9 @@ def gradeUpdate(request, uuid):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     categoryItem = CategoryItem.objects.get(uuid=uuid)
     category_item_form = CategoryItemForm(request.POST or None, instance=categoryItem)
     if request.method == 'POST':
@@ -815,7 +828,9 @@ def gradeUpdate(request, uuid):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Coach/update-grade.html',
-                  {'category_item_form': category_item_form})
+                  {'category_item_form': category_item_form, 'urls': urls,
+                   'current_url': current_url,
+                   'url_name': url_name})
 
 
 def gradeDelete(request):
@@ -846,7 +861,9 @@ def gradeList(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
-
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     coa = []
     for item in CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'):
         coa.append(item.pk)
@@ -854,7 +871,9 @@ def gradeList(request):
                                      isDeleted=0).distinct()
 
     return render(request, 'TVGFBF/Coach/coach-grade-list.html',
-                  {'coachGrades': grade})
+                  {'coachGrades': grade, 'urls': urls,
+                   'current_url': current_url,
+                   'url_name': url_name})
 
 
 @login_required
@@ -973,12 +992,17 @@ def visaList(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     coa = []
     for item in CategoryItem.objects.filter(forWhichClazz='VISA_COACH'):
         coa.append(item.pk)
     visa = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.VISA, isDeleted=0).distinct()
     return render(request, 'TVGFBF/Coach/coach-visa-list.html',
-                  {'coachvisas': visa})
+                  {'coachvisas': visa, 'urls': urls,
+                   'current_url': current_url,
+                   'url_name': url_name})
 
 
 @login_required
@@ -1055,8 +1079,10 @@ def returnVisaSeminar(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     user = request.user
-
     seminar = VisaSeminar.objects.filter(forWhichClazz='COACH', isDeleted=0)
 
     if request.method == 'POST':
@@ -1080,7 +1106,9 @@ def returnVisaSeminar(request):
             except:
                 messages.warning(request, 'Lütfen yeniden deneyiniz')
 
-    return render(request, 'TVGFBF/Coach/coach-visa-seminar.html', {'competitions': seminar})
+    return render(request, 'TVGFBF/Coach/coach-visa-seminar.html', {'competitions': seminar, 'urls': urls,
+                   'current_url': current_url,
+                   'url_name': url_name})
 
 
 @login_required
@@ -1090,6 +1118,9 @@ def addVisaSeminar(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     visaSeminar = VisaSeminarForm()
     if request.method == 'POST':
         visaSeminar = VisaSeminarForm(request.POST)
@@ -1106,7 +1137,9 @@ def addVisaSeminar(request):
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Coach/add-visa-seminar-coach.html',
-                  {'competition_form': visaSeminar})
+                  {'competition_form': visaSeminar, 'urls': urls,
+                   'current_url': current_url,
+                   'url_name': url_name})
 
 
 @login_required
@@ -1432,8 +1465,13 @@ def antrenor(request):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     coach = ReferenceCoach.objects.all().order_by('status')
-    return render(request, 'TVGFBF/Coach/reference-list-coach.html', {'coaches': coach})
+    return render(request, 'TVGFBF/Coach/reference-list-coach.html', {'coaches': coach, 'urls': urls,
+                   'current_url': current_url,
+                   'url_name': url_name})
 
 
 @login_required

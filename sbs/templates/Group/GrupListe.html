@@ -142,85 +142,77 @@
         <div class="row">
 
             <section class="col-lg-12 ">
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Gruplar</h3>
+                        {% if aktif == 'Admin' %}
+
+                            <a href="{% url "sbs:add_group" %}"
+                               type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
+                                    class="fa fa-plus" title="Yeni Grup Ekle"></i>
+                            </a>
 
 
-                <div class="card-body">
-
-
-                    <div class="card card-info card-outline">
-                        <div class="card-header with-border">
-                            <h3 class="card-title">Gruplar</h3>
-                            {% if aktif == 'Admin' %}
-
-                                <a href="{% url "sbs:add_group" %}"
-                                   type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                        class="fa fa-plus" title="Yeni Grup Ekle"></i>
-                                </a>
-
-
-                            {% endif %}
-                        </div>
-
-                        <div class="card-body">
-                            <table id="company" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>İsim</th>
-                                    <td>İşlemler</td>
-
-
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% if groups.all %}
-                                    {% for group in groups %}
-                                        <tr>
-                                            <td>{{ forloop.counter }} </td>
-                                            <td>{{ group.name }}</td>
-                                            <td>
-
-                                                <div class="btn-group">
-
-
-                                                        {% for item in perm %}
-                                                            {% if item == 'change_group' %}
-                                                               <a style="margin-right: 5px" href="{% url "sbs:change_group" group.pk %}"
-                                                                   class="btn btn-sm btn-outline-warning"> <i
-                                                                        class="fa fa-edit" title="Düzenle"></i> Düzenle
-                                                                </a>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                        {% if aktif == 'Yonetim' or aktif == 'Admin' %}
-                                                            <!-- izin kontrolü yapılacak ! -->
-                                                            <a href="{% url "sbs:change_groupPermission"  group.pk %}"
-                                                               class="btn btn-sm btn-outline-info"> <i
-                                                                    class="fa fa-lock" title="İzinler"></i> İzinler
-                                                            </a>
-
-                                                        {% endif %}
-
-                                                </div>
-
-
-
-                                            </td>
-
-                                        </tr>
-
-                                    {% endfor %}
-                                {% endif %}
-
-
-                                </tbody>
-                            </table>
-
-                        </div>
+                        {% endif %}
                     </div>
-                    <!-- /.card -->
+
+                    <div class="card-body">
+                        <table id="company" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>İsim</th>
+                                <td>İşlemler</td>
 
 
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if groups.all %}
+                                {% for group in groups %}
+                                    <tr>
+                                        <td>{{ forloop.counter }} </td>
+                                        <td>{{ group.name }}</td>
+                                        <td>
+
+                                            <div class="btn-group">
+
+
+                                                    {% for item in perm %}
+                                                        {% if item == 'change_group' %}
+                                                           <a style="margin-right: 5px" href="{% url "sbs:change_group" group.pk %}"
+                                                               class="btn btn-sm btn-outline-warning"> <i
+                                                                    class="fa fa-edit" title="Düzenle"></i> Düzenle
+                                                            </a>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% if aktif == 'Yonetim' or aktif == 'Admin' %}
+                                                        <!-- izin kontrolü yapılacak ! -->
+                                                        <a href="{% url "sbs:change_groupPermission"  group.pk %}"
+                                                           class="btn btn-sm btn-outline-info"> <i
+                                                                class="fa fa-lock" title="İzinler"></i> İzinler
+                                                        </a>
+
+                                                    {% endif %}
+
+                                            </div>
+
+
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+                            {% endif %}
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
                 </div>
+                    <!-- /.card -->
             </section>
 
 

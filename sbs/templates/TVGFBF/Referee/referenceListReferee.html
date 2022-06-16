@@ -191,18 +191,25 @@
         }
     </style>
     <section class="content-header">
-
-
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>Hakem Başvuruları</h1>
                 </div>
-
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {% for url in urls %}
+                            <li class="breadcrumb-item"><a href="{{ url.last }}">{{ url.last_url_name }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ url_name.name }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
             </div>
         </div>
 
     </section>
+
     <section class="content">
         <div id="loading" style="display: none">
 
@@ -214,88 +221,77 @@
 
             <section class="col-lg-12 ">
 
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Hakemler</h3>
 
-                <div class="card-body">
+                        <a href="{% url "sbs:add_referee" %}"
+                           type="button" class="btn btn-outline-info" title="Hakem Ekle" style="float: right">
+                            <i
+                                    class="fa fa-plus"></i>
+                        </a>
+                    </div>
 
+                    <div class="card-body">
+                        <table id="hakemler" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th> Ad Soyad</th>
+                                <th>E-Mail</th>
+                                <th>Onayla</th>
 
-                    <div class="card card-info card-outline">
-                        <div class="card-header with-border">
-                            <h3 class="card-title">Hakemler</h3>
-
-                            <a href="{% url "sbs:add_referee" %}"
-                               type="button" class="btn btn-outline-info" title="Hakem Ekle" style="float: right">
-                                <i
-                                        class="fa fa-plus"></i>
-                            </a>
-                        </div>
-
-                        <div class="card-header with-border">
-
-                        </div>
-
-                        <div class="card-body">
-                            <table id="hakemler" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th> Ad Soyad</th>
-                                    <th>E-Mail</th>
-                                    <th>Onayla</th>
-
-                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                        <th>İncele/Reddet</th>
-                                    {% endif %}
-
-
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% if referees.all %}
-                                    {% for referee in referees %}
-                                        <tr id="refere-{{ referee.pk }}">
-                                            <td>{{ forloop.counter }} </td>
-                                            <td>{{ referee.first_name }} {{ referee.last_name }} </td>
-                                            <td>{{ referee.email }} </td>
-                                            <td>{{ referee.status }}</td>
-                                            <td>
-                                                {% if referee.status == referee.WAITED %}
-                                                    <div class="btn-group">
-                                                        <a onclick="approvalReferee('{{ referee.uuid }}')"
-                                                           type="button" class="btn btn-outline-success"><i
-                                                                class="fa fa-check"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="btn-group">
-                                                        <a href="{% url 'sbs:update-referenceReferee' referee.uuid %}"
-                                                           type="button" class="btn btn-outline-warning"><i
-                                                                class="fa fa-edit" title="Düzenle"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-outline-danger"
-                                                           data-toggle="modal"
-                                                           onclick=deleteReferee('{{ referee.uuid }}')><i
-                                                                class="fa fa-trash" title="Reddet"></i></a>
-                                                    </div>
-
-                                                {% endif %}
-                                            </td>
-
-                                        </tr>
-
-                                    {% endfor %}
+                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                    <th>İncele/Reddet</th>
                                 {% endif %}
 
 
-                                </tbody>
-                            </table>
-                        </div>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if referees.all %}
+                                {% for referee in referees %}
+                                    <tr id="refere-{{ referee.pk }}">
+                                        <td>{{ forloop.counter }} </td>
+                                        <td>{{ referee.first_name }} {{ referee.last_name }} </td>
+                                        <td>{{ referee.email }} </td>
+                                        <td>{{ referee.status }}</td>
+                                        <td>
+                                            {% if referee.status == referee.WAITED %}
+                                                <div class="btn-group">
+                                                    <a onclick="approvalReferee('{{ referee.uuid }}')"
+                                                       type="button" class="btn btn-outline-success"><i
+                                                            class="fa fa-check"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <a href="{% url 'sbs:update-referenceReferee' referee.uuid %}"
+                                                       type="button" class="btn btn-outline-warning"><i
+                                                            class="fa fa-edit" title="Düzenle"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-outline-danger"
+                                                       data-toggle="modal"
+                                                       onclick=deleteReferee('{{ referee.uuid }}')><i
+                                                            class="fa fa-trash" title="Reddet"></i></a>
+                                                </div>
 
+                                            {% endif %}
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+                            {% endif %}
+
+
+                            </tbody>
+                        </table>
                     </div>
-                    <!-- /.box -->
-
 
                 </div>
+                    <!-- /.box -->
             </section>
 
 

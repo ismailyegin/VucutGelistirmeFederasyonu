@@ -40,7 +40,7 @@ def change_permission(request, uuid):
     try:
 
         permission = Permission.objects.get(uuid=uuid)
-        urls = last_urls(request)
+        urlss = last_urls(request)
         current_url = resolve(request.path_info)
         url_name = Permission.objects.get(codename=current_url.url_name)
         permission_form = PermissionForm(request.POST or None, instance=permission)
@@ -73,7 +73,7 @@ def change_permission(request, uuid):
                     error_messages = get_error_messages(permission_form)
                     return render(request, 'Permission/change_permission.html',
                                   {
-                                      'urls': urls,
+                                      'urlss': urlss,
                                       'current_url': current_url,
                                       'url_name': url_name,
                                       'error_messages': error_messages,
@@ -81,7 +81,7 @@ def change_permission(request, uuid):
                                       'code': code
                                   })
             return render(request, 'Permission/change_permission.html',
-                          {'urls': urls,
+                          {'urlss': urlss,
                            'current_url': current_url, 'url_name': url_name,
                            'permission_form': permission_form,
                            'code': code

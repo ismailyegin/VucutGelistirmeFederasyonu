@@ -137,39 +137,33 @@
 
         <div class="row">
             <section class="col-lg-12 ">
-                <div class="card-body">
-
-
-                    <div class="card card-info card-outline">
-                        <div class="card-header with-border">
-                            <h3 class="card-title">İzin Listesi</h3>
-
-                        </div>
-
-                        <div class="card-body">
-                            <table id="permission" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>İsim</th>
-                                    <th>Kod İsmi</th>
-                                    <th>Kod Url</th>
-                                    <th>Menu Alanı</th>
-                                    <th>İşlemler</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-
-
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">İzin Listesi</h3>
 
                     </div>
-                    <!-- /.card -->
 
+                    <div class="card-body">
+                        <table id="permission" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>İsim</th>
+                                <th>Kod İsmi</th>
+                                <th>Kod Url</th>
+                                <th>Menu Alanı</th>
+                                <th>İşlemler</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
+                <!-- /.card -->
             </section>
 
 
@@ -262,7 +256,7 @@
 
 
                             html = '<td><div class="btn-group"> '
-                            html += '<a style="margin-left:5px;" href="' + url + '" class="btn btn-outline-warning" title="Düzenle" type="button"><i class="fa fa-edit"></i>Düzenle</a>';
+                            html += '<a style="margin-left:5px;" href="' + url + '" class="btn btn-outline-warning btn-sm" title="Düzenle" type="button"><i class="fa fa-edit"></i>Düzenle</a>';
                             html += '</div></td>';
 
                             return html;

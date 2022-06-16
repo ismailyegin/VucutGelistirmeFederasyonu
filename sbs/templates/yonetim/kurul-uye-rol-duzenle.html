@@ -78,43 +78,35 @@
 
 
             <section class="col-lg-12 ">
-
-
-                <div class="card-body">
-
-
-                    <div class="card card-info card-outline">
-                        <div class="card-header with-border">
-                            <h3 class="card-title">Üye Rolü Güncelle</h3>
-                        </div>
-                        <!-- /.card-header -->
-                        <!-- form start -->
-                        <form method="post" role="form">
-                            <div class="card-body">
-                                {% csrf_token %}
-
-
-                                <div class="form-group">
-                                    <label> {{ member_role_form.name.label }}</label>
-                                    {{ member_role_form.name }}
-                                    <label for="" id="label_name"></label>
-                                </div>
-
-
-                            </div>
-                            <!-- /.card-body -->
-
-                            <div class="card-footer">
-                                <button type="submit" class="btn btn-outline-info" style="float: right">Kaydet</button>
-                            </div>
-                        </form>
-
-
+                <div class="card card-info card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Üye Rolü Güncelle</h3>
                     </div>
-                    <!-- /.card -->
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form method="post" role="form">
+                        <div class="card-body">
+                            {% csrf_token %}
+
+
+                            <div class="form-group">
+                                <label> {{ member_role_form.name.label }}</label>
+                                {{ member_role_form.name }}
+                                <label for="" id="label_name"></label>
+                            </div>
+
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-outline-info" style="float: right">Kaydet</button>
+                        </div>
+                    </form>
 
 
                 </div>
+                <!-- /.card -->
             </section>
 
 
