@@ -1715,3 +1715,25 @@ def refencedeleteCoach(request):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+@login_required
+def registerCoachDelete(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = ReferenceCoach.objects.get(uuid=request.POST['uuid'])
+            obj.delete()
+
+            log = str(obj.first_name) + " " + str(obj.last_name) + "     Antrenör basvurusu silindi"
+            log = general_methods.logwrite(request, request.user, log)
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except Coach.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

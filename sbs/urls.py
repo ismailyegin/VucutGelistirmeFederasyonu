@@ -271,6 +271,9 @@ urlpatterns = [
     path(r'antrenor/basvuru-reddet', CoachViews.refencedeleteCoach,
          name='refencedeleteCoach'),
 
+    path(r'antrenor/basvuru-sil', CoachViews.registerCoachDelete,
+         name='registerCoachDelete'),
+
     path('hakem/hakem-basvuru', RefereeViews.referencedListReferee, name='referencedListReferee'),
     path('hakem/basvuru-onayla', RefereeViews.refenceapprovalReferee,
          name='refenceapprovalReferee'),
