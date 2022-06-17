@@ -18,5 +18,6 @@ urlpatterns = [
     path('on-kayit/spor-salonu/', views.pre_registration_facility, name='pre_registration_facility'),
     path('on-kayit/sporcu/', views.pre_registration_athelete, name='pre_registration_athelete'),
     path('on-kayit/antrenor/', views.pre_registration_coach_api, name='pre_registration_coach_api'),
+    path('on-kayit/basarili/', views.redirect_register, name='redirect_register'),
 
 ]
