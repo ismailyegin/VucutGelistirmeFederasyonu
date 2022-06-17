@@ -1546,7 +1546,7 @@ def coachreferenceUpdate(request, uuid):
                     veri.save()
 
                     messages.success(request, 'Antrenör Başvurusu Güncellendi')
-                    return redirect("sbs:update-coach-reference", coach.uuid)
+                    return redirect("sbs:coach-application")
                 else:
                     messages.warning(request, 'Alanları Kontrol Ediniz')
                     return redirect("sbs:update-coach-reference", coach.uuid)
