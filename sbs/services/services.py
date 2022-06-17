@@ -577,23 +577,20 @@ def last_urls(request):
             if request.META.get('HTTP_REFERER'):
                 urlpath = urlparse(request.META.get('HTTP_REFERER')).path
                 hostname = urlparse(request.META.get('HTTP_REFERER')).hostname
-                # if hostname == 'kobiltek.com':
-                #     url = urlpath.split('/yekabis/yekabis/')[1]
-                # else:
-                url = urlpath.split('/tvgfbf/')[1]
+                urlx = urlpath.split('/tvgfbf/')[1]
                 for urlpattern in urlpatterns:
 
-                    if str("/".join(str(urlpattern.pattern).split("/", 2))) == str("/".join(str(url).split("/", 2))):
+                    if urlpattern.name == resolve(urlparse(request.META.get('HTTP_REFERER')).path).url_name:
                             last_url_name = urlpattern.name
                             break
 
-                url = {
+                urlx = {
                     'last': request.META.get('HTTP_REFERER'),
                     'last_url_name': Permission.objects.get(codename=last_url_name).name,
                     # 'current': request.get_full_path(),
                     # 'current_name': Permission.objects.get(codename=current_url_name).name,
                 }
-                urls.append(url)
+                urls.append(urlx)
 
             else:
                 url = {
@@ -607,46 +604,6 @@ def last_urls(request):
     except Exception as e:
         traceback.print_exc()
         pass
-
-
-
-
-
-
-
-
-
-
-
-
-# yarisma
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def validate_file_extension(value):  # Aday YEKA eklerken sadece kml ve kmz dosyalarını kayıt etmek
@@ -670,3 +627,5 @@ def validate_file_size(value):  # dosya boyutu kontrolü
         file_size = Settings.objects.get(key='file_size').value
     if value.size > float(file_size) * 1024 * 1024:
         raise ValidationError('Dosya Boyutu Büyük.(Maksimum yüklenmesi gereken dosya boyutu: ' + file_size + ' MB')
+
+
