@@ -34,14 +34,14 @@ class RefereeCoachForm(ModelForm):
         model = ReferenceCoach
         fields = (
             'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
-            'country', 'iban', 'tc', 'profileImage', 'birthDate', 'gender', 'birthplace', 'motherName',
+             'iban', 'tc', 'profileImage', 'birthDate', 'gender', 'birthplace', 'motherName',
         'fatherName','kademe_belge','kademe_startDate','sgk','dekont','belge')
 
 
 
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
-                  'city': 'İl', 'country': 'Ülke', 'tc': 'T.C.', 'gender': 'Cinsiyet','kademe_belge':'Antrenör Sözleşme Belgesi: ',
+                  'city': 'İl',  'tc': 'T.C.', 'gender': 'Cinsiyet','kademe_belge':'Antrenör Sözleşme Belgesi: ',
                   'kademe_startDate':'Kademe Başlangıç Zamanı ','sgk':'SGK/Bağ-Kur Belgesi: ','dekont':'Vize Dekont','belge':'Antrenör Belgesi'}
         widgets = {
 

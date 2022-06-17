@@ -1496,7 +1496,7 @@ def coachreferenceUpdate(request, uuid):
                 clubs = Club.objects.all().exclude(derbis__isnull=True)
 
             coach_form = RefereeCoachForm(request.POST or None, request.FILES or None, instance=coach,
-                                          initial={'kademe_definition': coach.kademe_definition})
+                                          initial={'kademe_definition': coach.kademe_definition,'country':coach.country})
             if request.method == 'POST':
 
                 # mail = request.POST.get('email')
