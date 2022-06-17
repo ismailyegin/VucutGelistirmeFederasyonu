@@ -143,13 +143,13 @@ DATE_INPUT_FORMATS = ('%d-%m-%Y', '%Y-%m-%d')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'webmail.kobiltek.com'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'fatih@kobiltek.com'
-EMAIL_HOST_PASSWORD = 'kobil2013'
 EMAIL_USE_TLS = False
-EMAIL_USE_SSL = False
+EMAIL_USE_SSL = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.tvgfbf.gov.tr'
+EMAIL_PORT = '465'
+EMAIL_HOST_USER = 'kayit@tvgfbf.gov.tr'
+EMAIL_HOST_PASSWORD = 'P5fg@j1Iu)}6'
 
 STATIC_ROOT = ''
 
