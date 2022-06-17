@@ -329,9 +329,7 @@ def referenceCoach(request):
 
                 veri.save()
 
-                messages.success(request,
-                                 'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
-                return redirect("accounts:login")
+                return redirect("accounts:redirect_register")
 
             else:
                 messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
@@ -487,3 +485,7 @@ def pre_registration_coach_api(request):
 
     return render(request, 'registration/coachFromApi.html',
                   {'preRegistrationform': preRegistrationform, 'clubs': clubs})
+
+
+def redirect_register(request):
+    return render(request,'registration/register_redirect_page.html')
