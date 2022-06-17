@@ -1548,6 +1548,7 @@ def coachreferenceUpdate(request, uuid):
                     return redirect("sbs:update-coach-reference", coach.uuid)
                 else:
                     messages.warning(request, 'Alanları Kontrol Ediniz')
+                    return redirect("sbs:update-coach-reference", coach.uuid)
 
             return render(request, 'TVGFBF/Coach/update-coach-application.html',
                           {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club, 'urls': urls,
