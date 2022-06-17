@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+
+from sbs.models.ekabis.Country import Country
 from sbs.models.tvfbf.ReferenceCoach import ReferenceCoach
 from django.contrib.auth.models import User
 from django.forms import ModelForm
@@ -17,6 +19,16 @@ class RefereeCoachForm(ModelForm):
                                                widget=forms.Select(
                                                    attrs={'class': 'form-control select2 select2-hidden-accessible',
                                                           'style': 'width: 100%; '}))
+
+    country = forms.ModelChoiceField(queryset=Country.objects.order_by('-order'),
+                                               to_field_name='name',
+                                               empty_label="Seçiniz",
+                                               label="Ülke",
+                                               required='required',
+                                               widget=forms.Select(
+                                                   attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                                          'style': 'width: 100%; '}))
+
 
     class Meta:
         model = ReferenceCoach
@@ -76,10 +88,7 @@ class RefereeCoachForm(ModelForm):
 
             'city': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                         'style': 'width: 100%;', 'required': 'required'}),
-
-            'country': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                           'style': 'width: 100%;', 'required': 'required'}),
-             'kademe_startDate': forms.DateInput(
+            'kademe_startDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
                        'onkeydown': 'return true',"data-inputmask-alias": "datetime",
                        "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
