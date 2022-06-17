@@ -237,7 +237,7 @@
                                             {% if not grade.isDeleted %}
                                                 <td>{{ forloop.counter }} </td>
                                                 <td>{{ grade.branch }}  </td>
-                                                <td><a href="{{ grade.dekont.url }}" target="_blank">Dekont </a>
+                                                <td>{% if grade.dekont %}<a href="{{ grade.dekont.url }}" target="_blank">Dekont </a> {% endif %}
                                                 <td> {{ date }} </td>
                                                 <td>{% if grade.approval_date %}
                                                     {{ grade.approval_date }}</td>
