@@ -1700,6 +1700,8 @@ def refencedeleteCoach(request):
             html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
             html_content = html_content + '<p>Başvurunuz Reddedilmiştir.</p>'
             html_content = html_content + '<p style="color: red">Reddedilme Nedeni : ' + text + '</p>'
+            html_content = html_content + '<h3 style="color: red">UYARI  !! Bilgilerinizi Doğru ve Güncel Girmediğiniz Takdirde Yasal İşlem Başlatılacaktır.</h3>'
+
             msg = EmailMultiAlternatives(subject, '', from_email, [to])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
