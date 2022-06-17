@@ -233,7 +233,7 @@
                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                     <th>Onay/Red Tarihi</th>
                                     <th>Açıklama</th>
-                                    <th>İncele/Sil</th>
+                                    <th>Onayla/Düzenle/Reddet/Sil</th>
                                 {% endif %}
 
 
@@ -286,8 +286,8 @@
                                                             <i class="fa fa-check"></i>
                                                         </button>
 
-                                                         <button style="margin-left: 5px;" disabled
-                                                           type="button" class="btn btn-outline-warning">
+                                                        <button style="margin-left: 5px;" disabled
+                                                                type="button" class="btn btn-outline-warning">
                                                             <i class="fa fa-edit" title="Başvuru Onaylandı"></i>
                                                         </button>
                                                     {% endif %}
@@ -295,15 +295,19 @@
                                                         <a style="margin-left: 5px;" class="btn btn-outline-danger"
                                                            data-toggle="modal"
                                                            onclick=deleteReferee('{{ coach.uuid }}')>
-                                                            <i class="fa fa-trash" title="Reddet"></i>
+                                                            <i class="fa fa-ban" title="Reddet"></i>
                                                         </a>
                                                     {% else %}
                                                         <button style="margin-left: 5px;" class="btn btn-outline-danger"
                                                                 data-toggle="modal" disabled>
-                                                            <i class="fa fa-trash" title="Başvuru Onaylandı !"></i>
+                                                            <i class="fa fa-ban" title="Başvuru Onaylandı !"></i>
                                                         </button>
                                                     {% endif %}
-
+                                                    <a style="margin-left: 5px;" class="btn btn-outline-danger"
+                                                       data-toggle="modal"
+                                                       onclick=deleteReferenceCoach('{{ coach.uuid }}')>
+                                                        <i class="fa fa-trash" title="Kaydı Sil"></i>
+                                                    </a>
 
                                                 </div>
                                             {% endif %}
@@ -470,6 +474,64 @@
                 }
             })
 
+
+        }
+
+        function deleteReferenceCoach(id) {
+            debugger;
+            console.log(id);
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                if (result.dismiss !== 'Evet') {
+
+                            $.ajax({
+                                url: "{% url "sbs:registerCoachDelete" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    uuid: id,
+
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Antrenör Başvurusu Silindi !!',
+
+                                        })
+
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        }
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-reject').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
+                    });
 
         }
     </script>
