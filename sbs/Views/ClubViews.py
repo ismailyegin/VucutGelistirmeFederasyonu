@@ -210,6 +210,9 @@ def clubUpdate(request, uuid):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     club = Club.objects.get(uuid=uuid)
 
     athletes = Athlete.objects.filter(club=club)
@@ -249,7 +252,8 @@ def clubUpdate(request, uuid):
     return render(request, 'TVGFBF/Club/updateClub.html',
                   {'club_form': club_form, 'communication_form': communication_form, 'clubPersons': clubPersons,
                    'athletes': athletes,
-                   'club': club, 'clubCoachs': clubCoachs})
+                   'club': club, 'clubCoachs': clubCoachs, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name})
 
 
 @login_required

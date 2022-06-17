@@ -1480,6 +1480,9 @@ def coachreferenceUpdate(request, uuid):
     if not perm:
         logout(request)
         return redirect('accounts:login')
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
     try:
         with transaction.atomic():
 
@@ -1547,11 +1550,15 @@ def coachreferenceUpdate(request, uuid):
                     messages.warning(request, 'Alanları Kontrol Ediniz')
 
             return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                          {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club})
+                          {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club, 'urls': urls,
+                   'current_url': current_url,
+                   'url_name': url_name})
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                      {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club})
+                      {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club, 'urls': urls,
+                   'current_url': current_url,
+                   'url_name': url_name})
 
 
 @login_required
