@@ -21,6 +21,7 @@ from reportlab.pdfgen import canvas
 from zeep import Client
 
 from accounts.models import Forgot
+from oxiterp.settings.base import EMAIL_HOST_USER
 from sbs.Forms.CategoryItemForm import CategoryItemForm
 from sbs.Forms.havaspor.GradeFormCoach import GradeFormCoach
 from sbs.Forms.havaspor.CoachSearchForm import CoachSearchForm
@@ -1644,19 +1645,19 @@ def approvelReferenceCoach(request):
                     if referenceCoach.club:
                         referenceCoach.club.coachs.add(coach)
 
-                    # html_content = ''
-                    # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'kayit@tvgfbf.gov.tr', user.email
-                    # html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
-                    # html_content = html_content + '<p>Başvurunuz Onaylanmıştır.</p>'
-                    # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(
-                    #     fdk.user.username) + '</strong></p>'
-                    # html_content = html_content + '<p><strong>Şifreniz :' + str(password) + '</strong></p>'
-                    # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/">https://sbs.tvgfbf.gov.tr/</p></a>'
-                    # msg = EmailMultiAlternatives(subject, '', from_email, [to])
-                    # msg.attach_alternative(html_content, "text/html")
-                    # msg.send()
+                    html_content = ''
+                    subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', EMAIL_HOST_USER, user.email
+                    html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                    html_content = html_content + '<p>Başvurunuz Onaylanmıştır.</p>'
+                    html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(
+                        user.username) + '</strong></p>'
+                    html_content = html_content + '<p><strong>Şifreniz :' + str(password) + '</strong></p>'
+                    html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/">https://sbs.tvgfbf.gov.tr/</p></a>'
+                    msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                    msg.attach_alternative(html_content, "text/html")
+                    msg.send()
 
-                    log = str(user.get_full_name()) + " Antrenor basvurusu onaylandi"
+                    log = str(user.get_full_name()) + " Antrenör başvurusu onaylandi"
                     log = general_methods.logwrite(request, request.user, log)
 
                     return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
@@ -1693,13 +1694,14 @@ def refencedeleteCoach(request):
             obj.definition = text
             obj.save()
 
-            # html_content = ''
-            # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'kayit@tvgfbf.gov.tr', obj.email
-            # html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
-            # html_content = html_content + '<p>Başvurunuz Reddedilmiştir.</p>'
-            # msg = EmailMultiAlternatives(subject, '', from_email, [to])
-            # msg.attach_alternative(html_content, "text/html")
-            # msg.send()
+            html_content = ''
+            subject, from_email, to = 'Bilgi Sistemi Başvuru Sonucu', EMAIL_HOST_USER, obj.email
+            html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
+            html_content = html_content + '<p>Başvurunuz Reddedilmiştir.</p>'
+            html_content = html_content + '<p style="color: red">Reddedilme Nedeni : '+text+'</p>'
+            msg = EmailMultiAlternatives(subject, '', from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
 
             log = str(obj.first_name) + " " + str(obj.last_name) + "     Antrenör basvurusu reddedildi"
             log = general_methods.logwrite(request, request.user, log)

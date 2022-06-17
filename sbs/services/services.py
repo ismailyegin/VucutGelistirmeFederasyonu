@@ -577,7 +577,6 @@ def last_urls(request):
             if request.META.get('HTTP_REFERER'):
                 urlpath = urlparse(request.META.get('HTTP_REFERER')).path
                 hostname = urlparse(request.META.get('HTTP_REFERER')).hostname
-                urlx = urlpath.split('/tvgfbf/')[1]
                 for urlpattern in urlpatterns:
 
                     if urlpattern.name == resolve(urlparse(request.META.get('HTTP_REFERER')).path).url_name:
