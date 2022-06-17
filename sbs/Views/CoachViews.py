@@ -1108,8 +1108,8 @@ def returnVisaSeminar(request):
                 messages.warning(request, 'Lütfen yeniden deneyiniz')
 
     return render(request, 'TVGFBF/Coach/coach-visa-seminar.html', {'competitions': seminar, 'urls': urls,
-                   'current_url': current_url,
-                   'url_name': url_name})
+                                                                    'current_url': current_url,
+                                                                    'url_name': url_name})
 
 
 @login_required
@@ -1471,8 +1471,8 @@ def antrenor(request):
     url_name = Permission.objects.get(codename=current_url.url_name)
     coach = ReferenceCoach.objects.all().order_by('status')
     return render(request, 'TVGFBF/Coach/reference-list-coach.html', {'coaches': coach, 'urls': urls,
-                   'current_url': current_url,
-                   'url_name': url_name})
+                                                                      'current_url': current_url,
+                                                                      'url_name': url_name})
 
 
 @login_required
@@ -1540,8 +1540,7 @@ def coachreferenceUpdate(request, uuid):
                         coachClub = Club.objects.get(derbis=clubDersbis)
                         veri.club = coachClub
                     else:
-                        if coach.club:
-                            veri.club = None
+                        veri.club = None
 
                     veri.save()
 
@@ -1552,14 +1551,14 @@ def coachreferenceUpdate(request, uuid):
 
             return render(request, 'TVGFBF/Coach/update-coach-application.html',
                           {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club, 'urls': urls,
-                   'current_url': current_url,
-                   'url_name': url_name})
+                           'current_url': current_url,
+                           'url_name': url_name})
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return render(request, 'TVGFBF/Coach/update-coach-application.html',
                       {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club, 'urls': urls,
-                   'current_url': current_url,
-                   'url_name': url_name})
+                       'current_url': current_url,
+                       'url_name': url_name})
 
 
 @login_required
@@ -1698,7 +1697,7 @@ def refencedeleteCoach(request):
             subject, from_email, to = 'Bilgi Sistemi Başvuru Sonucu', EMAIL_HOST_USER, obj.email
             html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
             html_content = html_content + '<p>Başvurunuz Reddedilmiştir.</p>'
-            html_content = html_content + '<p style="color: red">Reddedilme Nedeni : '+text+'</p>'
+            html_content = html_content + '<p style="color: red">Reddedilme Nedeni : ' + text + '</p>'
             msg = EmailMultiAlternatives(subject, '', from_email, [to])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
