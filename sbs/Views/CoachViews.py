@@ -1540,7 +1540,8 @@ def coachreferenceUpdate(request, uuid):
                         coachClub = Club.objects.get(derbis=clubDersbis)
                         veri.club = coachClub
                     else:
-                        veri.club = None
+                        if veri.club:
+                            veri.club = None
 
                     veri.save()
 
