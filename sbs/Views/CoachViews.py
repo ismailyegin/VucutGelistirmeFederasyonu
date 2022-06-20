@@ -461,7 +461,7 @@ def add_coach_referee(request, uuid):
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
 
-    grade_form.fields['definition'].queryset = CategoryItem.objects.filter(forWhichClazz='COACH_GRADE')
+
     return render(request, 'TVGFBF/Coach/add-grade-coach.html',
                   {'grade_form': grade_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, })

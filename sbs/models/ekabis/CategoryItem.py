@@ -10,6 +10,7 @@ class CategoryItem(BaseModel):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True)
     isFirst = models.BooleanField(null=True, blank=True)
+    order = models.IntegerField(null=True, blank=True)
 
     def locationSet(self, location, deger):
         deger = str(location.name) + "/" + deger

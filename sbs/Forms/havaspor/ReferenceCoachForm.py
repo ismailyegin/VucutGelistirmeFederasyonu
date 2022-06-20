@@ -11,7 +11,7 @@ from sbs.models.ekabis.CategoryItem import CategoryItem
 
 
 class RefereeCoachForm(ModelForm):
-    kademe_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE'),
+    kademe_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE').order_by('order'),
                                                to_field_name='name',
                                                empty_label="Seçiniz",
                                                label="Kademe",
