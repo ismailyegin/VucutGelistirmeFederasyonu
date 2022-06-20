@@ -16,8 +16,10 @@ from rest_framework.response import Response
 
 from sbs.models import Permission, Coach, Referee, SportFacility
 from sbs.models.ekabis.Logs import Logs
+from sbs.models.tvfbf.Club import Club
 from sbs.models.tvfbf.LogAPIObject import LogAPIObject
 from sbs.models.tvfbf.VisaSeminar import VisaSeminar
+from sbs.serializers.ClubSerializer import ClubResponseSerializer
 from sbs.serializers.CoachSerializers import CoachResponseSerializer
 from sbs.serializers.LogSerializers import LogResponseSerializer
 from sbs.serializers.PermissionSerializers import PermissionResponseSerializer
@@ -138,6 +140,51 @@ class GetPermission(APIView):
         serializer = PermissionResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)
 
+class GetClub(APIView):
+
+    def post(self, request, format=None):
+        draw = request.data['draw']
+        start = request.data['start']
+        length = request.data['length']
+        end = int(start) + int(length)
+
+        globalSearch = request.data['search[value]']
+        name = request.data['columns[1][search][value]']
+        branch = request.data['columns[2][search][value]']
+        city = request.data['columns[4][search][value]']
+        count = Club.objects.all().exclude(name='').count()
+
+        if not (name or branch or city or globalSearch):
+            all_objects = Club.objects.all().exclude(name='').order_by('name')[int(start):end]
+            filteredTotal = Club.objects.all().exclude(name='').count()
+        else:
+            query = Q()
+            if globalSearch:
+                query &= Q(name__icontains=globalSearch) | Q(
+                    communication__city__name__icontains=globalSearch) | Q(
+                    branch__title__icontains=globalSearch)
+            if name:
+                query &= Q(name__icontains=name)
+            if city:
+                query &= Q(communication__city__pk=city)
+            if branch:
+                query &= Q(branch__pk=branch)
+
+            all_objects = Club.objects.filter(query).order_by('name')[int(start):end]
+            filteredTotal = Club.objects.filter(query).count()
+
+        logApiObject = LogAPIObject()
+        logApiObject.data = all_objects
+        logApiObject.draw = int(request.POST['draw'])
+        logApiObject.recordsTotal = int(count)
+        logApiObject.recordsFiltered = int(filteredTotal)
+
+        serializer_context = {
+            'request': request,
+
+        }
+        serializer = ClubResponseSerializer(logApiObject, context=serializer_context)
+        return Response(serializer.data)
 
 class GetCoach(APIView):
 

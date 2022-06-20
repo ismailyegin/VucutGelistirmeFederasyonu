@@ -44,71 +44,22 @@ from sbs.services.services import last_urls
 
 @login_required
 def return_clubs(request):
-    perm = general_methods.control_access_kulup(request)
-    active = general_methods.controlGroup(request)
+    perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    user = request.user
-    clubs = None
-    ClupsSearchForm = ClubSearchForm(request.POST)
-    clubUsers=SportClubUser.objects.filter(isDeleted=False).filter(person__user__is_active=True)
-    cities=City.objects.all()
-    branches=Branch.objects.filter(is_show=True)
+
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
-    if request.method == 'POST':
-
-        if ClupsSearchForm.is_valid():
-            kisi = request.POST['clubUser']
-            branch = request.POST['branch']
-            city = request.POST['city']
-            name = ClupsSearchForm.cleaned_data.get('name')
-            shortName = ClupsSearchForm.cleaned_data.get('shortName')
-            clubMail = ClupsSearchForm.cleaned_data.get('clubMail')
-            if not (kisi or city or name or shortName or clubMail or branch):
-                if active == 'Kulüp Yetkilisi':
-                    clubuser = SportClubUser.objects.get(user=user)
-                    clubs = Club.objects.filter(clubUser=clubuser).filter(isDeleted=False).order_by("-pk")
-                elif active == 'Antrenör':
-                    coach = Coach.objects.get(user=user)
-                    clubs = Club.objects.filter(coachs=coach).filter(isDeleted=False).order_by("-pk")
-                elif active == 'Admin':
-                    clubs = Club.objects.filter(isDeleted=False).order_by("-pk")
-
-
-            else:
-                if kisi != '':
-                    kisi = SportClubUser.objects.get(pk=int(request.POST['clubUser']))
-                if branch != '':
-                    branch = Branch.objects.get(pk=int(request.POST['branch']))
-                if city != '':
-                    city = City.objects.get(pk=int(request.POST['city']))
-                query = Q()
-                if city:
-                    query &= Q(communication__city__name__icontains=city)
-                if name:
-                    query &= Q(name__icontains=name)
-                if clubMail:
-                    query &= Q(clubMail__icontains=clubMail)
-                if shortName:
-                    query &= Q(shortName__icontains=shortName)
-                if branch:
-                    query &= Q(branch=branch)
-                if kisi:
-                    query &= Q(clubUser=kisi)
-                if active == 'Kulüp Yetkilisi':
-                    clubuser = SportClubUser.objects.get(user=user)
-                    clubs = Club.objects.filter(clubUser=clubuser).filter(isDeleted=False).filter(query)
-
-                elif active == 'Yonetim' or active == 'Admin':
-                    clubs = Club.objects.filter(query).filter(isDeleted=False)
+    branches = Branch.objects.all()
+    cities = City.objects.all()
 
     return render(request, 'TVGFBF/Club/clubs.html',
-                  {'clubs': clubs, 'ClupsSearchForm': ClupsSearchForm, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name,'clubUsers':clubUsers,'cities':cities,'branches':branches})
+                  {'urls': urls, 'current_url': current_url,
+                   'url_name': url_name, 'branches': branches, 'cities': cities, })
+
 
 
 @login_required

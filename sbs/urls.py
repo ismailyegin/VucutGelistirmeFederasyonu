@@ -323,6 +323,7 @@ urlpatterns = [
     path('tesis/tesis-onayla/<uuid:uuid>', SportFacilityViews.pre_facility_approve, name='pre_facility_approve'),
     path('tesis/tesis-basvurulari', SportFacilityViews.pre_facility, name='pre_facility'),
 
+    path('kulup/api-kulup-listesi/', APIViews.GetClub.as_view(), name='view_club-api'),
     path('izin/api-izin-listesi/', APIViews.GetPermission.as_view(), name='view_permission-api'),
     path('antrenor/api-antrenor-listesi/', APIViews.GetCoach.as_view(), name='view_coach-api'),
     path('vize-seminar/api-antrenor-listesi/', APIViews.GetCoachForVisaSeminar.as_view(),

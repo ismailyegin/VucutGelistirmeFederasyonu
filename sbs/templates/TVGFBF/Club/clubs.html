@@ -1,5 +1,4 @@
 {% extends 'base_layout.html' %}
-
 {% block content %}
 
     <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
@@ -47,10 +46,6 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-
-
-
-
     {% if messages %}
         {% for message in messages %}
 
@@ -113,7 +108,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-
+                    <h1>Kulüp Listesi</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -135,124 +130,16 @@
             <section class="col-lg-12 ">
 
 
-                <div class="card card-info card-outline">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Kabul Filtrele</h3>
-                    </div>
-                    <form method="post" role="form" enctype="multipart/form-data">
-                        <div class="card-body">
-
-
-                            {% csrf_token %}
-
-
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ ClupsSearchForm.name.label }}</label>
-                                        {{ ClupsSearchForm.name }}
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ ClupsSearchForm.clubMail.label }}</label>
-                                        {{ ClupsSearchForm.clubMail }}
-                                    </div>
-                                </div>
-
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-
-                                        <label for="city">Şehir</label>
-                                        <select class="form-control select2 select2-hidden-accessible"
-                                                style="width: 100%;" data-select2-id="3" tabindex="-1"
-                                                aria-hidden="true" id="city" name="city">
-                                            <option selected value="">----</option>
-
-                                            {% for city in cities %}
-                                                <option value="{{ city.pk }}">{{ city.name }}</option>
-                                            {% endfor %}
-                                        </select>
-
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label for="branch">Branş</label>
-                                        <select class="form-control select2 select2-hidden-accessible"
-                                                style="width: 100%;" data-select2-id="2" tabindex="-1"
-                                                aria-hidden="true" id="branch" name="branch">
-                                            <option selected value="">----</option>
-
-                                            {% for branch in branches %}
-                                                <option value="{{ branch.pk }}">{{ branch.title }}</option>
-                                            {% endfor %}
-                                        </select>
-
-                                    </div>
-                                </div>
-                                {% if aktif == 'Admin' %}
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label for="clubUser">Kulüp Yetkilisi</label>
-                                            <select class="form-control select2 select2-hidden-accessible"
-                                                    style="width: 100%;" data-select2-id="1" tabindex="-1"
-                                                    aria-hidden="true" id="clubUser" name="clubUser">
-
-                                                <option selected value="">----</option>
-                                                {% for clubUser in clubUsers %}
-                                                    <option value="{{ clubUser.pk }}">{{ clubUser.person.user.get_full_name }}</option>
-                                                {% endfor %}
-
-                                            </select>
-                                        </div>
-                                    </div>
-                                {% endif %}
-
-
-                            </div>
-
-
-                            <button class="btn btn-outline-info" type="submit" style="float:right"><i
-                                    class="fa fa-search"></i>
-                            </button>
-
-
-                        </div>
-                    </form>
-                    <div class="card-footer">
-
-
-                    </div>
-
-                    <!-- /.box -->
-
-
-                </div>
-            </section>
-        </div>
-
-
-        <div class="row">
-            <section class="col-lg-12 ">
-
-
                 <div class="card card-outline card-info">
                     <div class="card-header with-border">
                         <h3 class="card-title">Kulüp Listesi</h3>
 
-                        {% for item in perm %}
-                            {% if item == 'add_club' %}
-                                {% if aktif == 'Admin' %}
-                                    <a href="{% url 'sbs:add_club' %}"
-                                       type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                            class="fa fa-plus" title="Yeni Kulüp Ekle"></i>
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
+
+                            <a href="{% url 'sbs:add_club' %}"
+                               type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
+                                    class="fa fa-plus" title="Yeni Kulüp Ekle"></i>
+                            </a>
+
 
                     </div>
 
@@ -261,75 +148,44 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th> Adı</th>
+                                <th>Adı</th>
                                 <th>Branş</th>
                                 <th>Kulüp Yetkilisi</th>
                                 <th>İl</th>
-                                <th>Adres</th>
-                                {# <th>Sporcu sayisi</th>#}
                                 <th>Antrenör sayisi</th>
+                                <th>Düzenle/Sil</th>
 
-                                {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
-                                    <th>Düzenle/Sil</th>
-                                {% endif %}
-
-
+                            </tr>
+                            <tr class="filters" role="row">
+                                <th></th>
+                                <th><input class="form-control" type="text" placeholder="Adı"
+                                           title="test"></th>
+                                <th>
+                                    <select style="width: 100%" id="branch" name="branch"
+                                            class="form-control select2 select2-hidden-accessible"
+                                            tabindex="-1" aria-hidden="true">
+                                        <option value="">Branş Seçiniz</option>
+                                        {% for branch in branches %}
+                                            <option value="{{ branch.pk }}">{{ branch.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </th>
+                                <th></th>
+                                <th>
+                                    <select style="width: 100%" id="city" name="city"
+                                            class="form-control select2 select2-hidden-accessible"
+                                            tabindex="-1" aria-hidden="true">
+                                        <option value="">İl Seçiniz</option>
+                                        {% for city in cities %}
+                                            <option value="{{ city.pk }}">{{ city.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </th>
+                                <th></th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            {% if clubs %}
-
-                                {% for club in clubs %}
-                                    <tr>
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ club.name }}</td>
-                                        <td>{% for branch in club.branch.all %}
-
-                                            <span class="badge badge-info"> {{ branch.title }}</span>
-
-                                        {% endfor %}</td>
-                                        <td>
-                                            {% for member in club.clubUser.all %}
-                                                {% if member.role.name == 'BAŞKAN' %}
-                                                    {{ member.user.get_full_name }}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </td>
-                                        <td>{{ club.communication.city }}</td>
-                                        <td>{{ club.communication.address }}</td>
-                                        <td>{{ club.coachs.count }}</td>
-
-
-                                        {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
-                                            <td>
-
-
-                                                <div class="btn-group">
-                                                    <a href="{% url 'sbs:update_club' club.uuid %}"
-                                                       type="button" class="btn btn-outline-warning"
-                                                       title="Düzenle"> <i
-                                                            class="fa fa-edit" title="Düzenle"></i>
-                                                    </a>
-
-                                                </div>
-                                                <div class="btn-group">
-                                                    <a class="btn btn-outline-danger"
-                                                       data-toggle="modal" title="Sil"
-                                                       onclick=deleteClub('{{ club.uuid }}')><i
-                                                            class="fa fa-trash"></i></a>
-                                                </div>
-
-
-                                            </td>
-                                        {% endif %}
-
-
-                                    </tr>
-
-                                {% endfor %}
-                            {% endif %}
-
-
                             </tbody>
                         </table>
 
@@ -343,20 +199,71 @@
 
         </div>
         <!-- /.row (main row) -->
-
     </section>
 
     {% load  static %}
     <script>
         $(function () {
-            $('#kulupler').DataTable({
+            table = $('#kulupler').DataTable({
+                orderCellsTop: true,
+                fixedHeader: false,
+                initComplete: function () {
+                    var api = this.api();
+
+                    // For each column
+                    api
+                        .columns()
+                        .eq(0)
+                        .each(function (colIdx) {
+                            // Set the header cell to contain the input element
+                            var cell = $('.filters th').eq(
+                                $(api.column(colIdx).header()).index()
+                            );
+
+
+                            // On every keypress in this input
+                            $(
+                                'input',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                                .off('keyup change')
+                                .on('keyup change', function (e) {
+                                    e.stopPropagation();
+
+                                    // Get the search value
+                                    $(this).attr('title', $(this).val());
+                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                    var cursorPosition = this.selectionStart;
+                                    // Search the column for that value
+                                    api
+                                        .column(colIdx)
+                                        .search(
+                                            this.value
+                                        )
+                                        .draw();
+
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                });
+                        });
+                },
+
+                "processing": true,
+                "serverSide": true,
+                "paging": true,
+                "ordering": true,
+
+
+                "ajax": {
+                    "url": "{% url 'sbs:view_club-api' %}",
+                    "type": "POST",
+                    data: {
+                        'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    },
+                },
                 dom: 'Bfrtip',
-
-
-                lengthMenu: [
-                    [10, 25, 50, 100, -1],
-                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
-                ],
 
                 'buttons': [
 
@@ -374,7 +281,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'YEKA LİSTESİ',
+                        title: 'İzin Listesi',
                         text: '<i class="fa fa-print"></i>',
 
                         titleAttr: 'Yazdır',
@@ -398,41 +305,140 @@
                         text: '<i class="fa fa-file-excel"></i>',
                         titleAttr: 'Excel Kaydet',
                         exportOptions: {
-                            columns: [0,1,4,5]
+                            columns: ':visible'
                         }
                     },
 
 
                 ],
-                "search": {
-                    "caseInsensitive": true,
-                },
+
+
                 'language': {
                     "url": "{% static 'datatable_tr/datatable_tr.json' %}"
                 },
-                'paging': true,
-                'lengthChange': true,
-                'searching': true,
-                'order': true,
-                'info': true,
-                'autoWidth': true,
-                'responsive': true,
+                "columns": [
+                    {"data": "id"},
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.name) {
+                                return full.name;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.branch.length > 0) {
+                                var branchs = full.branch
+                                let html1 = ''
+                                for (let i = 0; i < branchs.length; i++) {
+                                    if (branchs[i]) {
+                                        html1 += '<span class="badge badge-info">' + branchs[i].title + '</span>' + ' '
+                                    }
+                                }
+                                return html1;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.clubUser.length > 0) {
+                                var members = full.clubUser
+                                for (let i = 0; i < members.length; i++) {
+                                    if (members[i]) {
+                                        if (members[i].role.name === 'BAŞKAN') {
+                                            return members[i].user.first_name + ' ' + members[i].user.last_name
+                                        }
+                                    }
+                                }
+                                return ''
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.communication) {
+                                if (full.communication.city) {
+                                    return full.communication.city.name;
+                                }
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.coachs) {
+                                return full.coachs.length;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            let html;
+                            let url2 = "deleteClub('" + full.uuid + "')"
+
+                            let url = "{% url "sbs:update_club" '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
+                            url = url.replace('7729c6ee-739d-4a89-8ffe-1357e691ca16', full.uuid);
+
+
+                            html = '<td><div class="btn-group"> '
+
+                            html += '<a style="margin-left:5px;" href="' + url + '" class="btn btn-outline-warning" title="Düzenle" type="button"><i class="fa fa-edit"></i></a>';
+                            html += '<a style="margin-left:5px;" onclick="' + url2 + '" class="btn btn-outline-danger" title="Sil" type="button"><i class="fa fa-trash"></i></a>';
+
+                            html += '</div></td>';
+
+                            return html;
+                        }
+                    }
+
+                ],
+                "search": {
+                    "caseInsensitive": true
+                }
+
+
             });
+            $('#branch').on('change', function () {
+                var select = document.getElementById('branch');
+                var value = select.options[select.selectedIndex].value;
+                table.columns(2).search(value).draw();
+            });
+
+            $('#city').on('change', function () {
+                var select = document.getElementById('city');
+                var value = select.options[select.selectedIndex].value;
+                table.columns(4).search(value).draw();
+            });
+
             table.on('draw.dt', function () {
-                debugger;
+                var info = table.page.info();
                 table.column(0, {
                     search: 'applied',
                     order: 'applied',
                     page: 'applied'
                 }).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1;
+                    cell.innerHTML = i + 1 + info.start;
                 });
             });
 
+
         })
     </script>
-
-
 
     <script>
         function deleteClub(id) {
@@ -482,8 +488,6 @@
 
         }
     </script>
-
-
 
 
 {% endblock %}
