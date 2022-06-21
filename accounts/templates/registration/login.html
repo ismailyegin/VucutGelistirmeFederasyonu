@@ -134,35 +134,40 @@
                 <!-- /.col -->
             </div>
         </form>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-lg-7">
+                <div class="dropdown">
+                    <a class=" dropdown-toggle" type="button" data-toggle="dropdown">Kayıt
+                        Ol
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
 
+                        <li class="dropdown-item"><a href="{% url 'accounts:referee' %} ">Hakem</a></li>
+                        {#  #}
+                        <li class="dropdown-item"><a href="{% url 'accounts:coach' %}">Antrenör</a></li>
+                        {#  {% url 'accounts:coach' %} #}
+                        {#                <li><a href="{% url 'accounts:athlete' %} ">Sporcu</a></li>#}
+                        <li class="dropdown-item"><a href="{% url 'accounts:pre-registration' %} ">Kulüp Üyesi</a></li>
+                        {# {% url 'accounts:pre-registration' %} #}
+                        {#      <li class="divider"></li>#}
+                        <li class="dropdown-item"><a href="{% url 'accounts:pre_registration_facility' %} ">Özel Spor Tesisi</a></li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <a type="button" href="{% url 'accounts:forgot' %} " class="text-center">Şifremi
+                    Unuttum
+                </a>
+            </div>
+        </div>
 
         {#        <a href="{% url 'accounts:forgot' %}" class="text-center">Şifremi Unuttum</a>#}
         {#        <a type="button" href="{% url 'accounts:view_forgot' %} " class="text-center">Şifremi#}
         {#            Unuttum#}
         {#        </a>#}
 
-        <div class="dropdown">
-            <a class=" dropdown-toggle" type="button" data-toggle="dropdown">Kayıt
-                Ol
-                <span class="caret"></span></a>
 
-            <ul class="dropdown-menu">
-
-
-                <li class="dropdown-item"><a href="{% url 'accounts:referee' %} ">Hakem</a></li>
-                {#  #}
-                <li class="dropdown-item"><a href="{% url 'accounts:coach' %}">Antrenör</a></li>
-                {#  {% url 'accounts:coach' %} #}
-                {#                <li><a href="{% url 'accounts:athlete' %} ">Sporcu</a></li>#}
-                <li class="dropdown-item"><a href="{% url 'accounts:pre-registration' %} ">Kulüp Üyesi</a></li>
-                {# {% url 'accounts:pre-registration' %} #}
-                {#      <li class="divider"></li>#}
-                <li class="dropdown-item"><a href="{% url 'accounts:pre_registration_facility' %} ">Özel Spor Tesisi</a></li>
-
-
-
-            </ul>
-        </div>
     </div>
 
 

@@ -3,6 +3,7 @@
 import datetime
 import traceback
 
+from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.staticfiles import finders
 from numpy import unicode
 from zeep import Client
@@ -12,6 +13,7 @@ from django.contrib.auth.models import Group, User
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from accounts.models import Forgot
+from oxiterp.settings.base import EMAIL_HOST_USER
 from sbs.Forms.SportFacilityForm import SportFacilityForm
 from sbs.Forms.havaspor.ReferenCoachApiForm import RefereeCoachApiForm
 from sbs.Forms.havaspor.ReferenceAthleteForm import ReferenceAthleteForm
@@ -124,43 +126,88 @@ def login(request):
 
     return render(request, 'registration/login.html')
 
+def updateUrlProfile(request):
+    if request.method == 'GET':
+        try:
+            data = request.GET.get('query')
+            gelen = Forgot.objects.get(uuid=data)
+            user = gelen.user
+            password_form = SetPasswordForm(user)
+
+            gelen.status = True
+            gelen.save()
+            return render(request, 'registration/newPassword.html',
+                              {'password_form': password_form})
+
+        except:
+            return redirect('accounts:login')
+
+    if request.method == 'POST':
+        try:
+            gelen = Forgot.objects.get(uuid=request.GET.get('query'))
+            password_form = SetPasswordForm(gelen.user, request.POST)
+            user = gelen.user
+            if password_form.is_valid():
+                user.set_password(password_form.cleaned_data['new_password1'])
+                user.save()
+                # zaman kontrolüde yapilacak
+                gelen.status = True
+                messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
+
+                return redirect('accounts:login')
+
+
+            else:
+
+                messages.warning(request, 'Alanları Kontrol Ediniz')
+                return render(request, 'registration/newPassword.html',
+                              {'password_form': password_form})
+        except:
+            return redirect('accounts:login')
+
+    return render(request, 'accounts/index.html')
+
 
 def forgot(request):
+
     if request.method == 'POST':
         mail = request.POST.get('username')
         userfilter = {
             'username': mail
         }
-        if UserService(request, userfilter):
-            user = UserGetService(request, userfilter)
-            user.is_active = True
-            user.save()
+        active = UserGetService(request, userfilter)
+        if active.is_active == True:
 
-            fdk = Forgot(user=user, status=False)
-            fdk.save()
+            if UserService(request, userfilter):
+                user = UserGetService(request, userfilter)
+                user.is_active = True
+                user.save()
 
-            html_content = ''
-            subject, from_email, to = 'Ysbs Kullanıcı Bilgileri', 'fatih@kobiltek.com', mail
-            html_content = '<h2>Ysbs</h2>'
-            html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-            html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://127.0.0.1:8000/newpassword?query=' + str(
-                fdk.uuid) + '">/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
-            # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="http://sbs.badminton.gov.tr/newpassword?query=' + str(
-            #     fdk.uuid) + '">http://sbs.badminton.gov.tr/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+                fdk = Forgot(user=user, status=False)
+                fdk.save()
 
-            msg = EmailMultiAlternatives(subject, '', from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+                html_content = ''
+                subject, from_email, to = 'TVGFBF Bilgi Sistemi Kullanıcı Bilgileri', EMAIL_HOST_USER, mail
+                html_content = '<h2>Türkiye Vücut Geliştirme, Fitness ve Bilek Güreşi Federasyonu</h2>'
+                html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
+                html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
+                     fdk.uuid) + '">https://sbs.tvgfbf.gov.tr/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+                #html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
+                #    fdk.uuid) + '">https://sbs.tvgfbf.gov.tr/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
 
-            log = str(user.get_full_name()) + "yeni şifre emaili gönderildi"
-            log = general_methods.logwrite(request, fdk.user, log)
+                msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
 
-            messages.success(request, "Giriş bilgileriniz mail adresinize gönderildi. ")
-            return redirect("accounts:login")
+                log = str(user.get_full_name()) + "yeni şifre emaili gönderildi"
+                log = general_methods.logwrite(request, fdk.user, log)
+
+                return redirect("accounts:redirect_password_update")
+            else:
+                messages.warning(request, "Geçerli bir mail adresi giriniz.")
+                return redirect("accounts:view_forgot")
         else:
-            messages.warning(request, "Geçerli bir mail adresi giriniz.")
-            return redirect("accounts:view_forgot")
-
+            return redirect("accounts:redirect_active_user")
     return render(request, 'registration/forgot-password.html')
 
 
@@ -541,3 +588,9 @@ def pre_registration_coach_api(request):
 
 def redirect_register(request):
     return render(request, 'registration/register_redirect_page.html')
+
+def redirect_password_update(request):
+    return render(request, 'registration/password-update-page.html')
+
+def redirect_active_user(request):
+    return render(request, 'registration/active_user.html')
