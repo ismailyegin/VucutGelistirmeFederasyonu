@@ -23,7 +23,81 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <div class="modal modal-primary fade in deneme22" tabindex="-1" role="dialog" id="modal-primary"
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header orange">
+                    <h4 class="modal-title">Uyarı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfApproval"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Onaylanma Tarihi</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <input type="date" name="dateOfApprovalText" id="dateOfApprovalText" class="form-control datemask"
+                           required="required" autocomplete="off">
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" id="btn-closereddet-approval">İptal</button>
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-gonder-approval"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfReject"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Reddedilme Açıklaması</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <label for="dateOfRejectDate">Tarih</label>
+                    <input type="date" name="dateOfRejectDate" id="dateOfRejectDate" class="form-control datemask"
+                           required="required" autocomplete="off">
+                    <label for="dateOfRejectText">Açıklama</label>
+                    <input type="text" name="dateOfRejectText" id="dateOfRejectText" class="form-control"
+                           required="required" placeholder="Reddedilme Sebebi">
+
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" id="btn-closereddet-reject">İptal</button>
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-gonder-reject"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-danger fade in deneme223" tabindex="-1" role="dialog" id="modal-delete"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -51,7 +125,7 @@
         {% for message in messages %}
 
             <div id="toast-container" class="toasts-top-right">
-                {% if message.tags == 'primary' %}
+                {% if message.tags == 'warning' %}
                     <div class="toast toast-error" aria-live="polite" style="" id="toast">
                         <div class="toast-message">
                             {% for message in messages %}
@@ -80,14 +154,40 @@
 
 
     {% endif %}
+
+    <style>
+        #loading {
+            position: fixed;
+            display: block;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            text-align: center;
+            opacity: 0.7;
+            background-color: #fff;
+            z-index: 100;
+        }
+
+        #loading-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 100;
+        }
+    </style>
+
     <section class="content-header">
 
 
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Antrenör Kayıt Düzenle</h1>
+
+                             <h1>Antrenör Kayıt Düzenle</h1>
+
                 </div>
+
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         {% for url in urls %}
@@ -112,6 +212,7 @@
                         <div class="card card-info card-outline">
                             <div class="card-header with-border">
                                 <h3 class="card-title">Kişi Bilgileri </h3>
+
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -196,7 +297,7 @@
                                                     class="form-control select2 select2-hidden-accessible"
                                                     style="width: 100%;"
                                                     data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                                <option  value="">Kulüpte çalışmıyorum</option>
+                                                <option value="">Kulüpte çalışmıyorum</option>
                                                 {% if current_club %}
                                                     <option selected
                                                             value="{{ current_club.derbis }}">{{ current_club.name }}</option>
@@ -305,12 +406,247 @@
 
                 </div>
                 <div class="card-footer">
+                       {% if aktif == 'Admin' %}
+                                    <div class="btn-group" style="float: left">
+                                        {% if coach.status == coach.WAITED or coach.status == coach.DENIED %}
+                                            <a onclick="approvalCoach('{{ coach.uuid }}')" title="Onayla"
+                                               type="button" class="btn btn-outline-success">
+                                                <i class="fa fa-check"></i>Onayla
+                                            </a>
+
+                                        {% else %}
+                                            <button disabled title="Başvuru Zaten Onaylandı"
+                                                    type="button" class="btn btn-outline-success">
+                                                <i class="fa fa-check"></i>
+                                            </button>
+
+                                        {% endif %}
+                                        {% if coach.status != coach.APPROVED %}
+                                            <a style="margin-left: 5px;" class="btn btn-outline-danger"
+                                               data-toggle="modal"
+                                               onclick=deleteReferee('{{ coach.uuid }}')>
+                                                <i class="fa fa-ban" title="Reddet"></i> Reddet
+                                            </a>
+                                        {% else %}
+                                            <button style="margin-left: 5px;" class="btn btn-outline-danger"
+                                                    data-toggle="modal" disabled>
+                                                <i class="fa fa-ban" title="Başvuru Onaylandı !"></i> Onayla
+                                            </button>
+                                        {% endif %}
+                                        <a style="margin-left: 5px;" class="btn btn-outline-danger"
+                                           data-toggle="modal"
+                                           onclick=deleteReferenceCoach('{{ coach.uuid }}')>
+                                            <i class="fa fa-trash" title="Kaydı Sil"></i> Sil
+                                        </a>
+
+                                    </div>
+                                {% endif %}
                     <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
                 </div>
             </form>
         </div>
 
     </section>
+
+    <script>
+        function deleteReferee(id) {
+            debugger;
+            console.log(id);
+            swal({
+                title: "Reddetmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                if (result.dismiss !== 'Evet') {
+                    $("#dateOfReject").on("shown.bs.modal", function (e) {
+
+                        $("#btn-gonder-reject").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:refencedeleteCoach" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    uuid: id,
+                                    dateOfReject: $('#dateOfRejectDate').val(),
+                                    textOfReject: $('#dateOfRejectText').val(),
+
+
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Antrenör Başvurusu Reddedildi !!',
+
+                                        })
+
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-reject').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
+                    });
+                }
+            })
+
+
+        }
+
+        function deleteReferenceCoach(id) {
+            debugger;
+            console.log(id);
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                if (result.dismiss !== 'Evet') {
+
+                    $.ajax({
+                        url: "{% url "sbs:registerCoachDelete" %}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False',
+                            uuid: id,
+
+                        },
+                        success: function (result) {
+                            if (result.status === 'Success') {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Antrenör Başvurusu Silindi !!',
+
+                                })
+
+                            } else {
+                                swal({
+                                    icon: 'error',
+                                    title: 'işlem başarısız oldu.',
+
+                                })
+                            }
+                            location.reload();
+
+                        }
+                    });
+                }
+
+
+            }).modal('show');
+            $('#btn-closereddet-reject').click(function () {
+                console.log('buradan çık')
+
+                $('#modal-warning').modal('hide');
+                $('.modal').modal('hide');
+
+            });
+
+        }
+
+        function approvalCoach(id) {
+            $('#loading').show()
+            debugger;
+            console.log(id);
+            swal({
+                title: "Onaylamak istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                if (result.dismiss !== 'Evet') {
+                    $("#dateOfApproval").on("shown.bs.modal", function (e) {
+
+                        $("#btn-gonder-approval").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:approvel-coach-application" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    uuid: id,
+                                    dateOfApproval: $('#dateOfApprovalText').val(),
+                                },
+                                success: function (result) {
+
+                                    if (result.status === 'Success') {
+
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Antrenör başarıyla onaylandı !!',
+
+                                        })
+
+
+                                    } else {
+
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
+
+                                        })
+
+                                    }
+
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-approval').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+                        $('#loading').hide()
+                    });
+                }
+                $('#loading').hide()
+
+            })
+
+
+        }
+
+    </script>
+
 
 {% endblock %}
 

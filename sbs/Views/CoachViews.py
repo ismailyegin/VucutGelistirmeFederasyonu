@@ -1468,10 +1468,10 @@ def antrenor(request):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
-    coach = ReferenceCoach.objects.all().order_by('status')
-    return render(request, 'TVGFBF/Coach/reference-list-coach.html', {'coaches': coach, 'urls': urls,
+    status=ReferenceCoach.STATUS_CHOICES
+    return render(request, 'TVGFBF/Coach/reference-list-coach.html', {'urls': urls,
                                                                       'current_url': current_url,
-                                                                      'url_name': url_name})
+                                                                      'url_name': url_name,'status':status})
 
 
 @login_required

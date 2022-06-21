@@ -25,6 +25,7 @@ from sbs.serializers.CoachSerializers import CoachResponseSerializer
 from sbs.serializers.LogSerializers import LogResponseSerializer
 from sbs.serializers.PermissionSerializers import PermissionResponseSerializer
 from sbs.serializers.RefereeSerializers import RefereeResponseSerializer
+from sbs.serializers.ReferenceCoachSerializers import ReferenceCoachResponseSerializer
 from sbs.serializers.SportFacilitySerializers import SportFacilityResponseSerializer
 from sbs.serializers.UserSerializers import UserResponseSerializer
 from sbs.services import general_methods
@@ -244,6 +245,64 @@ class GetCoach(APIView):
         }
         serializer = CoachResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)
+
+
+class GetReferenceCoach(APIView):
+
+    def post(self, request, format=None):
+        draw = request.data['draw']
+        start = request.data['start']
+        length = request.data['length']
+        end = int(start) + int(length)
+
+        globalSearch = request.data['search[value]']
+        first_name = request.data['columns[1][search][value]']
+        last_name = request.data['columns[2][search][value]']
+        email = request.data['columns[3][search][value]']
+        tc = request.data['columns[4][search][value]']
+        status = request.data['columns[5][search][value]']
+
+        coaches = ReferenceCoach.objects.none()
+
+        coaches = ReferenceCoach.objects.filter(isDeleted=False).order_by('-status')
+        count = coaches.count()
+
+        if not (first_name or last_name or email or tc or status or globalSearch):
+            all_objects = coaches.order_by('-status')[int(start):end]
+            filteredTotal = coaches.count()
+        else:
+            query = Q()
+            if globalSearch:
+                query &= Q(first_name__icontains=globalSearch) | Q(
+                    last_name__icontains=globalSearch) | Q(
+                    tc=globalSearch) | Q(
+                   status__icontains=globalSearch)
+            if first_name:
+                query &= Q(first_name__icontains=first_name)
+            if last_name:
+                query &= Q(last_name__icontains=last_name)
+            if email:
+                query &= Q(email__icontains=email)
+            if tc:
+                query &= Q(tc__icontains=tc)
+            if status:
+                query &= Q(status__icontains=status)
+
+            all_objects = coaches.filter(query).order_by('-status')[int(start):end]
+            filteredTotal = coaches.filter(query).count()
+
+        logApiObject = LogAPIObject()
+        logApiObject.data = all_objects
+        logApiObject.draw = int(request.POST['draw'])
+        logApiObject.recordsTotal = int(count)
+        logApiObject.recordsFiltered = int(filteredTotal)
+
+        serializer_context = {
+            'request': request,
+        }
+        serializer = ReferenceCoachResponseSerializer(logApiObject, context=serializer_context)
+        return Response(serializer.data)
+
 
 
 class GetCoachForVisaSeminar(APIView):
