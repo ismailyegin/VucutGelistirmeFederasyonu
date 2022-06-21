@@ -1,3 +1,4 @@
+import datetime
 import json
 import time
 import traceback
@@ -14,7 +15,7 @@ from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from sbs.models import Permission, Coach, Referee, SportFacility
+from sbs.models import Permission, Coach, Referee, SportFacility, ReferenceCoach
 from sbs.models.ekabis.Logs import Logs
 from sbs.models.tvfbf.Club import Club
 from sbs.models.tvfbf.LogAPIObject import LogAPIObject
@@ -53,6 +54,8 @@ class GetLog(APIView):
             'request': request,
 
         }
+
+
 class GetUser(APIView):
 
     def post(self, request, format=None):
@@ -493,7 +496,7 @@ def TransmissionCoachDetail(request, tc):
     try:
         with transaction.atomic():
             id = tc
-            url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/FederasyonaGoreAntrenorBelgeDetayGetir?tc='+id+''
+            url = 'https://servis3.gsb.gov.tr/SporFedProtokol/api/FederasyonServisleri/FederasyonaGoreAntrenorBelgeDetayGetir?tc=' + id + ''
 
             payload = {}
             files = {}
@@ -505,8 +508,121 @@ def TransmissionCoachDetail(request, tc):
             y = json.loads(response.text)
             result = []
             if y['Data']:
-              return  y['Data']
+                return y['Data']
 
+
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:return_clubs')
+
+
+def GetCurrentRegister(request):
+    try:
+        with transaction.atomic():
+            if request.method == 'POST':
+                tcKimlikNo = request.POST['tcKimlikNo']
+                info = None
+                if ReferenceCoach.objects.filter(tc=tcKimlikNo):
+                    register_info = ReferenceCoach.objects.get(tc=tcKimlikNo)
+                    if register_info.status != 'Reddedildi':
+                        return JsonResponse(
+                            {'status': 'Fail', 'msg': 'Güncellenecek kaydınız bulunmamaktadır.',
+                             'result': info,
+                             })
+                    date = register_info.birthDate
+                    birthDate = datetime.datetime.strptime(str(date), "%Y-%m-%d").strftime("%d-%m-%Y")
+                    if register_info.profileImage:
+                        profileImage = register_info.profileImage.url
+                    else:
+                        profileImage = ''
+                    if register_info.belge:
+                        belge = register_info.belge.url
+                    else:
+                        belge = ''
+                    if register_info.birthplace:
+                        birthplace = register_info.birthplace
+                    else:
+                        birthplace = ''
+                    if register_info.iban:
+                        iban = register_info.iban
+                    else:
+                        iban = ''
+                    if register_info.club:
+                        club = register_info.club.name
+                    else:
+                        club = ''
+                    if register_info.city:
+                        city = register_info.city.name
+                    else:
+                        city = ''
+                    if register_info.country:
+                        country = register_info.country.name
+                    else:
+                        country = ''
+                    if register_info.kademe_definition:
+                        kademe_definition = register_info.kademe_definition.name
+                    else:
+                        kademe_definition = ''
+                    if register_info.kademe_belge:
+                        kademe_belge = register_info.kademe_belge.url
+                    else:
+                        kademe_belge = ''
+                    if register_info.sgk:
+                        sgk = register_info.sgk.url
+                    else:
+                        sgk = ''
+                    if register_info.dekont:
+                        dekont = register_info.dekont.url
+                    else:
+                        dekont = ''
+                    if register_info.definition:
+                        definition = register_info.definition
+                    else:
+                        definition = ''
+                    if register_info.phoneNumber:
+                        phoneNumber = register_info.phoneNumber
+                    else:
+                        phoneNumber = ''
+                    if register_info.phoneNumber2:
+                        phoneNumber2 = register_info.phoneNumber2
+                    else:
+                        phoneNumber2 = ''
+                    if register_info.address:
+                        address = register_info.address
+                    else:
+                        address = ''
+
+                    info = {}
+                    info['profilImage'] = profileImage
+                    info['first_name'] = register_info.first_name
+                    info['last_name'] = register_info.last_name
+                    info['birthplace'] = birthplace
+                    info['iban'] = iban
+                    info['belge'] = belge
+                    info['birthDate'] = birthDate
+                    info['gender'] = register_info.gender
+                    info['club'] = club
+                    info['email'] = register_info.email
+                    info['country'] = country
+                    info['phoneNumber'] = phoneNumber
+                    info['city'] = city
+                    info['phoneNumber2'] = phoneNumber2
+                    info['address'] = address
+                    info['kademe_definition'] = kademe_definition
+                    info['kademe_belge'] = kademe_belge
+                    info['sgk'] = sgk
+                    info['dekont'] = dekont
+                    info['definition'] = definition
+
+                if info:
+                    return JsonResponse({'status': 'Success',
+                                         'result': info,
+                                         })
+                else:
+                    return JsonResponse(
+                        {'status': 'Fail', 'msg': 'Bu Tc kimlik  numarasına ait bir kayıt bulunamadı.',
+                         'result': info,
+                         })
 
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
