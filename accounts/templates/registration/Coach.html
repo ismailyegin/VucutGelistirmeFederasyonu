@@ -330,9 +330,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
-                <h4 id="redNedeni" style="display: none;"></h4>
-            </div>
+
         </div>
 
     </div>
@@ -357,6 +355,7 @@
                             <h3 class="card-title">Kişi Bilgileri </h3>
                         </div>
                         <div class="card-body">
+                           </h4>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
@@ -600,6 +599,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
+                        <h5 id="redNedeni" style="display: none;float: left;color: red"></h5>
                         <button id="currentTC" class="btn btn-outline-info" onclick="GetCurrentRegister()"
                                 type="button"
                                 style="float: right;">Devam Et
@@ -1341,7 +1341,8 @@
                         let info = result['result']
                         document.getElementById('updateRegister').style.display = 'block'
                         document.getElementById('redNedeni').style.display = 'block'
-                        document.getElementById('redNedeni').innerHTML = 'Red Nedeni : ' + info.definition
+
+                        document.getElementById('redNedeni').innerHTML = 'Başvurunun Reddedilme Nedeni : ' + info.definition.toUpperCase()
                         document.getElementById('updateProfileImageValue').href = info.profilImage
                         document.getElementById('updateProfileImageValue').innerHTML = info.profilImage
                         document.getElementById('firstNameUpdate').value = info.first_name
