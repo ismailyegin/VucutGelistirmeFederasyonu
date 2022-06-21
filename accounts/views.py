@@ -289,7 +289,7 @@ def referenceCoach(request):
     clubs = Club.objects.all().exclude(derbis__isnull=True)
     countries = Country.objects.all()
     cities = City.objects.all()
-    grades = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0)
+    grades = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).order_by('order')
     try:
 
         if request.method == 'POST':
@@ -380,11 +380,12 @@ def referenceCoach(request):
                     currentCoach.sgk = request.FILES.get('sgkUpdate')
                 if request.FILES.get('dekontUpdate'):
                     currentCoach.dekont = request.FILES.get('dekontUpdate')
+                currentCoach.status=currentCoach.WAITED
                 currentCoach.save()
 
                 messages.success(request, 'Başvurunuz başarıyla güncellenmiştir.')
 
-                return redirect("accounts:login")
+                return redirect("accounts:redirect_register")
 
         return render(request, 'registration/Coach.html',
                       {'preRegistrationform': coach_form, 'clubs': clubs, 'taahhut': x, 'countries': countries,

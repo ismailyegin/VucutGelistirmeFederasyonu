@@ -1401,8 +1401,15 @@
                         document.getElementById('addressUpdate').innerHTML = info.address
 
                         var grade = document.getElementById('gradeUpdate')
-                        grade.options[grade.options.length] = new Option(info.kademe_definition, info.kademe_definition + '1');
-                        grade.value = info.kademe_definition + '1'
+                        for (var i = 0; i < grade.length; i++) {
+                            if (grade.options[i].value === info.kademe_definition) {
+                                grade.remove(i);
+                            }
+                        }
+                        grade.options[grade.options.length] = new Option(info.kademe_definition, info.kademe_definition);
+                        grade.value = info.kademe_definition
+
+
 
                         document.getElementById('kademeBelgeUpdateValue').href = info.kademe_belge
                         document.getElementById('kademeBelgeUpdateValue').innerHTML = info.kademe_belge
