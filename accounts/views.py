@@ -152,10 +152,7 @@ def updateUrlProfile(request):
                 user.save()
                 # zaman kontrolüde yapilacak
                 gelen.status = True
-                messages.success(request, 'Şifre Başarıyla Güncellenmiştir.')
-
-                return redirect('accounts:login')
-
+                return redirect("accounts:redirect_newpassword")
 
             else:
 
@@ -594,3 +591,6 @@ def redirect_password_update(request):
 
 def redirect_active_user(request):
     return render(request, 'registration/active_user.html')
+
+def redirect_newpassword(request):
+    return render(request, 'registration/redirect_newpassword.html')
