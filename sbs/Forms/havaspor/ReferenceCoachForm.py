@@ -11,46 +11,44 @@ from sbs.models.ekabis.CategoryItem import CategoryItem
 
 
 class RefereeCoachForm(ModelForm):
-    kademe_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE',isDeleted=False).order_by('order'),
-                                               to_field_name='name',
-                                               empty_label="Seçiniz",
-                                               label="Kademe",
-                                               required='required',
-                                               widget=forms.Select(
-                                                   attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                                          'style': 'width: 100%; '}))
+    kademe_definition = forms.ModelChoiceField(
+        queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE', isDeleted=False).order_by('order'),
+        to_field_name='name',
+        empty_label="Seçiniz",
+        label="Kademe",
+        required='required',
+        widget=forms.Select(
+            attrs={'class': 'form-control select2 select2-hidden-accessible',
+                   'style': 'width: 100%; '}))
 
     country = forms.ModelChoiceField(queryset=Country.objects.order_by('-order'),
-                                               to_field_name='name',
-                                               empty_label="Seçiniz",
-                                               label="Ülke",
-                                               required='required',
-                                               widget=forms.Select(
-                                                   attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                                          'style': 'width: 100%; '}))
-
+                                     to_field_name='name',
+                                     empty_label="Seçiniz",
+                                     label="Ülke",
+                                     required='required',
+                                     widget=forms.Select(
+                                         attrs={'class': 'form-control select2 select2-hidden-accessible',
+                                                'style': 'width: 100%; '}))
 
     class Meta:
         model = ReferenceCoach
         fields = (
             'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
-             'iban', 'tc', 'profileImage', 'birthDate', 'gender', 'birthplace', 'motherName',
-        'fatherName','kademe_belge','kademe_startDate','sgk','dekont','belge')
-
-
+            'iban', 'tc', 'profileImage', 'birthDate', 'gender', 'birthplace', 'motherName',
+            'fatherName', 'kademe_belge', 'sgk', 'dekont', 'belge')
 
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
-                  'city': 'İl',  'tc': 'T.C.', 'gender': 'Cinsiyet','kademe_belge':'Antrenör Sözleşme Belgesi: ',
-                  'kademe_startDate':'Kademe Başlangıç Zamanı ','sgk':'SGK/Bağ-Kur Belgesi: ','dekont':'Vize Dekont','belge':'Antrenör Belgesi'}
+                  'city': 'İl', 'tc': 'T.C.', 'gender': 'Cinsiyet', 'kademe_belge': 'Antrenör Sözleşme Belgesi: ',
+                  'sgk': 'SGK/Bağ-Kur Belgesi: ', 'dekont': 'Vize Dekont', 'belge': 'Antrenör Belgesi'}
         widgets = {
 
             'tc': forms.TextInput(attrs={'class': 'form-control ',
-                                            'onkeyup': 'if(this.value.length >11){this.value=this.value.substr(0, 11);}',
-                                            'id': 'tc',
-                                          'onkeypress':'return isNumberKey(event)',
-                                            'value': '',
-                                            'required': 'required'}),
+                                         'onkeyup': 'if(this.value.length >11){this.value=this.value.substr(0, 11);}',
+                                         'id': 'tc',
+                                         'onkeypress': 'return isNumberKey(event)',
+                                         'value': '',
+                                         'required': 'required'}),
 
             'birthplace': forms.TextInput(
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
@@ -61,9 +59,11 @@ class RefereeCoachForm(ModelForm):
             'fatherName': forms.TextInput(
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
             'iban': forms.TextInput(
-                attrs={'id':'iban','class': 'form-control  iban','onkeyup':'if(this.value.length > 34){this.value=this.value.substr(0, 34);}','value': '', 'required': 'required'}),
+                attrs={'id': 'iban', 'class': 'form-control  iban',
+                       'onkeyup': 'if(this.value.length > 34){this.value=this.value.substr(0, 34);}', 'value': '',
+                       'required': 'required'}),
 
-             'birthDate': forms.DateInput(
+            'birthDate': forms.DateInput(
                 attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
                        'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
                        "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
@@ -88,10 +88,6 @@ class RefereeCoachForm(ModelForm):
 
             'city': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                         'style': 'width: 100%;', 'required': 'required'}),
-            'kademe_startDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
-                       'onkeydown': 'return true',"data-inputmask-alias": "datetime",
-                       "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
 
         }
 
