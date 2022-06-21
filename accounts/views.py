@@ -191,7 +191,7 @@ def forgot(request):
                 html_content = '<h2>Türkiye Vücut Geliştirme, Fitness ve Bilek Güreşi Federasyonu</h2>'
                 html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
                 html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
-                     fdk.uuid) + '">https://sbs.tvgfbf.gov.tr/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+                     fdk.uuid) + '">href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(fdk.uuid) + '</p></a>'
                 #html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
                 #    fdk.uuid) + '">https://sbs.tvgfbf.gov.tr/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
 
