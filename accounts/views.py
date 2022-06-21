@@ -255,11 +255,11 @@ def referenceReferee(request):
         year = request.POST.get('birthDate')
         year = year.split('/')
 
-        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-        #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, 'registration/Referee.html',
-        #                   {'preRegistrationform': referee})
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'registration/Referee.html',
+                          {'preRegistrationform': referee})
 
         if referee.is_valid():
             if request.POST.get('kademe_definition'):
@@ -297,37 +297,37 @@ def referenceCoach(request):
                 coach_form = RefereeCoachForm(request.POST, request.FILES)
                 mail = request.POST.get('email')
 
-                # if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(
-                #         status=ReferenceCoach.DENIED).filter(
-                #         email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                #     email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
-                #     email=mail):
-                #     messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
-                #     return render(request, 'registration/Coach.html',
-                #                   {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
-                #                    'cities': cities, 'grades': grades, })
+                if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(
+                        status=ReferenceCoach.DENIED).filter(
+                        email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                    email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+                    email=mail):
+                    messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
+                    return render(request, 'registration/Coach.html',
+                                  {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
+                                   'cities': cities, 'grades': grades, })
 
                 tc = request.POST.get('tc')
-                # if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-                #         tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                #     tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
-                #     messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
-                #     return render(request, 'registration/Coach.html',
-                #                   {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
-                #                    'cities': cities, 'grades': grades, })
+                if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                        tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                    tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+                    messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
+                    return render(request, 'registration/Coach.html',
+                                  {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
+                                   'cities': cities, 'grades': grades, })
 
                 name = request.POST.get('first_name')
                 surname = request.POST.get('last_name')
                 year = request.POST.get('birthDate')
                 year = year.split('/')
 
-                # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-                # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-                #     messages.warning(request,
-                #                      'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-                #     return render(request, 'registration/Coach.html',
-                #                   {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
-                #                    'cities': cities, 'grades': grades, })
+                client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+                if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+                    messages.warning(request,
+                                     'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+                    return render(request, 'registration/Coach.html',
+                                  {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
+                                   'cities': cities, 'grades': grades, })
 
                 if coach_form.is_valid():
 
