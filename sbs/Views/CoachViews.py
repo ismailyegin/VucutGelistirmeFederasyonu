@@ -800,7 +800,7 @@ def return_grade(request):
         else:
 
             messages.warning(request, 'Alanları Kontrol Ediniz')
-    categoryitem = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0)
+    categoryitem = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).order_by('order')
     return render(request, 'TVGFBF/Coach/grades.html',
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem, 'urls': urls,
                    'current_url': current_url,
