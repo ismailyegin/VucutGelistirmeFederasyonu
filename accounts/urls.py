@@ -22,4 +22,5 @@ urlpatterns = [
     path('on-kayit/basarili/', views.redirect_register, name='redirect_register'),
     path(r'newpassword', views.updateUrlProfile, name='newPassword'),
     path(r'newpassword/basarili/', views.redirect_password_update, name='redirect_password_update'),
+    path(r'newpassword/update/', views.redirect_newpassword, name='redirect_newpassword'),
 ]
