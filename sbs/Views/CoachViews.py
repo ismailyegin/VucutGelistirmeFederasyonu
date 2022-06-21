@@ -32,7 +32,7 @@ from sbs.Forms.havaspor.ReferenceCoachForm import RefereeCoachForm
 from sbs.Forms.havaspor.SearchClupForm import SearchClupForm
 from sbs.Forms.havaspor.VisaForm import VisaForm
 from sbs.Forms.havaspor.VisaSeminarForm import VisaSeminarForm
-from sbs.models import Branch, City
+from sbs.models import Branch, City, Country, PreRegistration
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.tvfbf.CoachApplication import CoachApplication
 from sbs.models.tvfbf.HavaLevel import HavaLevel
@@ -460,7 +460,6 @@ def add_coach_referee(request, uuid):
 
         else:
             messages.warning(request, 'Alanları Kontrol Ediniz')
-
 
     return render(request, 'TVGFBF/Coach/add-grade-coach.html',
                   {'grade_form': grade_form, 'urls': urls, 'current_url': current_url,
@@ -1484,83 +1483,120 @@ def coachreferenceUpdate(request, uuid):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
+    currentCoach = ReferenceCoach.objects.get(uuid=uuid)
+    countries = Country.objects.exclude(id=currentCoach.country.pk).order_by('order')
+    currentCountry = currentCoach.country
+    cities = City.objects.all().exclude(id=currentCoach.city.pk)
+    currentCity = currentCoach.city
+    grades = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).exclude(
+        id=currentCoach.kademe_definition.pk).order_by('order')
+    currentGrade = currentCoach.kademe_definition
+    if currentCoach.club:
+        clubs = Club.objects.all().exclude(derbis__isnull=True).exclude(id=currentCoach.club.pk)
+        currentClub = currentCoach.club
+    else:
+        clubs = Club.objects.all().exclude(derbis__isnull=True)
+        currentClub = None
     try:
         with transaction.atomic():
-
-            coach = ReferenceCoach.objects.get(uuid=uuid)
-            club = coach.club
-            if club:
-                pk = coach.club.pk
-                clubs = Club.objects.all().exclude(derbis__isnull=True).exclude(id=pk)
-            else:
-                clubs = Club.objects.all().exclude(derbis__isnull=True)
-
-            coach_form = RefereeCoachForm(request.POST or None, request.FILES or None, instance=coach,
-                                          initial={'kademe_definition': coach.kademe_definition,'country':coach.country})
             if request.method == 'POST':
+                # coach = ReferenceCoach.objects.get(uuid=uuid)
+                mail = request.POST.get('emailUpdate')
+                if ReferenceCoach.objects.exclude(uuid=currentCoach.uuid).filter(
+                        email=mail) or User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(
+                    uuid=currentCoach.uuid).exclude(
+                    status=ReferenceCoach.DENIED).filter(
+                    email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                    email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+                    email=mail):
+                    messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
+                    return render(request, 'TVGFBF/Coach/referenceCoachUpdate.html',
+                                  {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub,
+                                   'urls': urls,
+                                   'current_url': current_url, 'url_name': url_name, 'countries': countries,
+                                   'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
+                                   'grades': grades, 'currentGrade': currentGrade, })
 
-                # mail = request.POST.get('email')
-                # if mail != coach.email:
-                #
-                #     if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(
-                #             status=ReferenceCoach.DENIED).filter(
-                #         email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                #         email=mail):
-                #         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-                #         return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                #                       {'preRegistrationform': coach_form})
+                tc = request.POST.get('tcUpdate')
+                if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(uuid=currentCoach.uuid).filter(
+                        tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                    tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+                    messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
+                    return render(request, 'TVGFBF/Coach/referenceCoachUpdate.html',
+                                  {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub,
+                                   'urls': urls,
+                                   'current_url': current_url, 'url_name': url_name, 'countries': countries,
+                                   'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
+                                   'grades': grades, 'currentGrade': currentGrade, })
 
-                # tc = request.POST.get('tc')
-                # if tc != coach.tc:
-                #     if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(
-                #             status=ReferenceCoach.DENIED).filter(
-                #         tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                #         tc=tc):
-                #         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-                #         return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                #                       {'preRegistrationform': coach_form})
-
-                name = request.POST.get('first_name')
-                surname = request.POST.get('last_name')
-                year = request.POST.get('birthDate')
+                name = request.POST.get('firstNameUpdate')
+                surname = request.POST.get('lastNameUpdate')
+                year = request.POST.get('birthDateUpdate')
                 year = year.split('/')
 
-                # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-                # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-                #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-                #     return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                #                   {'preRegistrationform': coach_form})
+                client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+                if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+                    messages.warning(request,
+                                     'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+                    return render(request, 'TVGFBF/Coach/referenceCoachUpdate.html',
+                                  {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub,
+                                   'urls': urls,
+                                   'current_url': current_url, 'url_name': url_name, 'countries': countries,
+                                   'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
+                                   'grades': grades, 'currentGrade': currentGrade, })
 
-                if coach_form.is_valid():
-                    veri = coach_form.save(commit=False)
-                    veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+                if request.FILES.get('profileImageUpdate'):
+                    currentCoach.profileImage = request.FILES.get('profileImageUpdate')
+                currentCoach.first_name = request.POST.get('firstNameUpdate')
+                currentCoach.last_name = request.POST.get('lastNameUpdate')
+                currentCoach.birthplace = request.POST.get('birthPlaceUpdate')
+                currentCoach.iban = request.POST.get('ibanUpdate')
+                currentCoach.tc = request.POST.get('tcUpdate')
+                currentCoach.motherName = request.POST.get('motherNameUpdate')
+                currentCoach.fatherName = request.POST.get('fatherNameUpdate')
+                currentCoach.postalCode = request.POST.get('postalCodeUpdate')
+                birthDate = request.POST.get('birthDateUpdate')
+                currentCoach.birthDate = datetime.datetime.strptime(birthDate, "%d/%m/%Y").strftime("%Y-%m-%d")
+                currentCoach.gender = request.POST.get('genderUpdate', None)
+                if Club.objects.filter(derbis=request.POST.get('clubUpdate')):
+                    currentCoach.club = Club.objects.get(derbis=request.POST.get('clubUpdate'))
+                elif request.POST.get('clubUpdate') == '':
+                    currentCoach.club = None
+                if request.FILES.get('belgeUpdate'):
+                    currentCoach.belge = request.FILES.get('belgeUpdate')
+                currentCoach.email = request.POST.get('emailUpdate')
+                currentCoach.phoneNumber = request.POST.get('phoneNumberUpdate')
+                currentCoach.phoneNumber2 = request.POST.get('phoneNumber2Update')
+                if Country.objects.filter(uuid=request.POST.get('countryUpdate')):
+                    currentCoach.country = Country.objects.get(uuid=request.POST.get('countryUpdate'))
+                if City.objects.filter(uuid=request.POST.get('cityUpdate')):
+                    currentCoach.city = City.objects.get(uuid=request.POST.get('cityUpdate'))
+                currentCoach.address = request.POST.get('addressUpdate')
+                if CategoryItem.objects.filter(uuid=request.POST.get('gradeUpdate')):
+                    currentCoach.kademe_definition = CategoryItem.objects.get(uuid=request.POST.get('gradeUpdate'))
+                if request.FILES.get('kademeBelgeUpdate'):
+                    currentCoach.kademe_belge = request.FILES.get('kademeBelgeUpdate')
+                if request.FILES.get('sgkUpdate'):
+                    currentCoach.sgk = request.FILES.get('sgkUpdate')
+                if request.FILES.get('dekontUpdate'):
+                    currentCoach.dekont = request.FILES.get('dekontUpdate')
+                currentCoach.save()
 
-                    clubDersbis = request.POST.get('club', None)
-                    if clubDersbis:
-                        coachClub = Club.objects.get(derbis=clubDersbis)
-                        veri.club = coachClub
-                    else:
-                        if veri.club:
-                            veri.club = None
+                messages.success(request, 'Antrenör Başvurusu Güncellendi')
+                return redirect("sbs:coach-application")
 
-                    veri.save()
-
-                    messages.success(request, 'Antrenör Başvurusu Güncellendi')
-                    return redirect("sbs:coach-application")
-                else:
-                    messages.warning(request, 'Alanları Kontrol Ediniz')
-                    return redirect("sbs:coach-application")
-
-            return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                          {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club, 'urls': urls,
-                           'current_url': current_url,
-                           'url_name': url_name})
+            return render(request, 'TVGFBF/Coach/referenceCoachUpdate.html',
+                          {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub, 'urls': urls,
+                           'current_url': current_url, 'url_name': url_name, 'countries': countries,
+                           'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
+                           'grades': grades, 'currentGrade': currentGrade, })
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return render(request, 'TVGFBF/Coach/update-coach-application.html',
-                      {'preRegistrationform': coach_form, 'clubs': clubs, 'current_club': club, 'urls': urls,
-                       'current_url': current_url,
-                       'url_name': url_name})
+                      {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub, 'urls': urls,
+                       'current_url': current_url, 'url_name': url_name, 'countries': countries,
+                       'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
+                       'grades': grades, 'currentGrade': currentGrade, })
 
 
 @login_required
@@ -1715,6 +1751,7 @@ def refencedeleteCoach(request):
 
     else:
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
 
 @login_required
 def registerCoachDelete(request):

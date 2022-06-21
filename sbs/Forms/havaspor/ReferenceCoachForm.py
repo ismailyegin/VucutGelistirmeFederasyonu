@@ -78,9 +78,9 @@ class RefereeCoachForm(ModelForm):
             'email': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 
             'address': forms.Textarea(
-                attrs={'class': 'form-control ', 'rows': '2'}),
+                attrs={'class': 'form-control ', 'rows': '2', 'required': 'required'}),
 
-            'phoneNumber': forms.TextInput(attrs={'class': 'form-control '}),
+            'phoneNumber': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 
             'phoneNumber2': forms.TextInput(attrs={'class': 'form-control '}),
 
