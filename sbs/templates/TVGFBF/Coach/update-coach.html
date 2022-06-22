@@ -219,7 +219,9 @@
                                     <div class="form-group">
                                         <label for="Çalıştığı Yer">Çalıştığı Yer</label>
                                         <input id="workplace" class="form-control" type="text" name="workplace"
-                                               value="{{ personCoach.workplace }}"/>
+                                                {% if personCoach.workplace %}
+                                               value="{{ personCoach.workplace }}"
+                                                {% endif %}/>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">

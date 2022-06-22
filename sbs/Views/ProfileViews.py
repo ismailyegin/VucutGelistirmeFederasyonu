@@ -86,9 +86,11 @@ def updateProfileCoach(request):
                 user.last_name = user_form.cleaned_data['last_name']
                 user.email = user_form.cleaned_data['email']
                 user.save()
+                workplace = request.POST['workplace']
                 person_form.save(request)
                 iban = request.POST['iban']
                 person.iban = iban
+                person.workplace = workplace
                 person.save()
                 communication_form.save(request)
                 messages.success(request, 'Profil Bilgileri Başarıyla Güncellenmiştir.')
@@ -146,7 +148,7 @@ def updateProfileCoach(request):
                   {'user_form': user_form, 'communication_form': communication_form, 'iban': iban,
                    'person_form': person_form, 'password_form': password_form, 'coach_form': coach_form,
                    'grade_form': grade_form, 'visa_form': visa_form,'urls': urls, 'current_url': current_url,
-                   'url_name': url_name})
+                   'url_name': url_name, 'coach': coach})
 
 
 @login_required

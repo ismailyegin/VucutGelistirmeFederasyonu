@@ -183,11 +183,27 @@
                                                         {% endfor %}
                                                         {% for item in person_form %}
                                                             {% if not item.name == 'iban' %}
-                                                                <div class="form-group col-lg-6">
-                                                                    <label> {{ item.label }}</label>
-                                                                    {{ item }}
-                                                                    <label for="" id="label_{{ item.name }}"></label>
-                                                                </div>
+                                                                {% if item.name == 'workplace' %}
+                                                                    <div class="form-group col-lg-6">
+                                                                        <label> {{ item.label }}</label>
+                                                                        <input id="workplace" class="form-control"
+                                                                               type="text" name="workplace"
+                                                                               readonly="readonly"
+                                                                                {% if coach.person.workplace %}
+                                                                               value="{{ coach.person.workplace }}"
+                                                                                {% else %}
+                                                                               value=""
+                                                                                {% endif %}/>
+                                                                    </div>
+                                                                {% else %}
+                                                                    <div class="form-group col-lg-6">
+                                                                        <label> {{ item.label }}</label>
+                                                                        {{ item }}
+                                                                        <label for=""
+                                                                               id="label_{{ item.name }}"></label>
+                                                                    </div>
+                                                                {% endif %}
+
                                                             {% endif %}
                                                         {% endfor %}
 
@@ -245,22 +261,22 @@
                                  aria-labelledby="custom-tabs-four-profile-tab">
                                 <form method="post" role="form" enctype="multipart/form-data" id="form-container">
                                     {% csrf_token %}
-                                      <div class="card-body">
-                                                <div class="row">
-                                        {% for item in coach_form %}
-                                            <div class="form-group col-lg-6">
-                                                <label> {{ item.label }}</label>
-                                                {{ item }}
-                                                <label for="" id="label_{{ item.name }}"></label>
-                                            </div>
-                                        {% endfor %}</div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            {% for item in coach_form %}
+                                                <div class="form-group col-lg-6">
+                                                    <label> {{ item.label }}</label>
+                                                    {{ item }}
+                                                    <label for="" id="label_{{ item.name }}"></label>
+                                                </div>
+                                            {% endfor %}</div>
 
                                         <button class="btn btn-outline-info" type="submit"
                                                 style="float:right" id="save_button" name="save_button"
                                                 value="coach">
                                             Kaydet
                                         </button>
-                                      </div>
+                                    </div>
                                 </form>
                                 <hr>
 
