@@ -422,21 +422,42 @@ class GetRefereeForVisaSeminar(APIView):
 
 
 class GetReferee(APIView):
-
     def post(self, request, format=None):
         draw = request.data['draw']
         start = request.data['start']
         length = request.data['length']
         end = int(start) + int(length)
 
-        count = Referee.objects.filter(isDeleted=False).count()
+        globalSearch = request.data['search[value]']
+        first_name = request.data['columns[1][search][value]']
+        last_name = request.data['columns[2][search][value]']
+        email = request.data['columns[3][search][value]']
+        city = request.data['columns[4][search][value]']
 
-        all_objects = Referee.objects.filter(isDeleted=False).filter(
-            person__user__first_name__icontains=request.data['search[value]']).order_by('-creationDate')[
-                      int(start):end]
+        count = Referee.objects.filter(person__isnull=False).count()
+        if not (first_name or last_name or city or email or globalSearch):
+            all_objects = Referee.objects.filter(person__isnull=False).order_by('person__user__first_name')[
+                          int(start):end]
+            filteredTotal = Referee.objects.filter(person__isnull=False).count()
+        else:
+            query = Q()
+            if globalSearch:
+                query &= Q(person__user__first_name__icontains=globalSearch) | Q(
+                    person__user__last_name__icontains=globalSearch) | Q(
+                    communication__city__name__icontains=globalSearch) | Q(
+                    person__user__email__icontains=globalSearch)
+            if first_name:
+                query &= Q(person__user__first_name__icontains=first_name)
+            if last_name:
+                query &= Q(person__user__last_name__icontains=last_name)
+            if city:
+                query &= Q(communication__city__pk=city)
+            if email:
+                query &= Q(person__user__email__icontains=email)
 
-        filteredTotal = Referee.objects.filter(isDeleted=False).filter(
-            person__user__first_name__icontains=request.data['search[value]']).count()
+            all_objects = Referee.objects.filter(person__isnull=False).filter(query).order_by(
+                'person__user__first_name')[int(start):end]
+            filteredTotal = Referee.objects.filter(person__isnull=False).filter(query).count()
 
         logApiObject = LogAPIObject()
         logApiObject.data = all_objects
@@ -446,6 +467,7 @@ class GetReferee(APIView):
 
         serializer_context = {
             'request': request,
+
         }
         serializer = RefereeResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)

@@ -151,7 +151,7 @@
     {% for message in messages %}
 
         <div id="toast-container" class="toasts-top-right">
-            {% if message.tags == 'primary' %}
+            {% if message.tags == 'warning' %}
                 <div class="toast toast-error" aria-live="polite" style="" id="toast">
                     <div class="toast-message">
                         {% for message in messages %}

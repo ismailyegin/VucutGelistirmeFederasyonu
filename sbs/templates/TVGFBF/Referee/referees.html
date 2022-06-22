@@ -117,8 +117,6 @@
     </div>
 
 
-
-
     <section class="content-header">
 
 
@@ -147,108 +145,50 @@
             <section class="col-lg-12 ">
 
 
-                <div class="card card-info card-outline">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Hakem Filtrele</h3>
-                    </div>
-
-                    <form method="POST" role="form" enctype="multipart/form-data" action="{%  url 'sbs:return_referee_search' %}">
-
-                        {% csrf_token %}
-
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.first_name.label }}</label>
-                                        {{ user_form.first_name }}
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.last_name.label }}</label>
-                                        {{ user_form.last_name }}
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.city.label }}</label>
-                                        {{ user_form.city }}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.branch.label }}</label>
-                                        {{ user_form.branch }}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label> {{ user_form.status.label }}</label>
-                                        {{ user_form.status }}
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-outline-info" type="submit" style="float:right"><i
-                                    class="fa fa-search"> </i> Ara
-                            </button>
-
-
-                        </div>
-                    </form>
-
-
-                    <!-- /.box -->
-
-
-                </div>
-            </section>
-
-        </div>
-
-
-        <div class="row">
-            <section class="col-lg-12 ">
-
-
                 <div class="card card-outline card-info">
                     <div class="card-header with-border">
                         <h3 class="card-title">Hakem Listesi</h3>
 
-                        {% for item in perm %}
-                            {% if item == 'add_referee' %}
-                                {% if aktif == 'Admin' %}
-                                    <a href="{% url 'sbs:add_referee' %}"
-                                       type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                            class="fa fa-plus" title="Yeni Hakem Ekle"></i>
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
+
+                        <a href="{% url 'sbs:add_referee' %}"
+                           type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
+                                class="fa fa-plus" title="Yeni Hakem Ekle"></i>
+                        </a>
+
 
                     </div>
 
                     <div class="card-body">
-                        <table id="hakem" class="table table-bordered table-hover">
+                        <table id="hakemler" class="table table-bordered table-hover">
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Ad Soyad</th>
+                                <th>Ad</th>
+                                <th>Soyad</th>
                                 <th>Email</th>
                                 <th>İl</th>
+                                <th>Düzenle/Sil</th>
 
+                            </tr>
+                            <tr class="filters" role="row">
+                                <th></th>
+                                <th><input class="form-control" type="text" placeholder="Ad"
+                                           title="test"></th>
+                                <th><input class="form-control" type="text" placeholder="Soyad"
+                                           title="test"></th>
+                                <th><input class="form-control" type="text" placeholder="Email"
+                                           title="test"></th>
+                                <th><select style="width: 100%" id="city" name="city"
+                                            class="form-control select2 select2-hidden-accessible"
+                                            tabindex="-1" aria-hidden="true">
+                                    <option value="">İl Seçiniz</option>
+                                    {% for city in cities %}
+                                        <option value="{{ city.pk }}">{{ city.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                </th>
 
-                                {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
-                                    <th>Düzenle/Sil</th>
-                                {% endif %}
-
-
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -270,8 +210,53 @@
 
     {% load  static %}
     <script>
+
         $(function () {
-            table = $('#hakem').DataTable({
+            table = $('#hakemler').DataTable({
+                orderCellsTop: true,
+                fixedHeader: false,
+                initComplete: function () {
+                    var api = this.api();
+
+                    // For each column
+                    api
+                        .columns()
+                        .eq(0)
+                        .each(function (colIdx) {
+                            // Set the header cell to contain the input element
+                            var cell = $('.filters th').eq(
+                                $(api.column(colIdx).header()).index()
+                            );
+
+
+                            // On every keypress in this input
+                            $(
+                                'input',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                                .off('keyup change')
+                                .on('keyup change', function (e) {
+                                    e.stopPropagation();
+
+                                    // Get the search value
+                                    $(this).attr('title', $(this).val());
+                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                    var cursorPosition = this.selectionStart;
+                                    // Search the column for that value
+                                    api
+                                        .column(colIdx)
+                                        .search(
+                                            this.value
+                                        )
+                                        .draw();
+
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                });
+                        });
+                },
 
                 "processing": true,
                 "serverSide": true,
@@ -282,6 +267,9 @@
                 "ajax": {
                     "url": "{% url 'sbs:view_referee-api' %}",
                     "type": "POST",
+                    data: {
+                        'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    },
                 },
                 dom: 'Bfrtip',
 
@@ -342,41 +330,46 @@
                         "data": null,
                         render: function (full) {
 
-                            return full.person.user.first_name + ' ' + full.person.user.last_name;
+                            return full.person.user.first_name
                         }
                     },
                     {
                         "data": null,
                         render: function (full) {
 
-                            return full.person.user.email;
+                            return full.person.user.last_name;
                         }
                     },
-{
+                    {
                         "data": null,
                         render: function (full) {
-                            if (full.communication){
-                                if (full.communication.city){
-                                    return full.communication.city.name;
-                                }
-                                else {
-                                    return '';
-                                }
-                            }
-                            else {
-                                return '';
+                            if (full.person) {
+                                return full.person.user.email;
+                            } else {
+                                return ''
                             }
 
                         }
                     },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.communication.city) {
+                                return full.communication.city.name;
+                            } else {
+                                return ''
+                            }
+
+                        }
+                    },
+
 
                     {
                         "data": null,
                         render: function (full) {
                             console.log(full.content);
                             let html;
-                            debugger;
-                            {% if aktif == 'Admin' or aktif == 'Yonetim' or aktif == 'Antrenor' %}
+                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                 let url2 = "deleteReferee('" + full.uuid + "')"
 
                                 let url = "{% url "sbs:update_referee" '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
@@ -384,8 +377,11 @@
 
 
                                 html = '<td><div class="btn-group"> '
+
                                 html += '<a style="margin-left:5px;" href="' + url + '" class="btn btn-outline-warning" title="Düzenle" type="button"><i class="fa fa-edit"></i></a>';
+
                                 html += '<a style="margin-left:5px;" onclick="' + url2 + '" class="btn btn-outline-danger" title="Sil" type="button"><i class="fa fa-trash"></i></a>';
+
 
                                 html += '</div></td>';
                             {% else %}
@@ -403,6 +399,13 @@
 
             });
             table.on('draw.dt', function () {
+                $('#city').on('change', function () {
+                    var select = document.getElementById('city');
+                    var value = select.options[select.selectedIndex].value;
+                    table.columns(4).search(value).draw();
+                });
+
+
                 var info = table.page.info();
                 table.column(0, {
                     search: 'applied',
@@ -416,46 +419,100 @@
 
         })
 
-        function getCookie(name) {
-            var cookieValue = null;
-            var i = 0;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (i; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        var csrftoken = getCookie('csrftoken');
-
-        function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
-
-        $.ajaxSetup({
-            crossDomain: false, // obviates need for sameOrigin test
-            beforeSend: function (xhr, settings) {
-                if (!csrfSafeMethod(settings.type)) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }
-        });
-
     </script>
 
-    <script>
-        function deleteReferee(id) {
+    {#    <script>#}
+    {#        function filterGlobal() {#}
+    {#            $('#hakemler')#}
+    {#                .DataTable()#}
+    {#                .search($('#global_filter').val())#}
+    {#                .draw();#}
+    {#        }#}
+    {##}
+    {#        function filterColumn(i) {#}
+    {#            $('#hakemler')#}
+    {#                .DataTable()#}
+    {#                .column(i)#}
+    {#                .search(#}
+    {#                    $('#col' + i + '_filter').val(),#}
+    {#                )#}
+    {#                .draw();#}
+    {#        }#}
+    {##}
+    {#        $(document).ready(function () {#}
+    {#            $('#hakemler thead tr')#}
+    {#                .clone(true)#}
+    {#                .addClass('filters')#}
+    {#                .appendTo('#hakemler thead');#}
+    {#            var table = $('#hakemler').DataTable({#}
+    {#                orderCellsTop: true,#}
+    {#                fixedHeader: true,#}
+    {#                initComplete: function () {#}
+    {#                    var api = this.api();#}
+    {##}
+    {#                    // For each column#}
+    {#                    api#}
+    {#                        .columns()#}
+    {#                        .eq(0)#}
+    {#                        .each(function (colIdx) {#}
+    {#                            // Set the header cell to contain the input element#}
+    {#                            var cell = $('.filters th').eq(#}
+    {#                                $(api.column(colIdx).header()).index()#}
+    {#                            );#}
+    {#                            var title = $(cell).text();#}
+    {#                            $(cell).html('<input type="text" placeholder="' + title + '" />');#}
+    {##}
+    {#                            // On every keypress in this input#}
+    {#                            $(#}
+    {#                                'input',#}
+    {#                                $('.filters th').eq($(api.column(colIdx).header()).index())#}
+    {#                            )#}
+    {#                                .off('keyup change')#}
+    {#                                .on('keyup change', function (e) {#}
+    {#                                    e.stopPropagation();#}
+    {##}
+    {#                                    // Get the search value#}
+    {#                                    $(this).attr('title', $(this).val());#}
+    {#                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();#}
+    {##}
+    {#                                    var cursorPosition = this.selectionStart;#}
+    {#                                    // Search the column for that value#}
+    {#                                    api#}
+    {#                                        .column(colIdx)#}
+    {#                                        .search(#}
+    {#                                            this.value != ''#}
+    {#                                                ? regexr.replace('{search}', '(((' + this.value + ')))')#}
+    {#                                                : '',#}
+    {#                                            this.value != '',#}
+    {#                                            this.value == ''#}
+    {#                                        )#}
+    {#                                        .draw();#}
+    {##}
+    {#                                    $(this)#}
+    {#                                        .focus()[0]#}
+    {#                                        .setSelectionRange(cursorPosition, cursorPosition);#}
+    {#                                });#}
+    {#                        });#}
+    {#                },#}
+    {#            });#}
+    {##}
+    {#            $('#hakemler').DataTable();#}
+    {##}
+    {#            $('input.global_filter').on('keyup click', function () {#}
+    {#                filterGlobal();#}
+    {#            });#}
+    {##}
+    {#            $('input.column_filter').on('keyup click', function () {#}
+    {#                filterColumn($(this).parents('tr').attr('data-column'));#}
+    {#            });#}
+    {#        });#}
+    {#    </script>#}
 
+    <script>
+
+        function deleteReferee(id) {
             swal({
-                title: "Silmek istediğinizden emin misiniz?",
+                title: "Hakemi silmek istediğinizden emin misiniz?",
                 icon: "warning",
                 buttons: [
                     'Hayır!',
@@ -496,9 +553,7 @@
 
 
         }
-
     </script>
-
 
 {% endblock %}
 

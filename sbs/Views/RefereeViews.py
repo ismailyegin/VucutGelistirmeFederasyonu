@@ -32,6 +32,7 @@ from sbs.Forms.havaspor.RefereeSearchForm import RefereeSearchForm
 from sbs.Forms.havaspor.HavaUserForm import HavaUserForm
 from sbs.Forms.havaspor.VisaForm import VisaForm
 from sbs.Forms.havaspor.VisaSeminarForm import VisaSeminarForm
+from sbs.models import City
 from sbs.models.ekabis.EnumFields import EnumFields
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Communication import Communication
@@ -61,10 +62,12 @@ def return_referees(request):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
-    current_date = datetime.date.today()
+    categories = CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE')
+    cities = City.objects.all()
+
     return render(request, 'TVGFBF/Referee/referees.html',
                   {'user_form': user_form, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name, 'current_date': current_date, })
+                   'url_name': url_name, 'categories': categories, 'cities': cities})
 
 
 @login_required
