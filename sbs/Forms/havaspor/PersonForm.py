@@ -21,7 +21,7 @@ class PersonForm(ModelForm):
                   'weight': 'Kilo',
                   'birthplace': 'Doğum Yeri',
                   'birthDate': 'Doğum Tarihi',
-                  'workplace': 'Çalıştığı Yer',
+                  'workplace': 'Çalıştığı Yer/Kurum',
 
                   }
 
