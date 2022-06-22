@@ -220,6 +220,8 @@ def return_add_coach(request):
                 person = person_form.save(commit=False)
                 iban = request.POST.get("iban")
                 person.iban = iban
+                workplace = request.POST.get("workplace")
+                person.workplace = workplace
                 person.user = user
                 communication = communication_form.save(commit=False)
                 person.save()
@@ -1551,6 +1553,7 @@ def coachreferenceUpdate(request, uuid):
                 currentCoach.last_name = request.POST.get('lastNameUpdate')
                 currentCoach.birthplace = request.POST.get('birthPlaceUpdate')
                 currentCoach.iban = request.POST.get('ibanUpdate')
+                currentCoach.workplace = request.POST.get('workplaceUpdate')
                 currentCoach.tc = request.POST.get('tcUpdate')
                 currentCoach.motherName = request.POST.get('motherNameUpdate')
                 currentCoach.fatherName = request.POST.get('fatherNameUpdate')
@@ -1659,6 +1662,7 @@ def approvelReferenceCoach(request):
 
                     coach = Coach(person=person, communication=communication, sgk=referenceCoach.sgk)
                     coach.iban = referenceCoach.iban
+                    coach.workplace = referenceCoach.workplace
                     coach.save()
 
                     grade = HavaLevel(definition=referenceCoach.kademe_definition,

@@ -96,6 +96,7 @@ class ReferenceCoach(BaseModel):
     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
     definition = models.TextField(null=True, blank=True, verbose_name='Reddedilme Sebebi')
     status_date = models.DateField(null=True, blank=True, verbose_name='Onaylanma Tarihi')
+    workplace = models.CharField(max_length=150, null=True, blank=True,verbose_name='Çalıştığı Yer')
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)

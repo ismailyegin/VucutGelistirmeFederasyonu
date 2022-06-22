@@ -12,7 +12,7 @@ class PersonForm(ModelForm):
             'height', 'weight',
             'birthDate', 'bloodType',
             'gender', 'birthplace',
-            'profileImage',)
+            'profileImage','workplace')
 
         labels = {'tc': 'T.C*.',
                   'gender': 'Cinsiyet*',
@@ -21,6 +21,7 @@ class PersonForm(ModelForm):
                   'weight': 'Kilo',
                   'birthplace': 'Doğum Yeri',
                   'birthDate': 'Doğum Tarihi',
+                  'workplace': 'Çalıştığı Yer',
 
                   }
 
@@ -51,6 +52,10 @@ class PersonForm(ModelForm):
             'gender': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%;', 'required': 'required'}),
 
+            'workplace': forms.TextInput(
+                attrs={'class': 'form-control ', 'required': 'required', 'onkeypress': 'validate(event)',
+
+                       'placeholder': ""}),
         }
 
     def clean_tc(self):

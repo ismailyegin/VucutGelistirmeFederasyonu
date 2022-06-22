@@ -56,6 +56,7 @@ class Person(BaseModel):
     iban = models.CharField(max_length=120, null=True, blank=True, verbose_name='İban Adresi')
     hesKodu = models.CharField(max_length=20, null=True, blank=True, verbose_name='HES KODU')
     secretId = models.CharField(null=True, blank=True, max_length=20)
+    workplace = models.CharField(max_length=150, null=True, blank=True,verbose_name='Çalıştığı Yer')
 
     class Meta:
         default_permissions = ()

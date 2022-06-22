@@ -35,12 +35,12 @@ class RefereeCoachForm(ModelForm):
         fields = (
             'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
             'iban', 'tc', 'profileImage', 'birthDate', 'gender', 'birthplace', 'motherName',
-            'fatherName', 'kademe_belge', 'sgk', 'dekont', 'belge')
+            'fatherName', 'kademe_belge', 'sgk', 'dekont', 'belge','workplace')
 
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
                   'city': 'İl', 'tc': 'T.C.', 'gender': 'Cinsiyet', 'kademe_belge': 'Antrenör Sözleşme Belgesi: ',
-                  'sgk': 'SGK/Bağ-Kur Belgesi: ', 'dekont': 'Vize Dekont', 'belge': 'Antrenör Belgesi'}
+                  'sgk': 'SGK/Bağ-Kur Belgesi: ', 'dekont': 'Vize Dekont', 'belge': 'Antrenör Belgesi','workplace': 'Çalıştığı Yer'}
         widgets = {
 
             'tc': forms.TextInput(attrs={'class': 'form-control ',
@@ -88,6 +88,7 @@ class RefereeCoachForm(ModelForm):
 
             'city': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                         'style': 'width: 100%;', 'required': 'required'}),
+            'workplace': forms.TextInput(attrs={'class': 'form-control ', 'value': ''}),
 
         }
 

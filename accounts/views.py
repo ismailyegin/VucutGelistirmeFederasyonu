@@ -398,6 +398,7 @@ def referenceCoach(request):
                 currentCoach.last_name = request.POST.get('lastNameUpdate')
                 currentCoach.birthplace = request.POST.get('birthPlaceUpdate')
                 currentCoach.iban = request.POST.get('ibanUpdate')
+                currentCoach.workplace = request.POST.get('workplaceUpdate')
                 currentCoach.tc = request.POST.get('tcUpdate')
                 birthDate = request.POST.get('birthDateUpdate')
                 currentCoach.birthDate = datetime.datetime.strptime(birthDate, "%d/%m/%Y").strftime("%Y-%m-%d")
