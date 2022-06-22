@@ -1679,6 +1679,7 @@ def approvelReferenceCoach(request):
 
                     messages.success(request, 'Antrenör Başarıyla Eklenmiştir')
                     referenceCoach.status = ReferenceCoach.APPROVED
+                    referenceCoach.definition = ''
                     referenceCoach.save()
 
                     fdk = Forgot(user=user, status=False)

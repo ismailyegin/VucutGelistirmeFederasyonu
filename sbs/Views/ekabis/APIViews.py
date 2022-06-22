@@ -207,7 +207,7 @@ class GetCoach(APIView):
 
         coaches = Coach.objects.none()
 
-        coaches = Coach.objects.all().order_by('-creationDate')
+        coaches = Coach.objects.filter(isDeleted=False).order_by('-creationDate')
         count = coaches.count()
 
         if not (first_name or last_name or email or city or branch or globalSearch):
@@ -264,7 +264,7 @@ class GetReferenceCoach(APIView):
 
         coaches = ReferenceCoach.objects.none()
 
-        coaches = ReferenceCoach.objects.all().order_by('-status')
+        coaches = ReferenceCoach.objects.filter(isDeleted=False).order_by('-status')
         count = coaches.count()
 
         if not (first_name or last_name or email or tc or status or globalSearch):
