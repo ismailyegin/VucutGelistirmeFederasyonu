@@ -273,9 +273,6 @@
                                             <label> Çalıştığı Yer/Kurum</label>
                                             <input type="text" name="workplaceUpdate" id="workplaceUpdate"
                                                    class="form-control  workplace"
-                                                    {% if aktif != 'Admin' or aktif != 'Yönetici' %}
-                                                   readonly="readonly"
-                                                    {% endif %}
                                                    value="{{ currentCoach.workplace }}"
                                                    maxlength="120"
                                                    inputmode="text">

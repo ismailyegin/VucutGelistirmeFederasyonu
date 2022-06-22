@@ -1596,7 +1596,7 @@ def coachreferenceUpdate(request, uuid):
                            'grades': grades, 'currentGrade': currentGrade, })
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
-        return render(request, 'TVGFBF/Coach/update-coach-application.html',
+        return render(request, 'TVGFBF/Coach/referenceCoachUpdate.html',
                       {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub, 'urls': urls,
                        'current_url': current_url, 'url_name': url_name, 'countries': countries,
                        'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
