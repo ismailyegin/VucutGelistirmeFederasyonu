@@ -355,7 +355,7 @@
                             <h3 class="card-title">Kişi Bilgileri </h3>
                         </div>
                         <div class="card-body">
-                           </h4>
+                            </h4>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
@@ -384,7 +384,7 @@
                                         <label> {{ preRegistrationform.iban.label }}</label>
                                         {{ preRegistrationform.iban }}
                                     </div>
-                                     <div class="form-group">
+                                    <div class="form-group">
                                         <label> {{ preRegistrationform.workplace.label }}</label>
                                         {{ preRegistrationform.workplace }}
                                     </div>
@@ -420,7 +420,7 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-                                <div class="form-group">
+                                    <div class="form-group">
                                         <label for="Antrenör Belgesi">Antrenör Belgesi</label>
                                         <input id="belge" class="form-control" type="file" name="belge"
                                                required="required"/>
@@ -545,7 +545,9 @@
                                                         <li>Kredi Kartı Ekstre Ekran Görüntüsü</li>
                                                         <li>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</li>
                                                         <li>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</li>
-                                                        <li>Birinci Kademe Belgesini 2022 Yılından Alan Antrenörlerimiz Bu Alana Antrenör Belgesini Yüklemesi Yeterlidir</li>
+                                                        <li>Birinci Kademe Belgesini 2022 Yılından Alan Antrenörlerimiz
+                                                            Bu Alana Antrenör Belgesini Yüklemesi Yeterlidir
+                                                        </li>
                                                     </small>
                                                 </ul>
                                             </div>
@@ -673,9 +675,10 @@
                                                onkeyup="if(this.value.length > 34){this.value=this.value.substr(0, 34);}"
                                                value="" required="required" maxlength="120" inputmode="text">
                                     </div>
-                                     <div class="form-group">
+                                    <div class="form-group">
                                         <label> {{ preRegistrationform.workplace.label }}</label>
-                                        <input type="text" required="required" name="workplaceUpdate" class="form-control" id="workplaceUpdate">
+                                        <input type="text" required="required" name="workplaceUpdate"
+                                               class="form-control" id="workplaceUpdate">
                                     </div>
                                 </div>
 
@@ -723,7 +726,7 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-                                 <div class="form-group">
+                                    <div class="form-group">
                                         <label for="belgeUpdate">Antrenör Belgesi</label>
                                         <input id="belgeUpdate" class="form-control" type="file" name="belgeUpdate"/>
                                         <p><a id="updateBelgeValue" href=""></a></p>
@@ -882,6 +885,9 @@
                                                         <li>Kredi Kartı Ekstre Ekran Görüntüsü</li>
                                                         <li>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</li>
                                                         <li>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</li>
+                                                        <li>Birinci Kademe Belgesini 2022 Yılından Alan Antrenörlerimiz
+                                                            Bu Alana Antrenör Belgesini Yüklemesi Yeterlidir
+                                                        </li>
                                                     </small>
                                                 </ul>
                                             </div>
@@ -1415,7 +1421,6 @@
                         }
                         grade.options[grade.options.length] = new Option(info.kademe_definition, info.kademe_definition);
                         grade.value = info.kademe_definition
-
 
 
                         document.getElementById('kademeBelgeUpdateValue').href = info.kademe_belge
