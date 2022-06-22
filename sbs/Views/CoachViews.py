@@ -369,8 +369,9 @@ def coachUpdate(request, uuid):
                 coachClub = Club.objects.get(derbis=clubDersbis)
                 coachClub.coachs.add(coach)
             else:
-                club_coach = Club.objects.filter(coachs=coach).last()
-                club_coach.coachs.remove(coach)
+                if Club.objects.filter(coachs=coach):
+                    club_coach = Club.objects.filter(coachs=coach).last()
+                    club_coach.coachs.remove(coach)
 
             person.iban = iban
             person.save()
@@ -1618,7 +1619,7 @@ def approvelReferenceCoach(request):
                 approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
                 referenceCoach.status_date = approvalDate
 
-                if referenceCoach.status == ReferenceCoach.WAITED:
+                if referenceCoach.status == ReferenceCoach.WAITED or referenceCoach.status == ReferenceCoach.DENIED:
                     user = User()
                     user.username = referenceCoach.email
                     user.first_name = referenceCoach.first_name

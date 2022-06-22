@@ -23,7 +23,81 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <div class="modal modal-primary fade in deneme22" tabindex="-1" role="dialog" id="modal-primary"
+    <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header orange">
+                    <h4 class="modal-title">Uyarı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+
+                </div>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfApproval"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Onaylanma Tarihi</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <input type="date" name="dateOfApprovalText" id="dateOfApprovalText" class="form-control datemask"
+                           required="required" autocomplete="off">
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" id="btn-closereddet-approval">İptal</button>
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-gonder-approval"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfReject"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Reddedilme Açıklaması</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <label for="dateOfRejectDate">Tarih</label>
+                    <input type="date" name="dateOfRejectDate" id="dateOfRejectDate" class="form-control datemask"
+                           required="required" autocomplete="off">
+                    <label for="dateOfRejectText">Açıklama</label>
+                    <input type="text" name="dateOfRejectText" id="dateOfRejectText" class="form-control"
+                           required="required" placeholder="Reddedilme Sebebi">
+
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" id="btn-closereddet-reject">İptal</button>
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-gonder-reject"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-danger fade in deneme223" tabindex="-1" role="dialog" id="modal-delete"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -121,15 +195,19 @@
 
                                             <center>
                                                 <img
-                                                        src="{{ currentCoach.profileImage.url }}"
-                                                        class="img-responsive img-bordered  imagesize"
-                                                        alt="Resim Yok"
-                                                        style=" max-width: 30%; height: auto;"
+                                                        {% if currentCoach.profileImage %}
+                                                            src="{{ currentCoach.profileImage.url }}"
+                                                        {% endif %}
+                                                            class="img-responsive img-bordered  imagesize"
+                                                            alt="Resim Yok"
+                                                            style=" max-width: 30%; height: auto;"
 
                                                 ><br>
-                                                <p>Şu anki: <a id="updateProfileImageValue"
-                                                               href="{{ currentCoach.profileImage.url }}">{{ currentCoach.profileImage }}</a>
-                                                </p>
+                                                {% if currentCoach.profileImage %}
+                                                    <p>Şu anki: <a id="updateProfileImageValue"
+                                                                   href="{{ currentCoach.profileImage.url }}">{{ currentCoach.profileImage }}</a>
+                                                    </p>
+                                                {% endif %}
                                                 <input type="file" name="profileImageUpdate" accept="image/*"
                                                        id="profileImageUpdate">
                                             </center>
@@ -195,7 +273,6 @@
                                             <label> Çalıştığı Yer</label>
                                             <input type="text" name="workplaceUpdate" id="workplaceUpdate"
                                                    class="form-control  workplace"
-                                                   onkeyup="if(this.value.length > 34){this.value=this.value.substr(0, 34);}"
                                                    value="{{ currentCoach.workplace }}" required="required" maxlength="120"
                                                    inputmode="text">
                                         </div>
@@ -244,9 +321,11 @@
 
                                         <div class="form-group">
                                             <label for="belgeUpdate">Antrenör Belgesi</label>
-                                            <p>Şu anki: <a id="updateBelgeValue"
-                                                           href="{{ currentCoach.belge.url }}">{{ currentCoach.belge }}</a>
-                                            </p>
+                                            {% if currentCoach.belge %}
+                                                <p>Şu anki: <a id="updateBelgeValue"
+                                                               href="{{ currentCoach.belge.url }}">{{ currentCoach.belge }}</a>
+                                                </p>
+                                            {% endif %}
                                             <input id="belgeUpdate" class="form-control" type="file"
                                                    name="belgeUpdate"/>
                                         </div>
@@ -392,27 +471,33 @@
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label> Antrenör Sözleşme Belgesi</label>
-                                            <p>Şu anki: <a id="kademeBelgeUpdateValue"
-                                                           href="{{ currentCoach.kademe_belge.url }}">{{ currentCoach.kademe_belge }}</a>
-                                            </p>
+                                            {% if currentCoach.kademe_belge %}
+                                                <p>Şu anki: <a id="kademeBelgeUpdateValue"
+                                                               href="{{ currentCoach.kademe_belge.url }}">{{ currentCoach.kademe_belge }}</a>
+                                                </p>
+                                            {% endif %}
                                             <input type="file" name="kademeBelgeUpdate" id="kademeBelgeUpdate">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label> Vize Dekont</label>
-                                            <p>Şu anki: <a id="dekontUpdateValue"
-                                                           href="{{ currentCoach.dekont.url }}">{{ currentCoach.dekont }}</a>
-                                            </p>
+                                            {% if currentCoach.dekont %}
+                                                <p>Şu anki: <a id="dekontUpdateValue"
+                                                               href="{{ currentCoach.dekont.url }}">{{ currentCoach.dekont }}</a>
+                                                </p>
+                                            {% endif %}
                                             <input type="file" name="dekontUpdate" id="dekontUpdate">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label> SGK/Bağ-Kur Belgesi</label>
-                                            <p>Şu anki: <a id="sgkUpdateValue"
-                                                           href="{{ currentCoach.sgk.url }}">{{ currentCoach.sgk }}</a>
-                                            </p>
+                                            {% if currentCoach.sgk %}
+                                                <p>Şu anki: <a id="sgkUpdateValue"
+                                                               href="{{ currentCoach.sgk.url }}">{{ currentCoach.sgk }}</a>
+                                                </p>
+                                            {% endif %}
                                             <input type="file" name="sgkUpdate" id="sgkUpdate">
                                         </div>
                                     </div>
@@ -426,12 +511,251 @@
 
                 </div>
                 <div class="card-footer">
+                    {% if aktif == 'Admin' %}
+                        <div class="btn-group" style="float: left">
+                            {% if currentCoach.status == currentCoach.WAITED or currentCoach.status == currentCoach.DENIED %}
+                                <a onclick="approvalCoach('{{ currentCoach.uuid }}')" title="Onayla"
+                                   type="button" class="btn btn-outline-success">
+                                    <i class="fa fa-check"></i>Onayla
+                                </a>
+                            {% else %}
+                                <button disabled title="Başvuru Zaten Onaylandı"
+                                        type="button" class="btn btn-outline-success">
+                                    <i class="fa fa-check"></i>Onayla
+                                </button>
+                            {% endif %}
+
+                            {% if currentCoach.status != currentCoach.APPROVED %}
+                                <a style="margin-left: 5px;" class="btn btn-outline-danger"
+                                   data-toggle="modal" title="Reddet"
+                                   onclick=deleteReferee('{{ currentCoach.uuid }}')>
+                                    <i class="fa fa-ban"></i> Reddet
+                                </a>
+                            {% else %}
+                                <button style="margin-left: 5px;" class="btn btn-outline-danger"
+                                        data-toggle="modal" disabled title="Başvuru Onaylandı !">
+                                    <i class="fa fa-ban"></i> Reddet
+                                </button>
+                            {% endif %}
+
+                            <a style="margin-left: 5px;" class="btn btn-outline-danger"
+                               data-toggle="modal" title="Kaydı Sil"
+                               onclick=deleteReferenceCoach('{{ currentCoach.uuid }}')>
+                                <i class="fa fa-trash"></i> Sil
+                            </a>
+
+                        </div>
+                    {% endif %}
                     <button class="btn btn-outline-info" type="submit" style="float: right">Kaydet</button>
                 </div>
             </form>
         </div>
 
     </section>
+
+    <script>
+        function deleteReferee(id) {
+            debugger;
+            console.log(id);
+            swal({
+                title: "Reddetmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                if (result.dismiss !== 'Evet') {
+                    $("#dateOfReject").on("shown.bs.modal", function (e) {
+
+                        $("#btn-gonder-reject").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:refencedeleteCoach" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    uuid: id,
+                                    dateOfReject: $('#dateOfRejectDate').val(),
+                                    textOfReject: $('#dateOfRejectText').val(),
+
+
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Antrenör Başvurusu Reddedildi !!',
+
+                                        })
+
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-reject').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
+                    });
+                }
+            })
+
+
+        }
+
+        function deleteReferenceCoach(id) {
+            debugger;
+            console.log(id);
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                if (result.dismiss !== 'Evet') {
+
+                    $.ajax({
+                        url: "{% url "sbs:registerCoachDelete" %}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False',
+                            uuid: id,
+
+                        },
+                        success: function (result) {
+                            if (result.status === 'Success') {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Antrenör Başvurusu Silindi !!',
+
+                                })
+
+                            } else {
+                                swal({
+                                    icon: 'error',
+                                    title: 'işlem başarısız oldu.',
+
+                                })
+                            }
+                            location.reload();
+
+                        }
+                    });
+                }
+
+
+            }).modal('show');
+            $('#btn-closereddet-reject').click(function () {
+                console.log('buradan çık')
+
+                $('#modal-warning').modal('hide');
+                $('.modal').modal('hide');
+
+            });
+
+        }
+
+        function approvalCoach(id) {
+            $('#loading').show()
+            debugger;
+            console.log(id);
+            swal({
+                title: "Onaylamak istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                    if (result.dismiss !== 'Evet') {
+                        $("#dateOfApproval").on("shown.bs.modal", function (e) {
+
+                            $("#btn-gonder-approval").click(function () {
+                                $.ajax({
+                                    url: "{% url "sbs:approvel-coach-application" %}",
+                                    type: "POST",
+                                    data: {
+                                        'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                        isActive: 'False',
+                                        uuid: id,
+                                        dateOfApproval: $('#dateOfApprovalText').val(),
+                                    },
+                                    success: function (result) {
+                                        debugger;
+                                        if (result.status === 'Success') {
+
+                                            swal({
+                                                icon: 'success',
+                                                title: 'Antrenör başarıyla onaylandı !! Başvuru ekranına yönlendiriliyorsunuz',
+                                                timer: 7000
+
+                                            })
+                                            window.location.href = 'https://sbs.tvgfbf.gov.tr/tvgfbf/reference/antrenor/basvuru';
+
+
+                                        } else {
+
+                                            swal({
+                                                icon: 'error',
+                                                title: 'işlem başarısız oldu.',
+
+                                            })
+                                            location.reload();
+
+
+                                        }
+
+
+                                    }
+                                });
+                            })
+                            ;
+
+
+                        }).modal('show');
+                        $('#btn-closereddet-approval').click(function () {
+                            console.log('buradan çık')
+
+                            $('#modal-warning').modal('hide');
+                            $('.modal').modal('hide');
+                            $('#loading').hide()
+                        });
+                    }
+                    $('#loading').hide()
+
+                }
+            )
+
+
+        }
+
+    </script>
 
 {% endblock %}
 

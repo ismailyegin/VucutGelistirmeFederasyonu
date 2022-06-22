@@ -401,6 +401,7 @@ def referenceCoach(request):
                 currentCoach.workplace = request.POST.get('workplaceUpdate')
                 currentCoach.tc = request.POST.get('tcUpdate')
                 birthDate = request.POST.get('birthDateUpdate')
+                workplace = request.POST.get('workplaceUpdate')
                 currentCoach.birthDate = datetime.datetime.strptime(birthDate, "%d/%m/%Y").strftime("%Y-%m-%d")
                 currentCoach.gender = request.POST.get('genderUpdate', None)
                 if Club.objects.filter(name=request.POST.get('clubUpdate')):
@@ -412,6 +413,7 @@ def referenceCoach(request):
                 currentCoach.email = request.POST.get('emailUpdate')
                 currentCoach.phoneNumber = request.POST.get('phoneNumberUpdate')
                 currentCoach.phoneNumber2 = request.POST.get('phoneNumber2Update')
+                currentCoach.workplace=workplace
                 if Country.objects.filter(name=request.POST.get('countryUpdate')):
                     currentCoach.country = Country.objects.get(name=request.POST.get('countryUpdate'))
                 if City.objects.filter(name=request.POST.get('cityUpdate')):
