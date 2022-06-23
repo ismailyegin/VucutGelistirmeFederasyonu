@@ -19,7 +19,7 @@ class GradeFormCoach(ModelForm):
         model = HavaLevel
 
         fields = (
-            'startDate', 'branch', 'dekont', 'form')
+            'startDate', 'definition','branch', 'dekont', 'form')
 
         labels = {'startDate': 'Hak Kazanma Tarihi', 'branch': 'Branş', 'form': 'Kademe Belgesi', 'dekont': 'Dekont'}
 
