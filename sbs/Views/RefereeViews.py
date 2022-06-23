@@ -69,7 +69,7 @@ def return_referees(request):
 
     return render(request, 'TVGFBF/Referee/referees.html',
                   {'user_form': user_form, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name, 'categories': categories, 'cities': cities, 'branches':branches})
+                   'url_name': url_name, 'categories': categories, 'cities': cities, 'branches': branches})
 
 
 @login_required
@@ -1360,7 +1360,7 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
                         judge.save()
 
                         grade = HavaLevel(definition=reference.kademe_definition,
-                                          startDate=reference.kademe_startDate,
+                                          form=reference.grade_referee_contract, dekont=reference.dekont
                                           )
                         grade.levelType = EnumFields.LEVELTYPE.GRADE
                         grade.status = HavaLevel.APPROVED
@@ -1417,9 +1417,13 @@ def referenceUpdateReferee(request, uuid):
         logout(request)
         return redirect('accounts:login')
 
-    refere = ReferenceReferee.objects.get(uuid=uuid)
-    refere_form = PreRefereeForm(request.POST or None, request.FILES or None, instance=refere,
-                                 initial={'kademe_definition': refere.kademe_definition})
+    urls = last_urls(request)
+    current_url = resolve(request.path_info)
+    url_name = Permission.objects.get(codename=current_url.url_name)
+
+    referee = ReferenceReferee.objects.get(uuid=uuid)
+    referee_form = PreRefereeForm(request.POST or None, request.FILES or None, instance=referee,
+                                  initial={'kademe_definition': referee.kademe_definition, 'country': referee.country})
 
     try:
         with transaction.atomic():
@@ -1433,7 +1437,7 @@ def referenceUpdateReferee(request, uuid):
                 #         email=mail):
                 #         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
                 #         return render(request, 'TVGFBF/Referee/updateReferenceReferee.html',
-                #                       {'preRegistrationform': refere_form})
+                #                       {'preRegistrationform': referee_form, 'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
                 # tc = request.POST.get('tc')
                 # if tc != refere.tc:
@@ -1443,7 +1447,7 @@ def referenceUpdateReferee(request, uuid):
                 #         tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
                 #         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
                 #         return render(request, 'TVGFBF/Referee/updateReferenceReferee.html',
-                #                       {'preRegistrationform': refere_form})
+                #                       {'preRegistrationform': referee_form, 'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
                 name = request.POST.get('first_name')
                 surname = request.POST.get('last_name')
@@ -1454,15 +1458,17 @@ def referenceUpdateReferee(request, uuid):
                 # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
                 #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
                 #     return render(request, 'TVGFBF/Referee/updateReferenceReferee.html',
-                #                   {'preRegistrationform': refere_form})
+                #                   {'preRegistrationform': referee_form, 'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
-                if refere_form.is_valid():
-                    refere_form.save()
+                if referee_form.is_valid():
+                    referee_form.save()
                     messages.success(request, 'Hakem Başvurusu Güncellendi')
                     return redirect('sbs:referencedListReferee')
                 else:
                     messages.warning(request, 'Alanları Kontrol Ediniz')
-        return render(request, 'TVGFBF/Referee/updateReferenceReferee.html', {'preRegistrationform': refere_form})
+        return render(request, 'TVGFBF/Referee/updateReferenceReferee.html',
+                      {'preRegistrationform': referee_form, 'currentReferee': referee, 'urls': urls,
+                       'current_url': current_url, 'url_name': url_name})
     except ReferenceReferee.DoesNotExist:
         traceback.print_exc()
         return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})

@@ -713,7 +713,7 @@ def GetCurrentRegister(request):
 
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
-        return redirect('sbs:return_clubs')
+        return redirect('accounts:coach')
 
 
 class GetReferenceReferee(APIView):
@@ -770,3 +770,111 @@ class GetReferenceReferee(APIView):
         }
         serializer = ReferenceRefereeResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)
+
+
+def GetCurrentRegisterReferee(request):
+    try:
+        with transaction.atomic():
+            if request.method == 'POST':
+                tcKimlikNo = request.POST['tcKimlikNo']
+                info = None
+                if ReferenceReferee.objects.filter(tc=tcKimlikNo):
+                    referee = ReferenceReferee.objects.get(tc=tcKimlikNo)
+                    if referee.status != 'Reddedildi':
+                        return JsonResponse(
+                            {'status': 'Fail', 'msg': 'Güncellenecek kaydınız bulunmamaktadır.',
+                             'result': info,
+                             })
+                    date = referee.birthDate
+                    birthDate = datetime.datetime.strptime(str(date), "%Y-%m-%d").strftime("%d-%m-%Y")
+                    if referee.profileImage:
+                        profileImage = referee.profileImage.url
+                    else:
+                        profileImage = ''
+                    if referee.referee_file:
+                        referee_file = referee.referee_file.url
+                    else:
+                        referee_file = ''
+                    if referee.birthplace:
+                        birthplace = referee.birthplace
+                    else:
+                        birthplace = ''
+                    if referee.iban:
+                        iban = referee.iban
+                    else:
+                        iban = ''
+                    if referee.city:
+                        city = referee.city.name
+                    else:
+                        city = ''
+                    if referee.country:
+                        country = referee.country.name
+                    else:
+                        country = ''
+                    if referee.kademe_definition:
+                        kademe_definition = referee.kademe_definition.name
+                    else:
+                        kademe_definition = ''
+                    if referee.grade_referee_contract:
+                        grade_referee_contract = referee.grade_referee_contract.url
+                    else:
+                        grade_referee_contract = ''
+                    if referee.sgk:
+                        sgk = referee.sgk.url
+                    else:
+                        sgk = ''
+                    if referee.dekont:
+                        dekont = referee.dekont.url
+                    else:
+                        dekont = ''
+                    if referee.definition:
+                        definition = referee.definition
+                    else:
+                        definition = ''
+                    if referee.phoneNumber:
+                        phoneNumber = referee.phoneNumber
+                    else:
+                        phoneNumber = ''
+                    if referee.phoneNumber2:
+                        phoneNumber2 = referee.phoneNumber2
+                    else:
+                        phoneNumber2 = ''
+                    if referee.address:
+                        address = referee.address
+                    else:
+                        address = ''
+
+                    info = {}
+                    info['profilImage'] = profileImage
+                    info['first_name'] = referee.first_name
+                    info['last_name'] = referee.last_name
+                    info['birthplace'] = birthplace
+                    info['iban'] = iban
+                    info['referee_file'] = referee_file
+                    info['birthDate'] = birthDate
+                    info['gender'] = referee.gender
+                    info['email'] = referee.email
+                    info['country'] = country
+                    info['phoneNumber'] = phoneNumber
+                    info['city'] = city
+                    info['phoneNumber2'] = phoneNumber2
+                    info['address'] = address
+                    info['kademe_definition'] = kademe_definition
+                    info['grade_referee_contract'] = grade_referee_contract
+                    info['sgk'] = sgk
+                    info['dekont'] = dekont
+                    info['definition'] = definition
+
+                if info:
+                    return JsonResponse({'status': 'Success',
+                                         'result': info,
+                                         })
+                else:
+                    return JsonResponse(
+                        {'status': 'Fail', 'msg': 'Bu Tc kimlik  numarasına ait bir kayıt bulunamadı.',
+                         'result': info,
+                         })
+
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('accounts:referee')

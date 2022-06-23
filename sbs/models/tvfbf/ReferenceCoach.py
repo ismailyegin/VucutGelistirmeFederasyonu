@@ -65,7 +65,7 @@ class ReferenceCoach(BaseModel):
     motherName = models.CharField(max_length=120, null=True, blank=True, verbose_name='Anne Adı')
     fatherName = models.CharField(max_length=120, null=True, blank=True, verbose_name='Baba Adı')
     profileImage = models.ImageField(upload_to='profile/', null=False, blank=False,
-                                     verbose_name='Profil Resmi')
+                                     verbose_name='Vesikalık Resmi')
     birthDate = models.DateField(null=True, blank=True, verbose_name='Doğum Tarihi')
     bloodType = models.CharField(max_length=128, verbose_name='Kan Grubu', choices=BLOODTYPE, null=True, blank=True)
     gender = models.CharField(max_length=128, verbose_name='Cinsiyeti', choices=GENDER_CHOICES, default=MALE)

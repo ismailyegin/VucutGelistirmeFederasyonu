@@ -62,7 +62,7 @@ class ReferenceReferee(BaseModel):
     birthplace = models.CharField(max_length=120, null=True, blank=True, verbose_name='Doğum Yeri')
     motherName = models.CharField(max_length=120, null=True, blank=True, verbose_name='Anne Adı')
     fatherName = models.CharField(max_length=120, null=True, blank=True, verbose_name='Baba Adı')
-    profileImage = models.ImageField(upload_to='profile/', null=False, blank=False, verbose_name='Profil Resmi')
+    profileImage = models.ImageField(upload_to='profile/', null=False, blank=False, verbose_name='Vesikalık Resmi')
     birthDate = models.DateField(null=True, blank=True, verbose_name='Doğum Tarihi')
     bloodType = models.CharField(max_length=128, verbose_name='Kan Grubu', choices=BLOODTYPE, null=True, blank=True)
     gender = models.CharField(max_length=128, verbose_name='Cinsiyeti', choices=GENDER_CHOICES, default=MALE)
@@ -75,7 +75,7 @@ class ReferenceReferee(BaseModel):
     country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Ülke')
 
     kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
-    kademe_startDate = models.DateField(verbose_name="Kademe başlangıç Tarihi")
+    # kademe_startDate = models.DateField(verbose_name="Kademe başlangıç Tarihi")
 
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
@@ -87,7 +87,7 @@ class ReferenceReferee(BaseModel):
     status_date=models.DateField(verbose_name="Red/Kabul Tarihi",null=True,blank=True)
     definition=models.TextField( blank=True,null=True , verbose_name='Reddetme Nedeni')
 
-    grade_referee_contract = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Hakem Sözleşme Belgesi')  #Hakem Sözleşme
+    grade_referee_contract = models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Hakem Sözleşme Belgesi')  #Hakem Sözleşme
     sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')  # SGK
     dekont = models.FileField(null=True, blank=True, verbose_name='Dekont')  # dekont
     referee_file = models.FileField(null=True, blank=True, verbose_name='Hakemlik Belgesi')  # Hakemlik BELGESİ

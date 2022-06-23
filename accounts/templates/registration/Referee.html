@@ -97,11 +97,51 @@
 <div class="wrapper">
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-        <img class="animation" src="{% static 'tvgfbf__.png' %}"  alt="THSF"
+        <img class="animation" src="{% static 'tvgfbf__.png' %}" alt="THSF"
              style="display: block;width: 200px;height: 200px">
     </div>
 
 </div>
+
+<div class="modal modal-success-food fade in" id="modal-xl" style="display: none; width: 100%">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Belge</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <section class="col-lg-12">
+                        {% include "taahhutbelgesi.html" %}
+                        <center>
+                            <label>
+                                <input id="modalCheckApproval" type="checkbox" onclick="onClickModal()"/> <small>Okudum,
+                                onaylıyorum.</small>
+                            </label>
+                        </center>
+                    </section>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button style="display: none"></button>
+
+                <button type="button" class="btn btn-outline-success btn-ok" id="btn-closebtn"
+                        data-dismiss="modal">Kapat
+                </button>
+            </div>
+        </div>
+
+
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
 <div class="modal modal-success modal-success-food fade in" id="modal-success" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -214,8 +254,43 @@
 </section>
 {% load static %}
 <section class="content">
+    <div class="col-lg-12">
+        <div class="card card-info card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title">Hakem Başvuru</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="ilkKayit" name="ilkKayit"
+                                   onclick="checkRegister('ilkKayit')">
+                            <label class="form-check-label" for="ilkKayit">İlk defa kayıt oluyorum.</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="kayitGuncelle" name="kayitGuncelle"
+                                   onclick="checkRegister('kayitGuncelle')">
+                            <label class="form-check-label" for="kayitGuncelle">Reddedilen kaydımı düzenlemek
+                                istiyorum.</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <form method="post" enctype="multipart/form-data" role="form"> <!-- tc kimlik kontrolü ekle -->
+        </div>
+
+    </div>
+</section>
+
+<section class="content" id="firstRegister" style="display: none;">
+    <div id="loading" style="display: none">
+        <img id="loading-image" src="{% static 'loader/ring.gif' %}" alt="Loading..."/>
+    </div>
+
+    <form id="referenceRefereeForm" method="post" enctype="multipart/form-data" role="form">
+        <!-- tc kimlik kontrolü ekle -->
         {% csrf_token %}
 
         <div class="col-lg-12">
@@ -280,6 +355,11 @@
                                         {{ preRegistrationform.birthDate }}
                                     </div>
 
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.referee_file.label }}</label>
+                                        {{ preRegistrationform.referee_file }}
+                                    </div>
+
                                 </div>
 
 
@@ -305,6 +385,10 @@
                                     <div class="form-group">
                                         <label> {{ preRegistrationform.phoneNumber.label }}</label>
                                         {{ preRegistrationform.phoneNumber }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.phoneNumber2.label }}</label>
+                                        {{ preRegistrationform.phoneNumber2 }}
                                     </div>
 
                                 </div>
@@ -347,16 +431,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-6">
-
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.kademe_startDate.label }}</label>
-                                        {{ preRegistrationform.kademe_startDate }}
-                                    </div>
-
-
-                                </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-12">
 
                                     <div class="form-group">
                                         <label> {{ preRegistrationform.kademe_definition.label }}</label>
@@ -365,13 +440,91 @@
 
 
                                 </div>
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.grade_referee_contract.label }}</label>
+                                                {{ preRegistrationform.grade_referee_contract }} <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> Hiçbir Tesiste Çalışmayan Antrenör İseniz
+                                                    Taahhüt Formunu <a
+                                                        href="\static\images\taahhut.pdf" download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
+                                                <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis
+                                                    Sahipleri Taahhut Formunu <a
+                                                        href="\static\images\taahhut_isletme.pdf"
+                                                        download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.sgk.label }}</label>
+                                                {{ preRegistrationform.sgk }} <br>
+                                                <small><i class="fa fa-tags"></i> e-Devlet üzerinden alınan 4A işe giriş
+                                                    çıkış bildirgesi</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.dekont.label }}</label>
+                                                {{ preRegistrationform.dekont }} <br>
+                                                <small style="color: #bd2828"><i class="fa fa-file"></i> Aşağıdaki
+                                                    belgelerden herhangi birini yükleyiniz.</small>
+                                                <ul>
+                                                    <small>
+                                                        <li>Banka Dekontu</li>
+                                                        <li>Kredi Kartı Ekstre Ekran Görüntüsü</li>
+                                                        <li>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</li>
+                                                        <li>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</li>
+                                                        <li>1. Kademe Belgesini 2022 Yılından Alan Antrenörlerimiz
+                                                            Bu Alana Antrenör Belgesini Yüklemesi Yeterlidir
+                                                        </li>
+                                                    </small>
+                                                </ul>
+                                            </div>
+                                            <small style="color: #bd2828"><i class="fa fa-link"></i>
+                                                Vize Ödemenizi Yapmadıysanız Bu Linkleri ( Kredi Kartı/ Havale-Eft )
+                                                Kullanarak Yapabilirsiniz.
+                                            </small>
+                                            <small>
+                                                <ul>
+                                                    <li><a href="https://tvgfbf.gov.tr/vize-odemeleri-kredi-karti-2/">Kredi
+                                                        Kartı/Havale-Eft</a></li>
+                                                    <li><a href="https://tvgfbf.gov.tr/iletisim/">Banka Bilgileri</a>
+                                                    </li>
+                                                </ul>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <input type="hidden" name="submitFormControl" value="registerForm">
+                                </div>
                             </div>
 
                         </div>
                         <div class="card-footer">
-                            <button class="btn btn-outline-info" type="submit" style="float: right">Onaya
+
+                            <button class="btn btn-outline-info" type="button" style="float: right;" disabled="disabled"
+                                    title="Bilgilerin doğruluğunu onaylamalısınız." id="approvalButton"
+                                    onclick="approvalSendReferee(this)" name="submitButton"
+                                    value="registerSubmitButton">Onaya
                                 gönder
                             </button>
+
+                            <label style="float: right; margin-right: 20px;">
+                                <input id="checkApproval" type="checkbox" onclick="onChangeHandlerReferee()"/> <small>Taahhütnameyi
+                                okudum onaylıyorum.</small>
+                            </label>
+
+
                         </div>
 
 
@@ -386,6 +539,338 @@
 
     </form>
 
+
+</section>
+
+<section class="content" id="tcKontrol" style="display: none;">
+    <section class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-info card-outline">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-lg-12">
+                                <label for="tc">TC Kimlik Numarası</label>
+                                <input class="form-control" type="text" id="tcKimlikNo" name="tcKimlikNo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <h5 id="redNedeni" style="display: none;float: left;color: red"></h5>
+                        <button id="currentTC" class="btn btn-outline-info" onclick="GetCurrentRegister()"
+                                type="button"
+                                style="float: right;">Devam Et
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</section>
+
+<section class="content" id="updateRegister" style="display: none;">
+
+    <div id="loading" style="display: none">
+        <img id="loading-image" src="{% static 'loader/ring.gif' %}" alt="Loading..."/>
+    </div>
+
+    <form id="referenceRefereeUpdateForm" method="post" enctype="multipart/form-data" role="form">
+        <!-- tc kimlik kontrolü ekle -->
+        {% csrf_token %}
+
+        <div class="col-lg-12">
+            <div class="row">
+
+
+                <div class="col-lg-6">
+                    <div class="card card-info card-outline">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Kişi Bilgileri </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.profileImage.label }}</label>
+                                        <p>Şu anki: <a id="profileImageUpdateValue" href=""></a></p>
+                                        <input type="file" name="profileImageUpdate" accept="image/*"
+                                               id="profileImageUpdate">
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.first_name.label }}</label>
+                                        <input type="text" name="firstNameUpdate" class="form-control " value=""
+                                               required="required" maxlength="30" id="firstNameUpdate"
+                                               readonly="readonly">
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.last_name.label }}</label>
+                                        <input type="text" name="lastNameUpdate" class="form-control "
+                                               required="required" maxlength="150" id="lastNameUpdate"
+                                               readonly="readonly">
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.birthplace.label }}</label>
+                                        <input type="text" name="birthPlaceUpdate" class="form-control "
+                                               maxlength="120" id="birthPlaceUpdate">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.iban.label }}</label>
+                                        <input type="text" name="ibanUpdate" id="ibanUpdate" class="form-control  iban"
+                                               onkeyup="if(this.value.length > 34){this.value=this.value.substr(0, 34);}"
+                                               value="" required="required" maxlength="120" inputmode="text">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="belgeUpdate">Hakem Belgesi</label>
+                                        <p>Şu anki: <a id="updateBelgeValue" href=""></a></p>
+                                        <input id="belgeUpdate" class="form-control" type="file" name="belgeUpdate"/>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.tc.label }}</label>
+                                        <input type="text" name="tcUpdate" class="form-control "
+                                               onkeyup="if(this.value.length >11){this.value=this.value.substr(0, 11);}"
+                                               id="tcUpdate" onkeypress="return isNumberKey(event)" value=""
+                                               required="required" maxlength="120" readonly="readonly">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.birthDate.label }}</label>
+                                        <input type="text" name="birthDateUpdate"
+                                               class="form-control  pull-right datepicker6" autocomplete="on"
+                                               onkeydown="return true" required="required"
+                                               data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy"
+                                               data-mask="" inputmode="numeric" id="birthDateUpdate">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.gender.label }}</label>
+                                        <select name="genderUpdate"
+                                                class="form-control select2 select2-hidden-accessible"
+                                                style="width: 100%; "
+                                                id="genderUpdate" aria-hidden="true">
+                                            <option value="Erkek">Erkek</option>
+
+                                            <option value="Kadın">Kadın</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-info card-outline">
+                        <div class="card-header with-border">
+                            <h3 class="card-title"> Kişi İletişim Bilgileri</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.email.label }}</label>
+                                        <input type="text" name="emailUpdate" class="form-control " required="required"
+                                               maxlength="254" id="emailUpdate" readonly="readonly">
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.phoneNumber.label }}</label>
+                                        <input type="text" name="phoneNumberUpdate" class="form-control "
+                                               maxlength="120" id="phoneNumberUpdate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.phoneNumber2.label }}</label>
+                                        <input type="text" name="phoneNumber2Update" class="form-control "
+                                               maxlength="120" id="phoneNumber2Update">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.country.label }}</label>
+                                        <select id="countryUpdate" name="countryUpdate"
+                                                class="form-control select2 select2-hidden-accessible"
+                                                style="width: 100%;"
+                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                            <option value="">Seçiniz</option>
+                                            {% for country in countries %}
+                                                <option value="{{ country.name }}">{{ country.name }}</option>
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.city.label }}</label>
+                                        <select id="cityUpdate" name="cityUpdate"
+                                                class="form-control select2 select2-hidden-accessible"
+                                                style="width: 100%;"
+                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                            <option value="">Seçiniz</option>
+                                            {% for city in cities %}
+                                                <option value="{{ city.name }}">{{ city.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.address.label }}</label>
+                                        <textarea name="addressUpdate" cols="40" rows="2" class="form-control "
+                                                  id="addressUpdate"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="card card-info card-outline">
+                        <div class="card-header with-border">
+                            <h3 class="card-title"> Kademe Bilgileri </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.kademe_definition.label }}</label>
+                                        <select id="gradeUpdate" name="gradeUpdate"
+                                                class="form-control select2 select2-hidden-accessible"
+                                                style="width: 100%;"
+                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                            <option value="">Seçiniz</option>
+                                            {% for grade in grades %}
+                                                <option value="{{ grade.name }}">{{ grade.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.grade_referee_contract.label }}</label>
+                                                <p>Şu anki: <a id="kademeBelgeUpdateValue" href=""></a></p>
+                                                <input type="file" name="kademeBelgeUpdate" id="kademeBelgeUpdate">
+                                                <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> Hiçbir Tesiste Çalışmayan Antrenör İseniz
+                                                    Taahhüt Formunu <a
+                                                        href="\static\images\taahhut.pdf" download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
+                                                <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis
+                                                    Sahipleri Taahhut Formunu <a
+                                                        href="\static\images\taahhut_isletme.pdf"
+                                                        download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.sgk.label }}</label>
+                                                <p>Şu anki: <a id="sgkUpdateValue" href=""></a></p>
+                                                <input type="file" name="sgkUpdate" id="sgkUpdate">
+                                                <br>
+                                                <small><i class="fa fa-tags"></i> e-Devlet üzerinden alınan 4A işe giriş
+                                                    çıkış bildirgesi</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.dekont.label }}</label>
+                                                <p>Şu anki: <a id="dekontUpdateValue" href=""></a></p>
+                                                <input type="file" name="dekontUpdate" id="dekontUpdate">
+                                                <br>
+                                                <small style="color: #bd2828"><i class="fa fa-file"></i> Aşağıdaki
+                                                    belgelerden herhangi birini yükleyiniz.</small>
+                                                <ul>
+                                                    <small>
+                                                        <li>Banka Dekontu</li>
+                                                        <li>Kredi Kartı Ekstre Ekran Görüntüsü</li>
+                                                        <li>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</li>
+                                                        <li>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</li>
+                                                        <li>1. Kademe Belgesini 2022 Yılından Alan Antrenörlerimiz
+                                                            Bu Alana Antrenör Belgesini Yüklemesi Yeterlidir
+                                                        </li>
+                                                    </small>
+                                                </ul>
+                                            </div>
+                                            <small style="color: #bd2828"><i class="fa fa-link"></i>
+                                                Vize Ödemenizi Yapmadıysanız Bu Linkleri ( Kredi Kartı/ Havale-Eft )
+                                                Kullanarak Yapabilirsiniz.
+                                            </small>
+                                            <small>
+                                                <ul>
+                                                    <li><a href="https://tvgfbf.gov.tr/vize-odemeleri-kredi-karti-2/">Kredi
+                                                        Kartı/Havale-Eft</a></li>
+                                                    <li><a href="https://tvgfbf.gov.tr/iletisim/">Banka Bilgileri</a>
+                                                    </li>
+                                                </ul>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <input type="hidden" name="submitFormControl" value="updateForm">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+
+                            <button class="btn btn-outline-info" type="button" style="float: right;" disabled="disabled"
+                                    title="Bilgilerin doğruluğunu onaylamalısınız." id="approvalButton2"
+                                    onclick="approvalSendReferee2(this)" name="submitButton" value="updateSubmitButton">Onaya
+                                gönder
+                            </button>
+
+                            <label style="float: right; margin-right: 20px;">
+                                <input id="checkApproval2" type="checkbox" onclick="onChangeHandlerReferee2()"/> <small>Taahhütnameyi
+                                okudum onaylıyorum.</small>
+                            </label>
+
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </form>
 
 </section>
 
@@ -513,6 +998,307 @@
         })
 
     })
+</script>
+
+<script>
+    function approvalSendReferee() {
+        debugger;
+
+        swal({
+            title: "Onaya göndermek istediğinizden emin misiniz?",
+            icon: "warning",
+            buttons: [
+                'Hayır!',
+                'Evet'
+            ],
+        }).then((result) => {
+            if (result.dismiss !== 'Evet') {
+                debugger;
+                var form = $('#referenceRefereeForm')[0];
+                var sonuc = true;
+                for (var i = 0; i < form.elements.length; i++) {
+                    if (form.elements[i].value === '' && form.elements[i].hasAttribute('required')) {
+                        if (form.elements[i].type === 'file') {
+                            form.elements[i].style.border = "1px solid red"
+                        } else if (form.elements[i].tagName.toLowerCase() === 'select') {
+                            form.elements[i].parentElement.style.border = "1px solid red";
+                        }
+                        form.elements[i].style.borderColor = "red";
+                        sonuc = false;
+
+                    } else {
+                        form.elements[i].style.removeProperty('border-color');
+                        form.elements[i].style.removeProperty('border');
+                    }
+                }
+                if (sonuc === true) {
+                    form.submit();
+                } else {
+                    swal({
+                        title: "Zorunlu alanları doldurunuz !.",
+                        icon: "warning",
+                        showCloseButton: true,
+                        closeButtonText: 'Tamam',
+                    })
+                }
+
+
+            }
+
+        })
+
+
+    }
+
+    function onChangeHandlerReferee() {
+
+        $("#modal-xl").on("shown.bs.modal", function (e) {
+
+        }).modal('show');
+
+        document.getElementById('checkApproval').checked = false;
+
+        if (document.getElementById('modalCheckApproval').checked === true) {
+            document.getElementById('checkApproval').checked = true;
+        } else {
+            document.getElementById('checkApproval').checked = false;
+        }
+
+    }
+
+    function approvalSendReferee2() {
+        debugger;
+
+        swal({
+            title: "Onaya göndermek istediğinizden emin misiniz?",
+            icon: "warning",
+            buttons: [
+                'Hayır!',
+                'Evet'
+            ],
+        }).then((result) => {
+            if (result.dismiss !== 'Evet') {
+                debugger;
+                var form = $('#referenceRefereeUpdateForm')[0];
+                var sonuc = true;
+                for (var i = 0; i < form.elements.length; i++) {
+                    if (form.elements[i].value === '' && form.elements[i].hasAttribute('required')) {
+                        if (form.elements[i].type === 'file') {
+                            form.elements[i].style.border = "1px solid red"
+                        } else if (form.elements[i].tagName.toLowerCase() === 'select') {
+                            form.elements[i].parentElement.style.border = "1px solid red";
+                        }
+                        form.elements[i].style.borderColor = "red";
+                        sonuc = false;
+
+                    } else {
+                        form.elements[i].style.removeProperty('border-color');
+                        form.elements[i].style.removeProperty('border');
+                    }
+                }
+                if (sonuc === true) {
+                    form.submit();
+                } else {
+                    swal({
+                        title: "Zorunlu alanları doldurunuz !.",
+                        icon: "warning",
+                        showCloseButton: true,
+                        closeButtonText: 'Tamam',
+                    })
+                }
+
+
+            }
+
+        })
+
+
+    }
+
+    function onChangeHandlerReferee2() {
+
+        $("#modal-xl").on("shown.bs.modal", function (e) {
+
+        }).modal('show');
+
+        document.getElementById('checkApproval').checked = false;
+
+        if (document.getElementById('modalCheckApproval').checked === true) {
+            document.getElementById('checkApproval').checked = true;
+        } else {
+            document.getElementById('checkApproval').checked = false;
+        }
+
+    }
+
+    function onClickModal() {
+        debugger;
+
+        if (document.getElementById('modalCheckApproval').checked === true) {
+            document.getElementById('checkApproval').checked = true;
+            document.getElementById('approvalButton').disabled = false;
+            document.getElementById('approvalButton').title = ' ';
+
+            document.getElementById('checkApproval2').checked = true;
+            document.getElementById('approvalButton2').disabled = false;
+            document.getElementById('approvalButton2').title = ' ';
+        } else {
+            document.getElementById('checkApproval').checked = false;
+            document.getElementById('approvalButton').disabled = true;
+            document.getElementById('approvalButton').title = 'Bilgilerin doğruluğunu onaylamalısınız.';
+
+            document.getElementById('checkApproval2').checked = false;
+            document.getElementById('approvalButton2').disabled = true;
+            document.getElementById('approvalButton2').title = 'Bilgilerin doğruluğunu onaylamalısınız.';
+        }
+
+    }
+
+    function checkRegister(type) {
+        if (type === 'ilkKayit') {
+            document.getElementById('ilkKayit').checked = true;
+            document.getElementById('kayitGuncelle').checked = false;
+            document.getElementById('firstRegister').style.display = 'block';
+            document.getElementById('tcKontrol').style.display = 'none';
+            document.getElementById('updateRegister').style.display = 'none';
+            document.getElementById('redNedeni').style.display = 'none'
+            document.getElementById('redNedeni').innerHTML = ''
+
+        } else {
+            document.getElementById('kayitGuncelle').checked = true;
+            document.getElementById('ilkKayit').checked = false;
+            document.getElementById('firstRegister').style.display = 'none';
+            document.getElementById('tcKontrol').style.display = 'block';
+
+        }
+
+    }
+
+    function GetCurrentRegister() {
+        debugger;
+        let tcKimlikNo = document.getElementById('tcKimlikNo').value
+        if (tcKimlikNo) {
+            $.ajax({
+                url: "{% url "sbs:hakem-kayit-guncelle-api" %}",
+                type: "POST",
+                data: {
+                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    tcKimlikNo: tcKimlikNo,
+                },
+                success: function (result) {
+                    debugger;
+                    if (result.status === 'Success') {
+                        let info = result['result']
+                        document.getElementById('updateRegister').style.display = 'block'
+                        document.getElementById('redNedeni').style.display = 'block'
+
+                        document.getElementById('redNedeni').innerHTML = 'Başvurunun Reddedilme Nedeni : ' + info.definition.toUpperCase()
+                        if (info.profilImage) {
+                            document.getElementById('profileImageUpdateValue').href = info.profilImage
+                            document.getElementById('profileImageUpdateValue').innerHTML = info.profilImage
+                        } else {
+                            document.getElementById('profileImageUpdateValue').innerHTML = 'Yüklenmiş belgeniz bulunmamaktadır.'
+                            document.getElementById('profileImageUpdateValue').removeAttribute('href')
+                        }
+                        document.getElementById('firstNameUpdate').value = info.first_name
+                        document.getElementById('lastNameUpdate').value = info.last_name
+                        document.getElementById('birthPlaceUpdate').value = info.birthplace
+                        document.getElementById('ibanUpdate').value = info.iban
+                        document.getElementById('tcUpdate').value = tcKimlikNo
+                        document.getElementById('birthDateUpdate').value = info.birthDate
+
+                        var gender = document.getElementById('genderUpdate')
+                        for (var i = 0; i < gender.length; i++) {
+                            if (gender.options[i].value === info.gender) {
+                                gender.remove(i);
+                            }
+                        }
+                        gender.options[gender.options.length] = new Option(info.gender, info.gender);
+                        gender.value = info.gender
+
+                        if (info.referee_file) {
+                            document.getElementById('updateBelgeValue').href = info.referee_file
+                            document.getElementById('updateBelgeValue').innerHTML = info.referee_file
+                        } else {
+                            document.getElementById('updateBelgeValue').innerHTML = 'Yüklenmiş belgeniz bulunmamaktadır.'
+                            document.getElementById('updateBelgeValue').removeAttribute('href')
+                        }
+
+
+                        document.getElementById('emailUpdate').value = info.email
+                        document.getElementById('phoneNumberUpdate').value = info.phoneNumber
+                        document.getElementById('phoneNumber2Update').value = info.phoneNumber2
+
+                        var country = document.getElementById('countryUpdate')
+                        for (var i = 0; i < country.length; i++) {
+                            if (country.options[i].value === info.country) {
+                                country.remove(i);
+                            }
+                        }
+                        country.options[country.options.length] = new Option(info.country, info.country);
+                        country.value = info.country
+
+                        var city = document.getElementById('cityUpdate')
+                        for (var i = 0; i < city.length; i++) {
+                            if (city.options[i].value === info.city) {
+                                city.remove(i);
+                            }
+                        }
+                        city.options[city.options.length] = new Option(info.city, info.city);
+                        city.value = info.city
+
+                        document.getElementById('addressUpdate').innerHTML = info.address
+
+                        var grade = document.getElementById('gradeUpdate')
+                        for (var i = 0; i < grade.length; i++) {
+                            if (grade.options[i].value === info.kademe_definition) {
+                                grade.remove(i);
+                            }
+                        }
+                        grade.options[grade.options.length] = new Option(info.kademe_definition, info.kademe_definition);
+                        grade.value = info.kademe_definition
+
+                        if (info.grade_referee_contract) {
+                            document.getElementById('kademeBelgeUpdateValue').href = info.grade_referee_contract
+                            document.getElementById('kademeBelgeUpdateValue').innerHTML = info.grade_referee_contract
+                        } else {
+                            document.getElementById('kademeBelgeUpdateValue').innerHTML = 'Yüklenmiş belgeniz bulunmamaktadır.'
+                            document.getElementById('kademeBelgeUpdateValue').removeAttribute('href')
+                        }
+
+                        if (info.sgk) {
+                            document.getElementById('sgkUpdateValue').href = info.sgk
+                            document.getElementById('sgkUpdateValue').innerHTML = info.sgk
+                        } else {
+                            document.getElementById('sgkUpdateValue').innerHTML = 'Yüklenmiş belgeniz bulunmamaktadır.'
+                            document.getElementById('sgkUpdateValue').removeAttribute('href')
+                        }
+
+                        if (info.dekont) {
+                            document.getElementById('dekontUpdateValue').href = info.dekont
+                            document.getElementById('dekontUpdateValue').innerHTML = info.dekont
+                        } else {
+                            document.getElementById('dekontUpdateValue').innerHTML = 'Yüklenmiş belgeniz bulunmamaktadır.'
+                            document.getElementById('dekontUpdateValue').removeAttribute('href')
+                        }
+
+                    } else {
+                        swal({
+                            icon: 'error',
+                            title: result.msg,
+
+                        })
+
+                    }
+
+                }
+            });
+        }
+
+
+    }
+
+
 </script>
 </body>
 </html>

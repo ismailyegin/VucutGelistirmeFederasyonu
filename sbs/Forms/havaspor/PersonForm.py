@@ -16,7 +16,7 @@ class PersonForm(ModelForm):
 
         labels = {'tc': 'T.C*.',
                   'gender': 'Cinsiyet*',
-                  'profileImage': 'Profil Resmi',
+                  'profileImage': 'Vesikalık Resmi',
                   'height': 'Boy',
                   'weight': 'Kilo',
                   'birthplace': 'Doğum Yeri',

@@ -44,7 +44,7 @@ class Person(BaseModel):
     motherName = models.CharField(max_length=120, null=True, blank=True, verbose_name='Anne Adı')
     fatherName = models.CharField(max_length=120, null=True, blank=True, verbose_name='Baba Adı')
     profileImage = models.ImageField(upload_to='profile/', null=True, blank=True, default='profile/user.png',
-                                     verbose_name='Profil Resmi')
+                                     verbose_name='Vesikalık Resmi')
     birthDate = models.DateField(null=True, blank=True, verbose_name='Doğum Tarihi')
     bloodType = models.CharField(max_length=128, verbose_name='Kan Grubu', choices=BLOODTYPE, default=AB1, null=True,
                                  blank=True)

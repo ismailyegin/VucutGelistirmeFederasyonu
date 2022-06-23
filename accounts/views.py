@@ -126,6 +126,7 @@ def login(request):
 
     return render(request, 'registration/login.html')
 
+
 def updateUrlProfile(request):
     if request.method == 'GET':
         try:
@@ -137,7 +138,7 @@ def updateUrlProfile(request):
             gelen.status = True
             gelen.save()
             return render(request, 'registration/newPassword.html',
-                              {'password_form': password_form})
+                          {'password_form': password_form})
 
         except:
             return redirect('accounts:login')
@@ -166,7 +167,6 @@ def updateUrlProfile(request):
 
 
 def forgot(request):
-
     if request.method == 'POST':
         mail = request.POST.get('username')
         userfilter = {
@@ -188,8 +188,8 @@ def forgot(request):
                 html_content = '<h2>Türkiye Vücut Geliştirme, Fitness ve Bilek Güreşi Federasyonu</h2>'
                 html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
                 html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
-                     fdk.uuid) + '">href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(fdk.uuid) + '</p></a>'
-                #html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
+                    fdk.uuid) + '">href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(fdk.uuid) + '</p></a>'
+                # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
                 #    fdk.uuid) + '">https://sbs.tvgfbf.gov.tr/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
 
                 msg = EmailMultiAlternatives(subject, '', from_email, [to])
@@ -275,52 +275,128 @@ def handle500Template(request):
 def referenceReferee(request):
     logout(request)
     referee = PreRefereeForm()
+    referee.fields['sgk'].required = True
+    referee.fields['dekont'].required = True
+    referee.fields['referee_file'].required = True
+    referee.fields['grade_referee_contract'].required = True
+    countries = Country.objects.all()
+    cities = City.objects.all()
+    grades = CategoryItem.objects.filter(forWhichClazz="REFEREE_GRADE", isDeleted=0).order_by('order')
 
     if request.method == 'POST':
-        referee = PreRefereeForm(request.POST, request.FILES)
-        mail = request.POST.get('email')
-        if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-                email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-            email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
-            email=mail):
-            messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-            return render(request, 'registration/Referee.html', {'preRegistrationform': referee})
+        if request.POST.get('submitFormControl') == 'registerForm':
+            referee = PreRefereeForm(request.POST, request.FILES)
+            # mail = request.POST.get('email')
+            # if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+            #         email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+            #     email=mail):
+            #     messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            #     return render(request, 'registration/Referee.html',
+            #                   {'preRegistrationform': referee, 'countries': countries,
+            #                    'cities': cities, 'grades': grades, })
+            #
+            # tc = request.POST.get('tc')
+            # if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.filter(
+            #         tc=tc) or PreRegistration.objects.filter(tc=tc):
+            #     messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+            #     return render(request, 'registration/Referee.html',
+            #                   {'preRegistrationform': referee, 'countries': countries,
+            #                    'cities': cities, 'grades': grades, })
+            #
+            # name = request.POST.get('first_name')
+            # surname = request.POST.get('last_name')
+            # year = request.POST.get('birthDate')
+            # year = year.split('/')
+            #
+            # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+            # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim doğum yılı  bilgileri uyuşmamaktadır. ')
+            #     return render(request, 'registration/Referee.html',
+            #                   {'preRegistrationform': referee, 'countries': countries,
+            #                    'cities': cities, 'grades': grades, })
 
-        tc = request.POST.get('tc')
-        if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-                tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-            tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
-            messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
-            return render(request, 'registration/Referee.html',
-                          {'preRegistrationform': referee})
+            if referee.is_valid():
+                if request.POST.get('kademe_definition'):
+                    hakem = referee.save(commit=False)
+                    hakem.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+                    hakem.country = Country.objects.get(name=request.POST.get('country'))
+                    hakem.save()
 
-        name = request.POST.get('first_name')
-        surname = request.POST.get('last_name')
-        year = request.POST.get('birthDate')
-        year = year.split('/')
+                    messages.success(request,
+                                     'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
+                    return redirect("accounts:redirect_register")
+                else:
+                    messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz. Kademe bilgisi giriniz:')
 
-        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-            return render(request, 'registration/Referee.html',
-                          {'preRegistrationform': referee})
-
-        if referee.is_valid():
-            if request.POST.get('kademe_definition'):
-                hakem = referee.save(commit=False)
-                hakem.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
-                hakem.save()
-
-                messages.success(request,
-                                 'Başvurunuz onaylandiktan sonra email adresinize şifre bilgileriniz gönderilecektir.')
-                return redirect("accounts:login")
             else:
-                messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz. Kademe bilgisi giriniz:')
-
+                messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz. ')
         else:
-            messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz. ')
+            currentReferee = ReferenceReferee.objects.get(tc=request.POST.get('tcUpdate'))
+            # mail = request.POST.get('emailUpdate')
+            # if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+            #         email=mail) or ReferenceReferee.objects.exclude(uuid=currentReferee.uuid).filter(
+            #     email=mail) or PreRegistration.objects.filter(email=mail):
+            #     messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+            #     return render(request, 'registration/Referee.html',
+            #                   {'preRegistrationform': referee, 'countries': countries,
+            #                    'cities': cities, 'grades': grades, })
+            #
+            # tc = request.POST.get('tc')
+            # if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(tc=tc) or ReferenceReferee.objects.exclude(
+            #         uuid=currentReferee.uuid).filter(tc=tc) or PreRegistration.objects.filter(tc=tc):
+            #     messages.warning(request, 'Tc kimlik numarasi sistemde kayıtlıdır. ')
+            #     return render(request, 'registration/Referee.html',
+            #                   {'preRegistrationform': referee, 'countries': countries,
+            #                    'cities': cities, 'grades': grades, })
+            #
+            # name = request.POST.get('first_name')
+            # surname = request.POST.get('last_name')
+            # year = request.POST.get('birthDate')
+            # year = year.split('/')
+            #
+            # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+            # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim doğum yılı  bilgileri uyuşmamaktadır. ')
+            #     return render(request, 'registration/Referee.html',
+            #                   {'preRegistrationform': referee, 'countries': countries,
+            #                    'cities': cities, 'grades': grades, })
+
+            if request.FILES.get('profileImageUpdate'):
+                currentReferee.profileImage = request.FILES.get('profileImageUpdate')
+            currentReferee.first_name = request.POST.get('firstNameUpdate')
+            currentReferee.last_name = request.POST.get('lastNameUpdate')
+            currentReferee.birthplace = request.POST.get('birthPlaceUpdate')
+            currentReferee.iban = request.POST.get('ibanUpdate')
+            currentReferee.tc = request.POST.get('tcUpdate')
+            birthDate = request.POST.get('birthDateUpdate')
+            currentReferee.birthDate = datetime.datetime.strptime(birthDate, "%d/%m/%Y").strftime("%Y-%m-%d")
+            currentReferee.gender = request.POST.get('genderUpdate', None)
+            if request.FILES.get('belgeUpdate'):
+                currentReferee.referee_file = request.FILES.get('belgeUpdate')
+            currentReferee.email = request.POST.get('emailUpdate')
+            currentReferee.phoneNumber = request.POST.get('phoneNumberUpdate')
+            currentReferee.phoneNumber2 = request.POST.get('phoneNumber2Update')
+            if Country.objects.filter(name=request.POST.get('countryUpdate')):
+                currentReferee.country = Country.objects.get(name=request.POST.get('countryUpdate'))
+            if City.objects.filter(name=request.POST.get('cityUpdate')):
+                currentReferee.city = City.objects.get(name=request.POST.get('cityUpdate'))
+            currentReferee.address = request.POST.get('addressUpdate')
+            if CategoryItem.objects.filter(name=request.POST.get('gradeUpdate')):
+                currentReferee.kademe_definition = CategoryItem.objects.get(name=request.POST.get('gradeUpdate'))
+            if request.FILES.get('kademeBelgeUpdate'):
+                currentReferee.grade_referee_contract = request.FILES.get('kademeBelgeUpdate')
+            if request.FILES.get('sgkUpdate'):
+                currentReferee.sgk = request.FILES.get('sgkUpdate')
+            if request.FILES.get('dekontUpdate'):
+                currentReferee.dekont = request.FILES.get('dekontUpdate')
+            currentReferee.save()
+
+            messages.success(request, 'Başvurunuz başarıyla güncellenmiştir.')
+
+            return redirect("accounts:redirect_register")
     return render(request, 'registration/Referee.html',
-                  {'preRegistrationform': referee})
+                  {'preRegistrationform': referee, 'countries': countries,
+                   'cities': cities, 'grades': grades, })
 
 
 def referenceCoach(request):
@@ -341,10 +417,8 @@ def referenceCoach(request):
                 coach_form = RefereeCoachForm(request.POST, request.FILES)
                 mail = request.POST.get('email')
 
-                if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(
-                        status=ReferenceCoach.DENIED).filter(
-                        email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                    email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+                if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                        email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
                     email=mail):
                     messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
                     return render(request, 'registration/Coach.html',
@@ -352,9 +426,8 @@ def referenceCoach(request):
                                    'cities': cities, 'grades': grades, })
 
                 tc = request.POST.get('tc')
-                if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-                        tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                    tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+                if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(
+                        tc=tc) or ReferenceReferee.objects.filter(tc=tc) or PreRegistration.objects.filter(tc=tc):
                     messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
                     return render(request, 'registration/Coach.html',
                                   {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
@@ -413,7 +486,7 @@ def referenceCoach(request):
                 currentCoach.email = request.POST.get('emailUpdate')
                 currentCoach.phoneNumber = request.POST.get('phoneNumberUpdate')
                 currentCoach.phoneNumber2 = request.POST.get('phoneNumber2Update')
-                currentCoach.workplace=workplace
+                currentCoach.workplace = workplace
                 if Country.objects.filter(name=request.POST.get('countryUpdate')):
                     currentCoach.country = Country.objects.get(name=request.POST.get('countryUpdate'))
                 if City.objects.filter(name=request.POST.get('cityUpdate')):
@@ -427,7 +500,7 @@ def referenceCoach(request):
                     currentCoach.sgk = request.FILES.get('sgkUpdate')
                 if request.FILES.get('dekontUpdate'):
                     currentCoach.dekont = request.FILES.get('dekontUpdate')
-                currentCoach.status=currentCoach.WAITED
+                currentCoach.status = currentCoach.WAITED
                 currentCoach.save()
 
                 messages.success(request, 'Başvurunuz başarıyla güncellenmiştir.')
@@ -589,11 +662,14 @@ def pre_registration_coach_api(request):
 def redirect_register(request):
     return render(request, 'registration/register_redirect_page.html')
 
+
 def redirect_password_update(request):
     return render(request, 'registration/password-update-page.html')
 
+
 def redirect_active_user(request):
     return render(request, 'registration/active_user.html')
+
 
 def redirect_newpassword(request):
     return render(request, 'registration/redirect_newpassword.html')
