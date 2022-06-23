@@ -167,7 +167,10 @@
                                 <th>Soyad</th>
                                 <th>Email</th>
                                 <th>İl</th>
-                                <th>Düzenle/Sil</th>
+                                <th>Branş</th>
+                                {% if aktif == 'Admin' %}
+                                    <th>Düzenle/Sil</th>
+                                {% endif %}
 
                             </tr>
                             <tr class="filters" role="row">
@@ -184,6 +187,15 @@
                                     <option value="">İl Seçiniz</option>
                                     {% for city in cities %}
                                         <option value="{{ city.pk }}">{{ city.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                </th>
+                                <th><select style="width: 100%" id="branch" name="branch"
+                                            class="form-control select2 select2-hidden-accessible"
+                                            tabindex="-1" aria-hidden="true">
+                                    <option value="">Branş Seçiniz</option>
+                                    {% for branch in branches %}
+                                        <option value="{{ branch.pk }}">{{ branch.title }}</option>
                                     {% endfor %}
                                 </select>
                                 </th>
@@ -362,6 +374,23 @@
 
                         }
                     },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.branch.length > 0) {
+                                var grades = full.branch
+                                let html1 = ''
+                                for (let i = 0; i < grades.length; i++) {
+                                    if (grades[i]) {
+                                        html1 += '<span class="badge badge-info">' + grades[i].title + '</span>' + ' '
+                                    }
+                                }
+                                return html1;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
 
 
                     {
@@ -369,7 +398,7 @@
                         render: function (full) {
                             console.log(full.content);
                             let html;
-                            {% if aktif == 'Admin' or aktif == 'Yonetim' %}
+                            {% if aktif == 'Admin' %}
                                 let url2 = "deleteReferee('" + full.uuid + "')"
 
                                 let url = "{% url "sbs:update_referee" '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
@@ -405,6 +434,12 @@
                     table.columns(4).search(value).draw();
                 });
 
+                $('#branch').on('change', function () {
+                    var select = document.getElementById('branch');
+                    var value = select.options[select.selectedIndex].value;
+                    table.columns(5).search(value).draw();
+                });
+
 
                 var info = table.page.info();
                 table.column(0, {
@@ -416,8 +451,74 @@
                 });
             });
 
+        function getCookie(name) {
+            var cookieValue = null;
+            var i = 0;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (i; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
 
         })
+
+        function getCookie(name) {
+            var cookieValue = null;
+            var i = 0;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (i; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
 
     </script>
 

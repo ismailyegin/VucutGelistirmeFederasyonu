@@ -433,6 +433,7 @@ class GetReferee(APIView):
         last_name = request.data['columns[2][search][value]']
         email = request.data['columns[3][search][value]']
         city = request.data['columns[4][search][value]']
+        branch = request.data['columns[5][search][value]']
 
         count = Referee.objects.filter(person__isnull=False).count()
         if not (first_name or last_name or city or email or globalSearch):
@@ -445,7 +446,8 @@ class GetReferee(APIView):
                 query &= Q(person__user__first_name__icontains=globalSearch) | Q(
                     person__user__last_name__icontains=globalSearch) | Q(
                     communication__city__name__icontains=globalSearch) | Q(
-                    person__user__email__icontains=globalSearch)
+                    person__user__email__icontains=globalSearch) | Q(
+                    branch__title__icontains=globalSearch)
             if first_name:
                 query &= Q(person__user__first_name__icontains=first_name)
             if last_name:
@@ -454,6 +456,8 @@ class GetReferee(APIView):
                 query &= Q(communication__city__pk=city)
             if email:
                 query &= Q(person__user__email__icontains=email)
+            if branch:
+                query &= Q(branch__pk=branch)
 
             all_objects = Referee.objects.filter(person__isnull=False).filter(query).order_by(
                 'person__user__first_name')[int(start):end]

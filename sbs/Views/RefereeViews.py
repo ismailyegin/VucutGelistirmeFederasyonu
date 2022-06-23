@@ -64,10 +64,11 @@ def return_referees(request):
     url_name = Permission.objects.get(codename=current_url.url_name)
     categories = CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE')
     cities = City.objects.all()
+    branches = Branch.objects.all()
 
     return render(request, 'TVGFBF/Referee/referees.html',
                   {'user_form': user_form, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name, 'categories': categories, 'cities': cities})
+                   'url_name': url_name, 'categories': categories, 'cities': cities, 'branches':branches})
 
 
 @login_required

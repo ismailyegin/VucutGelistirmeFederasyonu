@@ -22,6 +22,7 @@ class Referee(BaseModel):
     infoLevel = models.BooleanField(default=True, null=True, blank=True)
     infoStatus = models.BooleanField(default=True, null=True, blank=True)
     secretId = models.CharField(max_length=250, null=True, blank=True)
+    branch = models.ManyToManyField(Branch)
 
 
     # grades = models.ManyToManyField(Level, related_name='CoachGrades')
