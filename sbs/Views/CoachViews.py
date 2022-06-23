@@ -405,7 +405,6 @@ def delete_coach(request):
                 data_as_json_pre = serializers.serialize('json', Coach.objects.filter(uuid=uuid))
 
                 obj.delete()
-                obj.save()
                 log = "Antrenör Sil"
                 logs = Logs(user=request.user, subject=log, ip=get_client_ip(request),
                             previousData=data_as_json_pre)

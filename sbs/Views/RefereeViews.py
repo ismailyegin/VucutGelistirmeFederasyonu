@@ -343,8 +343,8 @@ def delete_referee(request):
                 obj = Referee.objects.get(uuid=uuid)
                 data_as_json_pre = serializers.serialize('json', Referee.objects.filter(uuid=uuid))
 
-                obj.isDeleted = True
-                obj.save()
+                obj.delete()
+
                 log = "Hakem Sil"
                 logs = Logs(user=request.user, subject=log, ip=get_client_ip(request),
                             previousData=data_as_json_pre)
@@ -1312,7 +1312,11 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
             try:
                 with transaction.atomic():
 
-                    if reference.status == ReferenceReferee.WAITED:
+                    date = request.POST['dateOfApproval']
+                    approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+                    reference.status_date = approvalDate
+
+                    if reference.status == ReferenceReferee.WAITED or reference.status == ReferenceReferee.DENIED:
                         user = User()
                         user.username = reference.email
                         user.first_name = reference.first_name
@@ -1367,6 +1371,7 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
                         judge.save()
 
                         reference.status = ReferenceReferee.APPROVED
+                        reference.definition = ''
                         reference.save()
 
                         messages.success(request, 'Hakem Başarıyla Eklenmiştir')
@@ -1475,6 +1480,12 @@ def refencedeleteReferee(request):
             try:
                 obj = ReferenceReferee.objects.get(uuid=request.POST['uuid'])
                 obj.status = ReferenceReferee.DENIED
+                date = request.POST['dateOfReject']
+                text = request.POST['textOfReject']
+
+                statusDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+                obj.status_date = statusDate
+                obj.definition = text
                 obj.save()
 
                 # html_content = ''
@@ -1494,3 +1505,26 @@ def refencedeleteReferee(request):
 
         else:
             return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
+
+@login_required
+def registerRefereeDelete(request):
+    perm = general_methods.control_access(request)
+
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            obj = ReferenceReferee.objects.get(uuid=request.POST['uuid'])
+            obj.delete()
+
+            log = str(obj.first_name) + " " + str(obj.last_name) + "     Hakem basvurusu silindi"
+            log = general_methods.logwrite(request, request.user, log)
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except ReferenceReferee.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})

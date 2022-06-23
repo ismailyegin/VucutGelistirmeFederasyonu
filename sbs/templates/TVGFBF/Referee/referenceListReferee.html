@@ -39,9 +39,8 @@
                 </div>
                 <div class="modal-body">
                     <label for="dateOfRejectDate">Tarih</label>
-                    <input type="date" name="dateOfRejectDate" id="dateOfRejectDate"
-                           class="form-control  pull-right datepicker6"
-                           required="required" autocomplete="off" data-inputmask-inputformat="dd/mm/yyyy">
+                    <input type="date" name="dateOfRejectDate" id="dateOfRejectDate" class="form-control datemask"
+                           required="required" autocomplete="off">
                     <label for="dateOfRejectText">Açıklama</label>
                     <input type="text" name="dateOfRejectText" id="dateOfRejectText" class="form-control"
                            required="required" placeholder="Reddedilme Sebebi">
@@ -503,12 +502,12 @@
                         render:
 
                             function (full) {
-                                console.log(full.content);
                                 let html;
                                 debugger;
                                 {% if aktif == 'Admin' %}
                                     let url2 = "deleteReferee('" + full.uuid + "')"
-                                    let url3 = "deleteReferenceCoach('" + full.uuid + "')"
+                                    let url3 = "deleteReferenceReferee('" + full.uuid + "')"
+                                    let url4 = "approvalReferee('" + full.uuid + "')"
 
 
                                     let url = "{% url "sbs:update-referenceReferee" '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
@@ -517,7 +516,7 @@
 
                                     html = '<td><div class="btn-group"> '
                                     if (full.status === 'Beklemede' || full.status === 'Reddedildi') {
-                                        html += '<a onclick="approvalReferee(' + full.uuid + ')" title="Onayla" type="button" class="btn btn-outline-success"><i class="fa fa-check"></i></a>';
+                                        html += '<a onclick="' + url4 + '" title="Onayla" type="button" class="btn btn-outline-success"><i class="fa fa-check"></i></a>';
                                         html += '<a style="margin-left: 5px" href="' + url + '" title="Düzenle" type="button" class="btn btn-outline-warning"><i class="fa fa-edit"></i></a>';
 
                                     } else {
@@ -607,7 +606,7 @@
                                     if (result.status === 'Success') {
                                         swal({
                                             icon: 'success',
-                                            title: 'Antrenör Başvurusu Reddedildi !!',
+                                            title: 'Hakem Başvurusu Reddedildi !!',
 
                                         })
 
@@ -641,8 +640,9 @@
 
 
         function approvalReferee(id) {
+            $('#loading').show()
             debugger;
-
+            console.log(id);
             swal({
                 title: "Onaylamak istediğinizden emin misiniz?",
 
@@ -655,50 +655,117 @@
 
 
                 if (result.dismiss !== 'Evet') {
+                    $("#dateOfApproval").on("shown.bs.modal", function (e) {
 
-                    $('#loading').show();
+                        $("#btn-gonder-approval").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:refenceapprovalReferee" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    uuid: id,
+                                    dateOfApproval: $('#dateOfApprovalText').val(),
+                                },
+                                success: function (result) {
+
+                                    if (result.status === 'Success') {
+
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Hakem başarıyla onaylandı !!',
+
+                                        })
+
+
+                                    } else {
+
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
+
+                                        })
+
+                                    }
+
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-approval').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+                        $('#loading').hide()
+                    });
+                }
+                $('#loading').hide()
+
+            })
+
+
+        }
+
+        function deleteReferenceReferee(id) {
+            debugger;
+            console.log(id);
+            swal({
+                title: "Silmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                if (result.dismiss !== 'Evet') {
 
                     $.ajax({
-                        url: "{% url "sbs:refenceapprovalReferee" %}",
+                        url: "{% url "sbs:registerRefereeDelete" %}",
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
                             isActive: 'False',
                             uuid: id,
-                            {#dateOfApproval: $('#dateOfApprovalText').val(),#}
+
                         },
                         success: function (result) {
-
                             if (result.status === 'Success') {
-
                                 swal({
                                     icon: 'success',
-                                    title: 'Hakem başarıyla onaylandı !!',
+                                    title: 'Hakem Başvurusu Silindi !!',
 
                                 })
 
-
                             } else {
-
                                 swal({
                                     icon: 'error',
                                     title: 'işlem başarısız oldu.',
 
                                 })
-
                             }
-
                             location.reload();
 
                         }
                     });
-
                 }
 
 
-            })
-            $('#loading').hide();
+            }).modal('show');
+            $('#btn-closereddet-reject').click(function () {
+                console.log('buradan çık')
 
+                $('#modal-warning').modal('hide');
+                $('.modal').modal('hide');
+
+            });
 
         }
 

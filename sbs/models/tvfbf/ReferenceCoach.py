@@ -87,10 +87,10 @@ class ReferenceCoach(BaseModel):
 
     kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
     kademe_startDate = models.DateField(null=True, blank=True, verbose_name='Başlangıç Tarihi ')
-    kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')
-    sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')
-    dekont = models.FileField(null=True, blank=True, verbose_name='Dekont')
-    belge = models.FileField(null=True, blank=True, verbose_name='Belge')
+    kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge') #Sözleşme
+    sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi') #SGK
+    dekont = models.FileField(null=True, blank=True, verbose_name='Dekont') #dekont
+    belge = models.FileField(null=True, blank=True, verbose_name='Belge') #ANTRENOR BELGESİ
     kademe_brans=models.ForeignKey(Branch,on_delete=models.CASCADE,null=True,blank=True)
 
     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)

@@ -87,6 +87,11 @@ class ReferenceReferee(BaseModel):
     status_date=models.DateField(verbose_name="Red/Kabul Tarihi",null=True,blank=True)
     definition=models.TextField( blank=True,null=True , verbose_name='Reddetme Nedeni')
 
+    grade_referee_contract = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Hakem Sözleşme Belgesi')  #Hakem Sözleşme
+    sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')  # SGK
+    dekont = models.FileField(null=True, blank=True, verbose_name='Dekont')  # dekont
+    referee_file = models.FileField(null=True, blank=True, verbose_name='Hakemlik Belgesi')  # Hakemlik BELGESİ
+
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)
 

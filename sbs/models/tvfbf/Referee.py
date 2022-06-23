@@ -24,9 +24,9 @@ class Referee(BaseModel):
     secretId = models.CharField(max_length=250, null=True, blank=True)
     branch = models.ManyToManyField(Branch)
 
+    sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')  # SGK
+    referee_file = models.FileField(null=True, blank=True, verbose_name='Belge')  # HAKEM  BELGESİ
 
-    # grades = models.ManyToManyField(Level, related_name='CoachGrades')
-    # visa = models.ManyToManyField(Level, related_name='CoachVisa')
 
     def __str__(self):
         return '%s %s' % (self.person.user.first_name, self.person.user.last_name)

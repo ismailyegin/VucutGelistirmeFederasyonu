@@ -587,20 +587,27 @@
                                 },
                                 success: function (result) {
                                     if (result.status === 'Success') {
+
                                         swal({
                                             icon: 'success',
-                                            title: 'Antrenör Başvurusu Reddedildi !!',
+                                            title: 'Antrenör başarıyla reddedildi !! Başvuru listesi ekranına yönlendiriliyorsunuz',
+                                            timer: 7000
 
                                         })
+                                        window.location.href = 'https://sbs.tvgfbf.gov.tr/tvgfbf/reference/antrenor/basvuru';
+
 
                                     } else {
+
                                         swal({
                                             icon: 'error',
                                             title: 'işlem başarısız oldu.',
 
                                         })
+                                        location.reload();
+
+
                                     }
-                                    location.reload();
 
                                 }
                             });
@@ -713,7 +720,7 @@
 
                                             swal({
                                                 icon: 'success',
-                                                title: 'Antrenör başarıyla onaylandı !! Başvuru ekranına yönlendiriliyorsunuz',
+                                                title: 'Antrenör başarıyla onaylandı !! Başvuru listesi ekranına yönlendiriliyorsunuz',
                                                 timer: 7000
 
                                             })
