@@ -84,6 +84,8 @@ class ReferenceReferee(BaseModel):
                                    help_text=('Designates whether the user can log into this admin site.'))
     is_active = models.BooleanField(default=False,
                                     help_text=('Designates whether this user should be treated as active. '))
+    status_date=models.DateField(verbose_name="Red/Kabul Tarihi",null=True,blank=True)
+    definition=models.TextField( blank=True,null=True , verbose_name='Reddetme Nedeni')
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)

@@ -353,5 +353,6 @@ urlpatterns = [
          name='transmissionGetCoachDetail'),
     path('antrenor/kayit-guncelle-api/', APIViews.GetCurrentRegister, name='kayit-guncelle-api'),
     path('basvuru/api-antrenor-listesi/', APIViews.GetReferenceCoach.as_view(), name='view_reference_coach-api'),
+    path('basvuru/api-hakem-listesi/', APIViews.GetReferenceReferee.as_view(), name='view_reference_referee-api'),
 
 ]

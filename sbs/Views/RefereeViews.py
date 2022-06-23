@@ -21,6 +21,7 @@ from unicode_tr import unicode_tr
 from zeep import Client
 
 from accounts.models import Forgot
+from oxiterp.settings.base import EMAIL_HOST_USER
 from sbs.Forms.CategoryItemForm import CategoryItemForm
 from sbs.Forms.UserForm import UserForm
 from sbs.Forms.havaspor.CommunicationForm import CommunicationForm
@@ -642,7 +643,7 @@ def visa_update(request, visa_uuid, referee_uuid):
                 messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/update-visa-referee.html',
-                  {'visa_form': visa_form,'urls':urls,'current_url':current_url,'url_name':url_name})
+                  {'visa_form': visa_form, 'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
 
 @login_required
@@ -710,7 +711,7 @@ def return_level(request):
     categoryitem = CategoryItem.objects.filter(forWhichClazz="REFEREE_GRADE", isDeleted=0)
     return render(request, 'TVGFBF/Referee/levels.html',
                   {'category_item_form': category_item_form, 'categoryitem': categoryitem,
-                   'urls':urls,'current_url':current_url,'url_name':url_name})
+                   'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
 
 @login_required
@@ -737,7 +738,7 @@ def levelUpdate(request, uuid):
 
     return render(request, 'TVGFBF/Referee/update-level.html',
                   {'category_item_form': category_item_form,
-                   'urls':urls,'current_url':current_url,'url_name':url_name})
+                   'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
 
 def levelDelete(request):
@@ -779,7 +780,7 @@ def gradeList(request):
                                      isDeleted=0).distinct()
 
     return render(request, 'TVGFBF/Referee/referee-grade-list.html',
-                  {'refereeGrades': grade,'urls':urls,'current_url':current_url,'url_name':url_name})
+                  {'refereeGrades': grade, 'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
 
 @login_required
@@ -893,7 +894,7 @@ def visaList(request):
         coa.append(item.pk)
     visa = HavaLevel.objects.filter(definition_id__in=coa, levelType=EnumFields.VISA).distinct()
     return render(request, 'TVGFBF/Referee/referee-visa-list.html',
-                  {'refereevisas': visa,'urls':urls,'current_url':current_url,'url_name':url_name})
+                  {'refereevisas': visa, 'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
 
 @login_required
@@ -968,7 +969,8 @@ def returnVisaSeminar(request):
                     messages.warning(request, 'Lütfen yeniden deneyiniz')
 
     return render(request, 'TVGFBF/Referee/referee-visa-seminar.html', {'competitions': seminar,
-                                                                        'urls':urls,'current_url':current_url,'url_name':url_name})
+                                                                        'urls': urls, 'current_url': current_url,
+                                                                        'url_name': url_name})
 
 
 @login_required
@@ -998,7 +1000,7 @@ def addVisaSeminar(request):
                 messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Referee/add-visa-seminar-referee.html',
-                  {'competition_form': visaSeminar,'urls':urls,'current_url':current_url,'url_name':url_name})
+                  {'competition_form': visaSeminar, 'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
 
 @login_required
@@ -1229,7 +1231,7 @@ def approvalRefereeApplicationVisaSeminar(request):
                 application.save()
 
                 html_content = ''
-                subject, from_email, to = 'THF Bilgi Sistemi', 'no-reply@halter.gov.tr', application.referee.person.user.email
+                subject, from_email, to = 'THF Bilgi Sistemi', EMAIL_HOST_USER, application.referee.person.user.email
                 html_content = '<h2>TÜRKİYE HALTER FEDERASYONU BİLGİ SİSTEMİ</h2>'
                 html_content = '<p><strong>' + str(seminer.name) + '</strong> Seminer  başvurunuz onaylanmıştır.</p>'
 
@@ -1291,7 +1293,10 @@ def referencedListReferee(request):  # Hakem başvuruları
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
     referee = ReferenceReferee.objects.all().order_by('status')
-    return render(request, 'TVGFBF/Referee/referenceListReferee.html', {'referees': referee,'urls':urls,'current_url':current_url,'url_name':url_name})
+    status = ReferenceReferee.STATUS_CHOICES
+    return render(request, 'TVGFBF/Referee/referenceListReferee.html',
+                  {'referees': referee, 'urls': urls, 'current_url': current_url, 'url_name': url_name,
+                   'status': status})
 
 
 @login_required
@@ -1303,7 +1308,7 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
     #     return redirect('accounts:login')
     reference = ReferenceReferee.objects.get(uuid=request.POST['uuid'])
     with transaction.atomic():
-        if request.method == 'POST' and request.is_ajax():
+        if request.method == 'POST':
             try:
                 with transaction.atomic():
 

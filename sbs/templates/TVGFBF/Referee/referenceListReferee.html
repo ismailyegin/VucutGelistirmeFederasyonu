@@ -2,6 +2,65 @@
 
 {% block content %}
     {% load static %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfApproval"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Onaylanma Tarihi</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <input type="date" name="dateOfApprovalText" id="dateOfApprovalText" class="form-control datemask"
+                           required="required" autocomplete="off">
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" id="btn-closereddet-approval">İptal</button>
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-gonder-approval"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfReject"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Reddedilme Açıklaması</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <label for="dateOfRejectDate">Tarih</label>
+                    <input type="date" name="dateOfRejectDate" id="dateOfRejectDate"
+                           class="form-control  pull-right datepicker6"
+                           required="required" autocomplete="off" data-inputmask-inputformat="dd/mm/yyyy">
+                    <label for="dateOfRejectText">Açıklama</label>
+                    <input type="text" name="dateOfRejectText" id="dateOfRejectText" class="form-control"
+                           required="required" placeholder="Reddedilme Sebebi">
+
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" id="btn-closereddet-reject">İptal</button>
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-gonder-reject"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     <div class="modal modal-title fade in" tabindex="-1" role="dialog" id="application"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
@@ -237,53 +296,41 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th> Ad Soyad</th>
-                                <th>E-Mail</th>
-                                <th>Onayla</th>
+                                <th>Ad</th>
+                                <th>Soyad</th>
+                                <th>Email</th>
+                                <th>TC</th>
+                                <th>Onay Durumu</th>
+                                <th>Onay/Red Tarihi</th>
+                                <th>Açıklama</th>
+                                <th>Onayla/Düzenle/Reddet/Sil</th>
 
-                                {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                    <th>İncele/Reddet</th>
-                                {% endif %}
-
-
+                            </tr>
+                            <tr class="filters" role="row">
+                                <th></th>
+                                <th><input class="form-control" type="text" placeholder="Ad"
+                                           title="Ad"></th>
+                                <th><input class="form-control" type="text" placeholder="Soyad"
+                                           title="Soyad"></th>
+                                <th><input class="form-control" type="text" placeholder="Email"
+                                           title="Email"></th>
+                                <th><input class="form-control" type="text" placeholder="Tc"
+                                           title="Tc"></th>
+                                <th><select style="width: 100%" id="branch" name="branch"
+                                            class="form-control select2 select2-hidden-accessible"
+                                            tabindex="-1" aria-hidden="true">
+                                    <option value="">Durum Seçiniz</option>
+                                    {% for statu in status %}
+                                        <option value="{{ statu.1 }}">{{ statu.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                                </th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            {% if referees.all %}
-                                {% for referee in referees %}
-                                    <tr id="refere-{{ referee.pk }}">
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ referee.first_name }} {{ referee.last_name }} </td>
-                                        <td>{{ referee.email }} </td>
-                                        <td>{{ referee.status }}</td>
-                                        <td>
-                                            {% if referee.status == referee.WAITED %}
-                                                <div class="btn-group">
-                                                    <a onclick="approvalReferee('{{ referee.uuid }}')"
-                                                       type="button" class="btn btn-outline-success"><i
-                                                            class="fa fa-check"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="btn-group">
-                                                    <a href="{% url 'sbs:update-referenceReferee' referee.uuid %}"
-                                                       type="button" class="btn btn-outline-warning"><i
-                                                            class="fa fa-edit" title="Düzenle"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="btn-group">
-                                                    <a class="btn btn-outline-danger"
-                                                       data-toggle="modal"
-                                                       onclick=deleteReferee('{{ referee.uuid }}')><i
-                                                            class="fa fa-trash" title="Reddet"></i></a>
-                                                </div>
-
-                                            {% endif %}
-                                        </td>
-
-                                    </tr>
-
-                                {% endfor %}
-                            {% endif %}
 
 
                             </tbody>
@@ -291,7 +338,7 @@
                     </div>
 
                 </div>
-                    <!-- /.box -->
+                <!-- /.box -->
             </section>
 
 
@@ -302,14 +349,64 @@
 
     <script>
         $(function () {
-            $('#hakemler').DataTable({
+            table = $('#hakemler').DataTable({
+
+                orderCellsTop: true,
+                fixedHeader: false,
+                initComplete: function () {
+                    var api = this.api();
+
+                    // For each column
+                    api
+                        .columns()
+                        .eq(0)
+                        .each(function (colIdx) {
+                            // Set the header cell to contain the input element
+                            var cell = $('.filters th').eq(
+                                $(api.column(colIdx).header()).index()
+                            );
+
+
+                            // On every keypress in this input
+                            $(
+                                'input',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                                .off('keyup change')
+                                .on('keyup change', function (e) {
+                                    e.stopPropagation();
+
+                                    // Get the search value
+                                    $(this).attr('title', $(this).val());
+                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                    var cursorPosition = this.selectionStart;
+                                    // Search the column for that value
+                                    api
+                                        .column(colIdx)
+                                        .search(
+                                            this.value
+                                        )
+                                        .draw();
+
+                                    $(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                });
+                        });
+                },
+
+                "processing": true,
+                "serverSide": true,
+                "paging": true,
+                "ordering": true,
+
+
+                "ajax": {
+                    "url": "{% url 'sbs:view_reference_referee-api' %}",
+                    "type": "POST",
+                },
                 dom: 'Bfrtip',
-
-
-                lengthMenu: [
-                    [10, 25, 50, 100, -1],
-                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
-                ],
 
                 'buttons': [
 
@@ -327,7 +424,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'YEKA LİSTESİ',
+                        title: 'İzin Listesi',
                         text: '<i class="fa fa-print"></i>',
 
                         titleAttr: 'Yazdır',
@@ -357,30 +454,119 @@
 
 
                 ],
-                "search": {
-                    "caseInsensitive": true,
-                },
+
+
                 'language': {
                     "url": "{% static 'datatable_tr/datatable_tr.json' %}"
                 },
-                'paging': true,
-                'lengthChange': true,
-                'searching': true,
-                'order': true,
-                'info': true,
-                'autoWidth': true,
-                'responsive': true,
-            });
+                "columns": [
+                    {"data": "id"},
+                    {"data": 'first_name'},
+                    {"data": 'last_name'},
+                    {"data": 'email'},
+                    {"data": 'tc'},
+                    {
+                        "data": null,
+                        render: function (full) {
+                            var html1 = ''
+                            if (full.status) {
+                                if (full.status === 'Beklemede') {
+                                    html1 += '<span class="badge badge-warning">' + full.status + '</span>'
+                                } else if (full.status === 'Onaylandı') {
+                                    html1 += '<span class="badge badge-success">' + full.status + '</span>'
+                                } else if (full.status === 'Reddedildi') {
+                                    html1 += '<span class="badge badge-danger">' + full.status + '</span>'
+                                } else {
+                                    html1 += '<span class="badge badge-info">' + full.status + '</span>'
+                                }
+                                return html1;
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+
+                            return full.status_date
+                        }
+
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            return full.definition
+
+                        }
+                    },
+                    {
+                        "data": null,
+                        render:
+
+                            function (full) {
+                                console.log(full.content);
+                                let html;
+                                debugger;
+                                {% if aktif == 'Admin' %}
+                                    let url2 = "deleteReferee('" + full.uuid + "')"
+                                    let url3 = "deleteReferenceCoach('" + full.uuid + "')"
+
+
+                                    let url = "{% url "sbs:update-referenceReferee" '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
+                                    url = url.replace('7729c6ee-739d-4a89-8ffe-1357e691ca16', full.uuid);
+
+
+                                    html = '<td><div class="btn-group"> '
+                                    if (full.status === 'Beklemede' || full.status === 'Reddedildi') {
+                                        html += '<a onclick="approvalReferee(' + full.uuid + ')" title="Onayla" type="button" class="btn btn-outline-success"><i class="fa fa-check"></i></a>';
+                                        html += '<a style="margin-left: 5px" href="' + url + '" title="Düzenle" type="button" class="btn btn-outline-warning"><i class="fa fa-edit"></i></a>';
+
+                                    } else {
+                                        html += '<button disabled title="Başvuru Zaten Onaylandı" type="button" class="btn btn-outline-success"> <i class="fa fa-check"></i></button>'
+                                        html += '<button style="margin-left: 5px;" disabled type="button" class="btn btn-outline-warning"> <i class="fa fa-edit" title="Başvuru Onaylandı"></i></button>'
+                                    }
+                                    if (full.status !== 'Onaylandı') {
+                                        html += '<a style="margin-left: 5px;" class="btn btn-outline-danger"  data-toggle="modal" onclick="' + url2 + '"> <i class="fa fa-ban" title="Reddet"></i> </a>'
+                                    } else {
+                                        html += ' <button style="margin-left: 5px;" class="btn btn-outline-danger"  data-toggle="modal" disabled> <i class="fa fa-ban" title="Başvuru Onaylandı !"></i> </button>'
+                                    }
+
+                                    html += ' <a style="margin-left: 5px;" class="btn btn-outline-danger"  onclick="' + url3 + '"> <i class= "fa fa-trash" title = "Kaydı Sil" ></i> </a>'
+                                    html += '</div></td>';
+                                {% else %}
+                                    html = '<td></td>'
+                                {% endif %}
+                                return html;
+                            }
+                    }
+
+                ],
+                "search":
+                    {
+                        "caseInsensitive":
+                            true
+                    }
+
+
+            })
+            ;
             table.on('draw.dt', function () {
-                debugger;
+
+                $('#branch').on('change', function () {
+                    var select = document.getElementById('branch');
+                    var value = select.options[select.selectedIndex].value;
+                    table.columns(5).search(value).draw();
+                });
+
+                var info = table.page.info();
                 table.column(0, {
                     search: 'applied',
                     order: 'applied',
                     page: 'applied'
                 }).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1;
+                    cell.innerHTML = i + 1 + info.start;
                 });
             });
+
 
         })
     </script>
@@ -399,37 +585,55 @@
                     'Evet'
                 ],
             }).then((result) => {
+
+
                 if (result.dismiss !== 'Evet') {
+                    $("#dateOfReject").on("shown.bs.modal", function (e) {
 
-                    $.ajax({
-                        url: "{% url "sbs:refencedeleteReferee" %}",
-                        type: "POST",
-                        data: {
-                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                            isActive: 'False',
-                            uuid: id
-                        },
-                        success: function (result) {
-                            if (result.status === 'Success') {
-                                swal({
-                                    icon: 'success',
-                                    title: 'Hakem Başvurusu Reddedildi !!',
+                        $("#btn-gonder-reject").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:refencedeleteReferee" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    uuid: id,
+                                    dateOfReject: $('#dateOfRejectDate').val(),
+                                    textOfReject: $('#dateOfRejectText').val(),
 
-                                })
 
-                            } else {
-                                swal({
-                                    icon: 'error',
-                                    title: 'işlem başarısız oldu.',
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Antrenör Başvurusu Reddedildi !!',
 
-                                })
-                            }
-                            location.reload();
+                                        })
 
-                        }
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-reject').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
                     });
                 }
-
             })
 
 
@@ -438,44 +642,98 @@
 
         function approvalReferee(id) {
             debugger;
-            $('#loading').show()
-            $.ajax({
-                url: "{% url "sbs:refenceapprovalReferee" %}",
-                type: "POST",
-                data: {
-                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
-                    isActive: 'False',
-                    uuid: id
-                },
-                success: function (result) {
 
-                    if (result.status === 'Success') {
+            swal({
+                title: "Onaylamak istediğinizden emin misiniz?",
 
-                        swal({
-                            icon: 'success',
-                            title: 'Hakem başarıyla kayıt edildi !!',
-
-                        })
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
 
 
-                    } else {
+                if (result.dismiss !== 'Evet') {
 
-                        swal({
-                            icon: 'error',
-                            title: 'Başarısız! Hakem eklenemedi !',
+                    $('#loading').show();
 
-                        })
+                    $.ajax({
+                        url: "{% url "sbs:refenceapprovalReferee" %}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            isActive: 'False',
+                            uuid: id,
+                            {#dateOfApproval: $('#dateOfApprovalText').val(),#}
+                        },
+                        success: function (result) {
 
-                    }
-                    $('#loading').hide()
+                            if (result.status === 'Success') {
 
-                    location.reload();
+                                swal({
+                                    icon: 'success',
+                                    title: 'Hakem başarıyla onaylandı !!',
+
+                                })
+
+
+                            } else {
+
+                                swal({
+                                    icon: 'error',
+                                    title: 'işlem başarısız oldu.',
+
+                                })
+
+                            }
+
+                            location.reload();
+
+                        }
+                    });
 
                 }
-            });
+
+
+            })
+            $('#loading').hide();
 
 
         }
+
+        function getCookie(name) {
+            var cookieValue = null;
+            var i = 0;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (i; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
     </script>
 
 
