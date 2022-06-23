@@ -283,6 +283,9 @@ urlpatterns = [
 
     path('hakem/basvuru-reddet', RefereeViews.refencedeleteReferee,
          name='refencedeleteReferee'),
+
+    path(r'hakem/basvuru-sil', RefereeViews.registerRefereeDelete,
+         name='registerRefereeDelete'),
     # Özel Spor Tesisi
 
     path('tesis/tesis-ekle', SportFacilityViews.AddSportFacility, name='AddSportFacility'),
