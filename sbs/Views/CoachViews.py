@@ -364,6 +364,10 @@ def coachUpdate(request, uuid):
 
             person = person_form.save(commit=False)
             iban = request.POST.get("iban")
+            if request.FILES.get('sgkUpdate'):
+                coach.sgk = request.FILES.get('sgkUpdate')
+            if request.FILES.get('coachFileUpdate'):
+                coach.antrenorBelgesi = request.FILES.get('coachFileUpdate')
             clubDersbis = request.POST.get('club', None)
             if not clubDersbis == 'noRegister':
                 coachClub = Club.objects.get(derbis=clubDersbis)
@@ -375,6 +379,7 @@ def coachUpdate(request, uuid):
 
             person.iban = iban
             person.save()
+            coach.save()
             communication_form.save()
 
             messages.success(request, 'Antrenör Başarıyla Güncellendi')

@@ -8,19 +8,16 @@ class VisaForm(ModelForm):
     class Meta:
         model = HavaLevel
 
-        fields = ('branch', 'dekont', 'startDate')
+        fields = ('branch', 'dekont', )
 
-        labels = {'branch': 'Branş', 'dekont': 'Dekont', 'startDate': 'Hak Kazanma Tarihi:', }
+        labels = {'branch': 'Branş', 'dekont': 'Dekont', }
 
         widgets = {
 
             'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%; '}),
 
-            'startDate': forms.DateInput(
-                attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
-                       'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
-                       "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
+
 
         }
 

@@ -313,8 +313,13 @@ def update_referee(request, uuid):
 
                 person = person_form.save(commit=False)
                 iban = request.POST.get("iban")
+                if request.FILES.get('sgkUpdate'):
+                    referee.sgk = request.FILES.get('sgkUpdate')
+                if request.FILES.get('refereeFileUpdate'):
+                    referee.referee_file = request.FILES.get('refereeFileUpdate')
                 person.iban = iban
                 person.save()
+                referee.save()
                 communication_form.save()
 
                 messages.success(request, 'Hakem Başarıyla Güncellendi')

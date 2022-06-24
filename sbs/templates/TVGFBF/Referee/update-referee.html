@@ -141,7 +141,7 @@
             {% csrf_token %}
             <div class="row">
 
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="card card-outline card-info">
                         <div class="card-header with-border">
                             <h3 class="card-title">Genel Bilgiler</h3>
@@ -188,15 +188,19 @@
                                         {{ person_form.birthplace }}
                                     </div>
 
+
                                     <div class="form-group">
-                                        <label for="iban">iban</label>
-                                        <input id="iban" class="form-control" type="text" name="iban"
-                                               value="{{ referee.person.iban }}"/>
+                                        {% if referee.referee_file %}
+                                            <p>Şu anki: <a id="refereeFileUpdateValue"
+                                                           href="{{ referee.referee_file.url }}">{{ referee.referee_file }}</a>
+                                            </p>
+                                        {% endif %}
+                                        <input type="file" name="refereeFileUpdate" id="refereeFileUpdate">
                                     </div>
 
 
                                 </div>
-                                <br>
+
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label> {{ person_form.tc.label }}</label>
@@ -212,10 +216,23 @@
                                         <label> {{ person_form.birthDate.label }}</label>
                                         {{ person_form.birthDate }}
                                     </div>
+                                    <div class="form-group">
+                                        {% if referee.sgk %}
+                                            <p>Şu anki: <a id="sgkUpdateValue"
+                                                           href="{{ referee.sgk.url }}">{{ referee.sgk }}</a>
+                                            </p>
+                                        {% endif %}
+                                        <input type="file" name="sgkUpdate" id="sgkUpdate">
+                                    </div>
 
                                 </div>
 
 
+                            </div>
+                            <div class="form-group">
+                                <label for="iban">iban</label>
+                                <input id="iban" class="form-control" type="text" name="iban"
+                                       value="{{ referee.person.iban }}"/>
                             </div>
                         </div>
                         <div class="card-footer">
@@ -229,7 +246,7 @@
                 </div>
 
 
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="card card-outline card-info">
                         <div class="card-header with-border">
                             <h3 class="card-title">İletişim Bilgileri</h3>
@@ -300,13 +317,13 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th> Hak Kazanma Tarihi</th>
+
                                     <th> Branş</th>
                                     <th> Tanımı</th>
-                                    <th>Dekont</th>
-                                    <th> Onay Durumu</th>
+                                    <th>Kademe Belgesi</th>
+                                    <th> Belge Aktif/Pasif</th>
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-                                        <th>Onayla/Reddet/Düzenle/Sil</th>
+                                        <th>İşlemler</th>
                                     {% endif %}
 
 
@@ -317,42 +334,60 @@
                                     {% for grade in grade_form %}
                                         <tr>
                                             <td>{{ forloop.counter }} </td>
-                                            <td>{{ grade.startDate }}  </td>
                                             <td>{{ grade.branch }}  </td>
                                             <td>{{ grade.definition }}  </td>
-                                            <td><img src="/media/{{ grade.dekont }}" class="user-image" alt="sbs"
-                                                     style=" width: 30px;height: 30px;"></td>
-                                            <td>{{ grade.status }}  </td>
+                                            <td>{% if grade.form %}
+                                                <a href="{{ grade.form.url }}" class="user-image"
+                                                   style=" width: 30px;height: 30px;">{{ grade.form.name }}</a>
+
+                                            {% else %}
+                                                <a href="">---</a>
+                                            {% endif %}</td>
+                                            <td> {% if grade.status == 'Onaylandı' %}
+                                                <p class="badge badge-success">Aktif</p>
+                                            {% else %}
+                                                <p class="badge badge-danger"> Pasif</p>
+                                            {% endif %}
+                                            </td>
                                             <td>
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
 
                                                     {% for item in perm %}
-                                                        {% if item == 'grade_approval' %}
-                                                            <div class="btn-group">
-                                                                <a href="{% url "sbs:grade_approval" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                                   type="button" class="btn btn-outline-success"
-                                                                   title="Onayla"><i
-                                                                        class="fa fa-check"></i>
-                                                                </a>
-                                                            </div>
-                                                        {% elif item == 'grade_reject' %}
-                                                            <div class="btn-group">
-                                                                <a href="{% url "sbs:grade_reject" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                                   type="button" class="btn btn-outline-dark"
-                                                                   title="Reddet"><i
-                                                                        class="fa fa-minus"></i>
-                                                                </a>
-                                                            </div>
-                                                        {% elif item == 'update_grade' %}
-                                                            <div class="btn-group">
-                                                                <a href="{% url "sbs:update_grade" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                                   type="button" class="btn btn-outline-warning"
-                                                                   title="Düzenle"><i
-                                                                        class="fa fa-edit"></i>
-                                                                </a>
-                                                            </div>
 
-                                                        {% elif item == 'delete_grade' %}
+                                                        {% if grade.status == 'Beklemede' or grade.status == 'Reddedildi' %}
+                                                            {% if item == 'grade_approval' %}
+                                                                <div class="btn-group">
+                                                                    <a href="{% url "sbs:grade_approval" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                       type="button" class="btn btn-outline-success"
+                                                                       title="Onayla"><i
+                                                                            class="fa fa-check"></i>
+                                                                    </a>
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if item == 'update_grade' %}
+                                                                <div class="btn-group">
+                                                                    <a href="{% url "sbs:update_grade" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                       type="button" class="btn btn-outline-warning"
+                                                                       title="Düzenle"><i
+                                                                            class="fa fa-edit"></i>
+                                                                    </a>
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if item == 'grade_reject' %}
+
+                                                                <div class="btn-group">
+                                                                    <a href="{% url "sbs:grade_reject" grade_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                       type="button" class="btn btn-outline-dark"
+                                                                       title="Reddet"><i
+                                                                            class="fa fa-ban"></i>
+                                                                    </a>
+                                                                </div>
+                                                            {% endif %}
+
+                                                        {% endif %}
+
+
+                                                        {% if item == 'delete_grade' %}
                                                             <div class="btn-group">
                                                                 <a class="btn btn-outline-danger"
                                                                    data-toggle="modal" title="Sil"
@@ -362,13 +397,6 @@
 
                                                         {% endif %}
                                                     {% endfor %}
-
-
-
-
-
-
-
 
                                                 {% endif %}
                                             </td>
@@ -406,10 +434,10 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th> Hak Kazanma Yılı</th>
+                                    <th>Vize Geçerlilik Tarihi</th>
                                     <th> Branş</th>
                                     <th> Dekont</th>
-                                    <th> Onay Durumu</th>
+                                    <th>Belge Aktif/Pasif</th>
                                     <th>İşlemler</th>
 
 
@@ -423,52 +451,65 @@
                                         <tr>
 
                                             <td>{{ forloop.counter }} </td>
-                                            <td>{{ grade.startDate.year }}  </td>
+                                            <td>{{ last_date }}  </td>
                                             <td>{{ grade.branch }}  </td>
-
-
-                                            <td><img src="/media/{{ grade.dekont }}" class="user-image"
-                                                     alt="KOBİLTEK"
-                                                     style=" width: 30px;height: 30px;"></td>
-                                            <td>{{ grade.status }}  </td>
+                                            <td>{% if grade.dekont %}
+                                                <a href="{{ grade.dekont.url }}" class="user-image"
+                                                   style=" width: 30px;height: 30px;">{{ grade.dekont }}</a>
+                                            {% else %}
+                                                <a href="">---</a>
+                                            {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if grade.status == 'Onaylandı' %}
+                                                    <p class="badge badge-success">Aktif</p>
+                                                {% else %}
+                                                    <p class="badge badge-danger"> Pasif</p>
+                                                {% endif %}
+                                            </td>
 
                                             <td>
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
 
                                                     {% for item in perm %}
-                                                        {% if item == 'grade_approval' %}
-                                                            <div class="btn-group">
-                                                                <a href="{% url "sbs:visa_approval" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                                   type="button" class="btn btn-outline-success"
-                                                                   title="Onayla"><i
-                                                                        class="fa fa-check"></i>
-                                                                </a>
-                                                            </div>
-                                                        {% elif item == 'visa_reject' %}
-                                                            <div class="btn-group">
-                                                                <a href="{% url "sbs:visa_reject" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                                   type="button" class="btn btn-outline-dark"
-                                                                   title="Reddet"><i
-                                                                        class="fa fa-minus"></i>
-                                                                </a>
-                                                            </div>
-                                                        {% elif item == 'update_visa' %}
-                                                            <div class="btn-group">
-                                                                <a href="{% url "sbs:update_visa" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
-                                                                   type="button" class="btn btn-outline-warning"
-                                                                   title="Düzenle"><i
-                                                                        class="fa fa-edit"></i>
-                                                                </a>
-                                                            </div>
+                                                        {% if grade.status == grade.WAITED or grade.status == grade.DENIED %}
+                                                            {% if item == 'grade_approval' %}
+                                                                <div class="btn-group">
+                                                                    <a href="{% url "sbs:visa_approval" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                       type="button" class="btn btn-outline-success"
+                                                                       title="Onayla"><i
+                                                                            class="fa fa-check"></i>
+                                                                    </a>
+                                                                </div>
+                                                            {% elif item == 'visa_reject' %}
+                                                                <div class="btn-group">
+                                                                    <a href="{% url "sbs:visa_reject" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                       type="button" class="btn btn-outline-dark"
+                                                                       title="Reddet"><i
+                                                                            class="fa fa-ban"></i>
+                                                                    </a>
+                                                                </div>
+                                                            {% elif item == 'update_visa' %}
+                                                                <div class="btn-group">
+                                                                    <a href="{% url "sbs:update_visa" visa_uuid=grade.uuid referee_uuid=referee.uuid %}"
+                                                                       type="button" class="btn btn-outline-warning"
+                                                                       title="Düzenle"><i
+                                                                            class="fa fa-edit"></i>
+                                                                    </a>
+                                                                </div>
 
-                                                        {% elif item == 'delete_visa' %}
+
+
+                                                            {% endif %}
+
+                                                        {% endif %}
+                                                        {% if item == 'delete_visa' %}
                                                             <div class="btn-group">
                                                                 <a class="btn btn-outline-danger"
                                                                    data-toggle="modal" title="Sil"
                                                                    onclick="delete_visa('{{ grade.uuid }}','{{ referee.uuid }}')"><i
                                                                         class="fa fa-trash"></i></a>
                                                             </div>
-
                                                         {% endif %}
                                                     {% endfor %}
 
