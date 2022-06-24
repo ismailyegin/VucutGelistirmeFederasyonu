@@ -402,7 +402,6 @@
         function approvalCoach(id) {
             $('#loading').show()
             debugger;
-            console.log(id);
             swal({
                 title: "Onaylamak istediğinizden emin misiniz?",
 
@@ -635,6 +634,7 @@
                                 {% if aktif == 'Admin' %}
                                     let url2 = "deleteReferee('" + full.uuid + "')"
                                     let url3 = "deleteReferenceCoach('" + full.uuid + "')"
+                                    let url4 = "approvalCoach('" + full.uuid + "')"
 
 
                                     let url = "{% url "sbs:update-coach-reference" '7729c6ee-739d-4a89-8ffe-1357e691ca16' %}";
@@ -643,7 +643,7 @@
 
                                     html = '<td><div class="btn-group"> '
                                     if (full.status === 'Beklemede' || full.status === 'Reddedildi') {
-                                        html += '<a onclick="approvalCoach(' + full.uuid + ')" title="Onayla" type="button" class="btn btn-outline-success"><i class="fa fa-check"></i></a>';
+                                        html += '<a onclick="' + url4 + '" title="Onayla" type="button" class="btn btn-outline-success"><i class="fa fa-check"></i></a>';
                                         html += '<a style="margin-left: 5px" href="' + url + '" title="Düzenle" type="button" class="btn btn-outline-warning"><i class="fa fa-edit"></i></a>';
 
                                     } else {

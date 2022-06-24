@@ -1587,8 +1587,10 @@ def coachreferenceUpdate(request, uuid):
                     currentCoach.kademe_belge = request.FILES.get('kademeBelgeUpdate')
                 if request.FILES.get('sgkUpdate'):
                     currentCoach.sgk = request.FILES.get('sgkUpdate')
-                if request.FILES.get('dekontUpdate'):
+                if request.FILES.get('dekontUpdate') != 'on':
                     currentCoach.dekont = request.FILES.get('dekontUpdate')
+                else:
+                    currentCoach.dekont = None
                 currentCoach.save()
 
                 messages.success(request, 'Antrenör Başvurusu Güncellendi')
@@ -1672,14 +1674,28 @@ def approvelReferenceCoach(request):
                     coach.save()
 
                     grade = HavaLevel(definition=referenceCoach.kademe_definition,
-                                      startDate=referenceCoach.kademe_startDate,
-                                      form=referenceCoach.kademe_belge, dekont=referenceCoach.dekont)
+                                      form=referenceCoach.kademe_belge)
 
                     grade.levelType = EnumFields.LEVELTYPE.GRADE
                     grade.status = HavaLevel.APPROVED
                     grade.isActive = True
                     grade.save()
                     coach.grades.add(grade)
+
+                    if referenceCoach.dekont:
+                        visa = HavaLevel(dekont=referenceCoach.dekont)
+                        visa.levelType = EnumFields.LEVELTYPE.VISA
+                        visa.status = HavaLevel.APPROVED
+                        visa.isActive = True
+                        visa.save()
+                    else:
+                        visa = HavaLevel()
+                        visa.levelType = EnumFields.LEVELTYPE.VISA
+                        visa.status = HavaLevel.APPROVED
+                        visa.isActive = False
+                        visa.save()
+                    coach.visa.add(visa)
+
                     coach.save()
 
                     messages.success(request, 'Antrenör Başarıyla Eklenmiştir')
