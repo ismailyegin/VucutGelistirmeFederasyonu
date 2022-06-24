@@ -190,6 +190,7 @@
 
 
                                     <div class="form-group">
+                                        <label for="refereeFileUpdate">Hakemlik Belgesi</label>
                                         {% if referee.referee_file %}
                                             <p>Şu anki: <a id="refereeFileUpdateValue"
                                                            href="{{ referee.referee_file.url }}">{{ referee.referee_file }}</a>
@@ -217,6 +218,7 @@
                                         {{ person_form.birthDate }}
                                     </div>
                                     <div class="form-group">
+                                        <label for="sgkUpdate">SGK Belgesi</label>
                                         {% if referee.sgk %}
                                             <p>Şu anki: <a id="sgkUpdateValue"
                                                            href="{{ referee.sgk.url }}">{{ referee.sgk }}</a>

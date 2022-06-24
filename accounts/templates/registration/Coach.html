@@ -1659,13 +1659,15 @@
         if (document.getElementById('checkDekont').checked === true) {
             if (document.getElementById('id_dekont').hasAttribute('required') === true) {
                 document.getElementById('id_dekont').removeAttribute('required')
-                document.getElementById('vizedekont').style.display = 'none';
             }
+            document.getElementById('vizedekont').style.display = 'none';
+
         } else {
             if (document.getElementById('id_dekont').hasAttribute('required') === false) {
                 document.getElementById('id_dekont').setAttribute('required', 'required')
-                document.getElementById('vizedekont').style.display = 'block';
             }
+            document.getElementById('vizedekont').style.display = 'block';
+
         }
     }
 </script>
@@ -1676,14 +1678,16 @@
         if (document.getElementById('checkDekont2').checked === true) {
             if (document.getElementById('dekontUpdate').hasAttribute('required') === true) {
                 document.getElementById('dekontUpdate').removeAttribute('required')
-                document.getElementById('vizedekontUpdate').style.display = 'none';
+
             }
+            document.getElementById('vizedekontUpdate').style.display = 'none';
         } else {
             if (document.getElementById('dekontUpdate').hasAttribute('required') === false) {
                 document.getElementById('dekontUpdate').setAttribute('required', 'required')
-                document.getElementById('vizedekontUpdate').style.display = 'block';
 
             }
+            document.getElementById('vizedekontUpdate').style.display = 'block';
+
         }
     }
 </script>
