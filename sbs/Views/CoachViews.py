@@ -1492,7 +1492,10 @@ def coachreferenceUpdate(request, uuid):
     currentCity = currentCoach.city
     grades = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).exclude(
         id=currentCoach.kademe_definition.pk).order_by('order')
-    branchs = Branch.objects.filter(isDeleted=0).exclude(uuid=currentCoach.kademe_brans.uuid)
+    if currentCoach.kademe_brans:
+        branchs = Branch.objects.filter(isDeleted=0).exclude(uuid=currentCoach.kademe_brans.uuid)
+    else:
+        branchs = Branch.objects.filter(isDeleted=0)
     currentGrade = currentCoach.kademe_definition
     if currentCoach.club:
         clubs = Club.objects.all().exclude(derbis__isnull=True).exclude(id=currentCoach.club.pk)
