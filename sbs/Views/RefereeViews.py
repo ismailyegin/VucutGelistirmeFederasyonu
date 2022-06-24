@@ -255,7 +255,8 @@ def update_referee(request, uuid):
 
     grade_form = referee.grades.filter(isDeleted=0)
     visa_form = referee.visa.filter(isDeleted=0)
-
+    year = datetime.date.today().year
+    date = datetime.date(year, 12, 31)
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
@@ -325,7 +326,7 @@ def update_referee(request, uuid):
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'referee': referee, 'grade_form': grade_form,
                    'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name, })
+                   'url_name': url_name,'last_date':date })
 
 
 @login_required
@@ -1301,11 +1302,10 @@ def referencedListReferee(request):  # Hakem başvuruları
 
 @login_required
 def refenceapprovalReferee(request):  # Hakem basvuru onayla
-    # perm = general_methods.control_access(request)
-    #
-    # if not perm:
-    #     logout(request)
-    #     return redirect('accounts:login')
+    perm = general_methods.control_access(request)
+    if not perm:
+        logout(request)
+        return redirect('accounts:login')
     reference = ReferenceReferee.objects.get(uuid=request.POST['uuid'])
     with transaction.atomic():
         if request.method == 'POST':
@@ -1333,11 +1333,11 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
 
                         person = Person()
                         person.tc = reference.tc
+                        person.iban = reference.iban
                         person.motherName = reference.motherName
                         person.fatherName = reference.fatherName
                         person.profileImage = reference.profileImage
                         person.birthDate = reference.birthDate
-                        person.bloodType = reference.bloodType
                         person.birthplace = reference.birthplace
                         if reference.gender == 'Erkek':
                             person.gender = Person.MALE
@@ -1347,7 +1347,6 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
                         person.user = user
                         person.save()
                         communication = Communication()
-                        communication.postalCode = reference.postalCode
                         communication.phoneNumber = reference.phoneNumber
                         communication.phoneNumber2 = reference.phoneNumber2
                         communication.address = reference.address
@@ -1355,8 +1354,8 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
                         communication.country = reference.country
                         communication.save()
 
-                        judge = Referee(person=person, communication=communication)
-                        # judge.iban = reference.iban
+                        judge = Referee(person=person, communication=communication, sgk=reference.sgk,
+                                        referee_file=reference.referee_file)
                         judge.save()
 
                         grade = HavaLevel(definition=reference.kademe_definition,
@@ -1380,19 +1379,19 @@ def refenceapprovalReferee(request):  # Hakem basvuru onayla
                         fdk.save()
                         print(fdk)
 
-                        # html_content = ''
-                        # subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', 'kayit@tvgfbf.gov.tr', user.email
-                        # html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
-                        # html_content = html_content + '<p>Başvurunuz Onaylanmıştır.</p>'
-                        # html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(
-                        #     fdk.user.username) + '</strong></p>'
-                        # html_content = html_content + '<p><strong>Şifreniz :' + str(password) + '</strong></p>'
-                        # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/">https://sbs.tvgfbf.gov.tr/</p></a>'
-                        # msg = EmailMultiAlternatives(subject, '', from_email, [to])
-                        # msg.attach_alternative(html_content, "text/html")
-                        # msg.send()
+                        html_content = ''
+                        subject, from_email, to = 'Bilgi Sistemi Hakem Kullanıcı Bilgileri', EMAIL_HOST_USER, user.email
+                        html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
+                        html_content = html_content + '<p>Başvurunuz Onaylanmıştır.</p>'
+                        html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(
+                            fdk.user.username) + '</strong></p>'
+                        html_content = html_content + '<p><strong>Şifreniz :' + str(password) + '</strong></p>'
+                        html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/">https://sbs.tvgfbf.gov.tr/</p></a>'
+                        msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                        msg.attach_alternative(html_content, "text/html")
+                        msg.send()
 
-                        log = str(user.get_full_name()) + " Hakem basvurusu onaylandi"
+                        log = str(user.get_full_name()) + " Hakem başvurusu onaylandı"
                         log = general_methods.logwrite(request, request.user, log)
 
 

@@ -23,4 +23,6 @@ urlpatterns = [
     path(r'newpassword', views.updateUrlProfile, name='newPassword'),
     path(r'newpassword/basarili/', views.redirect_password_update, name='redirect_password_update'),
     path(r'newpassword/update/', views.redirect_newpassword, name='redirect_newpassword'),
+    path('send-newpassword/', views.send_new_password, name='send_new_password'),
+
 ]

@@ -1688,7 +1688,7 @@ def approvelReferenceCoach(request):
                         referenceCoach.club.coachs.add(coach)
 
                     html_content = ''
-                    subject, from_email, to = 'Bilgi Sistemi Kullanıcı Bilgileri', EMAIL_HOST_USER, user.email
+                    subject, from_email, to = 'Bilgi Sistemi Antrenör Kullanıcı Bilgileri', EMAIL_HOST_USER, user.email
                     html_content = '<h2>TÜRKİYE VÜCUT GELİŞTİRME FİTNESS VE BİLEK GÜREŞİ FEDERASYONU BİLGİ SİSTEMİ</h2>'
                     html_content = html_content + '<p>Başvurunuz Onaylanmıştır.</p>'
                     html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(

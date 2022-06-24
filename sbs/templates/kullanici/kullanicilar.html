@@ -194,61 +194,93 @@
 
         <section class="col-lg-12 ">
 
-                <div class="card card-outline card-info">
-                    <div class="card-header with-border">
-                        <h3 class="card-title">Kullanıcılar</h3>
-                    </div>
-                    <div class="card-body">
-                        <table width="100%" id="users" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Ad</th>
-                                <th>Soyad</th>
-                                <th>E-Mail</th>
-                                <th>Grup</th>
-                                <th>Aktiflik Durumu</th>
-                                <th>Aktif-Pasif Yap/Grup Güncelle</th>
-                            </tr>
-                            <tr class="filters" role="row">
-                                <th></th>
-                                <th><input class="form-control" type="text" placeholder="Ad"
-                                           title="test"></th>
-                                <th><input class="form-control" type="text" placeholder="Soyad"
-                                           title="test"></th>
-                                <th><input class="form-control" type="text" placeholder="Email"
-                                           title="test"></th>
-                                <th>
-                                    <select style="width: 100%" id="group" name="group"
-                                            class="form-control select2 select2-hidden-accessible"
-                                            tabindex="-1" aria-hidden="true">
-                                        <option value="">Grup Seçiniz</option>
-                                        {% for group in groups %}
-                                            <option value="{{ group.pk }}">{{ group.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-
-                    </div>
+            <div class="card card-outline card-info">
+                <div class="card-header with-border">
+                    <h3 class="card-title">Kullanıcılar</h3>
                 </div>
-                <!-- /.card -->
+                <div class="card-body">
+                    <table width="100%" id="users" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Ad</th>
+                            <th>Soyad</th>
+                            <th>E-Mail</th>
+                            <th>Grup</th>
+                            <th>Aktiflik Durumu</th>
+                            <th style="width: 25%">Aktif-Pasif/Düzenle/Yeni Şifre</th>
+                        </tr>
+                        <tr class="filters" role="row">
+                            <th></th>
+                            <th><input class="form-control" type="text" placeholder="Ad"
+                                       title="test"></th>
+                            <th><input class="form-control" type="text" placeholder="Soyad"
+                                       title="test"></th>
+                            <th><input class="form-control" type="text" placeholder="Email"
+                                       title="test"></th>
+                            <th>
+                                <select style="width: 100%" id="group" name="group"
+                                        class="form-control select2 select2-hidden-accessible"
+                                        tabindex="-1" aria-hidden="true">
+                                    <option value="">Grup Seçiniz</option>
+                                    {% for group in groups %}
+                                        <option value="{{ group.pk }}">{{ group.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <!-- /.card -->
 
         </section>
 
 
-    <!-- /.row (main row) -->
-</section>
+        <!-- /.row (main row) -->
+    </section>
 
     {% load static %}
     <script>
         $(function () {
+            function getCookie(name) {
+                var cookieValue = null;
+                var i = 0;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (i; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            var csrftoken = getCookie('csrftoken');
+
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            $.ajaxSetup({
+                crossDomain: false, // obviates need for sameOrigin test
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type)) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
             debugger;
             table = $('#users').DataTable({
                 orderCellsTop: true,
@@ -426,6 +458,8 @@
                             {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                 let url2 = "activeUser('" + full.id + "')"
 
+                                let url3 = "sendPassword('" + full.id + "')"
+
                                 let url = "{% url "sbs:change_user_group" 11111 %}";
                                 url = url.replace(11111, full.id);
 
@@ -445,6 +479,10 @@
                                         html += '<a href="' + url + '" type="button" class="btn btn-outline-warning" style="margin-left: 5px"><i class="fa fa-edit" title="Grup Güncelle"></i></a>'
                                     {% endif %}
                                 {% endfor %}
+
+
+                                html += '<a onclick="' + url3 + '" type="button" class="btn btn-outline-info" style="margin-left: 5px"><i class="fa fa-unlock-alt" title="Yeni Şifre Gönder"></i></a>'
+
 
                                 html += '</div></td>';
                             {% endif %}
@@ -515,62 +553,58 @@
 
         }
 
-        function sendInform(id) {
-            debugger;
-            console.log(id);
-            var html = ''
-            $("#modal-mail").on("shown.bs.modal", function (e) {
-                $("#btn-conf12").click(function () {
-                        $.ajax({
-                            url: "{% url "sbs:view_email" pk=212121223232323232 %}".replace(/212121223232323232/, id.toString()),
-                            type: "POST",
-                            data: {
-                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+        function sendPassword(id) {
+            swal({
+                title: "Kullanıcının Mailine Yeni Şifre Göndermek İstediğinizden Emin Misiniz?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                debugger;
+                if (result) {
 
-                            },
-                            success: function (result) {
+                    $.ajax({
+                        url: "{% url 'accounts:send_new_password' %}",
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            pk: id
 
-                                if (result.status == 'Fail') {
-                                    html = result.msg;
-                                    debugger;
-                                    $(".successModalD").html(html);
-                                    $('#modal-success-danger').on("shown.bs.modal", function (e) {
-                                        $(".btn-ok").click(function () {
+                        },
+                        success: function (result) {
 
-                                            window.location.replace("{% url "sbs:view_user" %}");
+                            if (result.status === 'Success') {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Kullanıcının Mail Adresine Yeni Şifre gönderilmiştir',
 
-                                        });
-                                    }).modal('show');
+                                })
 
+                            } else {
+                                swal({
+                                    icon: 'error',
+                                    title: 'İşlem Başarısız',
 
-                                } else {
-                                    html = result.msg;
-                                    debugger;
-                                    $(".successModal").html(html);
-                                    $('#modal-success').on("shown.bs.modal", function (e) {
-                                        $(".btn-ok").click(function () {
-
-                                            window.location.replace("{% url "sbs:view_user" %}");
-
-                                        });
-                                    }).modal('show');
-
-
-                                }
-
-
-                                console.log(result.status)
+                                })
                             }
-                        });
-                    }
-                )
-                ;
-            }).modal('show');
-            $('#btn-close2').click(function () {
-                $('#modal-mail').modal('hide');
-            });
+
+
+                        }
+
+
+                    });
+
+
+                }
+
+
+            })
+
 
         }
+
 
     </script>
 {% endblock %}
