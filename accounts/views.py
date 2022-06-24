@@ -461,102 +461,103 @@ def referenceCoach(request):
                     coach_form = RefereeCoachForm(request.POST, request.FILES)
                     mail = request.POST.get('email')
 
-                if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
-                        email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
-                    email=mail):
-                    messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
-                    return render(request, 'registration/Coach.html',
-                                  {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
-                                   'cities': cities, 'grades': grades, 'branchs': branchs, })
+                    if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                            email=mail) or ReferenceReferee.objects.filter(
+                        email=mail) or PreRegistration.objects.filter(
+                        email=mail):
+                        messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
+                        return render(request, 'registration/Coach.html',
+                                      {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
+                                       'cities': cities, 'grades': grades, 'branchs': branchs, })
 
-                tc = request.POST.get('tc')
-                if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(
-                        tc=tc) or ReferenceReferee.objects.filter(tc=tc) or PreRegistration.objects.filter(tc=tc):
-                    messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
-                    return render(request, 'registration/Coach.html',
-                                  {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
-                                   'cities': cities, 'grades': grades, 'branchs': branchs, })
+                    tc = request.POST.get('tc')
+                    if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(
+                            tc=tc) or ReferenceReferee.objects.filter(tc=tc) or PreRegistration.objects.filter(tc=tc):
+                        messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
+                        return render(request, 'registration/Coach.html',
+                                      {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
+                                       'cities': cities, 'grades': grades, 'branchs': branchs, })
 
-                name = request.POST.get('first_name')
-                surname = request.POST.get('last_name')
-                year = request.POST.get('birthDate')
-                year = year.split('/')
+                    name = request.POST.get('first_name')
+                    surname = request.POST.get('last_name')
+                    year = request.POST.get('birthDate')
+                    year = year.split('/')
 
-                client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-                if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-                    messages.warning(request,
-                                     'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-                    return render(request, 'registration/Coach.html',
-                                  {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
-                                   'cities': cities, 'grades': grades, 'branchs': branchs, })
+                    client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+                    if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+                        messages.warning(request,
+                                         'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+                        return render(request, 'registration/Coach.html',
+                                      {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
+                                       'cities': cities, 'grades': grades, 'branchs': branchs, })
 
                     if coach_form.is_valid():
 
-                    veri = coach_form.save(commit=False)
-                    veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
-                    veri.kademe_branch = Branch.objects.get(title=request.POST.get('branch'))
-                    veri.country = coach_form.cleaned_data['country']
+                        veri = coach_form.save(commit=False)
+                        veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+                        veri.kademe_branch = Branch.objects.get(title=request.POST.get('branch'))
+                        veri.country = coach_form.cleaned_data['country']
 
-                    clubDersbis = request.POST.get('club', None)
-                    if clubDersbis:
-                        coachClub = Club.objects.get(derbis=clubDersbis)
-                        veri.club = coachClub
+                        clubDersbis = request.POST.get('club', None)
+                        if clubDersbis:
+                            coachClub = Club.objects.get(derbis=clubDersbis)
+                            veri.club = coachClub
 
-                    veri.save()
+                        veri.save()
 
-                    return redirect("accounts:redirect_register")
+                        return redirect("accounts:redirect_register")
 
+                    else:
+                        messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
                 else:
-                    messages.warning(request, 'Lütfen bilgilerinizi kontrol ediniz.')
-            else:
-                currentCoach = ReferenceCoach.objects.get(tc=request.POST.get('tcUpdate'))
-                if request.FILES.get('profileImageUpdate'):
-                    currentCoach.profileImage = request.FILES.get('profileImageUpdate')
-                currentCoach.first_name = request.POST.get('firstNameUpdate')
-                currentCoach.last_name = request.POST.get('lastNameUpdate')
-                currentCoach.birthplace = request.POST.get('birthPlaceUpdate')
-                currentCoach.iban = request.POST.get('ibanUpdate')
-                currentCoach.workplace = request.POST.get('workplaceUpdate')
-                currentCoach.tc = request.POST.get('tcUpdate')
-                birthDate = request.POST.get('birthDateUpdate')
-                workplace = request.POST.get('workplaceUpdate')
-                currentCoach.birthDate = datetime.datetime.strptime(birthDate, "%d/%m/%Y").strftime("%Y-%m-%d")
-                currentCoach.gender = request.POST.get('genderUpdate', None)
-                if Club.objects.filter(name=request.POST.get('clubUpdate')):
-                    currentCoach.club = Club.objects.get(name=request.POST.get('clubUpdate'))
-                elif request.POST.get('clubUpdate') == '':
-                    currentCoach.club = None
-                if request.FILES.get('belgeUpdate'):
-                    currentCoach.belge = request.FILES.get('belgeUpdate')
-                currentCoach.email = request.POST.get('emailUpdate')
-                currentCoach.phoneNumber = request.POST.get('phoneNumberUpdate')
-                currentCoach.phoneNumber2 = request.POST.get('phoneNumber2Update')
-                currentCoach.workplace = workplace
-                if Country.objects.filter(name=request.POST.get('countryUpdate')):
-                    currentCoach.country = Country.objects.get(name=request.POST.get('countryUpdate'))
-                if City.objects.filter(name=request.POST.get('cityUpdate')):
-                    currentCoach.city = City.objects.get(name=request.POST.get('cityUpdate'))
-                currentCoach.address = request.POST.get('addressUpdate')
-                if CategoryItem.objects.filter(name=request.POST.get('gradeUpdate')):
-                    currentCoach.kademe_definition = CategoryItem.objects.get(name=request.POST.get('gradeUpdate'))
-                if Branch.objects.filter(title=request.POST.get('branchUpdate')):
-                    currentCoach.kademe_brans = Branch.objects.get(title=request.POST.get('branchUpdate'))
-                if request.FILES.get('kademeBelgeUpdate'):
-                    currentCoach.kademe_belge = request.FILES.get('kademeBelgeUpdate')
-                if request.FILES.get('sgkUpdate'):
-                    currentCoach.sgk = request.FILES.get('sgkUpdate')
-                if request.FILES.get('dekontUpdate'):
-                    currentCoach.dekont = request.FILES.get('dekontUpdate')
-                currentCoach.status = currentCoach.WAITED
-                currentCoach.save()
+                    currentCoach = ReferenceCoach.objects.get(tc=request.POST.get('tcUpdate'))
+                    if request.FILES.get('profileImageUpdate'):
+                        currentCoach.profileImage = request.FILES.get('profileImageUpdate')
+                    currentCoach.first_name = request.POST.get('firstNameUpdate')
+                    currentCoach.last_name = request.POST.get('lastNameUpdate')
+                    currentCoach.birthplace = request.POST.get('birthPlaceUpdate')
+                    currentCoach.iban = request.POST.get('ibanUpdate')
+                    currentCoach.workplace = request.POST.get('workplaceUpdate')
+                    currentCoach.tc = request.POST.get('tcUpdate')
+                    birthDate = request.POST.get('birthDateUpdate')
+                    workplace = request.POST.get('workplaceUpdate')
+                    currentCoach.birthDate = datetime.datetime.strptime(birthDate, "%d/%m/%Y").strftime("%Y-%m-%d")
+                    currentCoach.gender = request.POST.get('genderUpdate', None)
+                    if Club.objects.filter(name=request.POST.get('clubUpdate')):
+                        currentCoach.club = Club.objects.get(name=request.POST.get('clubUpdate'))
+                    elif request.POST.get('clubUpdate') == '':
+                        currentCoach.club = None
+                    if request.FILES.get('belgeUpdate'):
+                        currentCoach.belge = request.FILES.get('belgeUpdate')
+                    currentCoach.email = request.POST.get('emailUpdate')
+                    currentCoach.phoneNumber = request.POST.get('phoneNumberUpdate')
+                    currentCoach.phoneNumber2 = request.POST.get('phoneNumber2Update')
+                    currentCoach.workplace = workplace
+                    if Country.objects.filter(name=request.POST.get('countryUpdate')):
+                        currentCoach.country = Country.objects.get(name=request.POST.get('countryUpdate'))
+                    if City.objects.filter(name=request.POST.get('cityUpdate')):
+                        currentCoach.city = City.objects.get(name=request.POST.get('cityUpdate'))
+                    currentCoach.address = request.POST.get('addressUpdate')
+                    if CategoryItem.objects.filter(name=request.POST.get('gradeUpdate')):
+                        currentCoach.kademe_definition = CategoryItem.objects.get(name=request.POST.get('gradeUpdate'))
+                    if Branch.objects.filter(title=request.POST.get('branchUpdate')):
+                        currentCoach.kademe_brans = Branch.objects.get(title=request.POST.get('branchUpdate'))
+                    if request.FILES.get('kademeBelgeUpdate'):
+                        currentCoach.kademe_belge = request.FILES.get('kademeBelgeUpdate')
+                    if request.FILES.get('sgkUpdate'):
+                        currentCoach.sgk = request.FILES.get('sgkUpdate')
+                    if request.FILES.get('dekontUpdate'):
+                        currentCoach.dekont = request.FILES.get('dekontUpdate')
+                    currentCoach.status = currentCoach.WAITED
+                    currentCoach.save()
 
                     messages.success(request, 'Başvurunuz başarıyla güncellenmiştir.')
 
                     return redirect("accounts:redirect_register")
 
-        return render(request, 'registration/Coach.html',
-                      {'preRegistrationform': coach_form, 'clubs': clubs, 'taahhut': x, 'countries': countries,
-                       'cities': cities, 'grades': grades, 'branchs': branchs, })
+            return render(request, 'registration/Coach.html',
+                          {'preRegistrationform': coach_form, 'clubs': clubs, 'taahhut': x, 'countries': countries,
+                           'cities': cities, 'grades': grades, 'branchs': branchs, })
     except Exception as e:
         traceback.print_exc()
         return redirect("accounts:login")
