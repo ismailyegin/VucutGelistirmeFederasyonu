@@ -650,6 +650,10 @@ def GetCurrentRegister(request):
                         kademe_definition = register_info.kademe_definition.name
                     else:
                         kademe_definition = ''
+                    if register_info.kademe_brans:
+                        kademe_brans = register_info.kademe_brans.title
+                    else:
+                        kademe_brans = ''
                     if register_info.kademe_belge:
                         kademe_belge = register_info.kademe_belge.url
                     else:
@@ -700,6 +704,7 @@ def GetCurrentRegister(request):
                     info['sgk'] = sgk
                     info['dekont'] = dekont
                     info['definition'] = definition
+                    info['kademe_brans'] = kademe_brans
 
                 if info:
                     return JsonResponse({'status': 'Success',

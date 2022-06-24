@@ -410,6 +410,7 @@ def referenceCoach(request):
     countries = Country.objects.all()
     cities = City.objects.all()
     grades = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).order_by('order')
+    branchs = Branch.objects.filter(isDeleted=0)
     try:
 
         if request.method == 'POST':
@@ -423,7 +424,7 @@ def referenceCoach(request):
                     messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
                     return render(request, 'registration/Coach.html',
                                   {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
-                                   'cities': cities, 'grades': grades, })
+                                   'cities': cities, 'grades': grades, 'branchs': branchs, })
 
                 tc = request.POST.get('tc')
                 if Person.objects.filter(tc=tc) or ReferenceCoach.objects.filter(
@@ -431,7 +432,7 @@ def referenceCoach(request):
                     messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
                     return render(request, 'registration/Coach.html',
                                   {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
-                                   'cities': cities, 'grades': grades, })
+                                   'cities': cities, 'grades': grades, 'branchs': branchs, })
 
                 name = request.POST.get('first_name')
                 surname = request.POST.get('last_name')
@@ -444,12 +445,13 @@ def referenceCoach(request):
                                      'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
                     return render(request, 'registration/Coach.html',
                                   {'preRegistrationform': coach_form, 'clubs': clubs, 'countries': countries,
-                                   'cities': cities, 'grades': grades, })
+                                   'cities': cities, 'grades': grades, 'branchs': branchs, })
 
                 if coach_form.is_valid():
 
                     veri = coach_form.save(commit=False)
                     veri.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+                    veri.kademe_branch = Branch.objects.get(title=request.POST.get('branch'))
                     veri.country = coach_form.cleaned_data['country']
 
                     clubDersbis = request.POST.get('club', None)
@@ -494,6 +496,8 @@ def referenceCoach(request):
                 currentCoach.address = request.POST.get('addressUpdate')
                 if CategoryItem.objects.filter(name=request.POST.get('gradeUpdate')):
                     currentCoach.kademe_definition = CategoryItem.objects.get(name=request.POST.get('gradeUpdate'))
+                if Branch.objects.filter(title=request.POST.get('branchUpdate')):
+                    currentCoach.kademe_brans = Branch.objects.get(title=request.POST.get('branchUpdate'))
                 if request.FILES.get('kademeBelgeUpdate'):
                     currentCoach.kademe_belge = request.FILES.get('kademeBelgeUpdate')
                 if request.FILES.get('sgkUpdate'):
@@ -509,7 +513,7 @@ def referenceCoach(request):
 
         return render(request, 'registration/Coach.html',
                       {'preRegistrationform': coach_form, 'clubs': clubs, 'taahhut': x, 'countries': countries,
-                       'cities': cities, 'grades': grades, })
+                       'cities': cities, 'grades': grades, 'branchs': branchs, })
     except Exception as e:
         traceback.print_exc()
         return redirect("accounts:login")

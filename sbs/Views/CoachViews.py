@@ -1470,10 +1470,10 @@ def antrenor(request):
     urls = last_urls(request)
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
-    status=ReferenceCoach.STATUS_CHOICES
+    status = ReferenceCoach.STATUS_CHOICES
     return render(request, 'TVGFBF/Coach/reference-list-coach.html', {'urls': urls,
                                                                       'current_url': current_url,
-                                                                      'url_name': url_name,'status':status})
+                                                                      'url_name': url_name, 'status': status})
 
 
 @login_required
@@ -1492,6 +1492,7 @@ def coachreferenceUpdate(request, uuid):
     currentCity = currentCoach.city
     grades = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).exclude(
         id=currentCoach.kademe_definition.pk).order_by('order')
+    branchs = Branch.objects.filter(isDeleted=0).exclude(uuid=currentCoach.kademe_brans.uuid)
     currentGrade = currentCoach.kademe_definition
     if currentCoach.club:
         clubs = Club.objects.all().exclude(derbis__isnull=True).exclude(id=currentCoach.club.pk)
@@ -1517,7 +1518,7 @@ def coachreferenceUpdate(request, uuid):
                                    'urls': urls,
                                    'current_url': current_url, 'url_name': url_name, 'countries': countries,
                                    'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
-                                   'grades': grades, 'currentGrade': currentGrade, })
+                                   'grades': grades, 'currentGrade': currentGrade, 'branchs': branchs, })
 
                 tc = request.POST.get('tcUpdate')
                 if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(uuid=currentCoach.uuid).filter(
@@ -1529,7 +1530,7 @@ def coachreferenceUpdate(request, uuid):
                                    'urls': urls,
                                    'current_url': current_url, 'url_name': url_name, 'countries': countries,
                                    'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
-                                   'grades': grades, 'currentGrade': currentGrade, })
+                                   'grades': grades, 'currentGrade': currentGrade, 'branchs': branchs, })
 
                 name = request.POST.get('firstNameUpdate')
                 surname = request.POST.get('lastNameUpdate')
@@ -1545,7 +1546,7 @@ def coachreferenceUpdate(request, uuid):
                                    'urls': urls,
                                    'current_url': current_url, 'url_name': url_name, 'countries': countries,
                                    'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
-                                   'grades': grades, 'currentGrade': currentGrade, })
+                                   'grades': grades, 'currentGrade': currentGrade, 'branchs': branchs, })
 
                 if request.FILES.get('profileImageUpdate'):
                     currentCoach.profileImage = request.FILES.get('profileImageUpdate')
@@ -1577,6 +1578,8 @@ def coachreferenceUpdate(request, uuid):
                 currentCoach.address = request.POST.get('addressUpdate')
                 if CategoryItem.objects.filter(uuid=request.POST.get('gradeUpdate')):
                     currentCoach.kademe_definition = CategoryItem.objects.get(uuid=request.POST.get('gradeUpdate'))
+                if Branch.objects.filter(uuid=request.POST.get('branchUpdate')):
+                    currentCoach.kademe_brans = Branch.objects.get(uuid=request.POST.get('branchUpdate'))
                 if request.FILES.get('kademeBelgeUpdate'):
                     currentCoach.kademe_belge = request.FILES.get('kademeBelgeUpdate')
                 if request.FILES.get('sgkUpdate'):
@@ -1592,14 +1595,14 @@ def coachreferenceUpdate(request, uuid):
                           {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub, 'urls': urls,
                            'current_url': current_url, 'url_name': url_name, 'countries': countries,
                            'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
-                           'grades': grades, 'currentGrade': currentGrade, })
+                           'grades': grades, 'currentGrade': currentGrade, 'branchs': branchs, })
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return render(request, 'TVGFBF/Coach/referenceCoachUpdate.html',
                       {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub, 'urls': urls,
                        'current_url': current_url, 'url_name': url_name, 'countries': countries,
                        'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
-                       'grades': grades, 'currentGrade': currentGrade, })
+                       'grades': grades, 'currentGrade': currentGrade, 'branchs': branchs, })
 
 
 @login_required

@@ -471,6 +471,24 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
+                                            <label> Branş</label>
+                                            <select id="branchUpdate" name="branchUpdate" required="required"
+                                                    class="form-control select2 select2-hidden-accessible"
+                                                    style="width: 100%;"
+                                                    data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                                <option value="">Seçiniz</option>
+                                                {% if currentCoach.kademe_brans %}
+                                                    <option selected="selected"
+                                                            value="{{ currentCoach.kademe_brans.uuid }}">{{ currentCoach.kademe_brans.title }}</option>
+                                                {% endif %}
+                                                {% for branch in branchs %}
+                                                    <option value="{{ branch.uuid }}">{{ branch.title }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
                                             <label> Antrenör Sözleşme Belgesi</label>
                                             {% if currentCoach.kademe_belge %}
                                                 <p>Şu anki: <a id="kademeBelgeUpdateValue"
@@ -656,25 +674,25 @@
                         success: function (result) {
                             if (result.status === 'Success') {
 
-                                        swal({
-                                            icon: 'success',
-                                            title: 'Antrenör başvurusu başarıyla silindi !! Başvuru listesi ekranına yönlendiriliyorsunuz',
-                                            timer: 7000
+                                swal({
+                                    icon: 'success',
+                                    title: 'Antrenör başvurusu başarıyla silindi !! Başvuru listesi ekranına yönlendiriliyorsunuz',
+                                    timer: 7000
 
-                                        })
-                                        window.location.href = 'https://sbs.tvgfbf.gov.tr/tvgfbf/reference/antrenor/basvuru';
+                                })
+                                window.location.href = 'https://sbs.tvgfbf.gov.tr/tvgfbf/reference/antrenor/basvuru';
 
 
-                                    } else {
+                            } else {
 
-                                        swal({
-                                            icon: 'error',
-                                            title: 'işlem başarısız oldu.',
+                                swal({
+                                    icon: 'error',
+                                    title: 'işlem başarısız oldu.',
 
-                                        })
-                                        location.reload();
+                                })
+                                location.reload();
 
-                                    }
+                            }
 
                         }
                     });

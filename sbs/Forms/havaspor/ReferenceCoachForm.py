@@ -2,6 +2,7 @@
 
 from django import forms
 
+from sbs.models import Branch
 from sbs.models.ekabis.Country import Country
 from sbs.models.tvfbf.ReferenceCoach import ReferenceCoach
 from django.contrib.auth.models import User
@@ -29,6 +30,16 @@ class RefereeCoachForm(ModelForm):
                                      widget=forms.Select(
                                          attrs={'class': 'form-control select2 select2-hidden-accessible',
                                                 'style': 'width: 100%; '}))
+
+    branch = forms.ModelChoiceField(
+        queryset=Branch.objects.filter(isDeleted=False),
+        to_field_name='title',
+        empty_label="Seçiniz",
+        label="Branş",
+        required='required',
+        widget=forms.Select(
+            attrs={'class': 'form-control select2 select2-hidden-accessible',
+                   'style': 'width: 100%; '}))
 
     class Meta:
         model = ReferenceCoach
