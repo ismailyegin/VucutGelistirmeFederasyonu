@@ -238,7 +238,7 @@ def send_new_password(request):
                         html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(
                             user.username) + '</strong></p>'
                         html_content = html_content + '<p><strong>Şifreniz :' + str(password) + '</strong></p>'
-                        html_content = html_content + '<p>Spor Bilgi Sistemi : <a href="https://sbs.tvgfbf.gov.tr</a></p>'
+                        html_content = html_content + '<p>Spor Bilgi Sistemi : <a href="https://sbs.tvgfbf.gov.tr</a>sbs.tvgfbf.gov.tr</p>'
 
                         msg = EmailMultiAlternatives(subject, '', from_email, [to])
                         msg.attach_alternative(html_content, "text/html")
