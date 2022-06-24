@@ -1455,15 +1455,18 @@
                         }
                         grade.options[grade.options.length] = new Option(info.kademe_definition, info.kademe_definition);
                         grade.value = info.kademe_definition
-debugger;
-                        var branch = document.getElementById('branchUpdate')
-                        for (var i = 0; i < branch.length; i++) {
-                            if (branch.options[i].value === info.kademe_brans) {
-                                branch.remove(i);
+
+                        if (info.kademe_brans !== '') {
+                            var branch = document.getElementById('branchUpdate')
+                            for (var i = 0; i < branch.length; i++) {
+                                if (branch.options[i].value === info.kademe_brans) {
+                                    branch.remove(i);
+                                }
                             }
+                            branch.options[branch.options.length] = new Option(info.kademe_brans, info.kademe_brans);
+                            branch.value = info.kademe_brans
                         }
-                        branch.options[branch.options.length] = new Option(info.kademe_brans, info.kademe_brans);
-                        branch.value = info.kademe_brans
+
 
                         document.getElementById('kademeBelgeUpdateValue').href = info.kademe_belge
                         document.getElementById('kademeBelgeUpdateValue').innerHTML = info.kademe_belge
