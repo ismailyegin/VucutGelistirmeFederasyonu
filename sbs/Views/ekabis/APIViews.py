@@ -290,11 +290,13 @@ class GetReferenceCoach(APIView):
                     last_name__icontains=globalSearch.lower()) | Q(status__icontains=globalSearch.lower()) | Q(
                     email__icontains=globalSearch.upper()) | Q(email__icontains=globalSearch.lower())
             if first_name:
-                query &= Q(first_name__icontains=first_name.upper()) | Q(first_name__icontains=first_name.lower())
+                for x in first_name:
+                    query &= Q(first_name__icontains=x.upper()) | Q(first_name__icontains=x.lower())
             if last_name:
-                query &= Q(last_name__icontains=last_name.upper()) | Q(last_name__icontains=last_name.lower())
+                for x in last_name:
+                    query &= Q(last_name__icontains=x.upper()) | Q(last_name__icontains=x.lower())
             if email:
-                query &= Q(email__icontains=email.upper()) | Q(email__icontains=email.lower())
+                query &= Q(email__icontains=email)
             if tc:
                 query &= Q(tc__icontains=tc)
             if status:
