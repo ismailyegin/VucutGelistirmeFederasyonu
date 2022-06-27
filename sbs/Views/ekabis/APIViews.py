@@ -146,6 +146,7 @@ class GetPermission(APIView):
         serializer = PermissionResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)
 
+
 class GetClub(APIView):
 
     def post(self, request, format=None):
@@ -192,6 +193,7 @@ class GetClub(APIView):
         serializer = ClubResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)
 
+
 class GetCoach(APIView):
 
     def post(self, request, format=None):
@@ -218,16 +220,23 @@ class GetCoach(APIView):
         else:
             query = Q()
             if globalSearch:
-                query &= Q(person__user__first_name__icontains=globalSearch) | Q(
-                    person__user__last_name__icontains=globalSearch) | Q(
-                    communication__city__name__icontains=globalSearch) | Q(
-                    branch__title__icontains=globalSearch)
+                query &= Q(person__user__first_name__icontains=globalSearch.upper()) | Q(
+                    person__user__last_name__icontains=globalSearch.upper()) | Q(
+                    communication__city__name__icontains=globalSearch.upper()) | Q(
+                    branch__title__icontains=globalSearch.upper()) | Q(
+                    person__user__first_name__icontains=globalSearch.lower()) | Q(
+                    person__user__last_name__icontains=globalSearch.lower()) | Q(
+                    communication__city__name__icontains=globalSearch.lower()) | Q(
+                    branch__title__icontains=globalSearch.lower())
             if first_name:
-                query &= Q(person__user__first_name__icontains=first_name)
+                query &= Q(person__user__first_name__icontains=first_name.upper()) | Q(
+                    person__user__first_name__icontains=first_name.lower())
             if last_name:
-                query &= Q(person__user__last_name__icontains=last_name)
+                query &= Q(person__user__last_name__icontains=last_name.upper()) | Q(
+                    person__user__last_name__icontains=last_name.lower())
             if email:
-                query &= Q(person__user__email__icontains=email)
+                query &= Q(person__user__email__icontains=email.upper()) | Q(
+                    person__user__email__icontains=email.lower())
             if city:
                 query &= Q(communication__city__pk=city)
             if branch:
@@ -275,16 +284,17 @@ class GetReferenceCoach(APIView):
         else:
             query = Q()
             if globalSearch:
-                query &= Q(first_name__icontains=globalSearch) | Q(
-                    last_name__icontains=globalSearch) | Q(
-                    tc=globalSearch) | Q(
-                   status__icontains=globalSearch)
+                query &= Q(first_name__icontains=globalSearch.upper()) | Q(
+                    last_name__icontains=globalSearch.upper()) | Q(tc=globalSearch) | Q(
+                    status__icontains=globalSearch.upper()) | Q(first_name__icontains=globalSearch.lower()) | Q(
+                    last_name__icontains=globalSearch.lower()) | Q(status__icontains=globalSearch.lower()) | Q(
+                    email__icontains=globalSearch.upper()) | Q(email__icontains=globalSearch.lower())
             if first_name:
-                query &= Q(first_name__icontains=first_name)
+                query &= Q(first_name__icontains=first_name.upper()) | Q(first_name__icontains=first_name.lower())
             if last_name:
-                query &= Q(last_name__icontains=last_name)
+                query &= Q(last_name__icontains=last_name.upper()) | Q(last_name__icontains=last_name.lower())
             if email:
-                query &= Q(email__icontains=email)
+                query &= Q(email__icontains=email.upper()) | Q(email__icontains=email.lower())
             if tc:
                 query &= Q(tc__icontains=tc)
             if status:
@@ -304,7 +314,6 @@ class GetReferenceCoach(APIView):
         }
         serializer = ReferenceCoachResponseSerializer(logApiObject, context=serializer_context)
         return Response(serializer.data)
-
 
 
 class GetCoachForVisaSeminar(APIView):
@@ -736,7 +745,6 @@ class GetReferenceReferee(APIView):
         tc = request.data['columns[4][search][value]']
         status = request.data['columns[5][search][value]']
 
-
         referees = ReferenceReferee.objects.filter(isDeleted=False).order_by('-status')
         count = referees.count()
 
@@ -749,7 +757,7 @@ class GetReferenceReferee(APIView):
                 query &= Q(first_name__icontains=globalSearch) | Q(
                     last_name__icontains=globalSearch) | Q(
                     tc=globalSearch) | Q(
-                   status__icontains=globalSearch)
+                    status__icontains=globalSearch)
             if first_name:
                 query &= Q(first_name__icontains=first_name)
             if last_name:
