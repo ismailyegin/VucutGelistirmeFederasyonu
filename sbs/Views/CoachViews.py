@@ -1592,10 +1592,10 @@ def coachreferenceUpdate(request, uuid):
                     currentCoach.kademe_belge = request.FILES.get('kademeBelgeUpdate')
                 if request.FILES.get('sgkUpdate'):
                     currentCoach.sgk = request.FILES.get('sgkUpdate')
-                if request.FILES.get('dekontUpdate') != 'on':
-                    currentCoach.dekont = request.FILES.get('dekontUpdate')
-                else:
+                if request.FILES.get('checkDekont'):
                     currentCoach.dekont = None
+                elif request.FILES.get('dekontUpdate'):
+                    currentCoach.dekont = request.FILES.get('dekontUpdate')
                 currentCoach.save()
 
                 messages.success(request, 'Antrenör Başvurusu Güncellendi')
