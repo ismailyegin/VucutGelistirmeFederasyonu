@@ -293,7 +293,8 @@ class GetReferenceCoach(APIView):
                 query &= Q(first_name__icontains=first_name.upper()) | Q(first_name__icontains=first_name.lower()) | Q(
                     first_name__contains=first_name) | Q(first_name__icontains=first_name.title())
             if last_name:
-                query &= Q(last_name__icontains=last_name.upper()) | Q(last_name__icontains=last_name.lower()) | Q(last_name__icontains=last_name.title())
+                query &= Q(last_name__icontains=last_name.upper()) | Q(last_name__icontains=last_name.lower()) | Q(
+                    last_name__icontains=last_name.title())
             if email:
                 query &= Q(email__icontains=email)
             if tc:
@@ -620,6 +621,12 @@ def GetCurrentRegister(request):
                 tcKimlikNo = request.POST['tcKimlikNo']
                 info = None
                 if ReferenceCoach.objects.filter(tc=tcKimlikNo):
+                    if ReferenceCoach.objects.filter(tc=tcKimlikNo).count() > 1:
+                        return JsonResponse(
+                            {'status': 'Fail',
+                             'msg': 'Sistemde birden fazla kaydınız bulunmaktadır. Lütfen yetkili ile görüşünüz.',
+                             'result': info,
+                             })
                     register_info = ReferenceCoach.objects.get(tc=tcKimlikNo)
                     if register_info.status != 'Reddedildi':
                         return JsonResponse(
