@@ -221,8 +221,8 @@
                             <i class="fa fa-plus"></i>
                         </a>
                     </div>
-                    <div class="card-body">
-                        <table id="basvuru" class="table table-bordered table-hover">
+                    <div class="card-body" style="width: 100%">
+                        <table id="basvuru" class="table table-bordered table-hover" style="width:100%">
                             <thead>
                             <tr>
                                 <th>#</th>
@@ -478,6 +478,7 @@
 
                 orderCellsTop: true,
                 fixedHeader: false,
+
                 initComplete: function () {
                     var api = this.api();
 
@@ -524,7 +525,11 @@
                 "processing": true,
                 "serverSide": true,
                 "paging": true,
-                "ordering": true,
+                "caseInsensitive": false,
+
+                scrollY: "900px",
+                scrollX: true,
+                scrollCollapse: true,
 
 
                 "ajax": {
@@ -643,20 +648,20 @@
 
                                     html = '<td><div class="btn-group"> '
                                     if (full.status === 'Beklemede' || full.status === 'Reddedildi') {
-                                        html += '<a onclick="' + url4 + '" title="Onayla" type="button" class="btn btn-outline-success"><i class="fa fa-check"></i></a>';
-                                        html += '<a style="margin-left: 5px" href="' + url + '" title="Düzenle" type="button" class="btn btn-outline-warning"><i class="fa fa-edit"></i></a>';
+                                        html += '<a onclick="' + url4 + '" title="Onayla" type="button" class="btn btn-outline-success btn-sm"><i class="fa fa-check"></i></a>';
+                                        html += '<a style="margin-left: 5px" href="' + url + '" title="Düzenle" type="button" class="btn btn-outline-warning btn-sm"><i class="fa fa-edit"></i></a>';
 
                                     } else {
-                                        html += '<button disabled title="Başvuru Zaten Onaylandı" type="button" class="btn btn-outline-success"> <i class="fa fa-check"></i></button>'
-                                        html += '<button style="margin-left: 5px;" disabled type="button" class="btn btn-outline-warning"> <i class="fa fa-edit" title="Başvuru Onaylandı"></i></button>'
+                                        html += '<button disabled title="Başvuru Zaten Onaylandı" type="button" class="btn btn-outline-success btn-sm"> <i class="fa fa-check"></i></button>'
+                                        html += '<button style="margin-left: 5px;" disabled type="button" class="btn btn-outline-warning btn-sm"> <i class="fa fa-edit" title="Başvuru Onaylandı"></i></button>'
                                     }
                                     if (full.status !== 'Onaylandı') {
-                                        html += '<a style="margin-left: 5px;" class="btn btn-outline-danger"  data-toggle="modal" onclick="' + url2 + '"> <i class="fa fa-ban" title="Reddet"></i> </a>'
+                                        html += '<a style="margin-left: 5px;" class="btn btn-outline-danger btn-sm"  data-toggle="modal" onclick="' + url2 + '"> <i class="fa fa-ban" title="Reddet"></i> </a>'
                                     } else {
-                                        html += ' <button style="margin-left: 5px;" class="btn btn-outline-danger"  data-toggle="modal" disabled> <i class="fa fa-ban" title="Başvuru Onaylandı !"></i> </button>'
+                                        html += ' <button style="margin-left: 5px;" class="btn btn-outline-danger btn-sm"  data-toggle="modal" disabled> <i class="fa fa-ban" title="Başvuru Onaylandı !"></i> </button>'
                                     }
 
-                                    html += ' <a style="margin-left: 5px;" class="btn btn-outline-danger"  onclick="'+url3+'"> <i class= "fa fa-trash" title = "Kaydı Sil" ></i> </a>'
+                                    html += ' <a style="margin-left: 5px;" class="btn btn-outline-danger btn-sm"  onclick="' + url3 + '"> <i class= "fa fa-trash" title = "Kaydı Sil" ></i> </a>'
                                     html += '</div></td>';
                                 {% else %}
                                     html = '<td></td>'
@@ -666,15 +671,9 @@
                     }
 
                 ],
-                "search":
-                    {
-                        "caseInsensitive":
-                            true
-                    }
 
 
-            })
-            ;
+            });
             table.on('draw.dt', function () {
                 $('#city').on('change', function () {
                     var select = document.getElementById('city');
