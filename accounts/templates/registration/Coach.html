@@ -1424,38 +1424,17 @@
                             document.getElementById('referenceCoachUpdateForm').reset();
                             document.getElementById('referenceCoachForm').reset();
                             if (tcKimlikNo.includes('@')) {
-
                                 let x = document.getElementById('id_email')
                                 x.value = tcKimlikNo
                                 x.readOnly = true;
-                                document.getElementById('tc').readOnly = false
-                                swal({
-                                    icon: 'info',
-                                    title: 'Sistem Üzerinde Kaydınız Bulunmamaktadır. Lütfen Formu Doldurunuz',
+                                document.getElementById('tc').readOnly=false
 
-                                })
-
-                            } else if (tcKimlikNo.length === 11) {
-                                document.getElementById('id_email').readOnly = false
+                            } else {
+                                document.getElementById('id_email').readOnly=false
                                 let x = document.getElementById('tc')
                                 x.value = tcKimlikNo
                                 x.readOnly = true;
-                                swal({
-                                    icon: 'info',
-                                    title: 'Sistem Üzerinde Kaydınız Bulunmamaktadır. Lütfen Formu Doldurunuz',
 
-                                })
-
-
-                            } else {
-                                document.getElementById('firstRegister').style.display = 'none';
-                                document.getElementById('updateRegister').style.display = 'none';
-                                swal({
-                                    icon: 'info',
-                                    title: 'Lütfen Bilgilerinizi Kontrol Edin',
-
-                                })
-                                 return false
 
                             }
 
@@ -1463,10 +1442,14 @@
                             document.getElementById('updateRegister').style.display = 'none';
                             document.getElementById('redNedeni').style.display = 'none'
                             document.getElementById('redNedeni').innerHTML = ''
+                            swal({
+                                icon: 'info',
+                                title: result.msg,
 
+                            })
 
                         } else {
-                            document.getElementById('referenceCoachUpdateForm').reset();
+                             document.getElementById('referenceCoachUpdateForm').reset();
                             document.getElementById('referenceCoachForm').reset();
                             if (tcKimlikNo.includes('@')) {
                                 let x = document.getElementById('emailUpdate')
@@ -1474,26 +1457,13 @@
                                 x.readOnly = true;
                                 document.getElementById('tcUpdate').value = info.tc
 
-                            } else if (tcKimlikNo.length() === 11) {
+                            } else {
                                 let x = document.getElementById('tcUpdate')
                                 x.value = tcKimlikNo
                                 x.readOnly = true;
                                 document.getElementById('emailUpdate').value = info.email
 
-                            } else {
-                                document.getElementById('firstRegister').style.display = 'none';
-                                document.getElementById('updateRegister').style.display = 'none';
-                                swal({
-                                    icon: 'error',
-                                    title: 'Lütfen Bilgilerinizi Kontrol Edin',
-
-                                })
-                                 return false
-
-
-
                             }
-
 
                             document.getElementById('firstRegister').style.display = 'none';
                             document.getElementById('updateRegister').style.display = 'block'
