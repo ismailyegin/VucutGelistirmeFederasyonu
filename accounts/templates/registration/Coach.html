@@ -1404,7 +1404,8 @@
     function GetCurrentRegister() {
         debugger;
 
-
+        document.getElementById('referenceCoachUpdateForm').reset();
+        document.getElementById('referenceCoachForm').reset();
         let tcKimlikNo = document.getElementById('tcKimlikNo').value;
 
         if (tcKimlikNo) {
@@ -1427,10 +1428,10 @@
                                 let x = document.getElementById('id_email')
                                 x.value = tcKimlikNo
                                 x.readOnly = true;
-                                document.getElementById('tc').readOnly=false
+                                document.getElementById('tc').readOnly = false
 
                             } else {
-                                document.getElementById('id_email').readOnly=false
+                                document.getElementById('id_email').readOnly = false
                                 let x = document.getElementById('tc')
                                 x.value = tcKimlikNo
                                 x.readOnly = true;
@@ -1449,7 +1450,7 @@
                             })
 
                         } else {
-                             document.getElementById('referenceCoachUpdateForm').reset();
+                            document.getElementById('referenceCoachUpdateForm').reset();
                             document.getElementById('referenceCoachForm').reset();
                             if (tcKimlikNo.includes('@')) {
                                 let x = document.getElementById('emailUpdate')
