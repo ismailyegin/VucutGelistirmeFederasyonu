@@ -7,14 +7,15 @@ from sbs.models.tvfbf.ReferenceReferee import ReferenceReferee
 
 
 class PreRefereeForm(ModelForm):
-    kademe_definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE', isDeleted=False).order_by('order'),
-                                               to_field_name='name',
-                                               empty_label="Seçiniz",
-                                               label="Kademe",
-                                               required='required',
-                                               widget=forms.Select(
-                                                   attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                                          'style': 'width: 100%; '}))
+    kademe_definition = forms.ModelChoiceField(
+        queryset=CategoryItem.objects.filter(forWhichClazz='REFEREE_GRADE', isDeleted=False).order_by('order'),
+        to_field_name='name',
+        empty_label="Seçiniz",
+        label="Kokart",
+        required='required',
+        widget=forms.Select(
+            attrs={'class': 'form-control select2 select2-hidden-accessible',
+                   'style': 'width: 100%; '}))
 
     country = forms.ModelChoiceField(queryset=Country.objects.order_by('-order'),
                                      to_field_name='name',
@@ -30,11 +31,11 @@ class PreRefereeForm(ModelForm):
         fields = (
             'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'phoneNumber2',
             'city', 'grade_referee_contract', 'tc', 'profileImage', 'birthDate', 'iban',
-            'gender', 'birthplace', 'motherName', 'fatherName', 'referee_file', 'sgk', 'dekont')
+            'gender', 'birthplace', 'motherName', 'fatherName', 'referee_file', 'sgk', 'dekont', 'gradeDate')
         labels = {'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email', 'phoneNumber': 'Cep Telefonu',
                   'phoneNumber2': 'Sabit Telefon', 'city': 'İl', 'tc': 'T.C.', 'gender': 'Cinsiyet',
                   'referee_file': 'Hakem Belgesi', 'grade_referee_contract': 'Hakem Sözleşme Belgesi',
-                  'sgk': 'SGK/Bağ-Kur Belgesi', 'dekont': 'Vize Dekont'}
+                  'sgk': 'SGK/Bağ-Kur Belgesi', 'dekont': 'Vize Dekont', 'gradeDate': 'Hak Kazanma Tarihi'}
         widgets = {
 
             'profileImage': forms.FileInput(),
@@ -83,4 +84,9 @@ class PreRefereeForm(ModelForm):
 
             'city': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                         'style': 'width: 100%;', 'required': 'required'}),
+
+            'gradeDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
+                       'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
+                       "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
         }

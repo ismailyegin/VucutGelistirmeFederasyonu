@@ -546,9 +546,7 @@ def referenceCoach(request):
                         currentCoach.kademe_belge = request.FILES.get('kademeBelgeUpdate')
                     if request.FILES.get('sgkUpdate'):
                         currentCoach.sgk = request.FILES.get('sgkUpdate')
-                    if request.POST.get('checkDekont2'):
-                        currentCoach.dekont = None
-                    elif request.FILES.get('dekontUpdate'):
+                    if request.FILES.get('dekontUpdate'):
                         currentCoach.dekont = request.FILES.get('dekontUpdate')
 
                     currentCoach.status = currentCoach.WAITED

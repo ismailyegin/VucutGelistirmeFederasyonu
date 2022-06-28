@@ -305,35 +305,33 @@
     </div>
 </section>
 {% load static %}
-<section class="content">
-    <div class="col-lg-12">
-        <div class="card card-info card-outline">
-            <div class="card-header with-border">
-                <h3 class="card-title">Antrenör Başvuru</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="ilkKayit" name="ilkKayit"
-                                   onclick="checkRegister('ilkKayit')">
-                            <label class="form-check-label" for="ilkKayit">İlk defa kayıt oluyorum.</label>
+
+<section class="content" id="tcKontrol" style="display: block;">
+    <section class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-info card-outline">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-lg-12">
+                                <label for="tc">TC Kimlik Numarası/Email</label>
+                                <input class="form-control" type="text" id="tcKimlikNo" name="tcKimlikNo"
+                                       placeholder="Lütfen TC kimlik numaranızı ya da email adresinizi giriniz">
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="kayitGuncelle" name="kayitGuncelle"
-                                   onclick="checkRegister('kayitGuncelle')">
-                            <label class="form-check-label" for="kayitGuncelle">Reddedilen kaydımı düzenlemek
-                                istiyorum.</label>
-                        </div>
+                    <div class="card-footer">
+                        <h5 id="redNedeni" style="display: none;float: left;color: red"></h5>
+                        <button id="currentTC" class="btn btn-outline-info" onclick="GetCurrentRegister()"
+                                type="button"
+                                style="float: right;">Devam Et
+                        </button>
                     </div>
                 </div>
             </div>
-
         </div>
 
-    </div>
+    </section>
 </section>
 
 <section class="content" id="firstRegister" style="display: none;">
@@ -561,11 +559,6 @@
                                 <div class="col-lg-12">
                                     <div class="row">
                                         <div class="col-lg-4">
-                                            <div class="form-group">
-                                                <input name="checkDekont" id="checkDekont" type="checkbox"
-                                                       onclick="dekontKontrol()"/>
-                                                <span style="color: red;">Vize ücretini ödemedim. 22 Temmuz 2022 ye kadar ödeyeceğim. </span>
-                                            </div>
                                             <div class="form-group" id="vizedekont">
                                                 <label> {{ preRegistrationform.dekont.label }}</label>
                                                 {{ preRegistrationform.dekont }} <br>
@@ -637,33 +630,6 @@
     </form>
 
 
-</section>
-
-<section class="content" id="tcKontrol" style="display: none;">
-    <section class="col-lg-12">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card card-info card-outline">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="form-group col-lg-12">
-                                <label for="tc">TC Kimlik Numarası</label>
-                                <input class="form-control" type="text" id="tcKimlikNo" name="tcKimlikNo">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <h5 id="redNedeni" style="display: none;float: left;color: red"></h5>
-                        <button id="currentTC" class="btn btn-outline-info" onclick="GetCurrentRegister()"
-                                type="button"
-                                style="float: right;">Devam Et
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </section>
 </section>
 
 <section class="content" id="updateRegister" style="display: none;">
@@ -949,15 +915,16 @@
                                 <div class="col-lg-12">
                                     <div class="row">
                                         <div class="col-lg-4">
-                                            <div class="form-group">
-                                                <input name="checkDekont2" id="checkDekont2" type="checkbox"
-                                                       onclick="dekontKontrol2()"/>
-                                                <span style="color: red;">Vize ücretini ödemedim. 22 Temmuz 2022 ye kadar ödeyeceğim.  </span>
-                                            </div>
+                                            {#                                            <div class="form-group">#}
+                                            {#                                                <input name="checkDekont2" id="checkDekont2" type="checkbox"#}
+                                            {#                                                       onclick="dekontKontrol2()"/>#}
+                                            {#                                                <span style="color: red;">Vize ücretini ödemedim. 22 Temmuz 2022 ye kadar ödeyeceğim.  </span>#}
+                                            {#                                            </div>#}
 
                                             <div class="form-group" id="vizedekontUpdate">
                                                 <label> {{ preRegistrationform.dekont.label }}</label>
-                                                <input type="file" name="dekontUpdate" id="dekontUpdate">
+                                                <input type="file" name="dekontUpdate" id="dekontUpdate"
+                                                       required="required">
                                                 <p><a id="dekontUpdateValue" href=""></a></p>
                                                 <br>
                                             </div>
@@ -1449,102 +1416,123 @@
                     debugger;
                     if (result.status === 'Success') {
                         let info = result['result']
-                        document.getElementById('updateRegister').style.display = 'block'
-                        document.getElementById('redNedeni').style.display = 'block'
+                        if (info === 'ilk kayıt') {
 
-                        document.getElementById('redNedeni').innerHTML = 'Başvurunun Reddedilme Nedeni : ' + info.definition.toUpperCase()
-                        document.getElementById('updateProfileImageValue').href = info.profilImage
-                        document.getElementById('updateProfileImageValue').innerHTML = info.profilImage
-                        document.getElementById('firstNameUpdate').value = info.first_name
-                        document.getElementById('lastNameUpdate').value = info.last_name
-                        document.getElementById('birthPlaceUpdate').value = info.birthplace
-                        document.getElementById('ibanUpdate').value = info.iban
-                        document.getElementById('tcUpdate').value = tcKimlikNo
-                        document.getElementById('birthDateUpdate').value = info.birthDate
+                            document.getElementById('firstRegister').style.display = 'block';
+                            document.getElementById('updateRegister').style.display = 'none';
+                            document.getElementById('redNedeni').style.display = 'none'
+                            document.getElementById('redNedeni').innerHTML = ''
+                            swal({
+                                icon: 'error',
+                                title: result.msg,
 
-                        var gender = document.getElementById('genderUpdate')
-                        for (var i = 0; i < gender.length; i++) {
-                            if (gender.options[i].value === info.gender) {
-                                gender.remove(i);
-                            }
-                        }
-                        gender.options[gender.options.length] = new Option(info.gender, info.gender);
-                        gender.value = info.gender
+                            })
 
-                        var club = document.getElementById('clubUpdate')
-                        for (var i = 0; i < club.length; i++) {
-                            if (club.options[i].value === info.club) {
-                                club.remove(i);
-                            }
-                        }
-                        if (info.club === '') {
-                            club.options[club.options.length] = new Option('Kulüpte çalışmıyorum', info.club);
                         } else {
-                            club.options[club.options.length] = new Option(info.club, info.club);
-                        }
-                        club.value = info.club
 
-                        document.getElementById('updateBelgeValue').href = info.belge
-                        document.getElementById('updateBelgeValue').innerHTML = info.belge
+                            document.getElementById('firstRegister').style.display = 'none';
+                            document.getElementById('updateRegister').style.display = 'block'
+                            document.getElementById('redNedeni').style.display = 'block'
 
-                        document.getElementById('emailUpdate').value = info.email
-                        document.getElementById('phoneNumberUpdate').value = info.phoneNumber
-                        document.getElementById('phoneNumber2Update').value = info.phoneNumber2
+                            document.getElementById('redNedeni').innerHTML = 'Başvurunun Reddedilme Nedeni : ' + info.definition.toUpperCase()
+                            document.getElementById('updateProfileImageValue').href = info.profilImage
+                            document.getElementById('updateProfileImageValue').innerHTML = info.profilImage
+                            document.getElementById('firstNameUpdate').value = info.first_name
+                            document.getElementById('lastNameUpdate').value = info.last_name
+                            document.getElementById('birthPlaceUpdate').value = info.birthplace
+                            document.getElementById('ibanUpdate').value = info.iban
+                            document.getElementById('tcUpdate').value = info.tc
+                            document.getElementById('birthDateUpdate').value = info.birthDate
 
-                        var country = document.getElementById('countryUpdate')
-                        for (var i = 0; i < country.length; i++) {
-                            if (country.options[i].value === info.country) {
-                                country.remove(i);
-                            }
-                        }
-                        country.options[country.options.length] = new Option(info.country, info.country);
-                        country.value = info.country
-
-                        var city = document.getElementById('cityUpdate')
-                        for (var i = 0; i < city.length; i++) {
-                            if (city.options[i].value === info.city) {
-                                city.remove(i);
-                            }
-                        }
-                        city.options[city.options.length] = new Option(info.city, info.city);
-                        city.value = info.city
-
-                        document.getElementById('addressUpdate').innerHTML = info.address
-
-                        var grade = document.getElementById('gradeUpdate')
-                        for (var i = 0; i < grade.length; i++) {
-                            if (grade.options[i].value === info.kademe_definition) {
-                                grade.remove(i);
-                            }
-                        }
-                        grade.options[grade.options.length] = new Option(info.kademe_definition, info.kademe_definition);
-                        grade.value = info.kademe_definition
-
-                        if (info.kademe_brans !== '') {
-                            var branch = document.getElementById('branchUpdate')
-                            for (var i = 0; i < branch.length; i++) {
-                                if (branch.options[i].value === info.kademe_brans) {
-                                    branch.remove(i);
+                            var gender = document.getElementById('genderUpdate')
+                            for (var i = 0; i < gender.length; i++) {
+                                if (gender.options[i].value === info.gender) {
+                                    gender.remove(i);
                                 }
                             }
-                            branch.options[branch.options.length] = new Option(info.kademe_brans, info.kademe_brans);
-                            branch.value = info.kademe_brans
-                        }
+                            gender.options[gender.options.length] = new Option(info.gender, info.gender);
+                            gender.value = info.gender
+
+                            var club = document.getElementById('clubUpdate')
+                            for (var i = 0; i < club.length; i++) {
+                                if (club.options[i].value === info.club) {
+                                    club.remove(i);
+                                }
+                            }
+                            if (info.club === '') {
+                                club.options[club.options.length] = new Option('Kulüpte çalışmıyorum', info.club);
+                            } else {
+                                club.options[club.options.length] = new Option(info.club, info.club);
+                            }
+                            club.value = info.club
+
+                            document.getElementById('updateBelgeValue').href = info.belge
+                            document.getElementById('updateBelgeValue').innerHTML = info.belge
+
+                            document.getElementById('emailUpdate').value = info.email
+                            document.getElementById('phoneNumberUpdate').value = info.phoneNumber
+                            document.getElementById('phoneNumber2Update').value = info.phoneNumber2
+
+                            var country = document.getElementById('countryUpdate')
+                            for (var i = 0; i < country.length; i++) {
+                                if (country.options[i].value === info.country) {
+                                    country.remove(i);
+                                }
+                            }
+                            country.options[country.options.length] = new Option(info.country, info.country);
+                            country.value = info.country
+
+                            var city = document.getElementById('cityUpdate')
+                            for (var i = 0; i < city.length; i++) {
+                                if (city.options[i].value === info.city) {
+                                    city.remove(i);
+                                }
+                            }
+                            city.options[city.options.length] = new Option(info.city, info.city);
+                            city.value = info.city
+
+                            document.getElementById('addressUpdate').innerHTML = info.address
+
+                            var grade = document.getElementById('gradeUpdate')
+                            for (var i = 0; i < grade.length; i++) {
+                                if (grade.options[i].value === info.kademe_definition) {
+                                    grade.remove(i);
+                                }
+                            }
+                            grade.options[grade.options.length] = new Option(info.kademe_definition, info.kademe_definition);
+                            grade.value = info.kademe_definition
+
+                            if (info.kademe_brans !== '') {
+                                var branch = document.getElementById('branchUpdate')
+                                for (var i = 0; i < branch.length; i++) {
+                                    if (branch.options[i].value === info.kademe_brans) {
+                                        branch.remove(i);
+                                    }
+                                }
+                                branch.options[branch.options.length] = new Option(info.kademe_brans, info.kademe_brans);
+                                branch.value = info.kademe_brans
+                            }
 
 
-                        document.getElementById('kademeBelgeUpdateValue').href = info.kademe_belge
-                        document.getElementById('kademeBelgeUpdateValue').innerHTML = info.kademe_belge
+                            document.getElementById('kademeBelgeUpdateValue').href = info.kademe_belge
+                            document.getElementById('kademeBelgeUpdateValue').innerHTML = info.kademe_belge
 
-                        document.getElementById('sgkUpdateValue').href = info.sgk
-                        document.getElementById('sgkUpdateValue').innerHTML = info.sgk
-                        if (info.dekont) {
-                            document.getElementById('dekontUpdateValue').href = info.dekont
-                            document.getElementById('dekontUpdateValue').innerHTML = info.dekont
-                        } else {
-                            document.getElementById('dekontUpdate').setAttribute('required', 'required')
+                            document.getElementById('sgkUpdateValue').href = info.sgk
+                            document.getElementById('sgkUpdateValue').innerHTML = info.sgk
+                            if (info.dekont) {
+                                document.getElementById('dekontUpdateValue').href = info.dekont
+                                document.getElementById('dekontUpdateValue').innerHTML = info.dekont
+                            } else {
+                                document.getElementById('dekontUpdate').setAttribute('required', 'required')
+                            }
+
                         }
 
                     } else {
+                        document.getElementById('updateRegister').style.display = 'none';
+                        document.getElementById('firstRegister').style.display = 'none';
+                        document.getElementById('redNedeni').style.display = 'none'
+                        document.getElementById('redNedeni').innerHTML = ''
                         swal({
                             icon: 'error',
                             title: result.msg,
@@ -1556,6 +1544,7 @@
                 }
             });
         }
+
 
     }
 </script>
@@ -1650,43 +1639,43 @@
     }
 </script>
 
-<script>
-    function dekontKontrol() {
-        debugger;
-        if (document.getElementById('checkDekont').checked === true) {
-            if (document.getElementById('id_dekont').hasAttribute('required') === true) {
-                document.getElementById('id_dekont').removeAttribute('required')
-            }
-            document.getElementById('vizedekont').style.display = 'none';
-
-        } else {
-            if (document.getElementById('id_dekont').hasAttribute('required') === false) {
-                document.getElementById('id_dekont').setAttribute('required', 'required')
-            }
-            document.getElementById('vizedekont').style.display = 'block';
-
-        }
-    }
-</script>
-<script>
-
-    function dekontKontrol2() {
-        debugger;
-        if (document.getElementById('checkDekont2').checked === true) {
-            if (document.getElementById('dekontUpdate').hasAttribute('required') === true) {
-                document.getElementById('dekontUpdate').removeAttribute('required')
-
-            }
-            document.getElementById('vizedekontUpdate').style.display = 'none';
-        } else {
-            if (document.getElementById('dekontUpdate').hasAttribute('required') === false) {
-                document.getElementById('dekontUpdate').setAttribute('required', 'required')
-
-            }
-            document.getElementById('vizedekontUpdate').style.display = 'block';
-
-        }
-    }
-</script>
+{#<script>#}
+{#    function dekontKontrol() {#}
+{#        debugger;#}
+{#        if (document.getElementById('checkDekont').checked === true) {#}
+{#            if (document.getElementById('id_dekont').hasAttribute('required') === true) {#}
+{#                document.getElementById('id_dekont').removeAttribute('required')#}
+{#            }#}
+{#            document.getElementById('vizedekont').style.display = 'none';#}
+{##}
+{#        } else {#}
+{#            if (document.getElementById('id_dekont').hasAttribute('required') === false) {#}
+{#                document.getElementById('id_dekont').setAttribute('required', 'required')#}
+{#            }#}
+{#            document.getElementById('vizedekont').style.display = 'block';#}
+{##}
+{#        }#}
+{#    }#}
+{#</script>#}
+{#<script>#}
+{##}
+{#    function dekontKontrol2() {#}
+{#        debugger;#}
+{#        if (document.getElementById('checkDekont2').checked === true) {#}
+{#            if (document.getElementById('dekontUpdate').hasAttribute('required') === true) {#}
+{#                document.getElementById('dekontUpdate').removeAttribute('required')#}
+{##}
+{#            }#}
+{#            document.getElementById('vizedekontUpdate').style.display = 'none';#}
+{#        } else {#}
+{#            if (document.getElementById('dekontUpdate').hasAttribute('required') === false) {#}
+{#                document.getElementById('dekontUpdate').setAttribute('required', 'required')#}
+{##}
+{#            }#}
+{#            document.getElementById('vizedekontUpdate').style.display = 'block';#}
+{##}
+{#        }#}
+{#    }#}
+{#</script>#}
 </body>
 </html>

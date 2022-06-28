@@ -619,15 +619,19 @@ def GetCurrentRegister(request):
         with transaction.atomic():
             if request.method == 'POST':
                 tcKimlikNo = request.POST['tcKimlikNo']
-                info = None
-                if ReferenceCoach.objects.filter(tc=tcKimlikNo):
-                    if ReferenceCoach.objects.filter(tc=tcKimlikNo).count() > 1:
+                info = 'ilk kayıt'
+                if ReferenceCoach.objects.filter(tc=tcKimlikNo) or ReferenceCoach.objects.filter(email=tcKimlikNo):
+                    if ReferenceCoach.objects.filter(tc=tcKimlikNo).count() > 1 or ReferenceCoach.objects.filter(
+                            email=tcKimlikNo).count() > 1:
                         return JsonResponse(
                             {'status': 'Fail',
                              'msg': 'Sistemde birden fazla kaydınız bulunmaktadır. Lütfen yetkili ile görüşünüz.',
                              'result': info,
                              })
-                    register_info = ReferenceCoach.objects.get(tc=tcKimlikNo)
+                    if ReferenceCoach.objects.filter(tc=tcKimlikNo):
+                        register_info = ReferenceCoach.objects.get(tc=tcKimlikNo)
+                    if ReferenceCoach.objects.filter(email=tcKimlikNo):
+                        register_info = ReferenceCoach.objects.get(email=tcKimlikNo)
                     if register_info.status != 'Reddedildi':
                         return JsonResponse(
                             {'status': 'Fail', 'msg': 'Güncellenecek kaydınız bulunmamaktadır.',
@@ -722,14 +726,17 @@ def GetCurrentRegister(request):
                     info['dekont'] = dekont
                     info['definition'] = definition
                     info['kademe_brans'] = kademe_brans
+                    info['tc'] = register_info.tc
 
                 if info:
                     return JsonResponse({'status': 'Success',
+                                         'msg': 'Bu bilgiye ait bir kayıt bulunamadı. Kayıt olmak için formu doldurunuz.',
                                          'result': info,
                                          })
                 else:
                     return JsonResponse(
-                        {'status': 'Fail', 'msg': 'Bu Tc kimlik  numarasına ait bir kayıt bulunamadı.',
+                        {'status': 'Fail',
+                         'msg': 'Bu bilgiye ait bir kayıt bulunamadı. Kayıt olmak için formu doldurunuz.',
                          'result': info,
                          })
 
@@ -798,7 +805,7 @@ def GetCurrentRegisterReferee(request):
         with transaction.atomic():
             if request.method == 'POST':
                 tcKimlikNo = request.POST['tcKimlikNo']
-                info = None
+                info = 'ilk kayıt'
                 if ReferenceReferee.objects.filter(tc=tcKimlikNo):
                     referee = ReferenceReferee.objects.get(tc=tcKimlikNo)
                     if referee.status != 'Reddedildi':
@@ -888,6 +895,7 @@ def GetCurrentRegisterReferee(request):
 
                 if info:
                     return JsonResponse({'status': 'Success',
+                                         'msg': 'Bu bilgiye ait bir kayıt bulunamadı. Kayıt olmak için formu doldurunuz.',
                                          'result': info,
                                          })
                 else:

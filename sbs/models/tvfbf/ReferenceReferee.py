@@ -91,6 +91,7 @@ class ReferenceReferee(BaseModel):
     sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')  # SGK
     dekont = models.FileField(null=True, blank=True, verbose_name='Dekont')  # dekont
     referee_file = models.FileField(null=True, blank=True, verbose_name='Hakemlik Belgesi')  # Hakemlik BELGESİ
+    gradeDate = models.DateField(null=True, blank=True, verbose_name='Hak Kazanma Tarihi')
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)
