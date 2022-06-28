@@ -1403,8 +1403,12 @@
 
     function GetCurrentRegister() {
         debugger;
-        let tcKimlikNo = document.getElementById('tcKimlikNo').value
+
+
+        let tcKimlikNo = document.getElementById('tcKimlikNo').value;
+
         if (tcKimlikNo) {
+
             $.ajax({
                 url: "{% url "sbs:kayit-guncelle-api" %}",
                 type: "POST",
@@ -1417,6 +1421,22 @@
                     if (result.status === 'Success') {
                         let info = result['result']
                         if (info === 'ilk kayıt') {
+                            document.getElementById('referenceCoachUpdateForm').reset();
+                            document.getElementById('referenceCoachForm').reset();
+                            if (tcKimlikNo.includes('@')) {
+                                let x = document.getElementById('id_email')
+                                x.value = tcKimlikNo
+                                x.readOnly = true;
+                                document.getElementById('tc').readOnly=false
+
+                            } else {
+                                document.getElementById('id_email').readOnly=false
+                                let x = document.getElementById('tc')
+                                x.value = tcKimlikNo
+                                x.readOnly = true;
+
+
+                            }
 
                             document.getElementById('firstRegister').style.display = 'block';
                             document.getElementById('updateRegister').style.display = 'none';
@@ -1429,6 +1449,21 @@
                             })
 
                         } else {
+                             document.getElementById('referenceCoachUpdateForm').reset();
+                            document.getElementById('referenceCoachForm').reset();
+                            if (tcKimlikNo.includes('@')) {
+                                let x = document.getElementById('emailUpdate')
+                                x.value = tcKimlikNo
+                                x.readOnly = true;
+                                document.getElementById('tcUpdate').value = info.tc
+
+                            } else {
+                                let x = document.getElementById('tcUpdate')
+                                x.value = tcKimlikNo
+                                x.readOnly = true;
+                                document.getElementById('emailUpdate').value = info.email
+
+                            }
 
                             document.getElementById('firstRegister').style.display = 'none';
                             document.getElementById('updateRegister').style.display = 'block'
@@ -1441,7 +1476,8 @@
                             document.getElementById('lastNameUpdate').value = info.last_name
                             document.getElementById('birthPlaceUpdate').value = info.birthplace
                             document.getElementById('ibanUpdate').value = info.iban
-                            document.getElementById('tcUpdate').value = info.tc
+
+
                             document.getElementById('birthDateUpdate').value = info.birthDate
 
                             var gender = document.getElementById('genderUpdate')
@@ -1469,7 +1505,6 @@
                             document.getElementById('updateBelgeValue').href = info.belge
                             document.getElementById('updateBelgeValue').innerHTML = info.belge
 
-                            document.getElementById('emailUpdate').value = info.email
                             document.getElementById('phoneNumberUpdate').value = info.phoneNumber
                             document.getElementById('phoneNumber2Update').value = info.phoneNumber2
 

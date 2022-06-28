@@ -634,7 +634,7 @@ def GetCurrentRegister(request):
                         register_info = ReferenceCoach.objects.get(email=tcKimlikNo)
                     if register_info.status != 'Reddedildi':
                         return JsonResponse(
-                            {'status': 'Fail', 'msg': 'Güncellenecek kaydınız bulunmamaktadır.',
+                            {'status': 'Fail', 'msg': 'Başvurunuz Daha Önceden Alınmıştır.Başvuru Onay Aşamasında Olduğu İçin Güncelleme Yapılamamaktadır.Lütfen kayıt yapılan mail adresinize gelecek maili bekleyin.',
                              'result': info,
                              })
                     date = register_info.birthDate
