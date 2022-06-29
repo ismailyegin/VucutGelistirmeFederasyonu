@@ -87,18 +87,26 @@ class GetUser(APIView):
         else:
             query = Q()
             if globalSearch:
-                query &= Q(first_name__icontains=globalSearch) | Q(
-                    last_name__icontains=globalSearch) | Q(
-                    email__icontains=globalSearch) | Q(
-                    groups__name__icontains=globalSearch)
+                query &= Q(first_name__icontains=globalSearch.upper()) | Q(
+                    last_name__icontains=globalSearch.upper()) | Q(
+                    email__icontains=globalSearch.upper()) | Q(
+                    groups__name__icontains=globalSearch.upper()) |\
+                         Q(first_name__icontains=globalSearch.lower()) | Q(
+                    last_name__icontains=globalSearch.lower()) | Q(
+                    email__icontains=globalSearch.lower()) | Q(
+                    groups__name__icontains=globalSearch.lower())
             if first_name:
-                query &= Q(first_name__icontains=first_name)
+                query &= Q(first_name__icontains=first_name.upper()) |\
+                         Q(first_name__icontains=first_name.lower())
             if last_name:
-                query &= Q(last_name__icontains=last_name)
+                query &= Q(last_name__icontains=last_name.upper()) |\
+                         Q(last_name__icontains=last_name.lower())
             if email:
-                query &= Q(email__icontains=email)
+                query &= Q(email__icontains=email.upper()) |\
+                         Q(email__icontains=email.lower())
             if group:
-                query &= Q(groups__pk=group)
+                query &= Q(groups__pk=group.upper()) |\
+                         Q(groups__pk=group.lower())
 
             all_objects = users.filter(query).order_by('first_name')[int(start):end]
             filteredTotal = users.filter(query).count()
