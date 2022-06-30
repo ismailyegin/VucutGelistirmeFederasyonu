@@ -409,7 +409,13 @@ def delete_coach(request):
                 obj = Coach.objects.get(uuid=uuid)
                 data_as_json_pre = serializers.serialize('json', Coach.objects.filter(uuid=uuid))
 
+                if ReferenceCoach.objects.filter(email=obj.person.user.email):
+                    coach = ReferenceCoach.objects.get(email=obj.person.user.email)
+                    coach.status = coach.WAITED
+                    coach.save()
+
                 obj.delete()
+
                 log = "Antrenör Sil"
                 logs = Logs(user=request.user, subject=log, ip=get_client_ip(request),
                             previousData=data_as_json_pre)
@@ -443,7 +449,6 @@ def add_coach_referee(request, uuid):
         if grade_form.is_valid() and grade_form.cleaned_data['dekont'] is not None and request.POST.get(
                 'branch') is not None:
             grade = HavaLevel(definition=grade_form.cleaned_data['definition'],
-                              startDate=grade_form.cleaned_data['startDate'],
                               dekont=grade_form.cleaned_data['dekont'],
                               branch=grade_form.cleaned_data['branch'],
                               form=grade_form.cleaned_data['form'])
