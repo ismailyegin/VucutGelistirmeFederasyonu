@@ -217,94 +217,19 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th> Ad</th>
-                                <th>Brans</th>
-
+                                <th> Ad Soyad</th>
+                                <th> Brans</th>
                                 <th> Hak Kazanma Tarihi</th>
-
-
                                 <th> Onay Durumu</th>
                                 <th> Onay Tarihi</th>
                                 <th> Kademe</th>
                                 <th> Dekont</th>
-
                                 <th> Onayla/Reddet</th>
 
 
                             </tr>
                             </thead>
                             <tbody>
-                            {% if coachGrades.all %}
-                                {% for coachGrade in coachGrades %}
-                                    <tr>
-
-                                        <td>{{ forloop.counter }} </td>
-
-                                        <td>
-
-                                            <a target="_blank">{{ coachGrade.CoachGrades.first }} </a>
-
-                                        </td>
-                                        <td>{{ coachGrade.branch }}</td>
-
-                                        <td>{{ coachGrade.startDate }}  </td>
-
-
-                                        <td>{{ coachGrade.status }}  </td>
-                                        <td>{{ coachGrade.approval_date }}  </td>
-                                        <td>{{ coachGrade.definition }}  </td>
-
-                                        <td>
-                                            {% if coachGrade.dekont %}
-                                                <a href="/media/{{ coachGrade.dekont }}" class="user-image" alt="sbs"
-                                                   target="_blank">
-                                                    <img src="/media/{{ coachGrade.dekont }}" class="user-image"
-                                                         alt="sbs" style=" width: 30px;height: 30px;">
-                                                </a>
-                                            {% endif %}
-                                        </td>
-
-                                        <td>
-                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-
-
-                                                {% for item in perm %}
-                                                    {% if item == 'coach_grade_list_approval' %}
-                                                        <div class="btn-group">
-                                                            <a class="btn btn-outline-success" style="margin-left: 5px;"
-                                                               data-toggle="modal" title="Onayla"
-                                                               onclick="approvalGrade('{{ coachGrade.uuid }}')"><i
-                                                                    class="fa fa-check"></i>
-                                                            </a>
-                                                        </div>
-
-
-                                                    {% elif item == 'coach_grade_list_reject' %}
-                                                        <div class="btn-group">
-                                                            <a onclick="rejectGrade('{{ coachGrade.uuid }}')"
-                                                               type="button" class="btn btn-outline-danger"
-                                                               title="Reddet"><i
-                                                                    class="fa fa-minus"></i>
-                                                            </a>
-                                                        </div>
-                                                    {% endif %}
-
-
-
-                                                {% endfor %}
-
-
-
-                                            {% endif %}
-                                        </td>
-
-
-                                    </tr>
-
-                                {% endfor %}
-                            {% endif %}
-
-
                             </tbody>
                         </table>
                     </div>
@@ -324,14 +249,25 @@
     {% load  static %}
     <script>
         $(function () {
-            $('#gradeList').DataTable({
+            debugger;
+            table = $('#gradeList').DataTable({
+
+                "processing": true,
+                "serverSide": true,
+                "paging": true,
+                "ordering": true,
+
+                "ajax": {
+                    "url": "{% url 'sbs:view_grade_api' %}",
+                    "type": "POST",
+                    data: {
+                        'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                    },
+                },
+                success: function (result) {
+                },
+
                 dom: 'Bfrtip',
-
-
-                lengthMenu: [
-                    [10, 25, 50, 100, -1],
-                    ['10 tane', '25 tane ', '50 tane ', '100 Tane', 'Hepsini Getir']
-                ],
 
                 'buttons': [
 
@@ -349,7 +285,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'YEKA LİSTESİ',
+                        title: 'İzin Listesi',
                         text: '<i class="fa fa-print"></i>',
 
                         titleAttr: 'Yazdır',
@@ -379,32 +315,156 @@
 
 
                 ],
-                "search": {
-                    "caseInsensitive": true,
-                },
+
                 'language': {
                     "url": "{% static 'datatable_tr/datatable_tr.json' %}"
                 },
-                'paging': true,
-                'lengthChange': true,
-                'searching': true,
-                'order': true,
-                'info': true,
-                'autoWidth': true,
-                'responsive': true,
+
+                "columns": [
+                    {"data": "counter",},
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.name) {
+                                return full.name;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.branch) {
+                                return full.branch;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.startDate) {
+                                return full.startDate;
+                            } else {
+                                return ''
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.status) {
+                                return full.status;
+                            } else {
+                                return ''
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.approvalDate) {
+                                return full.approvalDate;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            if (full.definition) {
+                                return full.definition;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            let html = '';
+                            if (full.dekontName && full.dekontUrl ) {
+                                html += '<a href="' + full.dekontUrl + '" class="user-image" alt="sbs" target="_blank">Dekontu Görüntüle</a>'
+                                return html;
+                            } else {
+                                return html;
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (full) {
+                            console.log(full.content);
+                            let html;
+                            {% if aktif == 'Admin' %}
+                                let url = "approvalGrade('" + full.uuid + "')"
+                                let url2 = "rejectGrade('" + full.uuid + "')"
+
+                                html = '<td><div class="btn-group"> '
+                                html += '<a style="margin-left:5px;" href="' + url + '" class="btn btn-outline-success" title="Onayla" type="button"><i class="fa fa-check" data-toggle="modal"></i></a>';
+                                html += '<a style="margin-left:5px;" onclick="' + url2 + '" class="btn btn-outline-danger" title="Reddet" type="button"><i class="fa fa-minus" data-toggle="modal"></i></a>';
+
+                                html += '</div></td>';
+                            {% else %}
+                                html = '<td></td>'
+                            {% endif %}
+                            return html;
+                        }
+                    }
+
+                ],
+                "search": {
+                    "caseInsensitive": true,
+                },
             });
             table.on('draw.dt', function () {
-                debugger;
+                var info = table.page.info();
                 table.column(0, {
                     search: 'applied',
                     order: 'applied',
                     page: 'applied'
                 }).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1;
+                    cell.innerHTML = i + 1 + info.start;
                 });
             });
 
         })
+
+        function getCookie(name) {
+            var cookieValue = null;
+            var i = 0;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (i; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
     </script>
 
     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}

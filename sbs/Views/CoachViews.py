@@ -1074,17 +1074,33 @@ def visaListApproval(request):
 
 
 @login_required
-def visaListReject(request, uuid):
+def visaListReject(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    visa = HavaLevel.objects.get(uuid=uuid)
-    visa.status = HavaLevel.DENIED
-    visa.save()
-    messages.success(request, 'Vize reddedilmistir.')
-    return redirect('sbs:coach_visa_list')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            visa = HavaLevel.objects.get(uuid=request.POST['uuid'])
+            visa.status = HavaLevel.DENIED
+            date = request.POST['dateOfReject']
+            text = request.POST['textOfReject']
+
+            statusDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+            visa.approval_date = statusDate
+            visa.reject_text = text
+            visa.save()
+
+            log = str(visa.definition.name) + "     Antrenör vize basvurusu reddedildi"
+            log = general_methods.logwrite(request, request.user, log)
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except HavaLevel.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
 @login_required

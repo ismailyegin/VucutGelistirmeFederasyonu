@@ -15,7 +15,7 @@ from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from sbs.models import Permission, Coach, Referee, SportFacility, ReferenceCoach
+from sbs.models import Permission, Coach, Referee, SportFacility, ReferenceCoach, HavaLevel, EnumFields
 from sbs.models.ekabis.Logs import Logs
 from sbs.models.tvfbf.Club import Club
 from sbs.models.tvfbf.LogAPIObject import LogAPIObject
@@ -977,3 +977,91 @@ def GetCurrentRegisterReferee(request):
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return redirect('accounts:referee')
+
+
+class GetGradeList(APIView):
+
+    def post(self, request, format=None):
+        draw = request.data['draw']
+        start = request.data['start']
+        length = request.data['length']
+        end = int(start) + int(length)
+
+        globalSearch = request.data['search[value]']
+
+        grades = HavaLevel.objects.filter(levelType=EnumFields.LEVELTYPE.GRADE).order_by('status')
+        count = grades.count()
+
+        if not globalSearch:
+            all_objects = grades.order_by('status')[int(start):end]
+            filteredTotal = grades.count()
+        else:
+            query = Q()
+            if globalSearch:
+                query &= Q(CoachGrades__first__person__user__get_full_name__icontains=globalSearch.upper()) | Q(
+                    branch__title__icontains=globalSearch.upper()) | Q(
+                    status__icontains=globalSearch.upper()) | Q(
+                    CoachGrades__first__person__user__get_full_name__icontains=globalSearch.lower()) | Q(
+                    branch__title__icontains=globalSearch.lower()) | Q(
+                    status__icontains=globalSearch.lower())
+
+            all_objects = grades.filter(query).order_by('status')[int(start):end]
+            filteredTotal = grades.filter(query).count()
+
+        gradeList = []
+        counter = 0
+        for item in all_objects:
+            if item.CoachGrades:
+                name = item.CoachGrades.first()
+            else:
+                name = ''
+            if item.branch:
+                branch = item.branch.title
+            else:
+                branch = ''
+            if item.startDate:
+                startDate = item.startDate
+            else:
+                startDate = ''
+            if item.status:
+                status = item.status
+            else:
+                status = ''
+            if item.approval_date:
+                approvalDate = item.approval_date
+            else:
+                approvalDate = ''
+            if item.definition:
+                definition = item.definition.name
+            else:
+                definition = ''
+            if item.dekont:
+                dekontName = item.dekont
+                dekontUrl = item.dekont.url
+            else:
+                dekontName = ''
+                dekontUrl = ''
+            grade = {
+                'counter': counter,
+                'name': str(name),
+                'branch': str(branch),
+                'startDate': str(startDate),
+                'status': str(status),
+                'approvalDate': str(approvalDate),
+                'definition': str(definition),
+                'dekontUrl': str(dekontUrl),
+                'dekontName': str(dekontName),
+                'uuid': str(item.uuid),
+            }
+            gradeList.append(grade)
+            counter += 1
+
+        response = {
+
+            'data': gradeList,
+            'draw': draw,
+            'recordsTotal': int(count),
+            'recordsFiltered': int(filteredTotal),
+        }
+
+        return JsonResponse(response)

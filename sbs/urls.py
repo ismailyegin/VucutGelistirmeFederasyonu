@@ -57,7 +57,7 @@ urlpatterns = [
     path('antrenor/vize-listesi/', CoachViews.visaList, name='coach_visa_list'),
     path('antrenor/vize-listesi/onayla/', CoachViews.visaListApproval,
          name='coach_visa_list_approval'),
-    path('antrenor/vize-listesi/reddet/<uuid:uuid>', CoachViews.visaListReject, name='coach_visa_list_reject'),
+    path('antrenor/vize-listesi/reddet/', CoachViews.visaListReject, name='coach_visa_list_reject'),
     path('antrenor/parola', APIViews.SetPasswordAllUsers, name='SetPasswordAllUsers'),
 
     # HAKEM
@@ -359,5 +359,6 @@ urlpatterns = [
     path('basvuru/api-hakem-listesi/', APIViews.GetReferenceReferee.as_view(), name='view_reference_referee-api'),
     path('hakem/kayit-guncelle-api/', APIViews.GetCurrentRegisterReferee, name='hakem-kayit-guncelle-api'),
     path('antrenor/belge-aktar/<int:i>/<int:k>', Aktarma.transmissionAntrenorBelge, name='antrenor-belge-aktar'),
+    path('antrenor/api-kademe-listesi/', APIViews.GetGradeList.as_view(), name='view_grade_api'),
 
 ]

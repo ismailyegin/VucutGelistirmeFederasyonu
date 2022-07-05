@@ -429,7 +429,8 @@
                                             <td>{{ grade.branch }}  </td>
                                             <td>{{ grade.definition }}  </td>
                                             <td>{% if grade.antrenorBelgesi %}
-                                                <a href="{{ grade.antrenorBelgesi.url }}" class="user-image" target="_blank"
+                                                <a href="{{ grade.antrenorBelgesi.url }}" class="user-image"
+                                                   target="_blank"
                                                    style=" width: 30px;height: 30px;">{{ grade.antrenorBelgesi }}</a>
                                             {% else %}
                                                 <a href="">---</a>
@@ -595,7 +596,7 @@
                                                                 </div>
                                                             {% elif item == 'coach_grade_reject' %}
                                                                 <div class="btn-group">
-                                                                    <a href="{% url 'sbs:coach_visa_reject' visa_uuid=grade.uuid coach_uuid=coach.uuid %}"
+                                                                    <a onclick="rejectVisa('{{ grade.uuid }}')"
                                                                        type="button" class="btn btn-outline-dark"
                                                                        title="Reddet"><i
                                                                             class="fa fa-minus"></i>
@@ -900,6 +901,73 @@
                                         swal({
                                             icon: 'success',
                                             title: 'Antrenör Kademesi Başarıyla Reddedildi !!',
+
+                                        })
+
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-reject').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
+                    });
+                }
+            })
+
+
+        }
+    </script>
+
+    <script>
+        function rejectVisa(id) {
+            debugger;
+            swal({
+                title: "Reddetmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                if (result.dismiss !== 'Evet') {
+                    $("#dateOfReject").on("shown.bs.modal", function (e) {
+
+                        $("#btn-gonder-reject").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:coach_visa_list_reject" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    uuid: id,
+                                    dateOfReject: $('#dateOfRejectDate').val(),
+                                    textOfReject: $('#dateOfRejectText').val(),
+
+
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Antrenör Vizesi Başarıyla Reddedildi !!',
 
                                         })
 
