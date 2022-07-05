@@ -24,7 +24,7 @@ class Coach(BaseModel):
     grades = models.ManyToManyField(HavaLevel, related_name='CoachGrades')
     visa = models.ManyToManyField(HavaLevel, related_name='CoachVisa')
 
-    form = models.FileField(upload_to='form/', null=False, blank=False,
+    form = models.FileField(upload_to='form/', null=True, blank=True,
                             verbose_name='Form ')  # Antrenör sözleşme belgesi
 
     def __str__(self):
