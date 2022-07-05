@@ -1266,6 +1266,7 @@ import traceback
 
 import pandas
 import pandas as pd
+import unidecode
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.db import transaction
@@ -1368,6 +1369,7 @@ def transmissionAntrenorBelge(request, i, k):
             for coach in coaches:
                 if coach.grades.all():
                     if coach.grades.last().form:
+                        coach.grades.first().form.name = unidecode.unidecode(coach.grades.first().form.name)
                         coach.form = coach.grades.first().form
             messages.success(request, 'Antrenör belge transferi tamamlandı')
 
