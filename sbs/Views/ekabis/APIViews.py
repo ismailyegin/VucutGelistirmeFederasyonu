@@ -90,22 +90,22 @@ class GetUser(APIView):
                 query &= Q(first_name__icontains=globalSearch.upper()) | Q(
                     last_name__icontains=globalSearch.upper()) | Q(
                     email__icontains=globalSearch.upper()) | Q(
-                    groups__name__icontains=globalSearch.upper()) |\
+                    groups__name__icontains=globalSearch.upper()) | \
                          Q(first_name__icontains=globalSearch.lower()) | Q(
                     last_name__icontains=globalSearch.lower()) | Q(
                     email__icontains=globalSearch.lower()) | Q(
                     groups__name__icontains=globalSearch.lower())
             if first_name:
-                query &= Q(first_name__icontains=first_name.upper()) |\
+                query &= Q(first_name__icontains=first_name.upper()) | \
                          Q(first_name__icontains=first_name.lower())
             if last_name:
-                query &= Q(last_name__icontains=last_name.upper()) |\
+                query &= Q(last_name__icontains=last_name.upper()) | \
                          Q(last_name__icontains=last_name.lower())
             if email:
-                query &= Q(email__icontains=email.upper()) |\
+                query &= Q(email__icontains=email.upper()) | \
                          Q(email__icontains=email.lower())
             if group:
-                query &= Q(groups__pk=group.upper()) |\
+                query &= Q(groups__pk=group.upper()) | \
                          Q(groups__pk=group.lower())
 
             all_objects = users.filter(query).order_by('first_name')[int(start):end]
@@ -998,11 +998,8 @@ class GetGradeList(APIView):
         else:
             query = Q()
             if globalSearch:
-                query &= Q(CoachGrades__first__person__user__get_full_name__icontains=globalSearch.upper()) | Q(
-                    branch__title__icontains=globalSearch.upper()) | Q(
-                    status__icontains=globalSearch.upper()) | Q(
-                    CoachGrades__first__person__user__get_full_name__icontains=globalSearch.lower()) | Q(
-                    branch__title__icontains=globalSearch.lower()) | Q(
+                query &= Q(branch__title__icontains=globalSearch.upper()) | Q(
+                    status__icontains=globalSearch.upper()) | Q(branch__title__icontains=globalSearch.lower()) | Q(
                     status__icontains=globalSearch.lower())
 
             all_objects = grades.filter(query).order_by('status')[int(start):end]
