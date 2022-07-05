@@ -1370,7 +1370,6 @@ def transmissionAntrenorBelge(request, i, k):
                 if coach.grades.all():
                     if coach.grades.last().form:
                         name = coach.grades.last().form.name.encode('utf-8', errors='ignore')
-                        name = name.decode('utf-8', errors='ignore')
                         coach.grades.last().form.name = name
                         coach.form = coach.grades.last().form
             messages.success(request, 'Antrenör belge transferi tamamlandı')
