@@ -29,7 +29,7 @@ urlpatterns = [
     path('antrenor/antrenor-kademe-ekle/<uuid:uuid>', CoachViews.add_coach_referee, name='add_grade_coach'),
     path('antrenor/antrenor-kademe-onayla/', CoachViews.grade_approval,
          name='coach_grade_approval'),
-    path('antrenor/antrenor-kademe-reddet/<uuid:grade_uuid>/<uuid:coach_uuid>', CoachViews.grade_reject,
+    path('antrenor/antrenor-kademe-reddet/', CoachViews.grade_reject,
          name='coach_grade_reject'),
     path('antrenor/antrenor-kademe-guncelle/<uuid:grade_uuid>/<uuid:coach_uuid>', CoachViews.update_grade,
          name='coach_update_grade'),
@@ -49,7 +49,7 @@ urlpatterns = [
     path('antrenor/kademe-listesi/', CoachViews.gradeList, name='coach_grade_list'),
     path('antrenor/kademe-listesi/onayla/', CoachViews.gradeListApproval,
          name='coach_grade_list_approval'),
-    path('antrenor/kademe-listesi/reddet/<uuid:uuid>', CoachViews.gradeListReject, name='coach_grade_list_reject'),
+    path('antrenor/kademe-listesi/reddet/', CoachViews.gradeListReject, name='coach_grade_list_reject'),
     path('antrenor/kademe-listesi-onayla-hepsi', CoachViews.gradeListApprovalAll,
          name='coach_grade-list-approval-all'),
     path('antrenor/kademe-listesi-reddet-hepsi', CoachViews.gradeListRejectAll,
@@ -358,5 +358,6 @@ urlpatterns = [
     path('basvuru/api-antrenor-listesi/', APIViews.GetReferenceCoach.as_view(), name='view_reference_coach-api'),
     path('basvuru/api-hakem-listesi/', APIViews.GetReferenceReferee.as_view(), name='view_reference_referee-api'),
     path('hakem/kayit-guncelle-api/', APIViews.GetCurrentRegisterReferee, name='hakem-kayit-guncelle-api'),
+    path('antrenor/belge-aktar/<int:i>/<int:k>', Aktarma.transmissionAntrenorBelge, name='antrenor-belge-aktar'),
 
 ]

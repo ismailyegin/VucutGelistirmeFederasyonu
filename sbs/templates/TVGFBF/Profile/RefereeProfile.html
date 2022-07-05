@@ -152,6 +152,11 @@
                                    aria-selected="false">Hakem Bilgilerim</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-four-grade-tab" data-toggle="pill"
+                                   href="#custom-tabs-four-grade" role="tab" aria-controls="custom-tabs-four-grade"
+                                   aria-selected="false">Kokart Bilgilerim</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" id="custom-tabs-four-password-tab" data-toggle="pill"
                                    href="#custom-tabs-four-password" role="tab"
                                    aria-controls="custom-tabs-four-password" aria-selected="false">Şifre Bilgilerim</a>
@@ -276,6 +281,83 @@
                                         </div>
                                     </div>
 
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="custom-tabs-four-grade" role="tabpanel"
+                                 aria-labelledby="custom-tabs-four-grade-tab">
+
+                                <form method="post" role="form" enctype="multipart/form-data" id="form-container">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            {% if grade_form %}
+                                                {% for item in grade_form %}
+                                                    <div class="card card-outline card-info">
+                                                        <div class="card-header with-border">
+                                                            <h3 class="card-title">Kokart Bilgileri</h3>
+                                                            {% if item.instance.status == item.instance.DENIED %}
+                                                                <span class="badge badge-danger"
+                                                                      style="float: right;">{{ item.instance.status }}</span>
+                                                            {% elif item.instance.status == item.instance.WAITED %}
+                                                                <span class="badge badge-warning"
+                                                                      style="float: right;">{{ item.instance.status }}</span>
+                                                            {% elif item.instance.status == item.instance.APPROVED %}
+                                                                <span class="badge badge-success"
+                                                                      style="float: right;">{{ item.instance.status }}</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="row">
+
+                                                                <div class="form-group col-lg-6">
+                                                                    <label> {{ item.definition.label }}</label>
+                                                                    {{ item.definition }}
+                                                                </div>
+
+                                                                <div class="form-group col-lg-6">
+                                                                    <label> {{ item.branch.label }}</label>
+                                                                    {{ item.branch }}
+                                                                </div>
+
+                                                                <div class="form-group col-lg-6">
+                                                                    <label> {{ item.gradeDate.label }}</label>
+                                                                    {{ item.gradeDate }}
+                                                                </div>
+
+                                                                <div class="form-group col-lg-6">
+                                                                    <label> {{ item.gradeNo.label }}</label>
+                                                                    {{ item.gradeNo }}
+                                                                </div>
+
+                                                                <div class="form-group col-lg-6">
+                                                                    <label> {{ item.referee_file.label }}</label>
+                                                                    {{ item.referee_file }}
+                                                                </div>
+
+                                                            </div>
+
+                                                            <!-- /.card-body -->
+
+                                                        </div>
+                                                        <!-- /.card -->
+                                                    </div>
+                                                {% endfor %}
+                                                <div class="card-footer">
+                                                    <button class="btn btn-outline-info" type="submit"
+                                                            style="float:right" id="save_button"
+                                                            name="save_button"
+                                                            value="grade">
+                                                        Kaydet
+                                                    </button>
+                                                    <small style="color: red ">(*) Olan Alanlar
+                                                        zorunludur.</small>
+                                                </div>
+                                            {% else %}
+                                                <h4 style="color: red;">Güncellenecek Kokart Bilginiz
+                                                    Bulunmamaktadır.</h4>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-four-password" role="tabpanel"

@@ -1281,7 +1281,7 @@ def transmissionFacility(request):
         with transaction.atomic():
 
             df = pandas.read_csv('tesis.csv', encoding='utf8')
-            x=''
+            x = ''
             for value in df.values.tolist():
                 if value[1] and value[0]:
 
@@ -1314,7 +1314,8 @@ def transmissionAntrenor(request):
     try:
         with transaction.atomic():
 
-            df = pandas.read_csv('/var/www/vhosts/sbs.tvgfbf.gov.tr/httpdocs/djangoProject/VucutGelistirmeFederasyonu/antrenor_list.csv')
+            df = pandas.read_csv(
+                '/var/www/vhosts/sbs.tvgfbf.gov.tr/httpdocs/djangoProject/VucutGelistirmeFederasyonu/antrenor_list.csv')
 
             for value in df.values:
                 if not User.objects.filter(username=value[1].lower()):
@@ -1351,8 +1352,6 @@ def transmissionAntrenor(request):
                         time.sleep(2)
             messages.success(request, 'Antrenör kaydı tamamlandı')
 
-
-
         print('antrenorler eklendi')
         return redirect('sbs:view_admin')
 
@@ -1362,3 +1361,20 @@ def transmissionAntrenor(request):
         return redirect('sbs:view_admin')
 
 
+def transmissionAntrenorBelge(request, i, k):
+    try:
+        with transaction.atomic():
+            coaches = Coach.objects.all()[i:k]
+            for coach in coaches:
+                if coach.grades.all():
+                    if coach.grades.last().form:
+                        coach.form = coach.grades.first().form
+            messages.success(request, 'Antrenör belge transferi tamamlandı')
+
+        print('antrenor belgeleri aktarıldı.')
+        return redirect('sbs:view_admin')
+
+    except Exception as e:
+        messages.warning(request, e)
+        traceback.print_exc()
+        return redirect('sbs:view_admin')

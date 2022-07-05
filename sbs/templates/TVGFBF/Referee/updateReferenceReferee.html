@@ -229,11 +229,22 @@
                                             {{ preRegistrationform.birthDate }}
                                         </div>
 
-                                        <div class="form-group">
-                                            <label> {{ preRegistrationform.referee_file.label }}</label>
-                                            {{ preRegistrationform.referee_file }}
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.grade_referee_contract.label }}</label>
+                                                {{ preRegistrationform.grade_referee_contract }} <br>
+                                            </div>
                                         </div>
 
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.sgk.label }}</label>
+                                                {{ preRegistrationform.sgk }} <br>
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -292,7 +303,7 @@
 
                         <div class="card card-outline card-info">
                             <div class="card-header with-border">
-                                <h3 class="card-title"> Kademe Bilgileri</h3>
+                                <h3 class="card-title"> Kokart Bilgileri</h3>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -305,24 +316,30 @@
 
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label> {{ preRegistrationform.grade_referee_contract.label }}</label>
-                                            {{ preRegistrationform.grade_referee_contract }} <br>
+                                            <label> {{ preRegistrationform.branch.label }}</label>
+                                            {{ preRegistrationform.branch }}
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label> {{ preRegistrationform.sgk.label }}</label>
-                                            {{ preRegistrationform.sgk }} <br>
+                                            <label> {{ preRegistrationform.gradeDate.label }}</label>
+                                            {{ preRegistrationform.gradeDate }}
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label> {{ preRegistrationform.dekont.label }}</label>
-                                            {{ preRegistrationform.dekont }} <br>
+                                            <label> {{ preRegistrationform.gradeNo.label }}</label>
+                                            {{ preRegistrationform.gradeNo }}
                                         </div>
                                     </div>
+
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.referee_file.label }}</label>
+                                        {{ preRegistrationform.referee_file }}
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

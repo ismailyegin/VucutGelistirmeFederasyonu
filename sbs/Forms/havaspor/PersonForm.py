@@ -27,9 +27,6 @@ class PersonForm(ModelForm):
 
         widgets = {
 
-            'profileImage': forms.FileInput(),
-
-
             'tc': forms.TextInput(
                 attrs={'class': 'form-control ', 'required': 'required', 'onkeypress': 'validate(event)',
                        'onkeyup': 'if(this.value.length >11){this.value=this.value.substr(0, 11);}',

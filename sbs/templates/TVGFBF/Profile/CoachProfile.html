@@ -106,8 +106,6 @@
     </div>
 
 
-
-
     <section class="content-header">
 
 
@@ -150,6 +148,16 @@
                                 <a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill"
                                    href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile"
                                    aria-selected="false">Antrenör Bilgilerim</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-four-grade-tab" data-toggle="pill"
+                                   href="#custom-tabs-four-grade" role="tab" aria-controls="custom-tabs-four-grade"
+                                   aria-selected="false">Kokart Bilgilerim</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-four-visa-tab" data-toggle="pill"
+                                   href="#custom-tabs-four-visa" role="tab" aria-controls="custom-tabs-four-visa"
+                                   aria-selected="false">Vize Bilgilerim</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-tabs-four-password-tab" data-toggle="pill"
@@ -261,86 +269,169 @@
                                  aria-labelledby="custom-tabs-four-profile-tab">
                                 <form method="post" role="form" enctype="multipart/form-data" id="form-container">
                                     {% csrf_token %}
-                                    <div class="card-body">
-                                        <div class="row">
-                                            {% for item in coach_form %}
+                                    <div class="card card-outline card-info">
+                                        <div class="card-header with-border">
+                                            <h3 class="card-title">Antrenör Bilgileri</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
                                                 <div class="form-group col-lg-6">
-                                                    <label> {{ item.label }}</label>
-                                                    {{ item }}
-                                                    <label for="" id="label_{{ item.name }}"></label>
+                                                    <label> {{ coach_form.sgk.label }}</label>
+                                                    {{ coach_form.sgk }}
                                                 </div>
-                                            {% endfor %}</div>
 
-                                        <button class="btn btn-outline-info" type="submit"
-                                                style="float:right" id="save_button" name="save_button"
-                                                value="coach">
-                                            Kaydet
-                                        </button>
+                                                <div class="form-group col-lg-6">
+                                                    <label> {{ coach_form.form.label }}</label>
+                                                    {{ coach_form.form }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-footer">
+                                            <button class="btn btn-outline-info" type="submit"
+                                                    style="float:right" id="save_button" name="save_button"
+                                                    value="coach">
+                                                Kaydet
+                                            </button>
+                                        </div>
+
                                     </div>
                                 </form>
-                                <hr>
+                            </div>
+                            <div class="tab-pane fade" id="custom-tabs-four-grade" role="tabpanel"
+                                 aria-labelledby="custom-tabs-four-grade-tab">
 
                                 <form method="post" role="form" enctype="multipart/form-data" id="form-container">
                                     {% csrf_token %}
                                     <div class="row">
-
-                                        <div class="card card-outline card-info">
-                                            <div class="card-header with-border">
-                                                <h3 class="card-title">Kademe Bilgileri</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-
-                                                    {% for item in grade_form %}
-                                                        <div class="form-group col-lg-6">
-                                                            <label> {{ item.label }}</label>
-                                                            {{ item }}
-                                                            <label for="" id="label_{{ item.name }}"></label>
+                                        <div class="col-lg-12">
+                                            {% if grade_form %}
+                                                {% for item in grade_form %}
+                                                    <div class="card card-outline card-info">
+                                                        <div class="card-header with-border">
+                                                            <h3 class="card-title">Kokart Bilgileri</h3>
+                                                            {% if item.instance.status == item.instance.DENIED %}
+                                                                <span class="badge badge-danger"
+                                                                      style="float: right;">{{ item.instance.status }}</span>
+                                                            {% elif item.instance.status == item.instance.WAITED %}
+                                                                <span class="badge badge-warning"
+                                                                      style="float: right;">{{ item.instance.status }}</span>
+                                                            {% elif item.instance.status == item.instance.APPROVED %}
+                                                                <span class="badge badge-success"
+                                                                      style="float: right;">{{ item.instance.status }}</span>
+                                                            {% endif %}
                                                         </div>
-                                                    {% endfor %}
+                                                        <div class="card-body">
+                                                            <div class="row">
 
+                                                                <div class="form-group col-lg-6">
+                                                                    <label> {{ item.definition.label }}</label>
+                                                                    {{ item.definition }}
+                                                                </div>
+
+                                                                <div class="form-group col-lg-6">
+                                                                    <label> {{ item.branch.label }}</label>
+                                                                    {{ item.branch }}
+                                                                </div>
+
+                                                                <div class="form-group col-lg-6">
+                                                                    <label> {{ item.antrenorBelgesi.label }}</label>
+                                                                    {{ item.antrenorBelgesi }}
+                                                                </div>
+
+                                                            </div>
+
+                                                            <!-- /.card-body -->
+
+                                                        </div>
+                                                        <!-- /.card -->
+                                                    </div>
+                                                {% endfor %}
+                                                <div class="card-footer">
+                                                    <button class="btn btn-outline-info" type="submit"
+                                                            style="float:right" id="save_button"
+                                                            name="save_button"
+                                                            value="grade">
+                                                        Kaydet
+                                                    </button>
+                                                    <small style="color: red ">(*) Olan Alanlar
+                                                        zorunludur.</small>
                                                 </div>
-
-                                                <!-- /.card-body -->
-
+                                            {% else %}
+                                                <h4 style="color: red;">Güncellenecek Kokart Bilginiz
+                                                    Bulunmamaktadır.</h4>
+                                            {% endif %}
+                                            <div class="row">
+                                                <a href="{% url "sbs:add_grade_coach" coach.uuid %}"
+                                                   type="button" class="btn btn-outline-info btn-sm"
+                                                   style="float: left;"><i
+                                                        class="fa fa-plus" title="Kademe Ekle"></i> Yeni Kademe Ekle
+                                                </a>
                                             </div>
-
-
-                                            <!-- /.card -->
                                         </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="custom-tabs-four-visa" role="tabpanel"
+                                 aria-labelledby="custom-tabs-four-visa-tab">
+
+                                <form method="post" role="form" enctype="multipart/form-data" id="form-container">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        {% if visa_form %}
+                                            {% for item in visa_form %}
+                                                <div class="card card-outline card-info" style="width: 100%">
+                                                    <div class="card-header with-border">
+                                                        <h3 class="card-title">Vize Bilgileri</h3>
+                                                        {% if item.instance.status == item.instance.DENIED %}
+                                                            <span class="badge badge-danger"
+                                                                  style="float: right;">{{ item.instance.status }}</span>
+                                                        {% elif item.instance.status == item.instance.WAITED %}
+                                                            <span class="badge badge-warning"
+                                                                  style="float: right;">{{ item.instance.status }}</span>
+                                                        {% elif item.instance.status == item.instance.APPROVED %}
+                                                            <span class="badge badge-success"
+                                                                  style="float: right;">{{ item.instance.status }}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="card-body">
+
+                                                        <div class="row">
+                                                            <div class="form-group col-lg-6">
+                                                                <label> {{ item.branch.label }}</label>
+                                                                {{ item.branch }}
+                                                            </div>
+
+                                                            <div class="form-group col-lg-6">
+                                                                <label> {{ item.dekont.label }}</label>
+                                                                {{ item.dekont }}
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.card-body -->
+                                                    </div>
+                                                    <!-- /.card -->
+                                                </div>
+                                            {% endfor %}
+                                            <div class="card-footer" style="width: 100%;">
+                                                <button class="btn btn-outline-info" type="submit"
+                                                        style="float:right" id="save_button" name="save_button"
+                                                        value="visa">
+                                                    Kaydet
+                                                </button>
+                                                <small style="color: red ">(*) Olan Alanlar zorunludur.</small>
+                                            </div>
+                                        {% else %}
+                                            <h4 style="color: red;">Güncellenecek Vize Bilginiz Bulunmamaktadır.</h4>
+                                        {% endif %}
                                     </div>
                                     <div class="row">
-
-                                        <div class="card card-outline card-info" style="width: 100%">
-                                            <div class="card-header with-border">
-                                                <h3 class="card-title">Vize Bilgileri</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="form-group col-lg-6">
-                                                        <label> {{ visa_form.branch.label }}</label>
-                                                        {{ visa_form.branch }}
-                                                    </div>
-                                                    <div class="form-group col-lg-6">
-                                                        <label> {{ visa_form.dekont.label }}</label>
-                                                        {{ visa_form.dekont }}
-                                                    </div>
-                                                </div>
-
-                                                <!-- /.card-body -->
-
-                                            </div>
-                                            <!-- /.card -->
-                                        </div>
+                                        <a href="{% url "sbs:add_visa_coach" coach.uuid %}"
+                                           type="button" class="btn btn-outline-info btn-sm"
+                                           style="float: left;"><i
+                                                class="fa fa-plus" title="Kademe Ekle"></i> Yeni Vize Ekle
+                                        </a>
                                     </div>
-                                    <div class="card-footer">
-                                        <button class="btn btn-outline-info" type="submit"
-                                                style="float:right" id="save_button" name="save_button"
-                                                value="coach">
-                                            Kaydet
-                                        </button>
-                                        <small style="color: red ">(*) Olan Alanlar zorunludur.</small>
-                                    </div>
+
                                 </form>
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-four-password" role="tabpanel"
@@ -397,7 +488,6 @@
 
         })
     </script>
-
 
 
 {% endblock %}

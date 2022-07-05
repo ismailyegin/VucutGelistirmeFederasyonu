@@ -6,27 +6,28 @@ from sbs.models.tvfbf.HavaLevel import HavaLevel
 
 
 class GradeFormCoach(ModelForm):
-    definition = forms.ModelChoiceField(queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE').order_by('order'),
-                                               to_field_name='name',
-                                               empty_label="Seçiniz",
-                                               label="Kademe",
-                                               required='required',
-                                               widget=forms.Select(
-                                                   attrs={'class': 'form-control select2 select2-hidden-accessible',
-                                                          'style': 'width: 100%; '}))
+    definition = forms.ModelChoiceField(
+        queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE').order_by('order'),
+        to_field_name='name',
+        empty_label="Seçiniz",
+        label="Kademe",
+        required='required',
+        widget=forms.Select(
+            attrs={'class': 'form-control select2 select2-hidden-accessible',
+                   'style': 'width: 100%; '}))
 
     class Meta:
         model = HavaLevel
 
         fields = (
-            'definition','branch', 'dekont', 'form')
+            'definition', 'branch', 'dekont', 'form', 'antrenorBelgesi')
 
-        labels = { 'branch': 'Branş', 'form': 'Kademe Belgesi', 'dekont': 'Dekont'}
+        labels = {'branch': 'Branş', 'form': 'Antrenör Sözleşme Belgesi', 'dekont': 'Dekont',
+                  'antrenorBelgesi': 'Antrenör Belgesi'}
 
         widgets = {
 
-
-             'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
+            'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%; '}),
 
         }

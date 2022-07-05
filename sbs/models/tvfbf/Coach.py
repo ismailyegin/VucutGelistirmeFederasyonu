@@ -19,11 +19,13 @@ class Coach(BaseModel):
     antrenorBelgesi = models.FileField(null=True, blank=True, verbose_name='Antrenör Belgesi')
     infoLevel = models.BooleanField(default=True, null=True, blank=True)
     infoStatus = models.BooleanField(default=True, null=True, blank=True)
-    sgk=models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')
+    sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')
 
     grades = models.ManyToManyField(HavaLevel, related_name='CoachGrades')
     visa = models.ManyToManyField(HavaLevel, related_name='CoachVisa')
 
+    form = models.FileField(upload_to='form/', null=False, blank=False,
+                            verbose_name='Form ')  # Antrenör sözleşme belgesi
 
     def __str__(self):
         return '%s %s' % (self.person.user.first_name, self.person.user.last_name)

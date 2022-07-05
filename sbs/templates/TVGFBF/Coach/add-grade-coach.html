@@ -130,42 +130,31 @@
                             <h3 class="card-title">Bilgiler</h3>
                         </div>
                         <div class="card-body">
-
-
-
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label> {{ grade_form.startDate.label }}</label>
-                                        {{ grade_form.startDate }}
-                                    </div>
-
-
+                            <div class="row">
+                                <div class="col-lg-6">
                                     <div class="form-group">
                                         <label> {{ grade_form.branch.label }}</label>
                                         {{ grade_form.branch }}
                                     </div>
-
+                                </div>
+                                <div class="col-lg-6">
                                     <div class="form-group">
                                         <label> {{ grade_form.definition.label }}</label>
                                         {{ grade_form.definition }}
                                     </div>
-
-                                    <div class="form-group">
-                                        <label> {{ grade_form.dekont.label }}</label>
-                                        {{ grade_form.dekont }}
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label> {{ grade_form.form.label }}</label>
-                                        {{ grade_form.form }}
-                                    </div>
-
                                 </div>
-
-
-                             <div class="card-footer">
-                            <button class="btn btn-outline-primary" type="submit" style="float:right;">Onaya Gönder</button>
-                        </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ grade_form.antrenorBelgesi.label }}</label>
+                                        {{ grade_form.antrenorBelgesi }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-outline-primary" type="submit" style="float:right;">Onaya
+                                    Gönder
+                                </button>
+                            </div>
                         </div>
 
                     </div>

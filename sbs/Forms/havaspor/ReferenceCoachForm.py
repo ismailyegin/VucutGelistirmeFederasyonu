@@ -12,15 +12,6 @@ from sbs.models.ekabis.CategoryItem import CategoryItem
 
 
 class RefereeCoachForm(ModelForm):
-    kademe_definition = forms.ModelChoiceField(
-        queryset=CategoryItem.objects.filter(forWhichClazz='COACH_GRADE', isDeleted=False).order_by('order'),
-        to_field_name='name',
-        empty_label="Seçiniz",
-        label="Kademe",
-        required='required',
-        widget=forms.Select(
-            attrs={'class': 'form-control select2 select2-hidden-accessible',
-                   'style': 'width: 100%; '}))
 
     country = forms.ModelChoiceField(queryset=Country.objects.order_by('-order'),
                                      to_field_name='name',
@@ -31,27 +22,18 @@ class RefereeCoachForm(ModelForm):
                                          attrs={'class': 'form-control select2 select2-hidden-accessible',
                                                 'style': 'width: 100%; '}))
 
-    branch = forms.ModelChoiceField(
-        queryset=Branch.objects.filter(isDeleted=False),
-        to_field_name='title',
-        empty_label="Seçiniz",
-        label="Branş",
-        required='required',
-        widget=forms.Select(
-            attrs={'class': 'form-control select2 select2-hidden-accessible',
-                   'style': 'width: 100%; '}))
-
     class Meta:
         model = ReferenceCoach
         fields = (
             'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'postalCode', 'phoneNumber2', 'city',
             'iban', 'tc', 'profileImage', 'birthDate', 'gender', 'birthplace', 'motherName',
-            'fatherName', 'kademe_belge', 'sgk', 'dekont', 'belge','workplace')
+            'fatherName', 'kademe_belge', 'sgk', 'dekont', 'belge', 'workplace')
 
         labels = {'iban': 'İban Adresi', 'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email',
                   'phoneNumber': 'Cep Telefonu', 'phoneNumber2': 'Sabit Telefon', 'postalCode': 'Posta Kodu',
                   'city': 'İl', 'tc': 'T.C.', 'gender': 'Cinsiyet', 'kademe_belge': 'Antrenör Sözleşme Belgesi: ',
-                  'sgk': 'SGK/Bağ-Kur Belgesi: ', 'dekont': 'Vize Dekont', 'belge': 'Antrenör Belgesi','workplace': 'Çalıştığı Yer/Kurum'}
+                  'sgk': 'SGK/Bağ-Kur Belgesi: ', 'dekont': 'Vize Dekont', 'belge': 'Antrenör Belgesi',
+                  'workplace': 'Çalıştığı Yer/Kurum'}
         widgets = {
 
             'tc': forms.TextInput(attrs={'class': 'form-control ',
@@ -65,10 +47,10 @@ class RefereeCoachForm(ModelForm):
                 attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
 
             'motherName': forms.TextInput(
-                attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
+                attrs={'class': 'form-control ', 'value': ''}),
 
             'fatherName': forms.TextInput(
-                attrs={'class': 'form-control ', 'value': '', 'required': 'required'}),
+                attrs={'class': 'form-control ', 'value': ''}),
             'iban': forms.TextInput(
                 attrs={'id': 'iban', 'class': 'form-control  iban',
                        'onkeyup': 'if(this.value.length > 34){this.value=this.value.substr(0, 34);}', 'value': '',
@@ -99,7 +81,7 @@ class RefereeCoachForm(ModelForm):
 
             'city': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                         'style': 'width: 100%;', 'required': 'required'}),
-            'workplace': forms.TextInput(attrs={'class': 'form-control ','required': 'required'}),
+            'workplace': forms.TextInput(attrs={'class': 'form-control ', 'required': 'required'}),
 
         }
 

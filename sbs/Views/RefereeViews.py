@@ -33,7 +33,7 @@ from sbs.Forms.havaspor.RefereeSearchForm import RefereeSearchForm
 from sbs.Forms.havaspor.HavaUserForm import HavaUserForm
 from sbs.Forms.havaspor.VisaForm import VisaForm
 from sbs.Forms.havaspor.VisaSeminarForm import VisaSeminarForm
-from sbs.models import City
+from sbs.models import City, Country
 from sbs.models.ekabis.EnumFields import EnumFields
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.ekabis.Communication import Communication
@@ -331,7 +331,7 @@ def update_referee(request, uuid):
                   {'user_form': user_form, 'communication_form': communication_form,
                    'person_form': person_form, 'referee': referee, 'grade_form': grade_form,
                    'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
-                   'url_name': url_name,'last_date':date })
+                   'url_name': url_name, 'last_date': date})
 
 
 @login_required
@@ -383,12 +383,8 @@ def add_grade_referee(request, uuid):
         if request.method == 'POST':
             grade_form = GradeFormReferee(request.POST, request.FILES)
 
-            if grade_form.is_valid() and grade_form.cleaned_data['dekont'] is not None and request.POST.get(
-                    'branch') is not None:
-                grade = HavaLevel(definition=grade_form.cleaned_data['definition'],
-                                  startDate=grade_form.cleaned_data['startDate'],
-                                  dekont=grade_form.cleaned_data['dekont'],
-                                  branch=grade_form.cleaned_data['branch'])
+            if grade_form.is_valid():
+                grade = grade_form.save(commit=False)
                 grade.levelType = EnumFields.LEVELTYPE.GRADE
                 grade.status = HavaLevel.WAITED
                 grade.isActive = True
@@ -953,12 +949,15 @@ def returnVisaSeminar(request):
     current_url = resolve(request.path_info)
     url_name = Permission.objects.get(codename=current_url.url_name)
     user = request.user
-    seminar = VisaSeminar.objects.filter(forWhichClazz='REFEREE', isDeleted=0)
+    seminar = VisaSeminar.objects.filter(forWhichClazz='REFEREE', isDeleted=0).exclude(
+        refereeApplication__referee__person__user=user)
+    appliedSeminars = VisaSeminar.objects.filter(forWhichClazz='REFEREE', isDeleted=0).filter(
+        refereeApplication__referee__person__user=user)
     with transaction.atomic():
         if request.method == 'POST':
             if user.groups.filter(name='Hakem').exists():
                 vizeSeminer = VisaSeminar.objects.get(pk=request.POST.get('pk'))
-                referee = Referee.objects.get(user=request.user)
+                referee = Referee.objects.get(person__user=request.user)
                 try:
                     if request.FILES['file']:
                         document = request.FILES['file']
@@ -976,7 +975,8 @@ def returnVisaSeminar(request):
 
     return render(request, 'TVGFBF/Referee/referee-visa-seminar.html', {'competitions': seminar,
                                                                         'urls': urls, 'current_url': current_url,
-                                                                        'url_name': url_name})
+                                                                        'url_name': url_name,
+                                                                        'appliedSeminars': appliedSeminars})
 
 
 @login_required
@@ -1195,6 +1195,9 @@ def deleteRefereeApplicationVisaSeminar(request):
                 refereeApplication.save()
 
                 seminer = VisaSeminar.objects.get(uuid=seminer_uuid)
+                if seminer.referee.filter(uuid=refereeApplication.referee.uuid):
+                    seminer.referee.remove(refereeApplication.referee)
+                    seminer.save()
 
                 html_content = ''
                 subject, from_email, to = 'THF Bilgi Sistemi', 'no-reply@halter.gov.tr', refereeApplication.referee.person.user.email
@@ -1267,8 +1270,8 @@ def document(request, uuid):
     c = canvas.Canvas(buffer)
     c.setTitle('Hakem Belge')
 
-    logo = ImageReader(settings.MEDIA_ROOT + '/hakembelge.png')
-    c.drawImage(logo, 0, 0, width=600, height=850, mask='auto')
+    # logo = ImageReader(settings.MEDIA_ROOT + '/tvgfbf_logo.png')
+    # c.drawImage(logo, 0, 0, width=600, height=850, mask='auto')
 
     c.setFont("Times-Roman", 32)
 
@@ -1427,7 +1430,8 @@ def referenceUpdateReferee(request, uuid):
 
     referee = ReferenceReferee.objects.get(uuid=uuid)
     referee_form = PreRefereeForm(request.POST or None, request.FILES or None, instance=referee,
-                                  initial={'kademe_definition': referee.kademe_definition, 'country': referee.country})
+                                  initial={'kademe_definition': referee.kademe_definition, 'country': referee.country,
+                                           'branch': referee.gradeBranch})
 
     try:
         with transaction.atomic():
@@ -1465,7 +1469,11 @@ def referenceUpdateReferee(request, uuid):
                 #                   {'preRegistrationform': referee_form, 'urls': urls, 'current_url': current_url, 'url_name': url_name})
 
                 if referee_form.is_valid():
-                    referee_form.save()
+                    refereeUpdate = referee_form.save(commit=False)
+                    refereeUpdate.country = Country.objects.get(name=request.POST.get('country'))
+                    refereeUpdate.kademe_definition = CategoryItem.objects.get(name=request.POST.get('kademe_definition'))
+                    refereeUpdate.gradeBranch = Branch.objects.get(title=request.POST.get('branch'))
+                    refereeUpdate.save()
                     messages.success(request, 'Hakem Başvurusu Güncellendi')
                     return redirect('sbs:referencedListReferee')
                 else:

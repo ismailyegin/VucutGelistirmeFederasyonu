@@ -12,8 +12,8 @@
                         <span aria-hidden="true">×</span></button>
                 </div>
                 <form method="post" enctype="multipart/form-data" role="form">
-                        {% csrf_token %}
-                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="modal-body">
                         <div class="form-group">
                             <label> İsim</label>
 
@@ -43,13 +43,13 @@
                                    maxlength="1000" id="location">
                         </div>
 
-                </div>
+                    </div>
 
-                <div class="modal-footer">
-                    <input type="text" name="pk" id="pk" class="form-control" readonly="readonly" required=""
-                           maxlength="1000">
-                    <button type="submit" class="btn btn-outline-primary">Kaydet</button>
-                </div>
+                    <div class="modal-footer">
+                        <input type="text" name="pk" id="pk" class="form-control" readonly="readonly" required=""
+                               maxlength="1000">
+                        <button type="submit" class="btn btn-outline-primary">Kaydet</button>
+                    </div>
                 </form>
             </div>
             <!-- /.modal-content -->
@@ -234,18 +234,16 @@
                             <tbody>
                             {% if competitions.all %}
                                 {% for competition in competitions %}
-                                    <tr id="seminer-{{ competition.pk }}">
-                                        <td>{{ forloop.counter }} </td>
-                                        <td>{{ competition.name }}</td>
-                                        <td>{{ competition.startDate |date }} </td>
-                                        <td>{{ competition.finishDate |date }}</td>
-                                        <td>{{ competition.location }}</td>
-                                        <td>{{ competition.year }}</td>
-                                        <td>{{ competition.status }}</td>
-
-                                        <td>
-
-                                            {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <tr id="seminer-{{ competition.pk }}">
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ competition.name }}</td>
+                                            <td>{{ competition.startDate |date }} </td>
+                                            <td>{{ competition.finishDate |date }}</td>
+                                            <td>{{ competition.location }}</td>
+                                            <td>{{ competition.year }}</td>
+                                            <td>{{ competition.status }}</td>
+                                            <td>
                                                 {% for item in perm %}
                                                     {% if item == 'update-coach-visa-seminar' %}
                                                         <div class="btn-group">
@@ -263,27 +261,82 @@
                                                                onclick="deleteCompetition('{{ competition.uuid }}')"><i
                                                                     class="fa fa-trash"></i></a>
                                                         </div>
-
                                                     {% endif %}
-
                                                 {% endfor %}
+                                            </td>
+                                        </tr>
+                                    {% elif user.groups.all.0.name == 'Hakem' and competition.status == competition.APPROVED %}
+                                        <tr id="seminer-{{ competition.pk }}">
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ competition.name }}</td>
+                                            <td>{{ competition.startDate |date }} </td>
+                                            <td>{{ competition.finishDate |date }}</td>
+                                            <td>{{ competition.location }}</td>
+                                            <td>{{ competition.year }}</td>
+                                            <td>{{ competition.status }}</td>
 
+                                            <td>
                                                 <div class="btn-group">
                                                     <a class="btn btn-outline-success"
                                                        data-toggle="modal" title="Başvuru Yap"
                                                        onclick="modalApplication({{ competition.pk }})"><i
                                                             class="fa fa-location-arrow"></i></a>
                                                 </div>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
 
+                                {% endfor %}
+                            {% endif %}
 
+                            {% if appliedSeminars.all %}
+                                {% for competition in appliedSeminars %}
+                                    {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
+                                        <tr id="seminer-{{ competition.pk }}">
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ competition.name }}</td>
+                                            <td>{{ competition.startDate |date }} </td>
+                                            <td>{{ competition.finishDate |date }}</td>
+                                            <td>{{ competition.location }}</td>
+                                            <td>{{ competition.year }}</td>
+                                            <td>{{ competition.status }}</td>
+                                            <td>
+                                                {% for item in perm %}
+                                                    {% if item == 'update-coach-visa-seminar' %}
+                                                        <div class="btn-group">
+                                                            <a href="{% url "sbs:update-visa-seminar" competition.uuid %}"
+                                                               type="button" class="btn btn-outline-warning"
+                                                               title="Düzenle"><i
+                                                                    class="fa fa-edit"></i>
+                                                            </a>
+                                                        </div>
 
-                                            {% endif %}
+                                                    {% elif item == 'delete-coach-visa-seminar' %}
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-outline-danger"
+                                                               data-toggle="modal" title="Sil"
+                                                               onclick="deleteCompetition('{{ competition.uuid }}')"><i
+                                                                    class="fa fa-trash"></i></a>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    {% elif user.groups.all.0.name == 'Hakem' and competition.status == competition.APPROVED %}
+                                        <tr id="seminer-{{ competition.pk }}">
+                                            <td>{{ forloop.counter }} </td>
+                                            <td>{{ competition.name }}</td>
+                                            <td>{{ competition.startDate |date }} </td>
+                                            <td>{{ competition.finishDate |date }}</td>
+                                            <td>{{ competition.location }}</td>
+                                            <td>{{ competition.year }}</td>
+                                            <td>{{ competition.status }}</td>
 
-
-                                        </td>
-
-
-                                    </tr>
+                                            <td>
+                                                <span class="badge badge-success">Başvuru Yapılmıştır.</span>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
 
                                 {% endfor %}
                             {% endif %}
@@ -470,7 +523,7 @@
         }
     </script>
     <script>
-     function deleteCompetition(uuid) {
+        function deleteCompetition(uuid) {
             debugger;
 
             swal({
@@ -485,7 +538,7 @@
                 if (result.dismiss !== 'Evet') {
 
                     $.ajax({
-                         url: "{% url "sbs:delete-visa-seminar" %}".replace(),
+                        url: "{% url "sbs:delete-visa-seminar" %}".replace(),
                         type: "POST",
                         data: {
                             'csrfmiddlewaretoken': "{{  csrf_token  }}",
@@ -493,26 +546,25 @@
                             isActive: 'False'
                         },
                         success: function (result) {
-                                if (result.status === 'Success') {
-                                    swal({
-                                        icon: 'success',
-                                        title: 'Başarıyla silindi !!',
+                            if (result.status === 'Success') {
+                                swal({
+                                    icon: 'success',
+                                    title: 'Başarıyla silindi !!',
 
-                                    })
+                                })
 
-                                }
-                                else {
-                                     swal({
-                                        icon: 'error',
-                                        title: 'Silinemedi !!',
+                            } else {
+                                swal({
+                                    icon: 'error',
+                                    title: 'Silinemedi !!',
 
-                                    })
-                                }
-                               location.reload();
-
+                                })
                             }
-                        });
-            }
+                            location.reload();
+
+                        }
+                    });
+                }
 
             })
 

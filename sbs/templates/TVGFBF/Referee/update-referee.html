@@ -301,7 +301,7 @@
                 <div class="col-lg-12">
                     <div class="card card-outline card-info">
                         <div class="card-header with-border">
-                            <h3 class="card-title">Kademe Bilgileri</h3>
+                            <h3 class="card-title">Kokart Bilgileri</h3>
 
 
                             {% if aktif == 'Admin' or aktif == 'Yonetim' %}
@@ -321,9 +321,11 @@
                                     <th>#</th>
 
                                     <th> Branş</th>
-                                    <th> Tanımı</th>
-                                    <th>Kademe Belgesi</th>
-                                    <th> Belge Aktif/Pasif</th>
+                                    <th> Kokart </th>
+                                    <th> Hak Kazanma Tarihi </th>
+                                    <th> Kokart No </th>
+                                    <th> Hakem Belgesi</th>
+                                    <th> Aktif/Pasif</th>
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>İşlemler</th>
                                     {% endif %}
@@ -338,9 +340,11 @@
                                             <td>{{ forloop.counter }} </td>
                                             <td>{{ grade.branch }}  </td>
                                             <td>{{ grade.definition }}  </td>
-                                            <td>{% if grade.form %}
-                                                <a href="{{ grade.form.url }}" class="user-image"
-                                                   style=" width: 30px;height: 30px;">{{ grade.form.name }}</a>
+                                            <td>{{ grade.gradeDate }}  </td>
+                                            <td>{{ grade.gradeNo }}  </td>
+                                            <td>{% if grade.referee_file %}
+                                                <a href="{{ grade.referee_file.url }}" class="user-image"
+                                                   style=" width: 30px;height: 30px;">{{ grade.referee_file.name }}</a>
 
                                             {% else %}
                                                 <a href="">---</a>

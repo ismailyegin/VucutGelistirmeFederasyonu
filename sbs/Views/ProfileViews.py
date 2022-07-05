@@ -7,12 +7,13 @@ from django.urls import resolve
 
 from sbs.Forms.havaspor.CoachForm import CoachForm
 from sbs.Forms.havaspor.GradeFormCoach import GradeFormCoach
+from sbs.Forms.havaspor.GradeFormReferee import GradeFormReferee
 from sbs.Forms.havaspor.HavaUserForm import HavaUserForm
 from sbs.Forms.havaspor.PersonForm import PersonForm
 from sbs.Forms.havaspor.ProfileCommunicationForm import ProfileCommunicationForm
 from sbs.Forms.havaspor.RefereeForm import RefereeForm
 from sbs.Forms.havaspor.VisaForm import VisaForm
-from sbs.models import Coach, Person, Communication, Referee, SportClubUser, Permission
+from sbs.models import Coach, Person, Communication, Referee, SportClubUser, Permission, Branch, HavaLevel, EnumFields
 from sbs.services import general_methods
 from sbs.services.services import last_urls
 
@@ -42,12 +43,20 @@ def updateProfileCoach(request):
     iban = coach.person.iban
     grade_form = None
     visa_form = None
-    if not coach.grades.all():
-        grade_form = GradeFormCoach(request.POST or None, request.FILES or None, prefix='grade')
-    else:
-
-        grade = coach.grades.order_by('-expireDate').first()
-        grade_form = GradeFormCoach(request.POST or None, request.FILES or None, prefix='grade', instance=grade)
+    # if not coach.grades.all():
+    #     grade_form = GradeFormCoach(request.POST or None, request.FILES or None, prefix='grade')
+    # else:
+    if coach.grades.exclude(status=HavaLevel.APPROVED):
+        branchs = Branch.objects.all()
+        grade_form = []
+        for branch in branchs:
+            if coach.grades.exclude(status=HavaLevel.APPROVED).filter(branch=branch).order_by('-expireDate').first():
+                grade = coach.grades.exclude(status=HavaLevel.APPROVED).filter(branch=branch).order_by(
+                    '-expireDate').first()
+                if grade.status != grade.APPROVED:
+                    grades_form = GradeFormCoach(request.POST or None, request.FILES or None, prefix=branch.title,
+                                                 instance=grade, initial={'definition': grade.definition})
+                    grade_form.append(grades_form)
         # if grade.form:
         #     grade_form.fields['form'].widget.attrs['readonly'] = 'readonly'
         # if grade.dekont:
@@ -61,11 +70,21 @@ def updateProfileCoach(request):
         # if grade.definition:
         #     grade_form.fields['definition'].widget.attrs['readonly'] = 'readonly'
 
-    if not coach.visa.all():
-        visa_form = VisaForm(request.POST or None, request.FILES or None, prefix='visa')
-    else:
-        visa = coach.visa.order_by('-expireDate').first()
-        visa_form = VisaForm(request.POST or None, request.FILES or None, prefix='visa', instance=visa)
+    # if not coach.visa.all():
+    #     visa_form = VisaForm(request.POST or None, request.FILES or None, prefix='visa')
+    # else:
+
+    if coach.visa.exclude(status=HavaLevel.APPROVED):
+        branchs = Branch.objects.all()
+        visa_form = []
+        for branch in branchs:
+            if coach.visa.exclude(status=HavaLevel.APPROVED).filter(branch=branch).order_by('-expireDate').first():
+                visa = coach.visa.exclude(status=HavaLevel.APPROVED).filter(branch=branch).order_by(
+                    '-expireDate').first()
+
+                visas_form = VisaForm(request.POST or None, request.FILES or None, prefix=branch.title,
+                                      instance=visa)
+                visa_form.append(visas_form)
         # if visa.form:
         #     visa_form.fields['form'].widget.attrs['readonly'] = 'readonly'
         # if visa.dekont:
@@ -114,40 +133,67 @@ def updateProfileCoach(request):
                 messages.warning(request, 'Alanları Kontrol Ediniz')
 
 
-        else:
+
+        elif request.POST['save_button'] == 'coach':
             if coach_form.is_valid():
                 coach_form.save()
 
+                messages.success(request, 'Antrenör Bilgileri Başarıyla Güncellenmiştir.')
+
+                return redirect('sbs:updateProfileCoach')
+
             else:
 
                 messages.warning(request, 'Alanları Kontrol Ediniz')
                 return redirect('sbs:updateProfileCoach')
 
-            if grade_form.is_valid():
-                grade = grade_form.save()
-                if not coach.grades.all():
-                    coach.grades.add(grade)
-            else:
+        elif request.POST['save_button'] == 'grade':
+            for item in grade_form:
+                if item.is_valid():
+                    grade = item.save(commit=False)
+                    grade.status = item.instance.WAITED
+                    grade.isActive = False
+                    grade.isDeleted = False
+                    grade.levelType = EnumFields.LEVELTYPE.GRADE
+                    grade.save()
 
-                messages.warning(request, 'Alanları Kontrol Ediniz')
-                return redirect('sbs:updateProfileCoach')
+                    if not coach.grades.all():
+                        coach.grades.add(grade)
 
-            if visa_form.is_valid():
-                visa = visa_form.save()
-                if not coach.visa.all():
-                    coach.visa.add(visa)
-            else:
+                else:
 
-                messages.warning(request, 'Alanları Kontrol Ediniz')
-                return redirect('sbs:updateProfileCoach')
+                    messages.warning(request, 'Alanları Kontrol Ediniz')
+                    return redirect('sbs:updateProfileCoach')
 
-            messages.success(request, 'Antrenör Bilgileri Başarıyla Güncellenmiştir.')
+            messages.success(request, 'Kokart Bilgileri Başarıyla Güncellenmiştir.')
+
+            return redirect('sbs:updateProfileCoach')
+
+        elif request.POST['save_button'] == 'visa':
+            for item in visa_form:
+                if item.is_valid():
+                    visa = item.save(commit=False)
+                    visa.status = item.instance.WAITED
+                    visa.isActive = False
+                    visa.isDeleted = False
+                    visa.levelType = EnumFields.LEVELTYPE.VISA
+                    visa.save()
+
+                    if not coach.visa.all():
+                        visa.grades.add(visa)
+
+            messages.success(request, 'Vize Bilgileri Başarıyla Güncellenmiştir.')
+
+            return redirect('sbs:updateProfileCoach')
+        else:
+
+            messages.warning(request, 'Alanları Kontrol Ediniz')
             return redirect('sbs:updateProfileCoach')
 
     return render(request, 'TVGFBF/Profile/CoachProfile.html',
                   {'user_form': user_form, 'communication_form': communication_form, 'iban': iban,
                    'person_form': person_form, 'password_form': password_form, 'coach_form': coach_form,
-                   'grade_form': grade_form, 'visa_form': visa_form,'urls': urls, 'current_url': current_url,
+                   'grade_form': grade_form, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
                    'url_name': url_name, 'coach': coach})
 
 
@@ -174,6 +220,20 @@ def updateProfileReferee(request):
     refere_form = RefereeForm(request.POST or None, request.FILES or None, instance=referee)
     password_form = SetPasswordForm(request.user, request.POST)
     iban = referee.person.iban
+    grade_form = None
+
+    if referee.grades.exclude(status=HavaLevel.APPROVED):
+        branchs = Branch.objects.all()
+        grade_form = []
+        for branch in branchs:
+            if referee.grades.exclude(status=HavaLevel.APPROVED).filter(branch=branch).order_by('-expireDate').first():
+                grade = referee.grades.exclude(status=HavaLevel.APPROVED).filter(branch=branch).order_by(
+                    '-expireDate').first()
+                if grade.status != grade.APPROVED:
+                    grades_form = GradeFormReferee(request.POST or None, request.FILES or None, prefix=branch.title,
+                                                 instance=grade, initial={'definition': grade.definition})
+                    grade_form.append(grades_form)
+
     if request.method == 'POST':
 
         if request.POST['save_button'] == 'profile':
@@ -194,6 +254,28 @@ def updateProfileReferee(request):
             else:
 
                 messages.warning(request, 'Alanları Kontrol Ediniz')
+
+        elif request.POST['save_button'] == 'grade':
+            for item in grade_form:
+                if item.is_valid():
+                    grade = item.save(commit=False)
+                    grade.status = item.instance.WAITED
+                    grade.isActive = False
+                    grade.isDeleted = False
+                    grade.levelType = EnumFields.LEVELTYPE.GRADE
+                    grade.save()
+
+                    if not referee.grades.all():
+                        referee.grades.add(grade)
+
+                else:
+
+                    messages.warning(request, 'Alanları Kontrol Ediniz')
+                    return redirect('sbs:updateProfileReferee')
+
+            messages.success(request, 'Kokart Bilgileri Başarıyla Güncellenmiştir.')
+
+            return redirect('sbs:updateProfileReferee')
 
         elif request.POST['save_button'] == 'password':
             if password_form.is_valid():
@@ -221,8 +303,8 @@ def updateProfileReferee(request):
                 messages.warning(request, 'Alanları Kontrol Ediniz')
 
     return render(request, 'TVGFBF/Profile/RefereeProfile.html',
-                  {'user_form': user_form, 'communication_form': communication_form, 'iban': iban,'urls': urls, 'current_url': current_url,
-                   'url_name': url_name,
+                  {'user_form': user_form, 'communication_form': communication_form, 'iban': iban, 'urls': urls,
+                   'current_url': current_url, 'grade_form': grade_form, 'url_name': url_name,
                    'person_form': person_form, 'password_form': password_form, 'refere_form': refere_form})
 
 
@@ -284,5 +366,5 @@ def updateProfileClubUser(request):
 
     return render(request, 'TVGFBF/Profile/ClubUserProfile.html',
                   {'user_form': user_form, 'communication_form': communication_form, 'iban': iban,
-                   'person_form': person_form, 'password_form': password_form,'urls': urls, 'current_url': current_url,
-                   'url_name': url_name })
+                   'person_form': person_form, 'password_form': password_form, 'urls': urls, 'current_url': current_url,
+                   'url_name': url_name})

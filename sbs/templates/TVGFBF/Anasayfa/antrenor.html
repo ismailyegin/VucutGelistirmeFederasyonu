@@ -160,7 +160,7 @@
                 <div class="col-lg-12">
                     <div class="card card-outline card-info">
                         <div class="card-header with-border">
-                            <h3 class="card-title">Kademe Bilgileri</h3>
+                            <h3 class="card-title">Kokart Bilgileri</h3>
 
                         </div>
                         <div class="card-body">
@@ -169,29 +169,38 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th> Hak Kazanma Tarihi</th>
                                     <th> Branş</th>
-                                    <th> Tanımı</th>
-                                    <th> Belge / Aktif-Pasif</th>
+                                    <th> Kademe</th>
+                                    <th> Antrenörlük Belgesi</th>
+                                    <th> Onaylanma Tarihi</th>
+                                    <th> Aktif/Pasif</th>
 
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% if coach %}
+                                {% if coach.grades.all %}
                                     {% for grade in coach.grades.all %}
                                         <tr>
-                                            {% if not grade.isDeleted %}
+                                            {% if not grade.isDeleted and grade.status == grade.APPROVED %}
 
                                                 <td>{{ forloop.counter }} </td>
-                                                <td>{{ grade.startDate }}  </td>
                                                 <td>{{ grade.branch }}  </td>
                                                 <td>{{ grade.definition }}  </td>
-                                                <td>{% if grade.status == 'Onaylandı' %}
-                                                    Aktif
-                                                {% elif grade.status == 'Reddedildi' %}
-                                                    Pasif
+                                                <td>
+                                                    {% if grade.antrenorBelgesi %}
+                                                        <a href="{{ grade.antrenorBelgesi.url }}"
+                                                           target="_blank">Belge </a>
+                                                    {% endif %}
+                                                </td>
+                                                {% if grade.approval_date %}
+                                                    <td>{{ grade.approval_date }}</td>
                                                 {% else %}
-                                                    {{ grade.status }}
+                                                    <td></td>
+                                                {% endif %}
+                                                <td>{% if grade.status == grade.APPROVED and grade.isActive %}
+                                                    <span class="badge badge-success">Aktif</span>
+                                                {% else %}
+                                                    <span class="badge badge-danger">Pasif</span>
                                                 {% endif %}
                                                 </td>
 
@@ -222,28 +231,34 @@
                                     <th>#</th>
                                     <th> Branş</th>
                                     <th> Dekont</th>
-                                    <th> Vize Geçerlilik Tarihi</th>
-                                    <th> Vize Onaylanma Tarihi</th>
+                                    <th> Geçerlilik Tarihi</th>
+                                    <th> Onaylanma Tarihi</th>
+                                    <th> Aktif/Pasif</th>
 
 
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% if coach %}
-
-
-                                    {% for grade in coach.visa.all %}
+                                {% if coach.visa.all %}
+                                    {% for visa in coach.visa.all %}
                                         <tr>
-                                            {% if not grade.isDeleted %}
+                                            {% if not visa.isDeleted and visa.status == visa.APPROVED %}
                                                 <td>{{ forloop.counter }} </td>
-                                                <td>{{ grade.branch }}  </td>
-                                                <td>{% if grade.dekont %}<a href="{{ grade.dekont.url }}" target="_blank">Dekont </a> {% endif %}</td>
+                                                <td>{{ visa.branch }}  </td>
+                                                <td>{% if visa.dekont %}<a href="{{ visa.dekont.url }}"
+                                                                           target="_blank">Dekont </a> {% endif %}</td>
                                                 <td> {{ date }} </td>
-                                                <td>{% if grade.approval_date %}
-                                                    {{ grade.approval_date }}</td>
+                                                {% if visa.approval_date %}
+                                                    <td>{{ visa.approval_date }}</td>
                                                 {% else %}
                                                     <td></td>
                                                 {% endif %}
+                                                <td>{% if visa.status == visa.APPROVED and visa.isActive %}
+                                                    <span class="badge badge-success">Aktif</span>
+                                                {% else %}
+                                                    <span class="badge badge-danger">Pasif</span>
+                                                {% endif %}
+                                                </td>
                                                 </tr>
                                             {% endif %}
                                     {% endfor %}

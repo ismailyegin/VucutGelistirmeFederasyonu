@@ -283,11 +283,11 @@ class GetReferenceCoach(APIView):
 
         coaches = ReferenceCoach.objects.none()
 
-        coaches = ReferenceCoach.objects.filter(isDeleted=False).order_by('-status')
+        coaches = ReferenceCoach.objects.filter(isDeleted=False).order_by('status')
         count = coaches.count()
 
         if not (first_name or last_name or email or tc or status or globalSearch):
-            all_objects = coaches.order_by('-status')[int(start):end]
+            all_objects = coaches.order_by('status')[int(start):end]
             filteredTotal = coaches.count()
         else:
             query = Q()
@@ -310,7 +310,7 @@ class GetReferenceCoach(APIView):
             if status:
                 query &= Q(status__icontains=status)
 
-            all_objects = coaches.filter(query).order_by('-status')[int(start):end]
+            all_objects = coaches.filter(query).order_by('status')[int(start):end]
             filteredTotal = coaches.filter(query).count()
 
         logApiObject = LogAPIObject()
@@ -642,7 +642,8 @@ def GetCurrentRegister(request):
                         register_info = ReferenceCoach.objects.get(email=tcKimlikNo)
                     if register_info.status != 'Reddedildi':
                         return JsonResponse(
-                            {'status': 'Fail', 'msg': 'Başvurunuz Daha Önceden Alınmıştır.Başvuru Onay Aşamasında Olduğu İçin Güncelleme Yapılamamaktadır.Lütfen kayıt yapılan mail adresinize gelecek maili bekleyin.',
+                            {'status': 'Fail',
+                             'msg': 'Başvurunuz Daha Önceden Alınmıştır.Başvuru Onay Aşamasında Olduğu İçin Güncelleme Yapılamamaktadır.Lütfen kayıt yapılan mail adresinize gelecek maili bekleyin.',
                              'result': info,
                              })
                     date = register_info.birthDate
@@ -651,10 +652,6 @@ def GetCurrentRegister(request):
                         profileImage = register_info.profileImage.url
                     else:
                         profileImage = ''
-                    if register_info.belge:
-                        belge = register_info.belge.url
-                    else:
-                        belge = ''
                     if register_info.birthplace:
                         birthplace = register_info.birthplace
                     else:
@@ -675,6 +672,7 @@ def GetCurrentRegister(request):
                         country = register_info.country.name
                     else:
                         country = ''
+
                     if register_info.kademe_definition:
                         kademe_definition = register_info.kademe_definition.name
                     else:
@@ -683,6 +681,42 @@ def GetCurrentRegister(request):
                         kademe_brans = register_info.kademe_brans.title
                     else:
                         kademe_brans = ''
+                    if register_info.belge:
+                        belge = register_info.belge.url
+                    else:
+                        belge = ''
+
+                    if register_info.kademe_definition2:
+                        kademe_definition2 = register_info.kademe_definition2.name
+                    else:
+                        kademe_definition2 = ''
+                    if register_info.kademe_brans2:
+                        kademe_brans2 = register_info.kademe_brans2.title
+                    else:
+                        kademe_brans2 = ''
+                    if register_info.belge2:
+                        belge2 = register_info.belge2.url
+                    else:
+                        belge2 = ''
+
+                    if register_info.vize_brans:
+                        vize_brans = register_info.vize_brans.title
+                    else:
+                        vize_brans = ''
+                    if register_info.dekont:
+                        dekont = register_info.dekont.url
+                    else:
+                        dekont = ''
+
+                    if register_info.vize_brans2:
+                        vize_brans2 = register_info.vize_brans2.title
+                    else:
+                        vize_brans2 = ''
+                    if register_info.dekont2:
+                        dekont2 = register_info.dekont2.url
+                    else:
+                        dekont2 = ''
+
                     if register_info.kademe_belge:
                         kademe_belge = register_info.kademe_belge.url
                     else:
@@ -691,10 +725,6 @@ def GetCurrentRegister(request):
                         sgk = register_info.sgk.url
                     else:
                         sgk = ''
-                    if register_info.dekont:
-                        dekont = register_info.dekont.url
-                    else:
-                        dekont = ''
                     if register_info.definition:
                         definition = register_info.definition
                     else:
@@ -718,7 +748,8 @@ def GetCurrentRegister(request):
                     info['last_name'] = register_info.last_name
                     info['birthplace'] = birthplace
                     info['iban'] = iban
-                    info['belge'] = belge
+                    info['kademe_belge'] = kademe_belge
+                    info['sgk'] = sgk
                     info['birthDate'] = birthDate
                     info['gender'] = register_info.gender
                     info['club'] = club
@@ -728,12 +759,22 @@ def GetCurrentRegister(request):
                     info['city'] = city
                     info['phoneNumber2'] = phoneNumber2
                     info['address'] = address
+
                     info['kademe_definition'] = kademe_definition
-                    info['kademe_belge'] = kademe_belge
-                    info['sgk'] = sgk
-                    info['dekont'] = dekont
-                    info['definition'] = definition
                     info['kademe_brans'] = kademe_brans
+                    info['belge'] = belge
+
+                    info['kademe_definition2'] = kademe_definition2
+                    info['kademe_brans2'] = kademe_brans2
+                    info['belge2'] = belge2
+
+                    info['vize_brans'] = vize_brans
+                    info['dekont'] = dekont
+
+                    info['vize_brans2'] = vize_brans2
+                    info['dekont2'] = dekont2
+
+                    info['definition'] = definition
                     info['tc'] = register_info.tc
 
                 if info:
@@ -768,11 +809,11 @@ class GetReferenceReferee(APIView):
         tc = request.data['columns[4][search][value]']
         status = request.data['columns[5][search][value]']
 
-        referees = ReferenceReferee.objects.filter(isDeleted=False).order_by('-status')
+        referees = ReferenceReferee.objects.filter(isDeleted=False).order_by('status')
         count = referees.count()
 
         if not (first_name or last_name or email or tc or status or globalSearch):
-            all_objects = referees.order_by('-status')[int(start):end]
+            all_objects = referees.order_by('status')[int(start):end]
             filteredTotal = referees.count()
         else:
             query = Q()
@@ -792,7 +833,7 @@ class GetReferenceReferee(APIView):
             if status:
                 query &= Q(status__icontains=status)
 
-            all_objects = referees.filter(query).order_by('-status')[int(start):end]
+            all_objects = referees.filter(query).order_by('status')[int(start):end]
             filteredTotal = referees.filter(query).count()
 
         logApiObject = LogAPIObject()
@@ -814,15 +855,30 @@ def GetCurrentRegisterReferee(request):
             if request.method == 'POST':
                 tcKimlikNo = request.POST['tcKimlikNo']
                 info = 'ilk kayıt'
-                if ReferenceReferee.objects.filter(tc=tcKimlikNo):
-                    referee = ReferenceReferee.objects.get(tc=tcKimlikNo)
+                if ReferenceReferee.objects.filter(tc=tcKimlikNo) or ReferenceReferee.objects.filter(email=tcKimlikNo):
+                    if ReferenceReferee.objects.filter(tc=tcKimlikNo).count() > 1 or ReferenceReferee.objects.filter(
+                            email=tcKimlikNo).count() > 1:
+                        return JsonResponse(
+                            {'status': 'Fail',
+                             'msg': 'Sistemde birden fazla kaydınız bulunmaktadır. Lütfen yetkili ile görüşünüz.',
+                             'result': info,
+                             })
+                    if ReferenceReferee.objects.filter(tc=tcKimlikNo):
+                        referee = ReferenceReferee.objects.get(tc=tcKimlikNo)
+                    if ReferenceReferee.objects.filter(email=tcKimlikNo):
+                        referee = ReferenceReferee.objects.get(email=tcKimlikNo)
                     if referee.status != 'Reddedildi':
                         return JsonResponse(
-                            {'status': 'Fail', 'msg': 'Güncellenecek kaydınız bulunmamaktadır.',
+                            {'status': 'Fail',
+                             'msg': 'Başvurunuz Daha Önceden Alınmıştır.Başvuru Onay Aşamasında Olduğu İçin Güncelleme Yapılamamaktadır.Lütfen kayıt yapılan mail adresinize gelecek maili bekleyin.',
                              'result': info,
                              })
                     date = referee.birthDate
                     birthDate = datetime.datetime.strptime(str(date), "%Y-%m-%d").strftime("%d-%m-%Y")
+
+                    date2 = referee.gradeDate
+                    gradeDate = datetime.datetime.strptime(str(date2), "%Y-%m-%d").strftime("%d-%m-%Y")
+
                     if referee.profileImage:
                         profileImage = referee.profileImage.url
                     else:
@@ -879,6 +935,10 @@ def GetCurrentRegisterReferee(request):
                         address = referee.address
                     else:
                         address = ''
+                    if referee.gradeNo:
+                        gradeNo = referee.gradeNo
+                    else:
+                        gradeNo = ''
 
                     info = {}
                     info['profilImage'] = profileImage
@@ -900,6 +960,8 @@ def GetCurrentRegisterReferee(request):
                     info['sgk'] = sgk
                     info['dekont'] = dekont
                     info['definition'] = definition
+                    info['gradeNo'] = gradeNo
+                    info['gradeDate'] = gradeDate
 
                 if info:
                     return JsonResponse({'status': 'Success',

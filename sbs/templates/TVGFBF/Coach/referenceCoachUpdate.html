@@ -182,7 +182,7 @@
                 {% csrf_token %}
                 <div class="row">
 
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                         <div class="card card-info card-outline">
                             <div class="card-header with-border">
                                 <h3 class="card-title">Kişi Bilgileri </h3>
@@ -215,24 +215,23 @@
                                         </div>
 
                                     </div>
-                                    <div class="col-lg-6">
-
-
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Ad</label>
                                             <input type="text" name="firstNameUpdate" class="form-control "
                                                    value="{{ currentCoach.first_name }}"
                                                    required="required" maxlength="30" id="firstNameUpdate">
                                         </div>
-
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Soyad</label>
                                             <input type="text" name="lastNameUpdate" class="form-control "
                                                    value="{{ currentCoach.last_name }}"
                                                    required="required" maxlength="150" id="lastNameUpdate">
                                         </div>
-
-
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Doğum Yeri</label>
                                             <input type="text" name="birthPlaceUpdate" class="form-control "
@@ -241,7 +240,8 @@
                                                     {% endif %} maxlength="120"
                                                    id="birthPlaceUpdate" required="required">
                                         </div>
-
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Cinsiyet</label>
                                             <select name="genderUpdate" required="required"
@@ -258,6 +258,8 @@
 
                                             </select>
                                         </div>
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
 
                                             <label> İban Adresi</label>
@@ -267,9 +269,9 @@
                                                    value="{{ currentCoach.iban }}" required="required" maxlength="120"
                                                    inputmode="text">
                                         </div>
-
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-
                                             <label> Çalıştığı Yer/Kurum</label>
                                             <input type="text" name="workplaceUpdate" id="workplaceUpdate"
                                                    class="form-control  workplace"
@@ -277,10 +279,9 @@
                                                    maxlength="120"
                                                    inputmode="text">
                                         </div>
-
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> T.C.</label>
                                             <input type="text" name="tcUpdate" class="form-control "
@@ -289,6 +290,8 @@
                                                    value="{{ currentCoach.tc }}"
                                                    required="required" maxlength="120">
                                         </div>
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Anne Adı</label>
                                             <input type="text" name="motherNameUpdate" class="form-control "
@@ -297,8 +300,8 @@
                                                     {% endif %}
                                                    maxlength="150" id="motherNameUpdate">
                                         </div>
-
-
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Baba Adı</label>
                                             <input type="text" name="fatherNameUpdate" class="form-control "
@@ -307,8 +310,8 @@
                                                     {% endif %}
                                                    maxlength="150" id="fatherNameUpdate">
                                         </div>
-
-
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label>Doğum Tarihi</label>
                                             <input type="text" name="birthDateUpdate"
@@ -319,17 +322,8 @@
                                                    data-inputmask-inputformat="dd/mm/yyyy"
                                                    data-mask="" inputmode="numeric" id="birthDateUpdate">
                                         </div>
-
-                                        <div class="form-group">
-                                            <label for="belgeUpdate">Antrenör Belgesi</label>
-                                            {% if currentCoach.belge %}
-                                                <p>Şu anki: <a id="updateBelgeValue"
-                                                               href="{{ currentCoach.belge.url }}">{{ currentCoach.belge }}</a>
-                                                </p>
-                                            {% endif %}
-                                            <input id="belgeUpdate" class="form-control" type="file"
-                                                   name="belgeUpdate"/>
-                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label for="club">Kayıtlı Olduğunuz Kulüp</label>
                                             <select id="club" name="clubUpdate"
@@ -347,24 +341,43 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
+                                    </div>
 
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label> Antrenör Sözleşme Belgesi</label>
+                                            {% if currentCoach.kademe_belge %}
+                                                <p>Şu anki: <a id="kademeBelgeUpdateValue"
+                                                               href="{{ currentCoach.kademe_belge.url }}">{{ currentCoach.kademe_belge }}</a>
+                                                </p>
+                                            {% endif %}
+                                            <input type="file" name="kademeBelgeUpdate" id="kademeBelgeUpdate">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label> SGK/Bağ-Kur Belgesi</label>
+                                            {% if currentCoach.sgk %}
+                                                <p>Şu anki: <a id="sgkUpdateValue"
+                                                               href="{{ currentCoach.sgk.url }}">{{ currentCoach.sgk }}</a>
+                                                </p>
+                                            {% endif %}
+                                            <input type="file" name="sgkUpdate" id="sgkUpdate">
+                                        </div>
                                     </div>
 
                                 </div>
                             </div>
-
-
                         </div>
-
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                         <div class="card card-info card-outline">
                             <div class="card-header with-border">
                                 <h3 class="card-title"> Kişi İletişim Bilgileri</h3>
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Email</label>
                                             <input type="text" name="emailUpdate" class="form-control "
@@ -372,6 +385,8 @@
                                                    maxlength="254" id="emailUpdate"
                                                    value="{{ currentCoach.email }}">
                                         </div>
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Cep Telefonu</label>
                                             <input type="text" name="phoneNumberUpdate" class="form-control "
@@ -379,6 +394,8 @@
                                                    maxlength="120" id="phoneNumberUpdate"
                                                    value="{{ currentCoach.phoneNumber }}">
                                         </div>
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Sabit Telefon</label>
                                             <input type="text" name="phoneNumber2Update" class="form-control "
@@ -388,7 +405,7 @@
                                                     {% endif %}>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Ülke</label>
                                             <select id="countryUpdate" name="countryUpdate" required="required"
@@ -405,6 +422,8 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> İl</label>
                                             <select id="cityUpdate" name="cityUpdate" required="required"
@@ -421,6 +440,8 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label> Posta Kodu</label>
                                             <input type="text" name="postalCodeUpdate" class="form-control "
@@ -447,70 +468,147 @@
 
                         <div class="card card-info card-outline">
                             <div class="card-header with-border">
-                                <h3 class="card-title"> Kademe Bilgileri</h3>
+                                <h3 class="card-title"> Kokart Bilgileri</h3>
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label> Kademe</label>
-                                            <select id="gradeUpdate" name="gradeUpdate" required="required"
-                                                    class="form-control select2 select2-hidden-accessible"
-                                                    style="width: 100%;"
-                                                    data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                                <option value="">Seçiniz</option>
-                                                {% if currentGrade %}
-                                                    <option selected="selected"
-                                                            value="{{ currentGrade.uuid }}">{{ currentGrade.name }}</option>
-                                                {% endif %}
-                                                {% for grade in grades %}
-                                                    <option value="{{ grade.uuid }}">{{ grade.name }}</option>
-                                                {% endfor %}
-                                            </select>
+                                    {% if currentCoach.kademe_definition or currentCoach.kademe_brans or currentCoach.belge %}
+                                        <div class="col-lg-12">
+                                            <div class="card card-info card-outline">
+                                                <div class="card-header with-border">
+                                                    <h3 class="card-title"> {{ currentCoach.kademe_brans.title }} KOKART
+                                                        BİLGİLERİ</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group">
+                                                                <label> Kademe</label>
+                                                                <select id="gradeUpdateVucut" name="gradeUpdateVucut"
+                                                                        required="required"
+                                                                        class="form-control select2 select2-hidden-accessible"
+                                                                        style="width: 100%;"
+                                                                        data-select2-id="1" tabindex="-1"
+                                                                        aria-hidden="true">
+                                                                    <option value="">Seçiniz</option>
+                                                                    {% if currentCoach.kademe_definition %}
+                                                                        <option selected="selected"
+                                                                                value="{{ currentCoach.kademe_definition.uuid }}">{{ currentCoach.kademe_definition.name }}</option>
+                                                                    {% endif %}
+                                                                    {% for grade in grades %}
+                                                                        <option value="{{ grade.uuid }}">{{ grade.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group">
+                                                                <label> Branş</label>
+                                                                <select id="branchUpdateVucut" name="branchUpdateVucut"
+                                                                        required="required"
+                                                                        class="form-control select2 select2-hidden-accessible"
+                                                                        style="width: 100%;"
+                                                                        data-select2-id="1" tabindex="-1"
+                                                                        aria-hidden="true">
+                                                                    <option value="">Seçiniz</option>
+                                                                    {% if currentCoach.kademe_brans %}
+                                                                        <option selected="selected"
+                                                                                value="{{ currentCoach.kademe_brans.uuid }}">{{ currentCoach.kademe_brans.title }}</option>
+                                                                    {% endif %}
+                                                                    {% for branch in branchs %}
+                                                                        <option value="{{ branch.uuid }}">{{ branch.title }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group">
+                                                                <label for="belgeUpdateVucut">Antrenör Belgesi</label>
+                                                                {% if currentCoach.belge %}
+                                                                    <p>Şu anki: <a id="updateBelgeValueVucut"
+                                                                                   target="_blank"
+                                                                                   href="{{ currentCoach.belge.url }}">{{ currentCoach.belge }}</a>
+                                                                    </p>
+                                                                {% endif %}
+                                                                <input id="belgeUpdateVucut" class="form-control"
+                                                                       type="file"
+                                                                       name="belgeUpdateVucut"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label> Branş</label>
-                                            <select id="branchUpdate" name="branchUpdate" required="required"
-                                                    class="form-control select2 select2-hidden-accessible"
-                                                    style="width: 100%;"
-                                                    data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                                <option value="">Seçiniz</option>
-                                                {% if currentCoach.kademe_brans %}
-                                                    <option selected="selected"
-                                                            value="{{ currentCoach.kademe_brans.uuid }}">{{ currentCoach.kademe_brans.title }}</option>
-                                                {% endif %}
-                                                {% for branch in branchs %}
-                                                    <option value="{{ branch.uuid }}">{{ branch.title }}</option>
-                                                {% endfor %}
-                                            </select>
+                                    {% endif %}
+                                    {% if currentCoach.kademe_definition2 or currentCoach.kademe_brans2 or currentCoach.belge2 %}
+                                        <div class="col-lg-12">
+                                            <div class="card card-info card-outline">
+                                                <div class="card-header with-border">
+                                                    <h3 class="card-title"> {{ currentCoach.kademe_brans2.title }}
+                                                        KOKART BİLGİLERİ</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group">
+                                                                <label> Kademe</label>
+                                                                <select id="gradeUpdateBilek" name="gradeUpdateBilek"
+                                                                        required="required"
+                                                                        class="form-control select2 select2-hidden-accessible"
+                                                                        style="width: 100%;"
+                                                                        data-select2-id="1" tabindex="-1"
+                                                                        aria-hidden="true">
+                                                                    <option value="">Seçiniz</option>
+                                                                    {% if currentCoach.kademe_definition2 %}
+                                                                        <option selected="selected"
+                                                                                value="{{ currentCoach.kademe_definition2.uuid }}">{{ currentCoach.kademe_definition2.name }}</option>
+                                                                    {% endif %}
+                                                                    {% for grade in grades2 %}
+                                                                        <option value="{{ grade.uuid }}">{{ grade.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group">
+                                                                <label> Branş</label>
+                                                                <select id="branchUpdateBilek" name="branchUpdateBilek"
+                                                                        required="required"
+                                                                        class="form-control select2 select2-hidden-accessible"
+                                                                        style="width: 100%;"
+                                                                        data-select2-id="1" tabindex="-1"
+                                                                        aria-hidden="true">
+                                                                    <option value="">Seçiniz</option>
+                                                                    {% if currentCoach.kademe_brans2 %}
+                                                                        <option selected="selected"
+                                                                                value="{{ currentCoach.kademe_brans2.uuid }}">{{ currentCoach.kademe_brans2.title }}</option>
+                                                                    {% endif %}
+                                                                    {% for branch in branchs2 %}
+                                                                        <option value="{{ branch.uuid }}">{{ branch.title }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group">
+                                                                <label for="belgeUpdateBilek">Antrenör Belgesi</label>
+                                                                {% if currentCoach.belge2 %}
+                                                                    <p>Şu anki: <a id="updateBelgeValueBilek"
+                                                                                   target="_blank"
+                                                                                   href="{{ currentCoach.belge2.url }}">{{ currentCoach.belge2 }}</a>
+                                                                    </p>
+                                                                {% endif %}
+                                                                <input id="belgeUpdateBilek" class="form-control"
+                                                                       type="file"
+                                                                       name="belgeUpdateBilek"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label> Antrenör Sözleşme Belgesi</label>
-                                            {% if currentCoach.kademe_belge %}
-                                                <p>Şu anki: <a id="kademeBelgeUpdateValue"
-                                                               href="{{ currentCoach.kademe_belge.url }}">{{ currentCoach.kademe_belge }}</a>
-                                                </p>
-                                            {% endif %}
-                                            <input type="file" name="kademeBelgeUpdate" id="kademeBelgeUpdate">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label> SGK/Bağ-Kur Belgesi</label>
-                                            {% if currentCoach.sgk %}
-                                                <p>Şu anki: <a id="sgkUpdateValue"
-                                                               href="{{ currentCoach.sgk.url }}">{{ currentCoach.sgk }}</a>
-                                                </p>
-                                            {% endif %}
-                                            <input type="file" name="sgkUpdate" id="sgkUpdate">
-                                        </div>
-                                    </div>
+                                    {% endif %}
                                 </div>
-
                             </div>
 
                         </div>
@@ -521,29 +619,117 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <input name="checkDekont" id="checkDekont" type="checkbox"
-                                                   onclick="dekontKontrol()"/>
-                                            <span style="color: red;">Vize ücretini ödemedim. 22 Temmuz 2022 ye kadar ödeyeceğim.</span>
+                                    {#                                    <div class="col-lg-6">#}
+                                    {#                                        <div class="form-group">#}
+                                    {#                                            <input name="checkDekont" id="checkDekont" type="checkbox"#}
+                                    {#                                                   onclick="dekontKontrol()"/>#}
+                                    {#                                            <span style="color: red;">Vize ücretini ödemedim. 22 Temmuz 2022 ye kadar ödeyeceğim.</span>#}
+                                    {#                                        </div>#}
+                                    {#                                    </div>#}
+                                    {% if currentCoach.vize_brans or currentCoach.dekont %}
+                                        <div class="col-lg-12">
+                                            <div class="card card-info card-outline">
+                                                <div class="card-header with-border">
+                                                    <h3 class="card-title"> {{ currentCoach.vize_brans.title }} VİZE
+                                                        BİLGİLERİ</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group">
+                                                                <label> Branş</label>
+                                                                <select id="visaBranchUpdateVucut"
+                                                                        name="visaBranchUpdateVucut"
+                                                                        required="required"
+                                                                        class="form-control select2 select2-hidden-accessible"
+                                                                        style="width: 100%;"
+                                                                        data-select2-id="1" tabindex="-1"
+                                                                        aria-hidden="true">
+                                                                    <option value="">Seçiniz</option>
+                                                                    {% if currentCoach.vize_brans %}
+                                                                        <option selected="selected"
+                                                                                value="{{ currentCoach.vize_brans.uuid }}">{{ currentCoach.vize_brans.title }}</option>
+                                                                    {% endif %}
+                                                                    {% for branch in visaBranchs %}
+                                                                        <option value="{{ branch.uuid }}">{{ branch.title }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group">
+                                                                <label> Vize Dekont</label>
+                                                                {% if currentCoach.dekont %}
+                                                                    <p>Şu anki: <a id="dekontUpdateValueVucut"
+                                                                                   target="_blank"
+                                                                                   href="{{ currentCoach.dekont.url }}">{{ currentCoach.dekont }}</a>
+                                                                    </p>
+                                                                {% endif %}
+                                                                <input type="file" name="dekontUpdateVucut"
+                                                                       id="dekontUpdateVucut"
+                                                                        {% if not currentCoach.dekont %}
+                                                                       required="required"
+                                                                        {% endif %}>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label> Vize Dekont</label>
-                                            {% if currentCoach.dekont %}
-                                                <p>Şu anki: <a id="dekontUpdateValue"
-                                                               href="{{ currentCoach.dekont.url }}">{{ currentCoach.dekont }}</a>
-                                                </p>
-                                            {% endif %}
-                                            <input type="file" name="dekontUpdate" id="dekontUpdate"
-                                                    {% if not currentCoach.dekont %}
-                                                   required="required"
-                                                    {% endif %}>
+                                    {% endif %}
+                                    {% if currentCoach.vize_brans2 or currentCoach.dekont2 %}
+                                        <div class="col-lg-12">
+                                            <div class="card card-info card-outline">
+                                                <div class="card-header with-border">
+                                                    <h3 class="card-title"> {{ currentCoach.vize_brans2.title }} VİZE
+                                                        BİLGİLERİ</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group">
+                                                                <label> Branş</label>
+                                                                <select id="visaBranchUpdateBilek"
+                                                                        name="visaBranchUpdateBilek"
+                                                                        required="required"
+                                                                        class="form-control select2 select2-hidden-accessible"
+                                                                        style="width: 100%;"
+                                                                        data-select2-id="1" tabindex="-1"
+                                                                        aria-hidden="true">
+                                                                    <option value="">Seçiniz</option>
+                                                                    {% if currentCoach.vize_brans2 %}
+                                                                        <option selected="selected"
+                                                                                value="{{ currentCoach.vize_brans2.uuid }}">{{ currentCoach.vize_brans2.title }}</option>
+                                                                    {% endif %}
+                                                                    {% for branch in visaBranchs2 %}
+                                                                        <option value="{{ branch.uuid }}">{{ branch.title }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group">
+                                                                <label> Vize Dekont</label>
+                                                                {% if currentCoach.dekont2 %}
+                                                                    <p>Şu anki: <a id="dekontUpdateValueBilek"
+                                                                                   href="{{ currentCoach.dekont2.url }}"
+                                                                                   target="_blank">{{ currentCoach.dekont2 }}</a>
+                                                                    </p>
+                                                                {% endif %}
+                                                                <input type="file" name="dekontUpdateBilek"
+                                                                       id="dekontUpdateBilek"
+                                                                        {% if not currentCoach.dekont2 %}
+                                                                       required="required"
+                                                                        {% endif %}>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    {% endif %}
                                 </div>
-
                             </div>
-
                         </div>
 
                     </div>

@@ -7,10 +7,9 @@ class CoachForm(ModelForm):
     class Meta:
         model = Coach
 
-        fields = ('sgk',)
+        fields = ('sgk', 'antrenorBelgesi', 'form')
         labels = {
-            'sgk': 'SGK Belgesi',
-
+            'sgk': 'SGK Belgesi', 'antrenorBelgesi': 'Antrenör Belgesi', 'form': 'Antrenör Sözleşme Belgesi'
 
         }
         widgets = {

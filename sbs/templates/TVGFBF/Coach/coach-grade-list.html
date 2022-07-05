@@ -49,6 +49,37 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfReject"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Reddedilme Açıklaması</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <label for="dateOfRejectDate">Tarih</label>
+                    <input type="date" name="dateOfRejectDate" id="dateOfRejectDate" class="form-control datemask"
+                           required="required" autocomplete="off">
+                    <label for="dateOfRejectText">Açıklama</label>
+                    <input type="text" name="dateOfRejectText" id="dateOfRejectText" class="form-control"
+                           required="required" placeholder="Reddedilme Sebebi">
+
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" id="btn-closereddet-reject">İptal</button>
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-gonder-reject"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
     <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
@@ -176,22 +207,6 @@
                 <div class="card card-info card-outline">
                     <div class="card-header with-border">
                         <h3 class="card-title">Kademe Listesi</h3>
-                        {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
-
-                            <button onclick="onay()" type="button" class="btn btn-outline-success btn-sm"
-                                    style="float: right">
-                                <i class="fa fa-check"></i>
-                                Hepsini Onayla
-                            </button>
-
-                            <button onclick="reddet()" type="button" class="btn btn-outline-danger btn-sm"
-                                    style="float: right;margin-right: 5px">
-                                <i class="fa fa-minus"></i>
-                                Hepsini Reddet
-                            </button>
-
-
-                        {% endif %}
                     </div>
 
                     <div class="card-body">
@@ -266,7 +281,7 @@
 
                                                     {% elif item == 'coach_grade_list_reject' %}
                                                         <div class="btn-group">
-                                                            <a href="{% url "sbs:coach_grade_list_reject" uuid=coachGrade.uuid %}"
+                                                            <a onclick="rejectGrade('{{ coachGrade.uuid }}')"
                                                                type="button" class="btn btn-outline-danger"
                                                                title="Reddet"><i
                                                                     class="fa fa-minus"></i>
@@ -545,6 +560,73 @@
                     });
                 }
 
+            })
+
+
+        }
+    </script>
+
+    <script>
+        function rejectGrade(id) {
+            debugger;
+            swal({
+                title: "Reddetmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                if (result.dismiss !== 'Evet') {
+                    $("#dateOfReject").on("shown.bs.modal", function (e) {
+
+                        $("#btn-gonder-reject").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:coach_grade_list_reject" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    uuid: id,
+                                    dateOfReject: $('#dateOfRejectDate').val(),
+                                    textOfReject: $('#dateOfRejectText').val(),
+
+
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Antrenör Kademesi Başarıyla Reddedildi !!',
+
+                                        })
+
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-reject').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
+                    });
+                }
             })
 
 

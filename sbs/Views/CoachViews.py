@@ -231,7 +231,7 @@ def return_add_coach(request):
                 coach.save()
 
                 clubDersbis = request.POST.get('club', None)
-                if clubDersbis:
+                if clubDersbis != 'noClub':
                     coachClub = Club.objects.get(derbis=clubDersbis)
                     coachClub.coachs.add(coach)
                     coachClub.save()
@@ -308,44 +308,43 @@ def coachUpdate(request, uuid):
         communication_form = CommunicationForm(request.POST or None, instance=communication)
 
         mail = request.POST.get('email')
-        # if mail != coach.user.email:
-        #
-        #     if User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-        #             email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-        #         email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
-        #         email=mail):
-        #         messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
-        #         return render(request, 'TVGFBF/Coach/update-coach.html',
-        #                       {'user_form': user_form, 'communication_form': communication_form,
-        #                        'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
-        #                        'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
-        #                    'url_name': url_name, })
+        if mail != coach.user.email:
+
+            if User.objects.filter(email=mail) or ReferenceCoach.objects.filter(
+                    email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
+                    email=mail):
+                messages.warning(request, 'Mail adresi başka bir kullanici tarafından kullanilmaktadir.')
+                return render(request, 'TVGFBF/Coach/update-coach.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'grades_form': grade_form, 'coach': coach,
+                               'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
+                               'url_name': url_name, 'clubs': clubs, 'coachclub': coachclub})
 
         tc = request.POST.get('tc')
-        # if tc != coach.person.tc:
-        #     if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
-        #             tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-        #         tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
-        #         messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
-        #         return render(request, 'TVGFBF/Coach/update-coach.html',
-        #                       {'user_form': user_form, 'communication_form': communication_form,
-        #                        'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
-        #                        'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
-        #                    'url_name': url_name, })
+        if tc != coach.person.tc:
+            if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(status=ReferenceCoach.DENIED).filter(
+                    tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
+                tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+                messages.warning(request, 'Tc kimlik numarasi sisteme kayıtlıdır. ')
+                return render(request, 'TVGFBF/Coach/update-coach.html',
+                              {'user_form': user_form, 'communication_form': communication_form,
+                               'person_form': person_form, 'grades_form': grade_form, 'coach': coach,
+                               'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
+                               'url_name': url_name, 'clubs': clubs, 'coachclub': coachclub})
 
         name = request.POST.get('first_name')
         surname = request.POST.get('last_name')
         year = request.POST.get('birthDate')
         year = year.split('/')
 
-        # client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
-        # if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
-        #     messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
-        #     return render(request, 'TVGFBF/Coach/update-coach.html',
-        #                   {'user_form': user_form, 'communication_form': communication_form,
-        #                    'person_form': person_form, 'grades_form': grade_form, 'coach': coach.pk,
-        #                    'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
-        #                    'url_name': url_name, })
+        client = Client('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL')
+        if not (client.service.TCKimlikNoDogrula(tc, name, surname, year[2])):
+            messages.warning(request, 'Tc kimlik numarasi ile isim  soyisim dogum yılı  bilgileri uyuşmamaktadır. ')
+            return render(request, 'TVGFBF/Coach/update-coach.html',
+                          {'user_form': user_form, 'communication_form': communication_form,
+                           'person_form': person_form, 'grades_form': grade_form, 'coach': coach,
+                           'personCoach': person, 'visa_form': visa_form, 'urls': urls, 'current_url': current_url,
+                           'url_name': url_name, 'clubs': clubs, 'coachclub': coachclub})
 
         if user_form.is_valid() and person_form.is_valid() and communication_form.is_valid():
 
@@ -367,7 +366,7 @@ def coachUpdate(request, uuid):
             if request.FILES.get('sgkUpdate'):
                 coach.sgk = request.FILES.get('sgkUpdate')
             if request.FILES.get('coachFileUpdate'):
-                coach.antrenorBelgesi = request.FILES.get('coachFileUpdate')
+                coach.form = request.FILES.get('coachFileUpdate')
             clubDersbis = request.POST.get('club', None)
             if not clubDersbis == 'noRegister':
                 coachClub = Club.objects.get(derbis=clubDersbis)
@@ -444,22 +443,16 @@ def add_coach_referee(request, uuid):
     url_name = Permission.objects.get(codename=current_url.url_name)
 
     if request.method == 'POST':
-        grade_form = GradeFormCoach(request.POST, request.FILES)
+        grade_form = GradeFormCoach(request.POST, request.FILES or None)
 
-        if grade_form.is_valid() and grade_form.cleaned_data['dekont'] is not None and request.POST.get(
+        if grade_form.is_valid() and request.POST.get(
                 'branch') is not None:
             grade = HavaLevel(definition=grade_form.cleaned_data['definition'],
-                              dekont=grade_form.cleaned_data['dekont'],
                               branch=grade_form.cleaned_data['branch'],
-                              form=grade_form.cleaned_data['form'])
+                              antrenorBelgesi=grade_form.cleaned_data['antrenorBelgesi'])
             grade.levelType = EnumFields.LEVELTYPE.GRADE
             grade.status = HavaLevel.WAITED
-            grade.isActive = True
             grade.save()
-            for item in coach.grades.all():
-                if item.branch == grade.branch:
-                    item.isActive = False
-                    item.save()
 
             coach.grades.add(grade)
             coach.save()
@@ -468,6 +461,8 @@ def add_coach_referee(request, uuid):
             log = general_methods.logwrite(request, request.user, log)
 
             messages.success(request, 'Kademe Başarıyla Eklenmiştir.')
+            if request.user.groups.filter(name='Antrenör'):
+                return redirect('sbs:updateProfileCoach')
             return redirect('sbs:update_coach', uuid=uuid)
 
         else:
@@ -501,6 +496,7 @@ def grade_approval(request):
                 date = request.POST['dateOfApproval']
                 approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
                 grade.approval_date = approvalDate
+                grade.reject_text = ''
                 grade.save()
 
                 log = str(coach.person.user.get_full_name()) + " Kademe onaylandi"
@@ -516,22 +512,34 @@ def grade_approval(request):
 
 
 @login_required
-def grade_reject(request, grade_uuid, coach_uuid):
+def grade_reject(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    grade = HavaLevel.objects.get(uuid=grade_uuid)
-    grade.status = HavaLevel.DENIED
-    grade.save()
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            grade = HavaLevel.objects.get(uuid=request.POST['grade_uuid'])
+            grade.status = grade.DENIED
+            date = request.POST['dateOfReject']
+            text = request.POST['textOfReject']
 
-    coach = Coach.objects.get(uuid=coach_uuid)
-    log = str(coach.person.user.get_full_name()) + " Kademe reddedildi"
-    log = general_methods.logwrite(request, request.user, log)
+            statusDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+            grade.approval_date = statusDate
+            grade.reject_text = text
+            grade.save()
 
-    messages.success(request, 'Kademe Reddedilmiştir')
-    return redirect('sbs:update_coach', uuid=coach_uuid)
+            coach = Coach.objects.get(uuid=request.POST['coach_uuid'])
+            log = str(coach.person.user.get_full_name()) + " Kademe reddedildi"
+            log = general_methods.logwrite(request, request.user, log)
+
+            return JsonResponse({'status': 'Success', 'messages': 'Kademe Başarıyla Reddedilmiştir'})
+        except HavaLevel.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
 @login_required
@@ -625,17 +633,11 @@ def add_visa_coach(request, uuid):
 
         try:
             if visa_form.is_valid():
-
                 visa = HavaLevel(dekont=visa_form.cleaned_data['dekont'], branch=visa_form.cleaned_data['branch'])
 
                 visa.definition = CategoryItem.objects.get(forWhichClazz='VISA_COACH')
                 visa.levelType = EnumFields.LEVELTYPE.VISA
                 visa.status = HavaLevel.WAITED
-                for item in coach.visa.all():
-                    if item.branch == visa.branch:
-                        item.isActive = False
-                        item.save()
-                visa.isActive = True
 
                 visa.save()
                 coach.visa.add(visa)
@@ -645,6 +647,8 @@ def add_visa_coach(request, uuid):
                 log = general_methods.logwrite(request, request.user, log)
 
                 messages.success(request, 'Vize Başarıyla Eklenmiştir.')
+                if request.user.groups.filter(name='Antrenör'):
+                    return redirect('sbs:updateProfileCoach')
                 return redirect('sbs:update_coach', uuid=uuid)
         except:
             messages.warning(request, 'Alanları Kontrol Ediniz')
@@ -672,6 +676,7 @@ def visa_approval(request):
                 date = request.POST['dateOfApproval']
                 approvalDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
                 visa.approval_date = approvalDate
+                visa.reject_text = ''
                 visa.save()
                 visa.isActive = True
                 coach = Coach.objects.filter(uuid=coach_uuid)
@@ -911,6 +916,7 @@ def gradeListApproval(request):
                             item.save()
                 grade.status = HavaLevel.APPROVED
                 grade.isActive = True
+                grade.reject_text = ''
                 grade.save()
 
                 return JsonResponse({'status': 'Success', 'messages': 'Kademe Onaylanmıştır.'})
@@ -923,17 +929,33 @@ def gradeListApproval(request):
 
 
 @login_required
-def gradeListReject(request, uuid):
+def gradeListReject(request):
     perm = general_methods.control_access(request)
 
     if not perm:
         logout(request)
         return redirect('accounts:login')
-    grade = HavaLevel.objects.get(uuid=uuid)
-    grade.status = HavaLevel.DENIED
-    grade.save()
-    messages.success(request, 'Kademe  Reddedilmiştir.')
-    return redirect('sbs:coach_grade_list')
+    if request.method == 'POST' and request.is_ajax():
+        try:
+            grade = HavaLevel.objects.get(uuid=request.POST['uuid'])
+            grade.status = grade.DENIED
+            date = request.POST['dateOfReject']
+            text = request.POST['textOfReject']
+
+            statusDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+            grade.approval_date = statusDate
+            grade.reject_text = text
+            grade.save()
+
+            log = str(grade.definition.name) + "     Antrenör kademe basvurusu reddedildi"
+            log = general_methods.logwrite(request, request.user, log)
+
+            return JsonResponse({'status': 'Success', 'messages': 'save successfully'})
+        except HavaLevel.DoesNotExist:
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+
+    else:
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
 def gradeListApprovalAll(request):
@@ -1040,6 +1062,7 @@ def visaListApproval(request):
                             item.isActive = False
                             item.save()
                 visa.isActive = True
+                visa.reject_text = ''
                 visa.save()
                 return JsonResponse({'status': 'Success', 'messages': 'Vize Onaylanmıştır.'})
             else:
@@ -1500,13 +1523,32 @@ def coachreferenceUpdate(request, uuid):
     currentCountry = currentCoach.country
     cities = City.objects.all().exclude(id=currentCoach.city.pk)
     currentCity = currentCoach.city
-    grades = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).exclude(
-        id=currentCoach.kademe_definition.pk).order_by('order')
+    if currentCoach.kademe_definition:
+        grades = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).exclude(
+            id=currentCoach.kademe_definition.pk).order_by('order')
+    else:
+        grades = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).order_by('order')
+    if currentCoach.kademe_definition2:
+        grades2 = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).exclude(
+            id=currentCoach.kademe_definition2.pk).order_by('order')
+    else:
+        grades2 = CategoryItem.objects.filter(forWhichClazz="COACH_GRADE", isDeleted=0).order_by('order')
     if currentCoach.kademe_brans:
         branchs = Branch.objects.filter(isDeleted=0).exclude(uuid=currentCoach.kademe_brans.uuid)
     else:
         branchs = Branch.objects.filter(isDeleted=0)
-    currentGrade = currentCoach.kademe_definition
+    if currentCoach.kademe_brans2:
+        branchs2 = Branch.objects.filter(isDeleted=0).exclude(uuid=currentCoach.kademe_brans2.uuid)
+    else:
+        branchs2 = Branch.objects.filter(isDeleted=0)
+    if currentCoach.vize_brans:
+        visaBranchs = Branch.objects.filter(isDeleted=0).exclude(uuid=currentCoach.vize_brans.uuid)
+    else:
+        visaBranchs = Branch.objects.filter(isDeleted=0)
+    if currentCoach.vize_brans2:
+        visaBranchs2 = Branch.objects.filter(isDeleted=0).exclude(uuid=currentCoach.vize_brans2.uuid)
+    else:
+        visaBranchs2 = Branch.objects.filter(isDeleted=0)
     if currentCoach.club:
         clubs = Club.objects.all().exclude(derbis__isnull=True).exclude(id=currentCoach.club.pk)
         currentClub = currentCoach.club
@@ -1518,12 +1560,8 @@ def coachreferenceUpdate(request, uuid):
             if request.method == 'POST':
                 # coach = ReferenceCoach.objects.get(uuid=uuid)
                 mail = request.POST.get('emailUpdate')
-                if ReferenceCoach.objects.exclude(uuid=currentCoach.uuid).filter(
-                        email=mail) or User.objects.filter(email=mail) or ReferenceCoach.objects.exclude(
-                    uuid=currentCoach.uuid).exclude(
-                    status=ReferenceCoach.DENIED).filter(
-                    email=mail) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                    email=mail) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(
+                if ReferenceCoach.objects.exclude(uuid=currentCoach.uuid).filter(email=mail) or User.objects.filter(
+                        email=mail) or ReferenceReferee.objects.filter(email=mail) or PreRegistration.objects.filter(
                     email=mail):
                     messages.warning(request, 'Mail adresi  sistemde  kayıtlıdır. ')
                     return render(request, 'TVGFBF/Coach/referenceCoachUpdate.html',
@@ -1531,19 +1569,20 @@ def coachreferenceUpdate(request, uuid):
                                    'urls': urls,
                                    'current_url': current_url, 'url_name': url_name, 'countries': countries,
                                    'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
-                                   'grades': grades, 'currentGrade': currentGrade, 'branchs': branchs, })
+                                   'grades': grades, 'branchs': branchs, 'visaBranchs': visaBranchs, 'grades2': grades2,
+                                   'branchs2': branchs2, 'visaBranchs2': visaBranchs2})
 
                 tc = request.POST.get('tcUpdate')
                 if Person.objects.filter(tc=tc) or ReferenceCoach.objects.exclude(uuid=currentCoach.uuid).filter(
-                        tc=tc) or ReferenceReferee.objects.exclude(status=ReferenceReferee.DENIED).filter(
-                    tc=tc) or PreRegistration.objects.exclude(status=PreRegistration.DENIED).filter(tc=tc):
+                        tc=tc) or ReferenceReferee.objects.filter(tc=tc) or PreRegistration.objects.filter(tc=tc):
                     messages.warning(request, 'Tc kimlik numarasi sistemde  kayıtlıdır. ')
                     return render(request, 'TVGFBF/Coach/referenceCoachUpdate.html',
                                   {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub,
                                    'urls': urls,
                                    'current_url': current_url, 'url_name': url_name, 'countries': countries,
                                    'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
-                                   'grades': grades, 'currentGrade': currentGrade, 'branchs': branchs, })
+                                   'grades': grades, 'branchs': branchs, 'visaBranchs': visaBranchs, 'grades2': grades2,
+                                   'branchs2': branchs2, 'visaBranchs2': visaBranchs2})
 
                 name = request.POST.get('firstNameUpdate')
                 surname = request.POST.get('lastNameUpdate')
@@ -1559,7 +1598,8 @@ def coachreferenceUpdate(request, uuid):
                                    'urls': urls,
                                    'current_url': current_url, 'url_name': url_name, 'countries': countries,
                                    'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
-                                   'grades': grades, 'currentGrade': currentGrade, 'branchs': branchs, })
+                                   'grades': grades, 'branchs': branchs, 'visaBranchs': visaBranchs, 'grades2': grades2,
+                                   'branchs2': branchs2, 'visaBranchs2': visaBranchs2})
 
                 if request.FILES.get('profileImageUpdate'):
                     currentCoach.profileImage = request.FILES.get('profileImageUpdate')
@@ -1579,8 +1619,6 @@ def coachreferenceUpdate(request, uuid):
                     currentCoach.club = Club.objects.get(derbis=request.POST.get('clubUpdate'))
                 elif request.POST.get('clubUpdate') == '':
                     currentCoach.club = None
-                if request.FILES.get('belgeUpdate'):
-                    currentCoach.belge = request.FILES.get('belgeUpdate')
                 currentCoach.email = request.POST.get('emailUpdate')
                 currentCoach.phoneNumber = request.POST.get('phoneNumberUpdate')
                 currentCoach.phoneNumber2 = request.POST.get('phoneNumber2Update')
@@ -1589,18 +1627,41 @@ def coachreferenceUpdate(request, uuid):
                 if City.objects.filter(uuid=request.POST.get('cityUpdate')):
                     currentCoach.city = City.objects.get(uuid=request.POST.get('cityUpdate'))
                 currentCoach.address = request.POST.get('addressUpdate')
-                if CategoryItem.objects.filter(uuid=request.POST.get('gradeUpdate')):
-                    currentCoach.kademe_definition = CategoryItem.objects.get(uuid=request.POST.get('gradeUpdate'))
-                if Branch.objects.filter(uuid=request.POST.get('branchUpdate')):
-                    currentCoach.kademe_brans = Branch.objects.get(uuid=request.POST.get('branchUpdate'))
+
+                if request.POST.get('gradeUpdateVucut'):
+                    currentCoach.kademe_definition = CategoryItem.objects.get(uuid=request.POST.get('gradeUpdateVucut'))
+                if request.POST.get('branchUpdateVucut'):
+                    currentCoach.kademe_brans = Branch.objects.get(uuid=request.POST.get('branchUpdateVucut'))
+                if request.FILES.get('belgeUpdateVucut'):
+                    currentCoach.belge = request.FILES.get('belgeUpdateVucut')
+
+                if request.POST.get('gradeUpdateBilek'):
+                    currentCoach.kademe_definition2 = CategoryItem.objects.get(
+                        uuid=request.POST.get('gradeUpdateBilek'))
+                if request.POST.get('branchUpdateBilek'):
+                    currentCoach.kademe_brans2 = Branch.objects.get(uuid=request.POST.get('branchUpdateBilek'))
+                if request.FILES.get('belgeUpdateBilek'):
+                    currentCoach.belge2 = request.FILES.get('belgeUpdateBilek')
+
+                if request.POST.get('visaBranchUpdateVucut'):
+                    currentCoach.vize_brans = Branch.objects.get(uuid=request.POST.get('visaBranchUpdateVucut'))
+                if request.FILES.get('dekontUpdateVucut'):
+                    currentCoach.dekont = request.FILES.get('dekontUpdateVucut')
+
+                if request.POST.get('visaBranchUpdateBilek'):
+                    currentCoach.vize_brans2 = Branch.objects.get(uuid=request.POST.get('visaBranchUpdateBilek'))
+                if request.FILES.get('dekontUpdateBilek'):
+                    currentCoach.dekont2 = request.FILES.get('dekontUpdateBilek')
+
+                # if request.POST.get('checkDekont'):
+                #     currentCoach.dekont = None
+                # elif request.FILES.get('dekontUpdate'):
+                #     currentCoach.dekont = request.FILES.get('dekontUpdate')
+
                 if request.FILES.get('kademeBelgeUpdate'):
                     currentCoach.kademe_belge = request.FILES.get('kademeBelgeUpdate')
                 if request.FILES.get('sgkUpdate'):
                     currentCoach.sgk = request.FILES.get('sgkUpdate')
-                if request.POST.get('checkDekont'):
-                    currentCoach.dekont = None
-                elif request.FILES.get('dekontUpdate'):
-                    currentCoach.dekont = request.FILES.get('dekontUpdate')
                 currentCoach.save()
 
                 messages.success(request, 'Antrenör Başvurusu Güncellendi')
@@ -1610,14 +1671,16 @@ def coachreferenceUpdate(request, uuid):
                           {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub, 'urls': urls,
                            'current_url': current_url, 'url_name': url_name, 'countries': countries,
                            'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
-                           'grades': grades, 'currentGrade': currentGrade, 'branchs': branchs, })
+                           'grades': grades, 'branchs': branchs, 'visaBranchs': visaBranchs, 'grades2': grades2,
+                           'branchs2': branchs2, 'visaBranchs2': visaBranchs2})
     except Exception as e:
         messages.warning(request, 'HATA !! ' + ' ' + str(e))
         return render(request, 'TVGFBF/Coach/referenceCoachUpdate.html',
                       {'currentCoach': currentCoach, 'clubs': clubs, 'currentClub': currentClub, 'urls': urls,
                        'current_url': current_url, 'url_name': url_name, 'countries': countries,
                        'currentCountry': currentCountry, 'cities': cities, 'currentCity': currentCity,
-                       'grades': grades, 'currentGrade': currentGrade, 'branchs': branchs, })
+                       'grades': grades, 'branchs': branchs, 'visaBranchs': visaBranchs, 'grades2': grades2,
+                       'branchs2': branchs2, 'visaBranchs2': visaBranchs2})
 
 
 @login_required
@@ -1661,6 +1724,7 @@ def approvelReferenceCoach(request):
                     person.birthDate = referenceCoach.birthDate
                     person.birthplace = referenceCoach.birthplace
                     person.bloodType = referenceCoach.bloodType
+                    person.iban = referenceCoach.iban
                     if referenceCoach.gender == 'Erkek':
                         person.gender = Person.MALE
                     else:
@@ -1678,33 +1742,74 @@ def approvelReferenceCoach(request):
                     communication.country = referenceCoach.country
                     communication.save()
 
-                    coach = Coach(person=person, communication=communication, sgk=referenceCoach.sgk)
-                    coach.iban = referenceCoach.iban
+                    coach = Coach(person=person, communication=communication, sgk=referenceCoach.sgk,
+                                  form=referenceCoach.kademe_belge)
                     coach.workplace = referenceCoach.workplace
                     coach.save()
 
-                    grade = HavaLevel(definition=referenceCoach.kademe_definition,
-                                      form=referenceCoach.kademe_belge)
+                    if referenceCoach.kademe_definition and referenceCoach.belge and referenceCoach.kademe_brans:
+                        grade = HavaLevel(definition=referenceCoach.kademe_definition,
+                                          antrenorBelgesi=referenceCoach.belge,
+                                          branch=referenceCoach.kademe_brans)
+                        grade.levelType = EnumFields.LEVELTYPE.GRADE
+                        grade.status = HavaLevel.APPROVED
+                        grade.isActive = True
+                        grade.approval_date = approvalDate
+                        grade.save()
+                        coach.grades.add(grade)
+                    else:
+                        if referenceCoach.kademe_definition or referenceCoach.belge or referenceCoach.kademe_brans:
+                            messages.warning(request, 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.')
+                            return JsonResponse(
+                                {'status': 'Fail',
+                                 'msg': 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.'})
 
-                    grade.levelType = EnumFields.LEVELTYPE.GRADE
-                    grade.status = HavaLevel.APPROVED
-                    grade.isActive = True
-                    grade.save()
-                    coach.grades.add(grade)
+                    if referenceCoach.kademe_definition2 and referenceCoach.belge2 and referenceCoach.kademe_brans2:
+                        grade2 = HavaLevel(definition=referenceCoach.kademe_definition2,
+                                           antrenorBelgesi=referenceCoach.belge2,
+                                           branch=referenceCoach.kademe_brans2)
+                        grade2.levelType = EnumFields.LEVELTYPE.GRADE
+                        grade2.status = HavaLevel.APPROVED
+                        grade2.isActive = True
+                        grade2.approval_date = approvalDate
+                        grade2.save()
+                        coach.grades.add(grade2)
+                    else:
+                        if referenceCoach.kademe_definition2 or referenceCoach.belge2 or referenceCoach.kademe_brans2:
+                            messages.warning(request, 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.')
+                            return JsonResponse(
+                                {'status': 'Fail',
+                                 'msg': 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.'})
 
-                    if referenceCoach.dekont:
-                        visa = HavaLevel(dekont=referenceCoach.dekont)
+                    if referenceCoach.vize_brans and referenceCoach.dekont:
+                        visa = HavaLevel(dekont=referenceCoach.dekont, branch=referenceCoach.vize_brans)
                         visa.levelType = EnumFields.LEVELTYPE.VISA
                         visa.status = HavaLevel.APPROVED
                         visa.isActive = True
+                        visa.approval_date = approvalDate
                         visa.save()
+                        coach.visa.add(visa)
                     else:
-                        visa = HavaLevel()
-                        visa.levelType = EnumFields.LEVELTYPE.VISA
-                        visa.status = HavaLevel.APPROVED
-                        visa.isActive = False
-                        visa.save()
-                    coach.visa.add(visa)
+                        if referenceCoach.vize_brans or referenceCoach.dekont:
+                            messages.warning(request, 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.')
+                            return JsonResponse(
+                                {'status': 'Fail',
+                                 'msg': 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.'})
+
+                    if referenceCoach.vize_brans2 and referenceCoach.dekont2:
+                        visa2 = HavaLevel(dekont=referenceCoach.dekont2, branch=referenceCoach.vize_brans2)
+                        visa2.levelType = EnumFields.LEVELTYPE.VISA
+                        visa2.status = HavaLevel.APPROVED
+                        visa2.isActive = True
+                        visa2.approval_date = approvalDate
+                        visa2.save()
+                        coach.visa.add(visa2)
+                    else:
+                        if referenceCoach.vize_brans2 or referenceCoach.dekont2:
+                            messages.warning(request, 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.')
+                            return JsonResponse(
+                                {'status': 'Fail',
+                                 'msg': 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.'})
 
                     coach.save()
 

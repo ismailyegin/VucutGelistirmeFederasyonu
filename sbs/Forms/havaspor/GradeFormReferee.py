@@ -18,14 +18,22 @@ class GradeFormReferee(ModelForm):
         model = HavaLevel
 
         fields = (
-             'definition', 'form', 'branch')
+            'definition', 'branch', 'gradeDate', 'gradeNo', 'referee_file')
 
-        labels = {'branch': 'Branş','form':'Kademe Belgesi'}
+        labels = {'gradeDate': 'Hak Kazanma Tarihi', 'branch': 'Branş', 'gradeNo': 'Kokart No',
+                  'referee_file': 'Hakem Belgesi'}
 
         widgets = {
 
-
             'branch': forms.Select(attrs={'class': 'form-control select2 select2-hidden-accessible',
                                           'style': 'width: 100%; '}),
+
+            'gradeDate': forms.DateInput(
+                attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
+                       'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
+                       "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
+
+            'gradeNo': forms.TextInput(
+                attrs={'class': 'form-control ', 'required': 'required'}),
 
         }

@@ -262,8 +262,9 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="form-group col-lg-12">
-                                <label for="tc">TC Kimlik Numarası</label>
-                                <input class="form-control" type="text" id="tcKimlikNo" name="tcKimlikNo">
+                                <label for="tc">TC Kimlik Numarası/Email</label>
+                                <input class="form-control" type="text" id="tcKimlikNo" name="tcKimlikNo"
+                                       placeholder="Lütfen TC kimlik numaranızı ya da email adresinizi giriniz">
                             </div>
                         </div>
                     </div>
@@ -352,13 +353,41 @@
                                         {{ preRegistrationform.birthDate }}
                                     </div>
 
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.referee_file.label }}</label>
-                                        {{ preRegistrationform.referee_file }}
-                                    </div>
-
                                 </div>
 
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.grade_referee_contract.label }}</label>
+                                                {{ preRegistrationform.grade_referee_contract }} <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> Hiçbir Tesiste Çalışmayan Antrenör İseniz
+                                                    Taahhüt Formunu <a
+                                                        href="\static\images\taahhut.pdf" download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
+                                                <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis
+                                                    Sahipleri Taahhut Formunu <a
+                                                        href="\static\images\taahhut_isletme.pdf"
+                                                        download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.sgk.label }}</label>
+                                                {{ preRegistrationform.sgk }} <br>
+                                                <small><i class="fa fa-tags"></i> e-Devlet üzerinden alınan 4A işe giriş
+                                                    çıkış bildirgesi</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
@@ -424,138 +453,64 @@
                 <div class="col-lg-12">
                     <div class="card card-info card-outline">
                         <div class="card-header with-border">
-                            <h3 class="card-title"> Kademe Bilgileri </h3>
+                            <h3 class="card-title"> Kokart Bilgileri </h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <div class="form-group">
                                         <label> {{ preRegistrationform.kademe_definition.label }}</label>
                                         {{ preRegistrationform.kademe_definition }}
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.branch.label }}</label>
+                                        {{ preRegistrationform.branch }}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
                                     <div class="form-group">
                                         <label> {{ preRegistrationform.gradeDate.label }}</label>
                                         {{ preRegistrationform.gradeDate }}
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label> {{ preRegistrationform.grade_referee_contract.label }}</label>
-                                                {{ preRegistrationform.grade_referee_contract }} <br>
-                                                <small>
-                                                    <i class="fa fa-link"></i> Hiçbir Tesiste Çalışmayan Antrenör İseniz
-                                                    Taahhüt Formunu <a
-                                                        href="\static\images\taahhut.pdf" download="">buradan</a>
-                                                    İmzalayıp Gönderebilirsiniz.
-                                                </small>
-                                                <br>
-                                                <small>
-                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis
-                                                    Sahipleri Taahhut Formunu <a
-                                                        href="\static\images\taahhut_isletme.pdf"
-                                                        download="">buradan</a>
-                                                    İmzalayıp Gönderebilirsiniz.
-                                                </small>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label> {{ preRegistrationform.sgk.label }}</label>
-                                                {{ preRegistrationform.sgk }} <br>
-                                                <small><i class="fa fa-tags"></i> e-Devlet üzerinden alınan 4A işe giriş
-                                                    çıkış bildirgesi</small>
-                                            </div>
-                                        </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.gradeNo.label }}</label>
+                                        {{ preRegistrationform.gradeNo }}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.referee_file.label }}</label>
+                                        {{ preRegistrationform.referee_file }}
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-lg-12">
+                                <input type="hidden" name="submitFormControl" value="registerForm">
+                            </div>
                         </div>
-                    </div>
 
+                    </div>
+                    <div class="card-footer">
+
+                        <button class="btn btn-outline-info" type="button" style="float: right;" disabled="disabled"
+                                title="Bilgilerin doğruluğunu onaylamalısınız." id="approvalButton"
+                                onclick="approvalSendReferee(this)" name="submitButton"
+                                value="registerSubmitButton">Onaya
+                            gönder
+                        </button>
+
+                        <label style="float: right; margin-right: 20px;">
+                            <input id="checkApproval" type="checkbox" onclick="onChangeHandlerReferee()"/> <small>Taahhütnameyi
+                            okudum onaylıyorum.</small>
+                        </label>
+                    </div>
                 </div>
-
-
             </div>
-            <div class="row">
-
-                <div class="col-lg-12">
-                    <div class="card card-info card-outline">
-                        <div class="card-header with-border">
-                            <h3 class="card-title"> Vize Bilgileri </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-
-                                <div class="col-lg-12">
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group">
-                                                <label> {{ preRegistrationform.dekont.label }}</label>
-                                                {{ preRegistrationform.dekont }} <br>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <small style="color: #bd2828"><i class="fa fa-file"></i> Aşağıdaki
-                                                belgelerden herhangi birini yükleyiniz.</small>
-                                            <ul>
-                                                <small>
-                                                    <li>Banka Dekontu</li>
-                                                    <li>Kredi Kartı Ekstre Ekran Görüntüsü</li>
-                                                    <li>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</li>
-                                                    <li>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</li>
-                                                    <li>1. Kademe Belgesini 2022 Yılından Alan Antrenörlerimiz
-                                                        Bu Alana Antrenör Belgesini Yüklemesi Yeterlidir
-                                                    </li>
-                                                </small>
-                                            </ul>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <small style="color: #bd2828"><i class="fa fa-link"></i>
-                                                Vize Ödemenizi Yapmadıysanız Bu Linkleri ( Kredi Kartı/ Havale-Eft )
-                                                Kullanarak Yapabilirsiniz.
-                                            </small>
-                                            <small>
-                                                <ul>
-                                                    <li><a href="https://tvgfbf.gov.tr/vize-odemeleri-kredi-karti-2/">Kredi
-                                                        Kartı/Havale-Eft</a></li>
-                                                    <li><a href="https://tvgfbf.gov.tr/iletisim/">Banka Bilgileri</a>
-                                                    </li>
-                                                </ul>
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <input type="hidden" name="submitFormControl" value="registerForm">
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="card-footer">
-
-                            <button class="btn btn-outline-info" type="button" style="float: right;" disabled="disabled"
-                                    title="Bilgilerin doğruluğunu onaylamalısınız." id="approvalButton"
-                                    onclick="approvalSendReferee(this)" name="submitButton"
-                                    value="registerSubmitButton">Onaya
-                                gönder
-                            </button>
-
-                            <label style="float: right; margin-right: 20px;">
-                                <input id="checkApproval" type="checkbox" onclick="onChangeHandlerReferee()"/> <small>Taahhütnameyi
-                                okudum onaylıyorum.</small>
-                            </label>
-
-
-                        </div>
-
-                    </div>
-
-
+        </div>
     </form>
 
 
@@ -618,12 +573,6 @@
                                                onkeyup="if(this.value.length > 34){this.value=this.value.substr(0, 34);}"
                                                value="" required="required" maxlength="120" inputmode="text">
                                     </div>
-
-                                    <div class="form-group">
-                                        <label for="belgeUpdate">Hakem Belgesi</label>
-                                        <p>Şu anki: <a id="updateBelgeValue" href=""></a></p>
-                                        <input id="belgeUpdate" class="form-control" type="file" name="belgeUpdate"/>
-                                    </div>
                                 </div>
 
                                 <div class="col-lg-6">
@@ -657,7 +606,45 @@
                                         </select>
                                     </div>
                                 </div>
-
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.grade_referee_contract.label }}</label>
+                                                <p>Şu anki: <a id="kademeBelgeUpdateValue" href=""></a></p>
+                                                <input type="file" name="kademeBelgeUpdate" id="kademeBelgeUpdate">
+                                                <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> Hiçbir Tesiste Çalışmayan Antrenör İseniz
+                                                    Taahhüt Formunu <a
+                                                        href="\static\images\taahhut.pdf" download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
+                                                <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis
+                                                    Sahipleri Taahhut Formunu <a
+                                                        href="\static\images\taahhut_isletme.pdf"
+                                                        download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.sgk.label }}</label>
+                                                <p>Şu anki: <a id="sgkUpdateValue"
+                                                               href=""></a></p>
+                                                <input type="file" name="sgkUpdate"
+                                                       id="sgkUpdate">
+                                                <br>
+                                                <small><i class="fa fa-tags"></i> e-Devlet
+                                                    üzerinden alınan 4A işe giriş
+                                                    çıkış bildirgesi</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -741,11 +728,11 @@
                 <div class="col-lg-12">
                     <div class="card card-info card-outline">
                         <div class="card-header with-border">
-                            <h3 class="card-title"> Kademe Bilgileri </h3>
+                            <h3 class="card-title"> Kokart Bilgileri </h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <div class="form-group">
                                         <label> {{ preRegistrationform.kademe_definition.label }}</label>
                                         <select id="gradeUpdate" name="gradeUpdate"
@@ -759,7 +746,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <div class="form-group">
                                         <label> {{ preRegistrationform.gradeDate.label }}</label>
                                         <input type="text" name="gradeDateUpdate"
@@ -769,115 +756,18 @@
                                                data-mask="" inputmode="numeric" id="gradeDateUpdate">
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label> {{ preRegistrationform.grade_referee_contract.label }}</label>
-                                                <p>Şu anki: <a id="kademeBelgeUpdateValue" href=""></a></p>
-                                                <input type="file" name="kademeBelgeUpdate" id="kademeBelgeUpdate">
-                                                <br>
-                                                <small>
-                                                    <i class="fa fa-link"></i> Hiçbir Tesiste Çalışmayan Antrenör İseniz
-                                                    Taahhüt Formunu <a
-                                                        href="\static\images\taahhut.pdf" download="">buradan</a>
-                                                    İmzalayıp Gönderebilirsiniz.
-                                                </small>
-                                                <br>
-                                                <small>
-                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis
-                                                    Sahipleri Taahhut Formunu <a
-                                                        href="\static\images\taahhut_isletme.pdf"
-                                                        download="">buradan</a>
-                                                    İmzalayıp Gönderebilirsiniz.
-                                                </small>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label> {{ preRegistrationform.sgk.label }}</label>
-                                                <p>Şu anki: <a id="sgkUpdateValue"
-                                                               href=""></a></p>
-                                                <input type="file" name="sgkUpdate"
-                                                       id="sgkUpdate">
-                                                <br>
-                                                <small><i class="fa fa-tags"></i> e-Devlet
-                                                    üzerinden alınan 4A işe giriş
-                                                    çıkış bildirgesi</small>
-                                            </div>
-                                        </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.gradeNo.label }}</label>
+                                        <input type="text" name="gradeNoUpdate" class="form-control "
+                                               required="required" maxlength="30" id="gradeNoUpdate">
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-
-                <div class="col-lg-12">
-                    <div class="card card-info card-outline">
-                        <div class="card-header with-border">
-                            <h3 class="card-title"> Vize Bilgileri </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-
-                                <div class="col-lg-12">
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group">
-                                                <label> {{ preRegistrationform.dekont.label }}</label>
-                                                <p>Şu anki: <a id="dekontUpdateValue"
-                                                               href=""></a></p>
-                                                <input type="file" name="dekontUpdate"
-                                                       id="dekontUpdate">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <small style="color: #bd2828"><i
-                                                    class="fa fa-file"></i> Aşağıdaki
-                                                belgelerden herhangi birini yükleyiniz.</small>
-                                            <ul>
-                                                <small>
-                                                    <li>Banka Dekontu</li>
-                                                    <li>Kredi Kartı Ekstre Ekran
-                                                        Görüntüsü
-                                                    </li>
-                                                    <li>Ödendi Bilgisi Gelen Sms Ekran
-                                                        Görüntüsü
-                                                    </li>
-                                                    <li>GSB Personeli iseniz Kurum
-                                                        Kimlik Kartı Fotoğrafı
-                                                    </li>
-                                                    <li>1. Kademe Belgesini 2022
-                                                        Yılından Alan Antrenörlerimiz
-                                                        Bu Alana Antrenör Belgesini
-                                                        Yüklemesi Yeterlidir
-                                                    </li>
-                                                </small>
-                                            </ul>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <small style="color: #bd2828"><i
-                                                    class="fa fa-link"></i>
-                                                Vize Ödemenizi Yapmadıysanız Bu Linkleri (
-                                                Kredi Kartı/ Havale-Eft )
-                                                Kullanarak Yapabilirsiniz.
-                                            </small>
-                                            <small>
-                                                <ul>
-                                                    <li>
-                                                        <a href="https://tvgfbf.gov.tr/vize-odemeleri-kredi-karti-2/">Kredi
-                                                            Kartı/Havale-Eft</a></li>
-                                                    <li>
-                                                        <a href="https://tvgfbf.gov.tr/iletisim/">Banka
-                                                            Bilgileri</a>
-                                                    </li>
-                                                </ul>
-                                            </small>
-                                        </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="belgeUpdate">Hakem Belgesi</label>
+                                        <p>Şu anki: <a id="updateBelgeValue" href=""></a></p>
+                                        <input id="belgeUpdate" class="form-control" type="file" name="belgeUpdate"/>
                                     </div>
                                 </div>
                             </div>
@@ -1230,6 +1120,23 @@
                     if (result.status === 'Success') {
                         let info = result['result']
                         if (info === 'ilk kayıt') {
+                            document.getElementById('referenceRefereeUpdateForm').reset();
+                            document.getElementById('referenceRefereeForm').reset();
+                            if (tcKimlikNo.includes('@')) {
+                                let x = document.getElementById('id_email')
+                                x.value = tcKimlikNo
+                                x.readOnly = true;
+                                document.getElementById('tc').readOnly = false
+
+                            } else {
+                                document.getElementById('id_email').readOnly = false
+                                let x = document.getElementById('tc')
+                                x.value = tcKimlikNo
+                                x.readOnly = true;
+
+
+                            }
+
                             document.getElementById('firstRegister').style.display = 'block';
                             document.getElementById('updateRegister').style.display = 'none';
                             document.getElementById('redNedeni').style.display = 'none'
@@ -1239,6 +1146,22 @@
                                 title: result.msg,
                             })
                         } else {
+                            document.getElementById('referenceRefereeUpdateForm').reset();
+                            document.getElementById('referenceRefereeForm').reset();
+                            if (tcKimlikNo.includes('@')) {
+                                let x = document.getElementById('emailUpdate')
+                                x.value = tcKimlikNo
+                                x.readOnly = true;
+                                document.getElementById('tcUpdate').value = info.tc
+
+                            } else {
+                                let x = document.getElementById('tcUpdate')
+                                x.value = tcKimlikNo
+                                x.readOnly = true;
+                                document.getElementById('emailUpdate').value = info.email
+
+                            }
+
                             document.getElementById('firstRegister').style.display = 'none';
                             document.getElementById('updateRegister').style.display = 'block'
                             document.getElementById('redNedeni').style.display = 'block'
@@ -1257,6 +1180,8 @@
                             document.getElementById('ibanUpdate').value = info.iban
                             document.getElementById('tcUpdate').value = tcKimlikNo
                             document.getElementById('birthDateUpdate').value = info.birthDate
+                            document.getElementById('gradeDateUpdate').value = info.gradeDate
+                            document.getElementById('gradeNoUpdate').value = info.gradeNo
 
                             var gender = document.getElementById('genderUpdate')
                             for (var i = 0; i < gender.length; i++) {
@@ -1323,14 +1248,6 @@
                             } else {
                                 document.getElementById('sgkUpdateValue').innerHTML = 'Yüklenmiş belgeniz bulunmamaktadır.'
                                 document.getElementById('sgkUpdateValue').removeAttribute('href')
-                            }
-
-                            if (info.dekont) {
-                                document.getElementById('dekontUpdateValue').href = info.dekont
-                                document.getElementById('dekontUpdateValue').innerHTML = info.dekont
-                            } else {
-                                document.getElementById('dekontUpdateValue').innerHTML = 'Yüklenmiş belgeniz bulunmamaktadır.'
-                                document.getElementById('dekontUpdateValue').removeAttribute('href')
                             }
                         }
 

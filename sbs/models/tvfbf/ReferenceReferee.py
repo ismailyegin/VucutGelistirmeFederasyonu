@@ -1,6 +1,7 @@
 import unidecode
 from django.db import models
 
+from sbs.models import Branch
 from sbs.models.ekabis.City import City
 from sbs.models.ekabis.Country import Country
 from sbs.models.ekabis.CategoryItem import CategoryItem
@@ -84,14 +85,18 @@ class ReferenceReferee(BaseModel):
                                    help_text=('Designates whether the user can log into this admin site.'))
     is_active = models.BooleanField(default=False,
                                     help_text=('Designates whether this user should be treated as active. '))
-    status_date=models.DateField(verbose_name="Red/Kabul Tarihi",null=True,blank=True)
-    definition=models.TextField( blank=True,null=True , verbose_name='Reddetme Nedeni')
+    status_date = models.DateField(verbose_name="Red/Kabul Tarihi", null=True, blank=True)
+    definition = models.TextField(blank=True, null=True, verbose_name='Reddetme Nedeni')
 
-    grade_referee_contract = models.FileField(upload_to='dekont/', null=True, blank=True, verbose_name='Hakem Sözleşme Belgesi')  #Hakem Sözleşme
+    grade_referee_contract = models.FileField(upload_to='dekont/', null=True, blank=True,
+                                              verbose_name='Hakem Sözleşme Belgesi')  # Hakem Sözleşme
     sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')  # SGK
     dekont = models.FileField(null=True, blank=True, verbose_name='Dekont')  # dekont
     referee_file = models.FileField(null=True, blank=True, verbose_name='Hakemlik Belgesi')  # Hakemlik BELGESİ
     gradeDate = models.DateField(null=True, blank=True, verbose_name='Hak Kazanma Tarihi')
+    gradeNo = models.CharField(max_length=30, blank=True, null=True, verbose_name='Kademe Numarası')
+    gradeBranch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True,
+                                     related_name='gradeBranchReferee')
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from sbs.models import Country
+from sbs.models import Country, Branch
 from sbs.models.ekabis.CategoryItem import CategoryItem
 from sbs.models.tvfbf.ReferenceReferee import ReferenceReferee
 
@@ -12,6 +12,16 @@ class PreRefereeForm(ModelForm):
         to_field_name='name',
         empty_label="Seçiniz",
         label="Kokart",
+        required='required',
+        widget=forms.Select(
+            attrs={'class': 'form-control select2 select2-hidden-accessible',
+                   'style': 'width: 100%; '}))
+
+    branch = forms.ModelChoiceField(
+        queryset=Branch.objects.filter(isDeleted=False),
+        to_field_name='title',
+        empty_label="Seçiniz",
+        label="Branş",
         required='required',
         widget=forms.Select(
             attrs={'class': 'form-control select2 select2-hidden-accessible',
@@ -31,11 +41,12 @@ class PreRefereeForm(ModelForm):
         fields = (
             'first_name', 'last_name', 'email', 'phoneNumber', 'address', 'phoneNumber2',
             'city', 'grade_referee_contract', 'tc', 'profileImage', 'birthDate', 'iban',
-            'gender', 'birthplace', 'motherName', 'fatherName', 'referee_file', 'sgk', 'dekont', 'gradeDate')
+            'gender', 'birthplace', 'motherName', 'fatherName', 'referee_file', 'sgk', 'gradeDate', 'gradeNo')
         labels = {'first_name': 'Ad', 'last_name': 'Soyad', 'email': 'Email', 'phoneNumber': 'Cep Telefonu',
                   'phoneNumber2': 'Sabit Telefon', 'city': 'İl', 'tc': 'T.C.', 'gender': 'Cinsiyet',
                   'referee_file': 'Hakem Belgesi', 'grade_referee_contract': 'Hakem Sözleşme Belgesi',
-                  'sgk': 'SGK/Bağ-Kur Belgesi', 'dekont': 'Vize Dekont', 'gradeDate': 'Hak Kazanma Tarihi'}
+                  'sgk': 'SGK/Bağ-Kur Belgesi', 'gradeDate': 'Hak Kazanma Tarihi',
+                  'gradeNo': 'Kokart No'}
         widgets = {
 
             'profileImage': forms.FileInput(),
@@ -89,4 +100,7 @@ class PreRefereeForm(ModelForm):
                 attrs={'class': 'form-control  pull-right datepicker6', 'autocomplete': 'on',
                        'onkeydown': 'return true', 'required': 'required', "data-inputmask-alias": "datetime",
                        "data-inputmask-inputformat": "dd/mm/yyyy", "data-mask": "", "inputmode": "numeric"}),
+
+            'gradeNo': forms.TextInput(
+                attrs={'class': 'form-control ', 'required': 'required'}),
         }

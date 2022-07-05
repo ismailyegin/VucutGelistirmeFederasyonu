@@ -85,18 +85,30 @@ class ReferenceCoach(BaseModel):
     is_active = models.BooleanField(default=True,
                                     help_text=('Designates whether this user should be treated as active. '))
 
-    kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE)
+    kademe_definition = models.ForeignKey(CategoryItem, on_delete=models.CASCADE, related_name='vucutDefiniton', null=True, blank=True)
     kademe_startDate = models.DateField(null=True, blank=True, verbose_name='Başlangıç Tarihi ')
-    kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge') #Sözleşme
-    sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi') #SGK
-    dekont = models.FileField(null=True, blank=True, verbose_name='Dekont') #dekont
-    belge = models.FileField(null=True, blank=True, verbose_name='Belge') #ANTRENOR BELGESİ
-    kademe_brans=models.ForeignKey(Branch,on_delete=models.CASCADE,null=True,blank=True)
+    kademe_belge = models.FileField(upload_to='dekont/', null=False, blank=False, verbose_name='Belge')  # Sözleşme
+    sgk = models.FileField(null=True, blank=True, verbose_name='SGK Belgesi')  # SGK
+    belge = models.FileField(null=True, blank=True, verbose_name='Belge')  # ANTRENOR BELGESİ
+    kademe_brans = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True,
+                                     related_name='gradeVucutBranch')
+    vize_brans = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True,
+                                   related_name='visaVucutBranch')
+    dekont = models.FileField(null=True, blank=True, verbose_name='Dekont')  # dekont
 
     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
     definition = models.TextField(null=True, blank=True, verbose_name='Reddedilme Sebebi')
     status_date = models.DateField(null=True, blank=True, verbose_name='Onaylanma Tarihi')
-    workplace = models.CharField(max_length=150, null=True, blank=True,verbose_name='Çalıştığı Yer')
+    workplace = models.CharField(max_length=150, null=True, blank=True, verbose_name='Çalıştığı Yer')
+
+    kademe_definition2 = models.ForeignKey(CategoryItem, on_delete=models.CASCADE, related_name='bilekDefiniton', null=True, blank=True)
+    belge2 = models.FileField(null=True, blank=True, verbose_name='bilekBelge')
+    kademe_brans2 = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True,
+                                      related_name='gradeBilekBranch')
+
+    vize_brans2 = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True,
+                                    related_name='visaBilekBranch')
+    dekont2 = models.FileField(null=True, blank=True, verbose_name='Dekont')  # dekont
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.last_name)

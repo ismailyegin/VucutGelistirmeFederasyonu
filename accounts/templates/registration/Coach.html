@@ -381,11 +381,6 @@
                                         <label> {{ preRegistrationform.iban.label }}</label>
                                         {{ preRegistrationform.iban }}
                                     </div>
-                                    <div class="form-group">
-                                        <label for="Antrenör Belgesi">Antrenör Belgesi</label>
-                                        <input id="belge" class="form-control" type="file" name="belge"
-                                               required="required"/>
-                                    </div>
                                 </div>
 
                                 <div class="col-lg-6">
@@ -417,6 +412,40 @@
 
                                             {% endfor %}
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.kademe_belge.label }}</label>
+                                                {{ preRegistrationform.kademe_belge }} <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> Hiçbir Tesiste Çalışmayan Antrenör İseniz
+                                                    Taahhüt Formunu <a
+                                                        href="\static\images\taahhut.pdf" download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
+                                                <br>
+                                                <small>
+                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis
+                                                    Sahipleri Taahhut Formunu <a
+                                                        href="\static\images\taahhut_isletme.pdf"
+                                                        download="">buradan</a>
+                                                    İmzalayıp Gönderebilirsiniz.
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.sgk.label }}</label>
+                                                {{ preRegistrationform.sgk }} <br>
+                                                <small><i class="fa fa-tags"></i> e-Devlet üzerinden alınan 4A işe giriş
+                                                    çıkış bildirgesi</small>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -483,59 +512,111 @@
                 <div class="col-lg-12">
                     <div class="card card-info card-outline">
                         <div class="card-header with-border">
-                            <h3 class="card-title"> Kademe Bilgileri </h3>
+                            <h3 class="card-title"> Kokart Bilgileri </h3>
+                        </div>
+                        <div class="form-group">
+                            <span style="float: left; margin-left: 20px;"><input id="vucutKademeBox" type="checkbox"
+                                                                                 onclick="vucutKademe()"/> <small>Vücut geliştirme ve fitness antrenörlük belgem var.</small></span>
+                            <span style="margin-left: 20px;"><input id="bilekKademeBox" type="checkbox"
+                                                                    onclick="bilekKademe()"/> <small>Bilek güreşi antrenörlük belgem var.</small></span>
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.kademe_definition.label }}</label>
-                                        {{ preRegistrationform.kademe_definition }}
-                                    </div>
-
+                            <div class="card card-info card-outline" id="vucutKademeDiv" name="vucutKademeDiv"
+                                 style="display: none;">
+                                <div class="card-header with-border">
+                                    <h3 class="card-title"> Vücut Geliştirme ve Fitness Bilgileri </h3>
                                 </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.branch.label }}</label>
-                                        {{ preRegistrationform.branch }}
-                                    </div>
-
-                                </div>
-                                <div class="col-lg-12">
+                                <div class="card-body">
                                     <div class="row">
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label> {{ preRegistrationform.kademe_belge.label }}</label>
-                                                {{ preRegistrationform.kademe_belge }} <br>
-                                                <small>
-                                                    <i class="fa fa-link"></i> Hiçbir Tesiste Çalışmayan Antrenör İseniz
-                                                    Taahhüt Formunu <a
-                                                        href="\static\images\taahhut.pdf" download="">buradan</a>
-                                                    İmzalayıp Gönderebilirsiniz.
-                                                </small>
-                                                <br>
-                                                <small>
-                                                    <i class="fa fa-link"></i> İşletme de Yetkili ve Antrenör Olan Tesis
-                                                    Sahipleri Taahhut Formunu <a
-                                                        href="\static\images\taahhut_isletme.pdf"
-                                                        download="">buradan</a>
-                                                    İmzalayıp Gönderebilirsiniz.
-                                                </small>
+                                                <label> {{ preRegistrationform.kademe_definition.label }}</label>
+                                                <select name="vucutGrade"
+                                                        class="form-control select2 select2-hidden-accessible"
+                                                        style="width: 100%; "
+                                                        id="vucutGrade" aria-hidden="true">
+                                                    <option selected="selected" value="">Seçiniz</option>
+                                                    {% for grade in grades %}
+                                                        <option value="{{ grade.uuid }}">{{ grade.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.branch.label }}</label>
+                                                <select name="vucutBranch"
+                                                        class="form-control select2 select2-hidden-accessible"
+                                                        style="width: 100%; " disabled="disabled"
+                                                        id="vucutBranch" aria-hidden="true">
+                                                    <option selected="selected" value="VÜCUT GELİŞTİRME VE FİTNESS">
+                                                        VÜCUT GELİŞTİRME VE FİTNESS
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="Antrenör Belgesi">Antrenör Belgesi</label>
+                                                <input id="belgeVucut" class="form-control" type="file"
+                                                       name="belgeVucut"/>
                                             </div>
                                         </div>
-
-                                        <div class="col-lg-4">
-                                            <div class="form-group">
-                                                <label> {{ preRegistrationform.sgk.label }}</label>
-                                                {{ preRegistrationform.sgk }} <br>
-                                                <small><i class="fa fa-tags"></i> e-Devlet üzerinden alınan 4A işe giriş
-                                                    çıkış bildirgesi</small>
-                                            </div>
+                                        <div class="col-lg-12">
+                                            <input type="hidden" name="submitFormControl" value="registerForm">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <input type="hidden" name="submitFormControl" value="registerForm">
+                            </div>
+
+                            <div class="card card-info card-outline" id="bilekKademeDiv" name="bilekKademeDiv"
+                                 style="display: none;">
+                                <div class="card-header with-border">
+                                    <h3 class="card-title"> Bilek Güreşi Bilgileri </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.kademe_definition.label }}</label>
+                                                <select name="bilekGrade"
+                                                        class="form-control select2 select2-hidden-accessible"
+                                                        style="width: 100%; "
+                                                        id="bilekGrade" aria-hidden="true">
+                                                    <option value="">Seçiniz</option>
+                                                    {% for grade in grades %}
+                                                        <option value="{{ grade.uuid }}">{{ grade.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.branch.label }}</label>
+                                                <select name="bilekBranch"
+                                                        class="form-control select2 select2-hidden-accessible"
+                                                        style="width: 100%; " disabled="disabled"
+                                                        id="bilekBranch" aria-hidden="true">
+                                                    <option selected="selected" value="BİLEK GÜREŞİ">BİLEK GÜREŞİ
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="Antrenör Belgesi">Antrenör Belgesi</label>
+                                                <input id="belgeBilek" class="form-control" type="file"
+                                                       name="belgeBilek"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <input type="hidden" name="submitFormControl" value="registerForm">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -553,56 +634,112 @@
                         <div class="card-header with-border">
                             <h3 class="card-title"> Vize Bilgileri </h3>
                         </div>
+                        <div class="form-group">
+                            <span style="float: left; margin-left: 20px;"><input id="vucutVizeBox" type="checkbox"
+                                                                                 onclick="vucutVize()"/> <small>Vücut geliştirme ve fitness vizem var.</small></span>
+                            <span style="margin-left: 20px;"><input id="bilekVizeBox" type="checkbox"
+                                                                    onclick="bilekVize()"/> <small>Bilek güreşi vizem var.</small></span>
+                        </div>
                         <div class="card-body">
-                            <div class="row">
-
-                                <div class="col-lg-12">
+                            <div class="card card-info card-outline" id="vucutVizeDiv" name="vucutVizeDiv"
+                                 style="display: none;">
+                                <div class="card-header with-border">
+                                    <h3 class="card-title"> Vücut Geliştirme ve Fitness Vize Bilgileri </h3>
+                                </div>
+                                <div class="card-body">
                                     <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group" id="vizedekont">
+                                        <div class="col-lg-6">
+                                            <div class="form-group" id="vucutVizeDekont" name="vucutVizeDekont">
                                                 <label> {{ preRegistrationform.dekont.label }}</label>
-                                                {{ preRegistrationform.dekont }} <br>
+                                                <input type="file" name="vucutVizeFile" accept="image/*"
+                                                       id="vucutVizeFile">
+                                                <p><a id="vucutVizeFile" href=""></a></p>
                                             </div>
                                         </div>
-                                        <div class="col-lg-4">
-                                            <small style="color: #bd2828"><i class="fa fa-file"></i> Aşağıdaki
-                                                belgelerden herhangi birini yükleyiniz.</small>
-                                            <ul>
-                                                <small>
-                                                    <li>Banka Dekontu</li>
-                                                    <li>Kredi Kartı Ekstre Ekran Görüntüsü</li>
-                                                    <li>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</li>
-                                                    <li>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</li>
-                                                    <li>1. Kademe Belgesini 2022 Yılından Alan Antrenörlerimiz
-                                                        Bu Alana Antrenör Belgesini Yüklemesi Yeterlidir
-                                                    </li>
-                                                </small>
-                                            </ul>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <small style="color: #bd2828"><i class="fa fa-link"></i>
-                                                Vize Ödemenizi Yapmadıysanız Bu Linkleri ( Kredi Kartı/ Havale-Eft )
-                                                Kullanarak Yapabilirsiniz.
-                                            </small>
-                                            <small>
-                                                <ul>
-                                                    <li><a href="https://tvgfbf.gov.tr/vize-odemeleri-kredi-karti-2/">Kredi
-                                                        Kartı/Havale-Eft</a></li>
-                                                    <li><a href="https://tvgfbf.gov.tr/iletisim/">Banka Bilgileri</a>
-                                                    </li>
-                                                </ul>
-                                            </small>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.branchVize.label }}</label>
+                                                <select name="vucutBranchVize"
+                                                        class="form-control select2 select2-hidden-accessible"
+                                                        style="width: 100%; " disabled="disabled"
+                                                        id="vucutBranchVize" aria-hidden="true">
+                                                    <option selected="selected" value="VÜCUT GELİŞTİRME VE FİTNESS">
+                                                        VÜCUT GELİŞTİRME VE FİTNESS
+                                                    </option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <input type="hidden" name="submitFormControl" value="registerForm">
-                                </div>
                             </div>
 
+                            <div class="card card-info card-outline" id="bilekVizeDiv" name="bilekVizeDiv"
+                                 style="display: none;">
+                                <div class="card-header with-border">
+                                    <h3 class="card-title"> Bilek Güreşi Vize Bilgileri </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group" id="bilekVizeDekont" name="bilekVizeDekont">
+                                                <label> {{ preRegistrationform.dekont.label }}</label>
+                                                <input type="file" name="bilekVizeFile" accept="image/*"
+                                                       id="bilekVizeFile">
+                                                <p><a id="bilekVizeFile" href=""></a></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label> {{ preRegistrationform.branchVize.label }}</label>
+                                                <select name="bilekBranchVize"
+                                                        class="form-control select2 select2-hidden-accessible"
+                                                        style="width: 100%; " disabled="disabled"
+                                                        id="bilekBranchVize" aria-hidden="true">
+                                                    <option selected="selected" value="BİLEK GÜREŞİ">BİLEK GÜREŞİ
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <small style="color: #bd2828"><i class="fa fa-file"></i> Aşağıdaki
+                                        belgelerden herhangi birini yükleyiniz.</small>
+                                    <ul>
+                                        <small>
+                                            <li>Banka Dekontu</li>
+                                            <li>Kredi Kartı Ekstre Ekran Görüntüsü</li>
+                                            <li>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</li>
+                                            <li>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</li>
+                                            <li>1. Kademe Belgesini 2022 Yılından Alan Antrenörlerimiz
+                                                Bu Alana Antrenör Belgesini Yüklemesi Yeterlidir
+                                            </li>
+                                        </small>
+                                    </ul>
+                                </div>
+                                <div class="col-lg-6">
+                                    <small style="color: #bd2828"><i class="fa fa-link"></i>
+                                        Vize Ödemenizi Yapmadıysanız Bu Linkleri ( Kredi Kartı/ Havale-Eft )
+                                        Kullanarak Yapabilirsiniz.
+                                    </small>
+                                    <small>
+                                        <ul>
+                                            <li><a href="https://tvgfbf.gov.tr/vize-odemeleri-kredi-karti-2/">Kredi
+                                                Kartı/Havale-Eft</a></li>
+                                            <li><a href="https://tvgfbf.gov.tr/iletisim/">Banka Bilgileri</a>
+                                            </li>
+                                        </ul>
+                                    </small>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-footer">
-
+                            <div class="col-lg-12">
+                                <input type="hidden" name="submitFormControl" value="registerForm">
+                            </div>
                             <button class="btn btn-outline-info" type="button" style="float: right;" disabled="disabled"
                                     title="Bilgilerin doğruluğunu onaylamalısınız." id="approvalButton"
                                     onclick="approvalSend(this)" name="submitButton" value="registerSubmitButton">Onaya
@@ -680,7 +817,7 @@
                                     <div class="form-group">
                                         <label> {{ preRegistrationform.birthplace.label }}</label>
                                         <input type="text" name="birthPlaceUpdate" class="form-control "
-                                               maxlength="120" id="birthPlaceUpdate">
+                                               maxlength="120" id="birthPlaceUpdate" required="required">
                                     </div>
 
                                     <div class="form-group">
@@ -690,11 +827,6 @@
                                                value="" required="required" maxlength="120" inputmode="text">
                                     </div>
 
-                                    <div class="form-group">
-                                        <label for="belgeUpdate">Antrenör Belgesi</label>
-                                        <input id="belgeUpdate" class="form-control" type="file" name="belgeUpdate"/>
-                                        <p><a id="updateBelgeValue" href=""></a></p>
-                                    </div>
                                 </div>
 
                                 <div class="col-lg-6">
@@ -717,7 +849,7 @@
 
                                     <div class="form-group">
                                         <label> {{ preRegistrationform.gender.label }}</label>
-                                        <select name="genderUpdate"
+                                        <select name="genderUpdate" required="required"
                                                 class="form-control select2 select2-hidden-accessible"
                                                 style="width: 100%; "
                                                 id="genderUpdate" aria-hidden="true">
@@ -743,121 +875,6 @@
                                     </div>
                                 </div>
 
-                            </div>
-                        </div>
-
-
-                    </div>
-
-                </div>
-                <div class="col-lg-6">
-                    <div class="card card-info card-outline">
-                        <div class="card-header with-border">
-                            <h3 class="card-title"> Kişi İletişim Bilgileri</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.email.label }}</label>
-                                        <input type="text" name="emailUpdate" class="form-control " required="required"
-                                               maxlength="254" id="emailUpdate" readonly="readonly">
-                                    </div>
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.phoneNumber.label }}</label>
-                                        <input type="text" name="phoneNumberUpdate" class="form-control "
-                                               maxlength="120" id="phoneNumberUpdate">
-                                    </div>
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.phoneNumber2.label }}</label>
-                                        <input type="text" name="phoneNumber2Update" class="form-control "
-                                               maxlength="120" id="phoneNumber2Update">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.country.label }}</label>
-                                        <select id="countryUpdate" name="countryUpdate"
-                                                class="form-control select2 select2-hidden-accessible"
-                                                style="width: 100%;"
-                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                            <option value="">Seçiniz</option>
-                                            {% for country in countries %}
-                                                <option value="{{ country.name }}">{{ country.name }}</option>
-
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.city.label }}</label>
-                                        <select id="cityUpdate" name="cityUpdate"
-                                                class="form-control select2 select2-hidden-accessible"
-                                                style="width: 100%;"
-                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                            <option value="">Seçiniz</option>
-                                            {% for city in cities %}
-                                                <option value="{{ city.name }}">{{ city.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.address.label }}</label>
-                                        <textarea name="addressUpdate" cols="40" rows="2" class="form-control "
-                                                  id="addressUpdate"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-            </div>
-            <div class="row">
-
-                <div class="col-lg-12">
-                    <div class="card card-info card-outline">
-                        <div class="card-header with-border">
-                            <h3 class="card-title"> Kademe Bilgileri </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.kademe_definition.label }}</label>
-                                        <select id="gradeUpdate" name="gradeUpdate"
-                                                class="form-control select2 select2-hidden-accessible"
-                                                style="width: 100%;"
-                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                            <option value="">Seçiniz</option>
-                                            {% for grade in grades %}
-                                                <option value="{{ grade.name }}">{{ grade.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label> {{ preRegistrationform.branch.label }}</label>
-                                        <select id="branchUpdate" name="branchUpdate"
-                                                class="form-control select2 select2-hidden-accessible"
-                                                style="width: 100%;" required="required"
-                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                            <option value="">Seçiniz</option>
-                                            {% for branch in branchs %}
-                                                <option value="{{ branch.title }}">{{ branch.title }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
                                 <div class="col-lg-12">
                                     <div class="row">
                                         <div class="col-lg-4">
@@ -895,6 +912,198 @@
                                         </div>
                                     </div>
                                 </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-info card-outline">
+                        <div class="card-header with-border">
+                            <h3 class="card-title"> Kişi İletişim Bilgileri</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.email.label }}</label>
+                                        <input type="text" name="emailUpdate" class="form-control " required="required"
+                                               maxlength="254" id="emailUpdate" readonly="readonly">
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.phoneNumber.label }}</label>
+                                        <input type="text" name="phoneNumberUpdate" class="form-control "
+                                               maxlength="120" id="phoneNumberUpdate" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.phoneNumber2.label }}</label>
+                                        <input type="text" name="phoneNumber2Update" class="form-control "
+                                               maxlength="120" id="phoneNumber2Update">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.country.label }}</label>
+                                        <select id="countryUpdate" name="countryUpdate"
+                                                class="form-control select2 select2-hidden-accessible"
+                                                style="width: 100%;" required="required"
+                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                            <option value="">Seçiniz</option>
+                                            {% for country in countries %}
+                                                <option value="{{ country.name }}">{{ country.name }}</option>
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.city.label }}</label>
+                                        <select id="cityUpdate" name="cityUpdate" required="required"
+                                                class="form-control select2 select2-hidden-accessible"
+                                                style="width: 100%;"
+                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                            <option value="">Seçiniz</option>
+                                            {% for city in cities %}
+                                                <option value="{{ city.name }}">{{ city.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> {{ preRegistrationform.address.label }}</label>
+                                        <textarea name="addressUpdate" cols="40" rows="2" class="form-control "
+                                                  id="addressUpdate" required="required"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="card card-info card-outline">
+                        <div class="card-header with-border">
+                            <h3 class="card-title"> Kokart Bilgileri </h3>
+                        </div>
+                        <div class="form-group">
+                            <span style="float: left; margin-left: 20px;"><input id="vucutKademeBoxUpdate"
+                                                                                 type="checkbox"
+                                                                                 onclick="vucutKademeUpdateFunc()"/> <small>Vücut geliştirme ve fitness antrenörlük belgem var.</small></span>
+                            <span style="margin-left: 20px;"><input id="bilekKademeBoxUpdate" type="checkbox"
+                                                                    onclick="bilekKademeUpdateFunc()"/> <small>Bilek güreşi antrenörlük belgem var.</small></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card card-info card-outline" id="vucutKademeDivUpdate"
+                                         name="vucutKademeDivUpdate" style="display: none;">
+                                        <div class="card-header with-border">
+                                            <h3 class="card-title"> Vücut Geliştirme ve Fitness Kokart Bilgileri </h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label> Kademe </label>
+                                                        <select id="gradeUpdateVucut" name="gradeUpdateVucut"
+                                                                class="form-control select2 select2-hidden-accessible"
+                                                                style="width: 100%;"
+                                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                                            <option value="">Seçiniz</option>
+                                                            {% for grade in grades %}
+                                                                <option value="{{ grade.name }}">{{ grade.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label> Branş </label>
+                                                        <select id="branchUpdateVucut" name="branchUpdateVucut"
+                                                                class="form-control select2 select2-hidden-accessible"
+                                                                style="width: 100%;"
+                                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                                            <option value="">Seçiniz</option>
+                                                            {% for branch in branchs %}
+                                                                <option value="{{ branch.title }}">{{ branch.title }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="belgeUpdateVucut">Antrenör Belgesi</label>
+                                                        <input id="belgeUpdateVucut" class="form-control" type="file"
+                                                               name="belgeUpdateVucut"/>
+                                                        <p><a id="updateBelgeValueVucut" href=""></a></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="card card-info card-outline" id="bilekKademeDivUpdate"
+                                         name="bilekKademeDivUpdate" style="display: none;">
+                                        <div class="card-header with-border">
+                                            <h3 class="card-title"> Bilek Güreşi Kokart Bilgileri </h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label> Kademe </label>
+                                                        <select id="gradeUpdateBilek" name="gradeUpdateBilek"
+                                                                class="form-control select2 select2-hidden-accessible"
+                                                                style="width: 100%;"
+                                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                                            <option value="">Seçiniz</option>
+                                                            {% for grade in grades %}
+                                                                <option value="{{ grade.name }}">{{ grade.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label> Branş </label>
+                                                        <select id="branchUpdateBilek" name="branchUpdateBilek"
+                                                                class="form-control select2 select2-hidden-accessible"
+                                                                style="width: 100%;"
+                                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                                            <option value="">Seçiniz</option>
+                                                            {% for branch in branchs %}
+                                                                <option value="{{ branch.title }}">{{ branch.title }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="belgeUpdateBilek">Antrenör Belgesi</label>
+                                                        <input id="belgeUpdateBilek" class="form-control" type="file"
+                                                               name="belgeUpdateBilek"/>
+                                                        <p><a id="updateBelgeValueBilek" href=""></a></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -910,62 +1119,149 @@
                         <div class="card-header with-border">
                             <h3 class="card-title"> Vize Bilgileri </h3>
                         </div>
+                        <div class="form-group">
+                            <span style="float: left; margin-left: 20px;"><input id="vucutVizeBoxUpdate" type="checkbox"
+                                                                                 onclick="vucutVizeUpdateFunc()"/> <small>Vücut geliştirme ve fitness vizem var.</small></span>
+                            <span style="margin-left: 20px;"><input id="bilekVizeBoxUpdate" type="checkbox"
+                                                                    onclick="bilekVizeUpdateFunc()"/> <small>Bilek güreşi vizem var.</small></span>
+                        </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            {#                                            <div class="form-group">#}
-                                            {#                                                <input name="checkDekont2" id="checkDekont2" type="checkbox"#}
-                                            {#                                                       onclick="dekontKontrol2()"/>#}
-                                            {#                                                <span style="color: red;">Vize ücretini ödemedim. 22 Temmuz 2022 ye kadar ödeyeceğim.  </span>#}
-                                            {#                                            </div>#}
+                                    <div class="card card-info card-outline" id="vucutVizeDivUpdate"
+                                         name="vucutVizeDivUpdate"
+                                         style="display: none;">
+                                        <div class="card-header with-border">
+                                            <h3 class="card-title"> Vücut Geliştirme ve Fitness Vize Bilgileri </h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    {#                                            <div class="form-group">#}
+                                                    {#                                                <input name="checkDekont2" id="checkDekont2" type="checkbox"#}
+                                                    {#                                                       onclick="dekontKontrol2()"/>#}
+                                                    {#                                                <span style="color: red;">Vize ücretini ödemedim. 22 Temmuz 2022 ye kadar ödeyeceğim.  </span>#}
+                                                    {#                                            </div>#}
 
-                                            <div class="form-group" id="vizedekontUpdate">
-                                                <label> {{ preRegistrationform.dekont.label }}</label>
-                                                <input type="file" name="dekontUpdate" id="dekontUpdate"
-                                                       required="required">
-                                                <p><a id="dekontUpdateValue" href=""></a></p>
-                                                <br>
+                                                    <div class="form-group" id="vizedekontUpdateVucut">
+                                                        <label> {{ preRegistrationform.dekont.label }}</label>
+                                                        <input type="file" name="vucutVizeFileUpdate"
+                                                               id="vucutVizeFileUpdate">
+                                                        <p><a id="dekontUpdateValueVucut" href=""></a></p>
+                                                        <br>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label> {{ preRegistrationform.branch.label }}</label>
+                                                        <select id="vucutBranchVizeUpdate" name="vucutBranchVizeUpdate"
+                                                                class="form-control select2 select2-hidden-accessible"
+                                                                style="width: 100%;"
+                                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                                            <option value="">Seçiniz</option>
+                                                            {% for branch in branchs %}
+                                                                <option value="{{ branch.title }}">{{ branch.title }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <small style="color: #bd2828"><i class="fa fa-file"></i> Aşağıdaki
-                                                belgelerden herhangi birini yükleyiniz.</small>
-                                            <ul>
-                                                <li><small>Banka Dekontu</small></li>
-                                                <li><small>Kredi Kartı Ekstre Ekran Görüntüsü</small></li>
-                                                <li><small>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</small></li>
-                                                <li><small>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</small>
-                                                </li>
-                                                <li><small>1. Kademe Belgesini 2022 Yılından Alan Antrenörlerimiz
-                                                    Bu Alana Antrenör Belgesini Yüklemesi Yeterlidir
-                                                </small></li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <small style="color: #bd2828"><i class="fa fa-link"></i>
-                                                Vize Ödemenizi Yapmadıysanız Bu Linkleri ( Kredi Kartı/ Havale-Eft )
-                                                Kullanarak Yapabilirsiniz.
-                                            </small>
-                                            <ul>
-                                                <li>
-                                                    <a href="https://tvgfbf.gov.tr/vize-odemeleri-kredi-karti-2/"><small>Kredi
-                                                        Kartı/Havale-Eft</small></a></li>
-                                                <li><a href="https://tvgfbf.gov.tr/iletisim/"><small>Banka
-                                                    Bilgileri</small></a>
-                                                </li>
-                                            </ul>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <input type="hidden" name="submitFormControl" value="updateForm">
+                                    <div class="card card-info card-outline" id="bilekVizeDivUpdate"
+                                         name="bilekVizeDivUpdate"
+                                         style="display: none;">
+                                        <div class="card-header with-border">
+                                            <h3 class="card-title"> Bilek Güreşi Vize Bilgileri </h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    {#                                            <div class="form-group">#}
+                                                    {#                                                <input name="checkDekont2" id="checkDekont2" type="checkbox"#}
+                                                    {#                                                       onclick="dekontKontrol2()"/>#}
+                                                    {#                                                <span style="color: red;">Vize ücretini ödemedim. 22 Temmuz 2022 ye kadar ödeyeceğim.  </span>#}
+                                                    {#                                            </div>#}
+
+                                                    <div class="form-group" id="vizedekontUpdateBilek">
+                                                        <label> {{ preRegistrationform.dekont.label }}</label>
+                                                        <input type="file" name="bilekVizeFileUpdate"
+                                                               id="bilekVizeFileUpdate">
+                                                        <p><a id="dekontUpdateValueBilek" href=""></a></p>
+                                                        <br>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label> {{ preRegistrationform.branch.label }}</label>
+                                                        <select id="bilekBranchVizeUpdate" name="bilekBranchVizeUpdate"
+                                                                class="form-control select2 select2-hidden-accessible"
+                                                                style="width: 100%;"
+                                                                data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                                            <option value="">Seçiniz</option>
+                                                            {% for branch in branchs %}
+                                                                <option value="{{ branch.title }}">{{ branch.title }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <small style="color: #bd2828"><i class="fa fa-file"></i> Aşağıdaki
+                                        belgelerden herhangi birini yükleyiniz.</small>
+                                    <ul>
+                                        <li><small>Banka Dekontu</small></li>
+                                        <li><small>Kredi Kartı Ekstre Ekran Görüntüsü</small></li>
+                                        <li><small>Ödendi Bilgisi Gelen Sms Ekran Görüntüsü</small></li>
+                                        <li><small>GSB Personeli iseniz Kurum Kimlik Kartı Fotoğrafı</small>
+                                        </li>
+                                        <li><small>1. Kademe Belgesini 2022 Yılından Alan Antrenörlerimiz
+                                            Bu Alana Antrenör Belgesini Yüklemesi Yeterlidir
+                                        </small></li>
+                                    </ul>
+                                </div>
+                                <div class="col-lg-6">
+                                    <small style="color: #bd2828"><i class="fa fa-link"></i>
+                                        Vize Ödemenizi Yapmadıysanız Bu Linkleri ( Kredi Kartı/ Havale-Eft )
+                                        Kullanarak Yapabilirsiniz.
+                                    </small>
+                                    <ul>
+                                        <li>
+                                            <a href="https://tvgfbf.gov.tr/vize-odemeleri-kredi-karti-2/"><small>Kredi
+                                                Kartı/Havale-Eft</small></a></li>
+                                        <li><a href="https://tvgfbf.gov.tr/iletisim/"><small>Banka
+                                            Bilgileri</small></a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-
                         </div>
                         <div class="card-footer">
+
+                            <div class="col-lg-12">
+                                <input type="hidden" name="submitFormControl" value="updateForm">
+                            </div>
+
+                            <div class="col-lg-12">
+                                <input type="hidden" id="vucutKademeUpdate" name="vucutKademeUpdate" value="">
+                            </div>
+
+                            <div class="col-lg-12">
+                                <input type="hidden" id="bilekKademeUpdate" name="bilekKademeUpdate" value="">
+                            </div>
+
+                            <div class="col-lg-12">
+                                <input type="hidden" id="vucutVizeUpdate" name="vucutVizeUpdate" value="">
+                            </div>
+
+                            <div class="col-lg-12">
+                                <input type="hidden" id="bilekVizeUpdate" name="bilekVizeUpdate" value="">
+                            </div>
 
                             <button class="btn btn-outline-info" type="button" style="float: right;" disabled="disabled"
                                     title="Bilgilerin doğruluğunu onaylamalısınız." id="approvalButton2"
@@ -1141,6 +1437,135 @@
 <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
 <script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
 <script src="{% static 'plugins/summernote/summernote-bs4.min.js' %}"></script>
+
+<script>
+    function vucutKademe() {
+        debugger;
+        if (document.getElementById('vucutKademeBox').checked === true) {
+            document.getElementById('vucutKademeDiv').style.display = 'block';
+            document.getElementById('vucutGrade').setAttribute('required', 'required');
+            document.getElementById('vucutBranch').setAttribute('required', 'required');
+            document.getElementById('belgeVucut').setAttribute('required', 'required');
+        } else {
+            document.getElementById('vucutKademeDiv').style.display = 'none';
+            document.getElementById('vucutGrade').removeAttribute('required');
+            document.getElementById('vucutBranch').removeAttribute('required');
+            document.getElementById('belgeVucut').removeAttribute('required');
+        }
+    }
+</script>
+
+<script>
+    function bilekKademe() {
+        debugger;
+        if (document.getElementById('bilekKademeBox').checked === true) {
+            document.getElementById('bilekKademeDiv').style.display = 'block';
+            document.getElementById('bilekGrade').setAttribute('required', 'required');
+            document.getElementById('bilekBranch').setAttribute('required', 'required');
+            document.getElementById('belgeBilek').setAttribute('required', 'required');
+        } else {
+            document.getElementById('bilekKademeDiv').style.display = 'none';
+            document.getElementById('bilekGrade').removeAttribute('required');
+            document.getElementById('bilekBranch').removeAttribute('required');
+            document.getElementById('belgeBilek').removeAttribute('required');
+        }
+    }
+</script>
+
+<script>
+    function vucutKademeUpdateFunc() {
+        debugger;
+        if (document.getElementById('vucutKademeBoxUpdate').checked === true) {
+            document.getElementById('vucutKademeDivUpdate').style.display = 'block';
+            document.getElementById('gradeUpdateVucut').setAttribute('required', 'required')
+            document.getElementById('branchUpdateVucut').setAttribute('required', 'required')
+            document.getElementById('vucutKademeUpdate').value = 'True'
+        } else {
+            document.getElementById('vucutKademeDivUpdate').style.display = 'none';
+            document.getElementById('gradeUpdateVucut').removeAttribute('required')
+            document.getElementById('branchUpdateVucut').removeAttribute('required')
+            document.getElementById('vucutKademeUpdate').value = ''
+        }
+    }
+</script>
+
+<script>
+    function bilekKademeUpdateFunc() {
+        debugger;
+        if (document.getElementById('bilekKademeBoxUpdate').checked === true) {
+            document.getElementById('bilekKademeDivUpdate').style.display = 'block';
+            document.getElementById('gradeUpdateBilek').setAttribute('required', 'required')
+            document.getElementById('branchUpdateBilek').setAttribute('required', 'required')
+            document.getElementById('bilekKademeUpdate').value = 'True'
+        } else {
+            document.getElementById('bilekKademeDivUpdate').style.display = 'none';
+            document.getElementById('gradeUpdateBilek').removeAttribute('required');
+            document.getElementById('branchUpdateBilek').removeAttribute('required');
+            document.getElementById('bilekKademeUpdate').value = ''
+        }
+    }
+</script>
+
+<script>
+    function vucutVize() {
+        debugger;
+        if (document.getElementById('vucutVizeBox').checked === true) {
+            document.getElementById('vucutVizeDiv').style.display = 'block';
+            document.getElementById('vucutBranchVize').setAttribute('required', 'required');
+            document.getElementById('vucutVizeFile').setAttribute('required', 'required');
+        } else {
+            document.getElementById('vucutVizeDiv').style.display = 'none';
+            document.getElementById('vucutBranchVize').removeAttribute('required');
+            document.getElementById('vucutVizeFile').removeAttribute('required');
+        }
+    }
+</script>
+
+<script>
+    function bilekVize() {
+        debugger;
+        if (document.getElementById('bilekVizeBox').checked === true) {
+            document.getElementById('bilekVizeDiv').style.display = 'block';
+            document.getElementById('bilekBranchVize').setAttribute('required', 'required');
+            document.getElementById('bilekVizeFile').setAttribute('required', 'required');
+        } else {
+            document.getElementById('bilekVizeDiv').style.display = 'none';
+            document.getElementById('bilekBranchVize').removeAttribute('required');
+            document.getElementById('bilekVizeFile').removeAttribute('required');
+        }
+    }
+</script>
+
+<script>
+    function vucutVizeUpdateFunc() {
+        debugger;
+        if (document.getElementById('vucutVizeBoxUpdate').checked === true) {
+            document.getElementById('vucutVizeDivUpdate').style.display = 'block';
+            document.getElementById('vucutBranchVizeUpdate').setAttribute('required', 'required');
+            document.getElementById('vucutVizeUpdate').value = 'True'
+        } else {
+            document.getElementById('vucutVizeDivUpdate').style.display = 'none';
+            document.getElementById('vucutBranchVizeUpdate').removeAttribute('required');
+            document.getElementById('vucutVizeUpdate').value = ''
+        }
+    }
+</script>
+
+<script>
+    function bilekVizeUpdateFunc() {
+        debugger;
+        if (document.getElementById('bilekVizeBoxUpdate').checked === true) {
+            document.getElementById('bilekVizeDivUpdate').style.display = 'block';
+            document.getElementById('bilekBranchVizeUpdate').setAttribute('required', 'required');
+            document.getElementById('bilekVizeUpdate').value = 'True'
+        } else {
+            document.getElementById('bilekVizeDivUpdate').style.display = 'none';
+            document.getElementById('bilekBranchVizeUpdate').removeAttribute('required');
+            document.getElementById('bilekVizeUpdate').value = ''
+        }
+    }
+</script>
+
 <script>
     $("#club").change(function () {
         if ($("#club").val() === 'noClub') {
@@ -1284,99 +1709,112 @@
     function approvalSend() {
         debugger;
 
-        swal({
-            title: "Onaya göndermek istediğinizden emin misiniz?",
-            icon: "warning",
-            buttons: [
-                'Hayır!',
-                'Evet'
-            ],
-        }).then((result) => {
-            if (result.dismiss !== 'Evet') {
-                debugger;
-                var form = $('#referenceCoachForm')[0];
-                var sonuc = true;
-                for (var i = 0; i < form.elements.length; i++) {
-                    if (form.elements[i].value === '' && form.elements[i].hasAttribute('required')) {
-                        if (form.elements[i].type === 'file') {
-                            form.elements[i].style.border = "1px solid red"
-                        } else if (form.elements[i].tagName.toLowerCase() === 'select') {
-                            form.elements[i].parentElement.style.border = "1px solid red";
+        if ((document.getElementById('vucutKademeBox').checked === false && document.getElementById('bilekKademeBox').checked === false) || (document.getElementById('vucutVizeBox').checked === false && document.getElementById('bilekVizeBox').checked === false)) {
+            swal({
+                title: "En az bir kokart bilgisi ve bir vize bilgisi girmek zorundasınız !.",
+                icon: "warning",
+                showCloseButton: true,
+                closeButtonText: 'Tamam',
+            })
+        } else {
+            swal({
+                title: "Onaya göndermek istediğinizden emin misiniz?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+                    debugger;
+                    var form = $('#referenceCoachForm')[0];
+                    var sonuc = true;
+                    for (var i = 0; i < form.elements.length; i++) {
+                        if (form.elements[i].value === '' && form.elements[i].hasAttribute('required')) {
+                            if (form.elements[i].type === 'file') {
+                                form.elements[i].style.border = "1px solid red"
+                            } else if (form.elements[i].tagName.toLowerCase() === 'select') {
+                                form.elements[i].parentElement.style.border = "1px solid red";
+                            }
+                            form.elements[i].style.borderColor = "red";
+                            sonuc = false;
+
+                        } else {
+                            form.elements[i].style.removeProperty('border-color');
+                            form.elements[i].style.removeProperty('border');
                         }
-                        form.elements[i].style.borderColor = "red";
-                        sonuc = false;
-
-                    } else {
-                        form.elements[i].style.removeProperty('border-color');
-                        form.elements[i].style.removeProperty('border');
                     }
+                    if (sonuc === true) {
+                        form.submit();
+                    } else {
+                        swal({
+                            title: "Zorunlu alanları doldurunuz !.",
+                            icon: "warning",
+                            showCloseButton: true,
+                            closeButtonText: 'Tamam',
+                        })
+                    }
+
+
                 }
-                if (sonuc === true) {
-                    form.submit();
-                } else {
-                    swal({
-                        title: "Zorunlu alanları doldurunuz !.",
-                        icon: "warning",
-                        showCloseButton: true,
-                        closeButtonText: 'Tamam',
-                    })
-                }
 
-
-            }
-
-        })
-
-
+            })
+        }
     }
 
     function approvalSend2() {
         debugger;
 
-        swal({
-            title: "Onaya göndermek istediğinizden emin misiniz?",
-            icon: "warning",
-            buttons: [
-                'Hayır!',
-                'Evet'
-            ],
-        }).then((result) => {
-            if (result.dismiss !== 'Evet') {
-                debugger;
-                var form = $('#referenceCoachUpdateForm')[0];
-                var sonuc = true;
-                for (var i = 0; i < form.elements.length; i++) {
-                    if (form.elements[i].value === '' && form.elements[i].hasAttribute('required')) {
-                        if (form.elements[i].type === 'file') {
-                            form.elements[i].style.border = "1px solid red"
-                        } else if (form.elements[i].tagName.toLowerCase() === 'select') {
-                            form.elements[i].parentElement.style.border = "1px solid red";
+        if ((document.getElementById('vucutKademeBoxUpdate').checked === false && document.getElementById('bilekKademeBoxUpdate').checked === false) || (document.getElementById('vucutVizeBoxUpdate').checked === false && document.getElementById('bilekVizeBoxUpdate').checked === false)) {
+            swal({
+                title: "En az bir kokart bilgisi ve bir vize bilgisi girmek zorundasınız !.",
+                icon: "warning",
+                showCloseButton: true,
+                closeButtonText: 'Tamam',
+            })
+        } else {
+            swal({
+                title: "Onaya göndermek istediğinizden emin misiniz?",
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+                if (result.dismiss !== 'Evet') {
+                    debugger;
+                    var form = $('#referenceCoachUpdateForm')[0];
+                    var sonuc = true;
+                    for (var i = 0; i < form.elements.length; i++) {
+                        if (form.elements[i].value === '' && form.elements[i].hasAttribute('required')) {
+                            if (form.elements[i].type === 'file') {
+                                form.elements[i].style.border = "1px solid red"
+                            } else if (form.elements[i].tagName.toLowerCase() === 'select') {
+                                form.elements[i].parentElement.style.border = "1px solid red";
+                            }
+                            form.elements[i].style.borderColor = "red";
+                            sonuc = false;
+
+                        } else {
+                            form.elements[i].style.removeProperty('border-color');
+                            form.elements[i].style.removeProperty('border');
                         }
-                        form.elements[i].style.borderColor = "red";
-                        sonuc = false;
-
-                    } else {
-                        form.elements[i].style.removeProperty('border-color');
-                        form.elements[i].style.removeProperty('border');
                     }
+                    if (sonuc === true) {
+                        form.submit();
+                    } else {
+                        swal({
+                            title: "Zorunlu alanları doldurunuz !.",
+                            icon: "warning",
+                            showCloseButton: true,
+                            closeButtonText: 'Tamam',
+                        })
+                    }
+
+
                 }
-                if (sonuc === true) {
-                    form.submit();
-                } else {
-                    swal({
-                        title: "Zorunlu alanları doldurunuz !.",
-                        icon: "warning",
-                        showCloseButton: true,
-                        closeButtonText: 'Tamam',
-                    })
-                }
-
-
-            }
-
-        })
-
-
+            })
+        }
     }
 
 </script>
@@ -1503,8 +1941,45 @@
                             }
                             club.value = info.club
 
-                            document.getElementById('updateBelgeValue').href = info.belge
-                            document.getElementById('updateBelgeValue').innerHTML = info.belge
+                            if (info.belge !== '' || info.kademe_definition !== '' || info.kademe_brans !== '') {
+                                document.getElementById('vucutKademeBoxUpdate').checked = true;
+                                document.getElementById('vucutKademeDivUpdate').style.display = 'block';
+                                document.getElementById('gradeUpdateVucut').setAttribute('required', 'required')
+                                document.getElementById('branchUpdateVucut').setAttribute('required', 'required')
+                                document.getElementById('vucutKademeUpdate').value = 'True'
+                            }
+
+                            if (info.belge2 !== '' || info.kademe_definition2 !== '' || info.kademe_brans2 !== '') {
+                                document.getElementById('bilekKademeBoxUpdate').checked = true;
+                                document.getElementById('bilekKademeDivUpdate').style.display = 'block';
+                                document.getElementById('gradeUpdateBilek').setAttribute('required', 'required')
+                                document.getElementById('branchUpdateBilek').setAttribute('required', 'required')
+                                document.getElementById('bilekKademeUpdate').value = 'True'
+                            }
+
+                            if (info.vize_brans !== '' || info.dekont !== '') {
+                                document.getElementById('vucutVizeBoxUpdate').checked = true;
+                                document.getElementById('vucutVizeDivUpdate').style.display = 'block';
+                                document.getElementById('vucutBranchVizeUpdate').setAttribute('required', 'required');
+                                document.getElementById('vucutVizeUpdate').value = 'True'
+                            }
+
+                            if (info.vize_brans2 !== '' || info.dekont2 !== '') {
+                                document.getElementById('bilekVizeBoxUpdate').checked = true;
+                                document.getElementById('bilekVizeDivUpdate').style.display = 'block';
+                                document.getElementById('bilekBranchVizeUpdate').setAttribute('required', 'required');
+                                document.getElementById('bilekVizeUpdate').value = 'True'
+                            }
+
+                            if (info.belge) {
+                                document.getElementById('updateBelgeValueVucut').href = info.belge
+                                document.getElementById('updateBelgeValueVucut').innerHTML = info.belge
+                            }
+
+                            if (info.belge2) {
+                                document.getElementById('updateBelgeValueBilek').href = info.belge2
+                                document.getElementById('updateBelgeValueBilek').innerHTML = info.belge2
+                            }
 
                             document.getElementById('phoneNumberUpdate').value = info.phoneNumber
                             document.getElementById('phoneNumber2Update').value = info.phoneNumber2
@@ -1529,7 +2004,7 @@
 
                             document.getElementById('addressUpdate').innerHTML = info.address
 
-                            var grade = document.getElementById('gradeUpdate')
+                            var grade = document.getElementById('gradeUpdateVucut')
                             for (var i = 0; i < grade.length; i++) {
                                 if (grade.options[i].value === info.kademe_definition) {
                                     grade.remove(i);
@@ -1538,15 +2013,67 @@
                             grade.options[grade.options.length] = new Option(info.kademe_definition, info.kademe_definition);
                             grade.value = info.kademe_definition
 
+                            var grade2 = document.getElementById('gradeUpdateBilek')
+                            for (var i = 0; i < grade2.length; i++) {
+                                if (grade2.options[i].value === info.kademe_definition2) {
+                                    grade2.remove(i);
+                                }
+                            }
+                            grade2.options[grade2.options.length] = new Option(info.kademe_definition2, info.kademe_definition2);
+                            grade2.value = info.kademe_definition2
+
                             if (info.kademe_brans !== '') {
-                                var branch = document.getElementById('branchUpdate')
-                                for (var i = 0; i < branch.length; i++) {
-                                    if (branch.options[i].value === info.kademe_brans) {
-                                        branch.remove(i);
+                                var kademeBranch = document.getElementById('branchUpdateVucut')
+                                for (var i = 0; i < kademeBranch.length; i++) {
+                                    if (kademeBranch.options[i].value === info.kademe_brans) {
+                                        kademeBranch.remove(i);
                                     }
                                 }
-                                branch.options[branch.options.length] = new Option(info.kademe_brans, info.kademe_brans);
-                                branch.value = info.kademe_brans
+                                kademeBranch.options[kademeBranch.options.length] = new Option(info.kademe_brans, info.kademe_brans);
+                                kademeBranch.value = info.kademe_brans
+                            }
+
+                            if (info.kademe_brans2 !== '') {
+                                var kademeBranch2 = document.getElementById('branchUpdateBilek')
+                                for (var i = 0; i < kademeBranch2.length; i++) {
+                                    if (kademeBranch2.options[i].value === info.kademe_brans2) {
+                                        kademeBranch2.remove(i);
+                                    }
+                                }
+                                kademeBranch2.options[kademeBranch2.options.length] = new Option(info.kademe_brans2, info.kademe_brans2);
+                                kademeBranch2.value = info.kademe_brans2
+                            }
+
+                            if (info.vize_brans !== '') {
+                                var vizeBranch = document.getElementById('vucutBranchVizeUpdate')
+                                for (var i = 0; i < vizeBranch.length; i++) {
+                                    if (vizeBranch.options[i].value === info.vize_brans) {
+                                        vizeBranch.remove(i);
+                                    }
+                                }
+                                vizeBranch.options[vizeBranch.options.length] = new Option(info.vize_brans, info.vize_brans);
+                                vizeBranch.value = info.vize_brans
+                            }
+
+                            if (info.dekont) {
+                                document.getElementById('dekontUpdateValueVucut').href = info.dekont
+                                document.getElementById('dekontUpdateValueVucut').innerHTML = info.dekont
+                            }
+
+                            if (info.vize_brans2 !== '') {
+                                var vizeBranch2 = document.getElementById('bilekBranchVizeUpdate')
+                                for (var i = 0; i < vizeBranch2.length; i++) {
+                                    if (vizeBranch2.options[i].value === info.vize_brans2) {
+                                        vizeBranch2.remove(i);
+                                    }
+                                }
+                                vizeBranch2.options[vizeBranch2.options.length] = new Option(info.vize_brans2, info.vize_brans2);
+                                vizeBranch2.value = info.vize_brans2
+                            }
+
+                            if (info.dekont2) {
+                                document.getElementById('dekontUpdateValueBilek').href = info.dekont2
+                                document.getElementById('dekontUpdateValueBilek').innerHTML = info.dekont2
                             }
 
 
@@ -1555,12 +2082,6 @@
 
                             document.getElementById('sgkUpdateValue').href = info.sgk
                             document.getElementById('sgkUpdateValue').innerHTML = info.sgk
-                            if (info.dekont) {
-                                document.getElementById('dekontUpdateValue').href = info.dekont
-                                document.getElementById('dekontUpdateValue').innerHTML = info.dekont
-                            } else {
-                                document.getElementById('dekontUpdate').setAttribute('required', 'required')
-                            }
 
                         }
 
@@ -1674,6 +2195,7 @@
 
     }
 </script>
+
 
 {#<script>#}
 {#    function dekontKontrol() {#}

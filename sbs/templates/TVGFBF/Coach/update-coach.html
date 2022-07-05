@@ -48,6 +48,37 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="dateOfReject"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Reddedilme Açıklaması</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <label for="dateOfRejectDate">Tarih</label>
+                    <input type="date" name="dateOfRejectDate" id="dateOfRejectDate" class="form-control datemask"
+                           required="required" autocomplete="off">
+                    <label for="dateOfRejectText">Açıklama</label>
+                    <input type="text" name="dateOfRejectText" id="dateOfRejectText" class="form-control"
+                           required="required" placeholder="Reddedilme Sebebi">
+
+                </div>
+
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" id="btn-closereddet-reject">İptal</button>
+                    <button type="button" class="btn btn-outline-success btn-ok" id="btn-gonder-reject"
+                            data-dismiss="modal">Gönder
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
     <div class="modal modal-danger fade in deneme22" tabindex="-1" role="dialog" id="modal-danger"
          aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
@@ -193,7 +224,6 @@
                                     </div>
 
                                 </div>
-
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label> {{ user_form.first_name.label }}</label>
@@ -222,15 +252,6 @@
                                                 {% if personCoach.workplace %}
                                                value="{{ personCoach.workplace }}"
                                                 {% endif %}/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="sgkUpdateValue">SGK Belgesi</label>
-                                        {% if coach.sgk %}
-                                            <p>Şu anki: <a id="sgkUpdateValue"
-                                                           href="{{ coach.sgk.url }}">{{ coach.sgk }}</a>
-                                            </p>
-                                        {% endif %}
-                                        <input type="file" name="sgkUpdate" id="sgkUpdate">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -264,21 +285,31 @@
                                             {% endfor %}
                                         </select>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label> {{ person_form.gender.label }}</label>
-                                        {{ person_form.gender }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="coachFileUpdateValue">Antrenör Belgesi</label>
-                                        {% if coach.antrenorBelgesi %}
-                                            <p>Şu anki: <a id="coachFileUpdateValue"
-                                                           href="{{ coach.antrenorBelgesi.url }}">{{ coach.antrenorBelgesi }}</a>
+                                        <label for="coachFileUpdateValue">Antrenör Sözleşme Belgesi</label>
+                                        {% if coach.form %}
+                                            <p>Şu anki: <a id="coachFileUpdateValue" target="_blank"
+                                                           href="{{ coach.form.url }}">{{ coach.form }}</a>
                                             </p>
                                         {% endif %}
                                         <input type="file" name="coachFileUpdate" id="coachFileUpdate">
                                     </div>
                                 </div>
-
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="sgkUpdateValue">SGK Belgesi</label>
+                                        {% if coach.sgk %}
+                                            <p>Şu anki: <a id="sgkUpdateValue" target="_blank"
+                                                           href="{{ coach.sgk.url }}">{{ coach.sgk }}</a>
+                                            </p>
+                                        {% endif %}
+                                        <input type="file" name="sgkUpdate" id="sgkUpdate">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer">
@@ -359,7 +390,7 @@
                             {% if aktif == 'Admin' or aktif == 'Yonetim' %}
                                 <a href="{% url "sbs:add_grade_coach" coach.uuid %}"
                                    type="button" class="btn btn-outline-info btn-sm" style="float: right"><i
-                                        class="fa fa-plus" title="Coach Kademe Ekle"></i>
+                                        class="fa fa-plus" title="Kademe Ekle"></i>
                                 </a>
                             {% endif %}
 
@@ -374,9 +405,10 @@
 
                                     <th> Branş</th>
                                     <th> Tanımı</th>
-                                    <th>Dekont</th>
-                                    <th>Belge Aktif/Pasif</th>
-                                    <th> Onay Tarihi</th>
+                                    <th>Antrenörlük Belgesi</th>
+                                    <th>Aktif/Pasif</th>
+                                    <th> Onay/Red Tarihi</th>
+                                    <th> Red Nedeni</th>
                                     {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                         <th>İşlemler</th>
                                     {% endif %}
@@ -392,20 +424,29 @@
 
                                             <td>{{ grade.branch }}  </td>
                                             <td>{{ grade.definition }}  </td>
-                                            <td>{% if grade.form %}
-                                                <a href="{{ grade.form.url }}" class="user-image"
-                                                   style=" width: 30px;height: 30px;">{{ grade.form }}</a>
+                                            <td>{% if grade.antrenorBelgesi %}
+                                                <a href="{{ grade.antrenorBelgesi.url }}" class="user-image" target="_blank"
+                                                   style=" width: 30px;height: 30px;">{{ grade.antrenorBelgesi }}</a>
                                             {% else %}
                                                 <a href="">---</a>
                                             {% endif %}
                                             <td>
-                                                {% if grade.status == 'Onaylandı' %}
+                                                {% if grade.status == 'Onaylandı' and grade.isActive %}
                                                     <p class="badge badge-success">Aktif</p>
                                                 {% else %}
                                                     <p class="badge badge-danger"> Pasif</p>
                                                 {% endif %}
                                             </td>
-                                            <td>{{ grade.approval_date }}  </td>
+                                            <td>
+                                                {% if grade.approval_date %}
+                                                    {{ grade.approval_date }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if grade.reject_text %}
+                                                    {{ grade.reject_text }}
+                                                {% endif %}
+                                            </td>
                                             <td>
                                                 {% if user.groups.all.0.name == 'Yonetim' or user.groups.all.0.name == 'Admin' %}
                                                     {% for item in perm %}
@@ -422,7 +463,7 @@
                                                                 </div>
                                                             {% elif item == 'coach_grade_reject' %}
                                                                 <div class="btn-group">
-                                                                    <a href="{% url 'sbs:coach_grade_reject' grade_uuid=grade.uuid coach_uuid=coach.uuid %}"
+                                                                    <a onclick="rejectGrade('{{ grade.uuid }}', '{{ coach.uuid }}')"
                                                                        type="button" class="btn btn-outline-dark"
                                                                        title="Reddet"><i
                                                                             class="fa fa-minus"></i>
@@ -491,8 +532,9 @@
                                     <th>#</th>
                                     <th> Branş</th>
                                     <th> Dekont</th>
-                                    <th> Belge Aktif/Pasif</th>
-                                    <th> Onay Tarihi</th>
+                                    <th> Aktif/Pasif</th>
+                                    <th> Onay/Red Tarihi</th>
+                                    <th> Red Nedeni</th>
                                     <th>İşlemler</th>
 
 
@@ -510,20 +552,28 @@
 
 
                                             <td>{% if grade.dekont %}
-                                                <a href="{{ grade.dekont.url }}" class="user-image"
+                                                <a href="{{ grade.dekont.url }}" class="user-image" target="_blank"
                                                    style=" width: 30px;height: 30px;">{{ grade.dekont }}</a>
                                             {% else %}
                                                 <a href="">---</a>
                                             {% endif %}
                                             <td>
-                                                {% if grade.status == 'Onaylandı' %}
+                                                {% if grade.status == 'Onaylandı' and grade.isActive %}
                                                     <p class="badge badge-success">Aktif</p>
                                                 {% else %}
                                                     <p class="badge badge-danger"> Pasif</p>
                                                 {% endif %}
                                             </td>
-                                            <td>{{ grade.approval_date }}  </td>
-
+                                            <td>
+                                                {% if grade.approval_date %}
+                                                    {{ grade.approval_date }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if grade.reject_text %}
+                                                    {{ grade.reject_text }}
+                                                {% endif %}
+                                            </td>
                                             <td>
 
 
@@ -804,6 +854,74 @@
                     });
                 }
 
+            })
+
+
+        }
+    </script>
+
+    <script>
+        function rejectGrade(grade_uuid, coach_uuid) {
+            debugger;
+            swal({
+                title: "Reddetmek istediğinizden emin misiniz?",
+
+                icon: "warning",
+                buttons: [
+                    'Hayır!',
+                    'Evet'
+                ],
+            }).then((result) => {
+
+
+                if (result.dismiss !== 'Evet') {
+                    $("#dateOfReject").on("shown.bs.modal", function (e) {
+
+                        $("#btn-gonder-reject").click(function () {
+                            $.ajax({
+                                url: "{% url "sbs:coach_grade_reject" %}",
+                                type: "POST",
+                                data: {
+                                    'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                    isActive: 'False',
+                                    grade_uuid: grade_uuid,
+                                    coach_uuid: coach_uuid,
+                                    dateOfReject: $('#dateOfRejectDate').val(),
+                                    textOfReject: $('#dateOfRejectText').val(),
+
+
+                                },
+                                success: function (result) {
+                                    if (result.status === 'Success') {
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Antrenör Kademesi Başarıyla Reddedildi !!',
+
+                                        })
+
+                                    } else {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'işlem başarısız oldu.',
+
+                                        })
+                                    }
+                                    location.reload();
+
+                                }
+                            });
+                        });
+
+
+                    }).modal('show');
+                    $('#btn-closereddet-reject').click(function () {
+                        console.log('buradan çık')
+
+                        $('#modal-warning').modal('hide');
+                        $('.modal').modal('hide');
+
+                    });
+                }
             })
 
 
