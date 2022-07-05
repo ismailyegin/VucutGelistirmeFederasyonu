@@ -295,6 +295,10 @@
                                             <p>Şu anki: <a id="coachFileUpdateValue" target="_blank"
                                                            href="{{ coach.form.url }}">{{ coach.form }}</a>
                                             </p>
+                                        {% else %}
+                                            <p>Şu anki: <a id="coachFileUpdateValue" target="_blank"
+                                                           href="{{ coach.grades.last.form.url }}">{{ coach.grades.last.form }}</a>
+                                            </p>
                                         {% endif %}
                                         <input type="file" name="coachFileUpdate" id="coachFileUpdate">
                                     </div>
