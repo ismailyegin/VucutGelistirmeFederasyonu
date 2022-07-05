@@ -137,6 +137,9 @@ def updateProfileCoach(request):
         elif request.POST['save_button'] == 'coach':
             if coach_form.is_valid():
                 coach_form.save()
+                if request.FILES.get('coachFileUpdate'):
+                    coach.form = request.FILES.get('coachFileUpdate')
+                    coach.save()
 
                 messages.success(request, 'Antrenör Bilgileri Başarıyla Güncellenmiştir.')
 
