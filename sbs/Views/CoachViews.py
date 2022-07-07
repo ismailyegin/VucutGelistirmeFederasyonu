@@ -1791,11 +1791,10 @@ def approvelReferenceCoach(request):
                         grade2.save()
                         coach.grades.add(grade2)
                     else:
-                        if referenceCoach.kademe_definition2 or referenceCoach.belge2 or referenceCoach.kademe_brans2:
-                            messages.warning(request, 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.')
-                            return JsonResponse(
-                                {'status': 'Fail',
-                                 'msg': 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.'})
+                        messages.warning(request, 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.')
+                        return JsonResponse(
+                            {'status': 'Fail',
+                             'msg': 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.'})
 
                     if referenceCoach.vize_brans and referenceCoach.dekont:
                         visa = HavaLevel(dekont=referenceCoach.dekont, branch=referenceCoach.vize_brans)
@@ -1806,11 +1805,10 @@ def approvelReferenceCoach(request):
                         visa.save()
                         coach.visa.add(visa)
                     else:
-                        if referenceCoach.vize_brans or referenceCoach.dekont:
-                            messages.warning(request, 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.')
-                            return JsonResponse(
-                                {'status': 'Fail',
-                                 'msg': 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.'})
+                        messages.warning(request, 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.')
+                        return JsonResponse(
+                            {'status': 'Fail',
+                             'msg': 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.'})
 
                     if referenceCoach.vize_brans2 and referenceCoach.dekont2:
                         visa2 = HavaLevel(dekont=referenceCoach.dekont2, branch=referenceCoach.vize_brans2)

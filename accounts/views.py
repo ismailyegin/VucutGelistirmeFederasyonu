@@ -177,38 +177,43 @@ def forgot(request):
             'username': mail
         }
         active = UserGetService(request, userfilter)
-        if active.is_active == True:
+        if active:
+            if active.is_active == True:
 
-            if UserService(request, userfilter):
-                user = UserGetService(request, userfilter)
-                user.is_active = True
-                user.save()
+                if UserService(request, userfilter):
+                    user = UserGetService(request, userfilter)
+                    user.is_active = True
+                    user.save()
 
-                fdk = Forgot(user=user, status=False)
-                fdk.save()
+                    fdk = Forgot(user=user, status=False)
+                    fdk.save()
 
-                html_content = ''
-                subject, from_email, to = 'TVGFBF Bilgi Sistemi Kullanıcı Bilgileri', EMAIL_HOST_USER, mail
-                html_content = '<h2>Türkiye Vücut Geliştirme, Fitness ve Bilek Güreşi Federasyonu</h2>'
-                html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(fdk.user.username) + '</strong></p>'
-                html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
-                    fdk.uuid) + '">href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(fdk.uuid) + '</p></a>'
-                # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
-                #    fdk.uuid) + '">https://sbs.tvgfbf.gov.tr/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
+                    html_content = ''
+                    subject, from_email, to = 'TVGFBF Bilgi Sistemi Kullanıcı Bilgileri', EMAIL_HOST_USER, mail
+                    html_content = '<h2>Türkiye Vücut Geliştirme, Fitness ve Bilek Güreşi Federasyonu</h2>'
+                    html_content = html_content + '<p><strong>Kullanıcı Adınız :' + str(
+                        fdk.user.username) + '</strong></p>'
+                    html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
+                        fdk.uuid) + '">href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(fdk.uuid) + '</p></a>'
+                    # html_content = html_content + '<p> <strong>Site adresi:</strong> <a href="https://sbs.tvgfbf.gov.tr/newpassword?query=' + str(
+                    #    fdk.uuid) + '">https://sbs.tvgfbf.gov.tr/sbs/profil-guncelle/?query=' + str(fdk.uuid) + '</p></a>'
 
-                msg = EmailMultiAlternatives(subject, '', from_email, [to])
-                msg.attach_alternative(html_content, "text/html")
-                msg.send()
+                    msg = EmailMultiAlternatives(subject, '', from_email, [to])
+                    msg.attach_alternative(html_content, "text/html")
+                    msg.send()
 
-                log = str(user.get_full_name()) + "yeni şifre emaili gönderildi"
-                log = general_methods.logwrite(request, fdk.user, log)
+                    log = str(user.get_full_name()) + "yeni şifre emaili gönderildi"
+                    log = general_methods.logwrite(request, fdk.user, log)
 
-                return redirect("accounts:redirect_password_update")
+                    return redirect("accounts:redirect_password_update")
+                else:
+                    messages.warning(request, "Geçerli bir mail adresi giriniz.")
+                    return redirect("accounts:forgot")
             else:
-                messages.warning(request, "Geçerli bir mail adresi giriniz.")
-                return redirect("accounts:view_forgot")
+                return redirect("accounts:redirect_active_user")
         else:
-            return redirect("accounts:redirect_active_user")
+            messages.warning(request, "Geçerli bir mail adresi giriniz.")
+            return redirect("accounts:forgot")
     return render(request, 'registration/forgot-password.html')
 
 
@@ -608,7 +613,8 @@ def referenceCoach(request):
 
                     if request.POST.get('vucutKademeUpdate'):
                         if request.POST.get('gradeUpdateVucut'):
-                            currentCoach.kademe_definition = CategoryItem.objects.get(name=request.POST.get('gradeUpdateVucut'))
+                            currentCoach.kademe_definition = CategoryItem.objects.get(
+                                name=request.POST.get('gradeUpdateVucut'))
                         if request.POST.get('branchUpdateVucut'):
                             currentCoach.kademe_brans = Branch.objects.get(title=request.POST.get('branchUpdateVucut'))
                         if request.FILES.get('belgeUpdateVucut'):
@@ -620,7 +626,8 @@ def referenceCoach(request):
 
                     if request.POST.get('bilekKademeUpdate'):
                         if request.POST.get('gradeUpdateBilek'):
-                            currentCoach.kademe_definition2 = CategoryItem.objects.get(name=request.POST.get('gradeUpdateBilek'))
+                            currentCoach.kademe_definition2 = CategoryItem.objects.get(
+                                name=request.POST.get('gradeUpdateBilek'))
                         if request.POST.get('branchUpdateBilek'):
                             currentCoach.kademe_brans2 = Branch.objects.get(title=request.POST.get('branchUpdateBilek'))
                         if request.FILES.get('belgeUpdateBilek'):
@@ -632,7 +639,8 @@ def referenceCoach(request):
 
                     if request.POST.get('vucutVizeUpdate'):
                         if request.POST.get('vucutBranchVizeUpdate'):
-                            currentCoach.vize_brans = Branch.objects.get(title=request.POST.get('vucutBranchVizeUpdate'))
+                            currentCoach.vize_brans = Branch.objects.get(
+                                title=request.POST.get('vucutBranchVizeUpdate'))
                         if request.FILES.get('vucutVizeFileUpdate'):
                             currentCoach.dekont = request.FILES.get('vucutVizeFileUpdate')
                     else:
@@ -641,7 +649,8 @@ def referenceCoach(request):
 
                     if request.POST.get('bilekVizeUpdate'):
                         if request.POST.get('bilekBranchVizeUpdate'):
-                            currentCoach.vize_brans2 = Branch.objects.get(title=request.POST.get('bilekBranchVizeUpdate'))
+                            currentCoach.vize_brans2 = Branch.objects.get(
+                                title=request.POST.get('bilekBranchVizeUpdate'))
                         if request.FILES.get('bilekVizeFileUpdate'):
                             currentCoach.dekont2 = request.FILES.get('bilekVizeFileUpdate')
                     else:
