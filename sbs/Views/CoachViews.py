@@ -1774,11 +1774,10 @@ def approvelReferenceCoach(request):
                         grade.save()
                         coach.grades.add(grade)
                     else:
-                        if referenceCoach.kademe_definition or referenceCoach.belge or referenceCoach.kademe_brans:
-                            messages.warning(request, 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.')
-                            return JsonResponse(
-                                {'status': 'Fail',
-                                 'msg': 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.'})
+                        messages.warning(request, 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.')
+                        return JsonResponse(
+                            {'status': 'Fail',
+                             'msg': 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.'})
 
                     if referenceCoach.kademe_definition2 and referenceCoach.belge2 and referenceCoach.kademe_brans2:
                         grade2 = HavaLevel(definition=referenceCoach.kademe_definition2,
@@ -1819,11 +1818,10 @@ def approvelReferenceCoach(request):
                         visa2.save()
                         coach.visa.add(visa2)
                     else:
-                        if referenceCoach.vize_brans2 or referenceCoach.dekont2:
-                            messages.warning(request, 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.')
-                            return JsonResponse(
-                                {'status': 'Fail',
-                                 'msg': 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.'})
+                        messages.warning(request, 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.')
+                        return JsonResponse(
+                            {'status': 'Fail',
+                             'msg': 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.'})
 
                     coach.save()
 
