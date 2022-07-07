@@ -1716,6 +1716,65 @@ def approvelReferenceCoach(request):
                 referenceCoach.status_date = approvalDate
 
                 if referenceCoach.status == ReferenceCoach.WAITED or referenceCoach.status == ReferenceCoach.DENIED:
+                    if referenceCoach.kademe_definition and referenceCoach.belge and referenceCoach.kademe_brans:
+                        grade = HavaLevel(definition=referenceCoach.kademe_definition,
+                                          antrenorBelgesi=referenceCoach.belge,
+                                          branch=referenceCoach.kademe_brans)
+                        grade.levelType = EnumFields.LEVELTYPE.GRADE
+                        grade.status = HavaLevel.APPROVED
+                        grade.isActive = True
+                        grade.approval_date = approvalDate
+                        grade.save()
+                    else:
+                        if referenceCoach.kademe_definition or referenceCoach.belge or referenceCoach.kademe_brans:
+                            messages.warning(request, 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.')
+                            return JsonResponse(
+                                {'status': 'Fail',
+                                 'msg': 'Kademe bilgisi eksik olduğu için kayıt onaylanamadı. Eksik kademe bilgilerini doldurunuz.'})
+
+                    if referenceCoach.kademe_definition2 and referenceCoach.belge2 and referenceCoach.kademe_brans2:
+                        grade2 = HavaLevel(definition=referenceCoach.kademe_definition2,
+                                           antrenorBelgesi=referenceCoach.belge2,
+                                           branch=referenceCoach.kademe_brans2)
+                        grade2.levelType = EnumFields.LEVELTYPE.GRADE
+                        grade2.status = HavaLevel.APPROVED
+                        grade2.isActive = True
+                        grade2.approval_date = approvalDate
+                        grade2.save()
+                    else:
+                        if referenceCoach.kademe_definition2 or referenceCoach.belge2 or referenceCoach.kademe_brans2:
+                            messages.warning(request, 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.')
+                            return JsonResponse(
+                                {'status': 'Fail',
+                                 'msg': '2. Kademe bilgisi eksik olduğu için kayıt onaylanamadı. Eksik kademe bilgilerini doldurunuz.'})
+
+                    if referenceCoach.vize_brans and referenceCoach.dekont:
+                        visa = HavaLevel(dekont=referenceCoach.dekont, branch=referenceCoach.vize_brans)
+                        visa.levelType = EnumFields.LEVELTYPE.VISA
+                        visa.status = HavaLevel.APPROVED
+                        visa.isActive = True
+                        visa.approval_date = approvalDate
+                        visa.save()
+                    else:
+                        if referenceCoach.vize_brans or referenceCoach.dekont:
+                            messages.warning(request, 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.')
+                            return JsonResponse(
+                                {'status': 'Fail',
+                                 'msg': 'Vize bilgisi eksik olduğu için kayıt onaylanamadı. Eksik vize bilgilerini doldurunuz.'})
+
+                    if referenceCoach.vize_brans2 and referenceCoach.dekont2:
+                        visa2 = HavaLevel(dekont=referenceCoach.dekont2, branch=referenceCoach.vize_brans2)
+                        visa2.levelType = EnumFields.LEVELTYPE.VISA
+                        visa2.status = HavaLevel.APPROVED
+                        visa2.isActive = True
+                        visa2.approval_date = approvalDate
+                        visa2.save()
+                    else:
+                        if referenceCoach.vize_brans2 or referenceCoach.dekont2:
+                            messages.warning(request, 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.')
+                            return JsonResponse(
+                                {'status': 'Fail',
+                                 'msg': '2.Vize bilgisi eksik olduğu için kayıt onaylanamadı. Eksik vize bilgilerini doldurunuz.'})
                     user = User()
                     user.username = referenceCoach.email
                     user.first_name = referenceCoach.first_name
@@ -1761,69 +1820,18 @@ def approvelReferenceCoach(request):
                     coach = Coach(person=person, communication=communication, sgk=referenceCoach.sgk,
                                   form=referenceCoach.kademe_belge)
                     coach.workplace = referenceCoach.workplace
+
                     coach.save()
 
                     if referenceCoach.kademe_definition and referenceCoach.belge and referenceCoach.kademe_brans:
-                        grade = HavaLevel(definition=referenceCoach.kademe_definition,
-                                          antrenorBelgesi=referenceCoach.belge,
-                                          branch=referenceCoach.kademe_brans)
-                        grade.levelType = EnumFields.LEVELTYPE.GRADE
-                        grade.status = HavaLevel.APPROVED
-                        grade.isActive = True
-                        grade.approval_date = approvalDate
-                        grade.save()
                         coach.grades.add(grade)
-                    else:
-                        messages.warning(request, 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.')
-                        return JsonResponse(
-                            {'status': 'Fail',
-                             'msg': 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.'})
-
                     if referenceCoach.kademe_definition2 and referenceCoach.belge2 and referenceCoach.kademe_brans2:
-                        grade2 = HavaLevel(definition=referenceCoach.kademe_definition2,
-                                           antrenorBelgesi=referenceCoach.belge2,
-                                           branch=referenceCoach.kademe_brans2)
-                        grade2.levelType = EnumFields.LEVELTYPE.GRADE
-                        grade2.status = HavaLevel.APPROVED
-                        grade2.isActive = True
-                        grade2.approval_date = approvalDate
-                        grade2.save()
                         coach.grades.add(grade2)
-                    else:
-                        messages.warning(request, 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.')
-                        return JsonResponse(
-                            {'status': 'Fail',
-                             'msg': 'Kademe bilgisi eklenemedi. Eksik kademe bilgilerini doldurunuz.'})
-
                     if referenceCoach.vize_brans and referenceCoach.dekont:
-                        visa = HavaLevel(dekont=referenceCoach.dekont, branch=referenceCoach.vize_brans)
-                        visa.levelType = EnumFields.LEVELTYPE.VISA
-                        visa.status = HavaLevel.APPROVED
-                        visa.isActive = True
-                        visa.approval_date = approvalDate
-                        visa.save()
                         coach.visa.add(visa)
-                    else:
-                        messages.warning(request, 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.')
-                        return JsonResponse(
-                            {'status': 'Fail',
-                             'msg': 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.'})
-
                     if referenceCoach.vize_brans2 and referenceCoach.dekont2:
-                        visa2 = HavaLevel(dekont=referenceCoach.dekont2, branch=referenceCoach.vize_brans2)
-                        visa2.levelType = EnumFields.LEVELTYPE.VISA
-                        visa2.status = HavaLevel.APPROVED
-                        visa2.isActive = True
-                        visa2.approval_date = approvalDate
-                        visa2.save()
                         coach.visa.add(visa2)
-                    else:
-                        messages.warning(request, 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.')
-                        return JsonResponse(
-                            {'status': 'Fail',
-                             'msg': 'Vize bilgisi eklenemedi. Eksik vize bilgilerini doldurunuz.'})
 
-                    coach.save()
 
                     messages.success(request, 'Antrenör Başarıyla Eklenmiştir')
                     referenceCoach.status = ReferenceCoach.APPROVED

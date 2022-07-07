@@ -517,13 +517,13 @@ def referenceCoach(request):
 
                         if request.POST.get('vucutGrade'):
                             veri.kademe_definition = CategoryItem.objects.get(uuid=request.POST.get('vucutGrade'))
-                            veri.kademe_branch = Branch.objects.get(title='VÜCUT GELİŞTİRME VE FİTNESS')
+                            veri.kademe_brans = Branch.objects.get(title='VÜCUT GELİŞTİRME VE FİTNESS')
                             if request.FILES.get('belgeVucut'):
                                 veri.belge = request.FILES.get('belgeVucut')
 
                         if request.POST.get('bilekGrade'):
                             veri.kademe_definition2 = CategoryItem.objects.get(uuid=request.POST.get('bilekGrade'))
-                            veri.kademe_branch2 = Branch.objects.get(title='BİLEK GÜREŞİ')
+                            veri.kademe_brans2 = Branch.objects.get(title='BİLEK GÜREŞİ')
                             if request.FILES.get('belgeBilek'):
                                 veri.belge2 = request.FILES.get('belgeBilek')
 
