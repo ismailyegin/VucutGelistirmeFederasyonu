@@ -361,4 +361,6 @@ urlpatterns = [
     path('antrenor/belge-aktar/<int:i>/<int:k>', Aktarma.transmissionAntrenorBelge, name='antrenor-belge-aktar'),
     path('antrenor/api-kademe-listesi/', APIViews.GetGradeList.as_view(), name='view_grade_api'),
 
+    path('antrenor/kademe-transfer/', APIViews.GradeTransmission, name='grade_transmission'),
+
 ]

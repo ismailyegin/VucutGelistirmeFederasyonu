@@ -15,7 +15,7 @@ from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from sbs.models import Permission, Coach, Referee, SportFacility, ReferenceCoach, HavaLevel, EnumFields
+from sbs.models import Permission, Coach, Referee, SportFacility, ReferenceCoach, HavaLevel, EnumFields, Branch
 from sbs.models.ekabis.Logs import Logs
 from sbs.models.tvfbf.Club import Club
 from sbs.models.tvfbf.LogAPIObject import LogAPIObject
@@ -1062,3 +1062,57 @@ class GetGradeList(APIView):
         }
 
         return JsonResponse(response)
+
+def GradeTransmission(request):
+    try:
+        with transaction.atomic():
+            coachTc = Coach.objects.filter(creationDate__gte='2022-07-05').filter(grades__isnull=True).values('person__tc')
+            referenceCoaches = ReferenceCoach.objects.filter(tc__in=coachTc)
+            for referenceCoach in referenceCoaches:
+                coach = Coach.objects.get(person__tc=referenceCoach.tc)
+                approvalDate = datetime.datetime.strptime('2022-07-07', '%Y-%m-%d').date()
+                if referenceCoach.kademe_definition and referenceCoach.belge:
+                    grade = HavaLevel(definition=referenceCoach.kademe_definition,
+                                      antrenorBelgesi=referenceCoach.belge,
+                                      branch=Branch.objects.get(title='VÜCUT GELİŞTİRME VE FİTNESS'))
+                    grade.levelType = EnumFields.LEVELTYPE.GRADE
+                    grade.status = HavaLevel.APPROVED
+                    grade.isActive = True
+                    grade.approval_date = approvalDate
+                    grade.save()
+                    coach.grades.add(grade)
+                if referenceCoach.kademe_definition2 and referenceCoach.belge2:
+                    grade2 = HavaLevel(definition=referenceCoach.kademe_definition2,
+                                      antrenorBelgesi=referenceCoach.belge2,
+                                      branch=Branch.objects.get(title='BİLEK GÜREŞİ'))
+                    grade2.levelType = EnumFields.LEVELTYPE.GRADE
+                    grade2.status = HavaLevel.APPROVED
+                    grade2.isActive = True
+                    grade2.approval_date = approvalDate
+                    grade2.save()
+                    coach.grades.add(grade2)
+                if referenceCoach.dekont:
+                    visa = HavaLevel(dekont=referenceCoach.dekont, branch=Branch.objects.get(title='VÜCUT GELİŞTİRME VE FİTNESS'))
+                    visa.levelType = EnumFields.LEVELTYPE.VISA
+                    visa.status = HavaLevel.APPROVED
+                    visa.isActive = True
+                    visa.approval_date = approvalDate
+                    visa.save()
+                    coach.visa.add(visa)
+                if referenceCoach.dekont2:
+                    visa2 = HavaLevel(dekont=referenceCoach.dekont2, branch=Branch.objects.get(title='BİLEK GÜREŞİ'))
+                    visa2.levelType = EnumFields.LEVELTYPE.VISA
+                    visa2.status = HavaLevel.APPROVED
+                    visa2.isActive = True
+                    visa2.approval_date = approvalDate
+                    visa2.save()
+                    coach.visa.add(visa2)
+                referenceCoach.status = referenceCoach.APPROVED
+                referenceCoach.save()
+            messages.success(request, 'işlem yapıldı.')
+            return redirect('sbs:view_admin')
+
+
+    except Exception as e:
+        messages.warning(request, 'HATA !! ' + ' ' + str(e))
+        return redirect('sbs:view_admin')
