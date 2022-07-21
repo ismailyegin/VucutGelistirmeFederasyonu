@@ -3,6 +3,7 @@
 import datetime
 import traceback
 
+import unidecode
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.staticfiles import finders
 from validate_email import validate_email
@@ -583,6 +584,7 @@ def referenceCoach(request):
                                        'branchs': branchs, })
                     if request.FILES.get('profileImageUpdate'):
                         currentCoach.profileImage = request.FILES.get('profileImageUpdate')
+                        currentCoach.profileImage.name = unidecode.unidecode(request.FILES.get('profileImageUpdate').name)
                     currentCoach.first_name = request.POST.get('firstNameUpdate')
                     currentCoach.last_name = request.POST.get('lastNameUpdate')
                     currentCoach.birthplace = request.POST.get('birthPlaceUpdate')
@@ -608,8 +610,10 @@ def referenceCoach(request):
                     currentCoach.address = request.POST.get('addressUpdate')
                     if request.FILES.get('kademeBelgeUpdate'):
                         currentCoach.kademe_belge = request.FILES.get('kademeBelgeUpdate')
+                        currentCoach.kademe_belge.name = unidecode.unidecode(request.FILES.get('kademeBelgeUpdate').name)
                     if request.FILES.get('sgkUpdate'):
                         currentCoach.sgk = request.FILES.get('sgkUpdate')
+                        currentCoach.sgk.name = unidecode.unidecode(request.FILES.get('sgkUpdate').name)
 
                     if request.POST.get('vucutKademeUpdate'):
                         if request.POST.get('gradeUpdateVucut'):
@@ -619,6 +623,7 @@ def referenceCoach(request):
                             currentCoach.kademe_brans = Branch.objects.get(title=request.POST.get('branchUpdateVucut'))
                         if request.FILES.get('belgeUpdateVucut'):
                             currentCoach.belge = request.FILES.get('belgeUpdateVucut')
+                            currentCoach.belge.name = unidecode.unidecode(request.FILES.get('belgeUpdateVucut').name)
                     else:
                         currentCoach.kademe_definition = None
                         currentCoach.kademe_brans = None
@@ -632,6 +637,7 @@ def referenceCoach(request):
                             currentCoach.kademe_brans2 = Branch.objects.get(title=request.POST.get('branchUpdateBilek'))
                         if request.FILES.get('belgeUpdateBilek'):
                             currentCoach.belge2 = request.FILES.get('belgeUpdateBilek')
+                            currentCoach.belge2.name = unidecode.unidecode(request.FILES.get('belgeUpdateBilek').name)
                     else:
                         currentCoach.kademe_definition2 = None
                         currentCoach.kademe_brans2 = None
@@ -643,6 +649,7 @@ def referenceCoach(request):
                                 title=request.POST.get('vucutBranchVizeUpdate'))
                         if request.FILES.get('vucutVizeFileUpdate'):
                             currentCoach.dekont = request.FILES.get('vucutVizeFileUpdate')
+                            currentCoach.dekont.name = unidecode.unidecode(request.FILES.get('vucutVizeFileUpdate').name)
                     else:
                         currentCoach.vize_brans = None
                         currentCoach.dekont = None
@@ -653,6 +660,7 @@ def referenceCoach(request):
                                 title=request.POST.get('bilekBranchVizeUpdate'))
                         if request.FILES.get('bilekVizeFileUpdate'):
                             currentCoach.dekont2 = request.FILES.get('bilekVizeFileUpdate')
+                            currentCoach.dekont2.name = unidecode.unidecode(request.FILES.get('bilekVizeFileUpdate').name)
                     else:
                         currentCoach.vize_brans2 = None
                         currentCoach.dekont2 = None
