@@ -521,20 +521,24 @@ def referenceCoach(request):
                             veri.kademe_brans = Branch.objects.get(title='VÜCUT GELİŞTİRME VE FİTNESS')
                             if request.FILES.get('belgeVucut'):
                                 veri.belge = request.FILES.get('belgeVucut')
+                                veri.belge.name = unidecode.unidecode(request.FILES.get('belgeVucut').name)
 
                         if request.POST.get('bilekGrade'):
                             veri.kademe_definition2 = CategoryItem.objects.get(uuid=request.POST.get('bilekGrade'))
                             veri.kademe_brans2 = Branch.objects.get(title='BİLEK GÜREŞİ')
                             if request.FILES.get('belgeBilek'):
                                 veri.belge2 = request.FILES.get('belgeBilek')
+                                veri.belge2.name = unidecode.unidecode(request.FILES.get('belgeBilek').name)
 
                         if request.FILES.get('vucutVizeFile'):
                             veri.vize_brans = Branch.objects.get(title='VÜCUT GELİŞTİRME VE FİTNESS')
                             veri.dekont = request.FILES.get('vucutVizeFile')
+                            veri.dekont.name = unidecode.unidecode(request.FILES.get('vucutVizeFile').name)
 
                         if request.FILES.get('bilekVizeFile'):
                             veri.vize_brans2 = Branch.objects.get(title='BİLEK GÜREŞİ')
                             veri.dekont2 = request.FILES.get('bilekVizeFile')
+                            veri.dekont2.name = unidecode.unidecode(request.FILES.get('bilekVizeFile').name)
 
                         clubDersbis = request.POST.get('club', None)
                         if clubDersbis:
