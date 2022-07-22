@@ -1,3 +1,4 @@
+import unidecode
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -139,6 +140,7 @@ def updateProfileCoach(request):
                 coach_form.save()
                 if request.FILES.get('coachFileUpdate'):
                     coach.form = request.FILES.get('coachFileUpdate')
+                    coach.form.name = unidecode.unidecode(request.FILES.get('coachFileUpdate').name)
                     coach.save()
 
                 messages.success(request, 'Antrenör Bilgileri Başarıyla Güncellenmiştir.')

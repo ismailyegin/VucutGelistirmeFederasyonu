@@ -43,6 +43,10 @@ class Coach(BaseModel):
             self.saglikBeyanFormu.name = unidecode.unidecode(self.saglikBeyanFormu.name)
         if self.antrenorBelgesi:
             self.antrenorBelgesi.name = unidecode.unidecode(self.antrenorBelgesi.name)
+        if self.sgk:
+            self.sgk.name = unidecode.unidecode(self.sgk.name)
+        if self.form:
+            self.form.name = unidecode.unidecode(self.form.name)
         super(Coach, self).save(*args, **kwargs)
 
     # class Meta:
